@@ -7,7 +7,7 @@ Canonical reference for developers and agents. Founder decision **May 2026**.
 | Artifact | Licence file | What it covers |
 |----------|--------------|----------------|
 | Knot Core module | [`LICENSE`](../LICENSE) (GPL-3.0-or-later) | Engine, UI, Dolibarr connectors shipped with Core, API, tests |
-| Linking exception | [`LICENSE-EXCEPTION.md`](../LICENSE-EXCEPTION.md) | Draft — GPL Core loading PolyForm extensions (counsel pending) |
+| Linking exception | [`LINKING-EXCEPTION.md`](../LINKING-EXCEPTION.md) | Draft — GPL Core loading PolyForm extensions (counsel pending) |
 | Knot Pro Pack | `pro-pack/LICENSE.md` (PolyForm Shield) | Premium connectors — **not** in Core repo |
 | Knot Migration | `knot-migration/LICENSE.md` (PolyForm Shield) | Migration product — private repo |
 | Third-party deps | [`LICENSES.md`](../LICENSES.md) | npm/Composer inventory (MIT, Apache, …) |
@@ -44,7 +44,7 @@ Canonical reference for developers and agents. Founder decision **May 2026**.
 
 ## Public Utility API (GPL linking exception)
 
-Listed in [`LICENSE-EXCEPTION.md`](../LICENSE-EXCEPTION.md) (WORKING DRAFT — counsel
+Listed in [`LINKING-EXCEPTION.md`](../LINKING-EXCEPTION.md) (WORKING DRAFT — counsel
 validation required). Extensions may call these Core classes through the linking
 exception without becoming GPL:
 
@@ -59,7 +59,7 @@ exception without becoming GPL:
 | `Knot\Licensing\Bootstrap` | Licensing bootstrap helper |
 
 Future additions must carry an `@api` PHPDoc annotation and be listed here and in
-`LICENSE-EXCEPTION.md`. The copyright holder will not narrow this list retroactively
+`LINKING-EXCEPTION.md`. The copyright holder will not narrow this list retroactively
 (see exception text).
 
 ## Manifest licence block
@@ -92,4 +92,4 @@ The PHP class remains `DolistoreValidator` until a rename is justified.
 - [ ] `grep -ri 'GPL' pro-pack/README` — no product licence GPL
 - [ ] Website Pro Pack pages say **source-available / PolyForm**
 - [ ] Dolistore listing text = Core only
-- [ ] `LICENSE-EXCEPTION.md` marked draft until counsel sign-off
+- [ ] `LINKING-EXCEPTION.md` marked draft until counsel sign-off
