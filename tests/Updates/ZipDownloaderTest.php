@@ -41,6 +41,8 @@ final class ZipDownloaderTest extends TestCase
             'github subdomain' => ['releases.github.com', true],
             'objects host' => ['objects.githubusercontent.com', true],
             'license portal' => ['license.knot.tools', true],
+            'knot.tools downloads' => ['knot.tools', true],
+            'www knot.tools' => ['www.knot.tools', true],
             'localhost' => ['localhost', true],
             'loopback ip' => ['127.0.0.1', true],
             'extra host override' => ['mirror.example.test', true, ['mirror.example.test']],

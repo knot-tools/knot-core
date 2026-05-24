@@ -32,8 +32,9 @@ final class ZipDownloader
             'github.com',
             'objects.githubusercontent.com',
             'raw.githubusercontent.com',
-            'license.knot.tools',
             'codeload.github.com',
+            'knot.tools',
+            'license.knot.tools',
         ];
         foreach ($whitelist as $ok) {
             if ($h === $ok || ($h !== $ok && str_ends_with($h, '.' . $ok))) {
