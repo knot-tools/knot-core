@@ -19,6 +19,28 @@ vi.mock('../../composables/useConfirm', async (importOriginal) => {
   };
 });
 
+const toastError = vi.fn();
+vi.mock('../../composables/useToast', () => ({
+  provideToast: () => ({
+    toasts: ref([]),
+    show: vi.fn(),
+    dismiss: vi.fn(),
+    success: vi.fn(),
+    warning: vi.fn(),
+    error: toastError,
+    info: vi.fn(),
+  }),
+  useToast: () => ({
+    toasts: ref([]),
+    show: vi.fn(),
+    dismiss: vi.fn(),
+    success: vi.fn(),
+    warning: vi.fn(),
+    error: toastError,
+    info: vi.fn(),
+  }),
+}));
+
 import { knotApi, type UpdatesCheckResponse } from '../../lib/api';
 
 const Host = defineComponent({
@@ -32,6 +54,7 @@ const Host = defineComponent({
 
 describe('UpdatesView', () => {
   beforeEach(() => {
+    toastError.mockClear();
     (window as unknown as Record<string, unknown>).KNOT_BASE_URL = '/custom/knot/workflows/preview.php';
     (window as unknown as Record<string, unknown>).KNOT_CSRF_TOKEN = 'test-csrf';
     (window as unknown as Record<string, unknown>).KNOT_MARKETPLACE_UI_ENABLED = true;
@@ -117,6 +140,52 @@ describe('UpdatesView', () => {
     await flushPromises();
 
     expect(applySpy).toHaveBeenCalledWith({ slug: 'knot' });
+    wrapper.unmount();
+  });
+
+  it('shows signature-specific toast when apply returns release_signature_invalid', async () => {
+    const snapshot: UpdatesCheckResponse = {
+      checkedAt: 1,
+      hasAnyUpdate: true,
+      entries: [
+        {
+          slug: 'knot-pro-pack',
+          installedVersion: '0.1.3',
+          latestVersion: '0.1.4',
+          channel: 'beta',
+          publishedAt: null,
+          hasUpdate: true,
+          source: 'live',
+          error: null,
+        },
+      ],
+    };
+    vi.spyOn(knotApi, 'updates').mockResolvedValue(snapshot);
+    vi.spyOn(knotApi, 'marketplace').mockResolvedValue({
+      packs: [],
+      templates: [],
+    } as unknown as Awaited<ReturnType<(typeof knotApi)['marketplace']>>);
+
+    const err = new Error('ignored') as Error & { error_code?: string };
+    err.error_code = 'release_signature_invalid';
+    vi.spyOn(knotApi, 'updatesApply').mockRejectedValue(err);
+
+    const wrapper = mount(Host, {
+      global: { plugins: [i18n] },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    const btn = wrapper.findAll('button').find((b) => b.text().includes('Apply'));
+    await btn!.trigger('click');
+    await flushPromises();
+
+    expect(toastError).toHaveBeenCalledWith(
+      'Release signature invalid',
+      expect.objectContaining({
+        body: expect.stringContaining('Ed25519'),
+      }),
+    );
     wrapper.unmount();
   });
 

@@ -70,6 +70,31 @@ final class ExtensionRegistryTest extends TestCase
         self::assertSame(ExtensionRegistry::STATUS_LOADED, $entry['status'], (string) ($entry['error'] ?? ''));
     }
 
+    public function testInstallerBackupFoldersAreIgnoredDuringScan(): void
+    {
+        $this->writeExtension('knotpropack', [
+            'id' => 'knot-pro-pack',
+            'label' => 'Pro Pack live',
+            'version' => '0.1.4',
+            'author' => 'Acme',
+            'license' => ['type' => 'free', 'validation' => 'none'],
+            'connectors' => [],
+        ]);
+        $this->writeExtension('knotpropack.backup.20260524044051_bb13e3', [
+            'id' => 'knot-pro-pack',
+            'label' => 'Pro Pack stale backup',
+            'version' => '0.1.3',
+            'author' => 'Acme',
+            'license' => ['type' => 'free', 'validation' => 'none'],
+            'connectors' => [],
+        ]);
+        $registry = new ExtensionRegistry([$this->tmpDir], new LicenseValidator($this->licenseDir));
+        $entry = $registry->discover()['knot-pro-pack'] ?? null;
+        self::assertNotNull($entry);
+        self::assertSame('0.1.4', $entry['version']);
+        self::assertStringEndsWith('/knotpropack', $entry['path']);
+    }
+
     public function testFreeExtensionWithBuiltInConnectorLoads(): void
     {
         $this->writeExtension('modKnotFree', [

@@ -11,7 +11,8 @@ use Knot\Api\Doc\Operation;
     description: 'Aggregates the installed version of Knot Core (`Knot\\Version::current()`)'
         . " and every discovered extension (via `ExtensionRegistry::discover()`),"
         . " then compares each against the latest release manifest published by"
-        . " `license.knot.tools/api/products/{slug}/latest`.\n\n"
+        . " `license.knot.tools/api/products/{slug}/latest` (optional `?channel=` query"
+        . " parameter, defaulting from Dolibarr constant `KNOT_RELEASE_CHANNEL`, usually `beta`).\n\n"
         . "Results are cached in `llx_knot_config` (24h TTL, entity-aware) so the"
         . " response stays available when the central server is briefly unreachable."
         . " The response carries no download URL — triggering an install still"

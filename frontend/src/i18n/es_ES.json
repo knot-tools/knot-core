@@ -708,6 +708,7 @@
       "unknown_action": "Unsupported action.",
       "compatibility_failed": "Compatibility analysis failed. See server logs.",
       "zip_failed": "Could not create the export archive.",
+      "release_signature_invalid": "Falló la verificación de firma del release. La descarga puede estar alterada o firmada con una clave desconocida.",
       "payload_too_large": "Request body is too large.",
       "license_required": "This workflow uses connectors that require an active paid licence on this instance.",
       "clone_failed": "Could not clone the workflow.",
@@ -1958,6 +1959,8 @@
     "confirmBody": "{slug} files will be replaced on this server.",
     "applySuccess": "Update applied ({slug}).",
     "applyError": "Apply failed.",
+    "signatureInvalidTitle": "Firma de release no válida",
+    "signatureInvalidBody": "El paquete de actualización no superó la verificación Ed25519. No reintente hasta que haya un artefacto firmado disponible desde Knot Tools.",
     "loadMarketplaceHint": "Could not resolve purchase URL — browse the marketplace manually."
   },
   "licenseDeactivateModal": {

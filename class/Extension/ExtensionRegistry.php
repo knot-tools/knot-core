@@ -238,6 +238,10 @@ class ExtensionRegistry
                 if (!is_dir($full)) {
                     continue;
                 }
+                // Installer swap stashes live trees as `{slug}.backup.{timestamp}_{rand}` — never register them.
+                if (str_contains($name, '.backup.')) {
+                    continue;
+                }
                 $manifestPath = $full . '/knot-extension.json';
                 if (!is_readable($manifestPath)) {
                     continue;

@@ -113,8 +113,15 @@ final class GithubReleasesClient
         string $expectedShaHex,
         ?array $signPayload,
         string $signatureHex,
+        string $targetVersion = '',
     ): void {
         ReleaseVerifier::assertZipSha256($absoluteZipPath, strtolower($expectedShaHex));
+        if ($targetVersion !== '') {
+            ReleaseVerifier::assertCoreReleaseSignature($targetVersion, $signPayload, $signatureHex);
+
+            return;
+        }
+
         ReleaseVerifier::assertOptionalDetachedSignature($signPayload, $signatureHex);
     }
 }

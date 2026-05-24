@@ -76,8 +76,14 @@ $configRepo = new KnotConfigRepository($db);
 $githubManifestUrl = function_exists('getDolGlobalString')
     ? trim((string) getDolGlobalString('MAIN_KNOT_CORE_RELEASES_JSON_URL', ''))
     : '';
+$releaseChannel = function_exists('getDolGlobalString')
+    ? strtolower(trim((string) getDolGlobalString('KNOT_RELEASE_CHANNEL', 'beta')))
+    : 'beta';
+if ($releaseChannel === '') {
+    $releaseChannel = 'beta';
+}
 $source = new UpdateLatestResolver(
-    new UpdateClient(),
+    new UpdateClient(releaseChannel: $releaseChannel),
     new GithubReleasesClient(),
     $githubManifestUrl !== '' ? $githubManifestUrl : null,
 );

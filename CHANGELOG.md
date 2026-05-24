@@ -6,6 +6,11 @@ distributed as a **single code snapshot** (no public Git history or tags).
 
 ## [Unreleased]
 
+### Fixes — updates
+
+- **`ExtensionRegistry`:** ignore installer stash folders matching `*.backup.*` so post-apply scans do not target stale trees (demo E2E apply regression).
+- **`UpdatesView`:** force-refresh notify cache after a successful apply (`load(true)`).
+
 ### Public beta (in progress)
 
 - **UI markers:** `KNOT_RELEASE_CHANNEL` (default `beta`) exposes `releaseChannel` in `api/health.php`; global `KBetaBadge.vue` footer + `KNOT_DEMO_MODE` gated `KDemoBanner.vue` (demo instance only).
@@ -22,6 +27,20 @@ distributed as a **single code snapshot** (no public Git history or tags).
 ### Tooling
 
 - **Docs Docker licensing:** `scripts/lib/DocsLicensingProfile.php` pins `Acme Solar`, `licensing.local_salt`, and optional `licensing.docs_pinned_fingerprint` when `KNOT_DOCS_SEED_V1` is set; `seed_docs_migration.php` restores prior licence bindings and writes `value_hex` signatures; `repair_docs_migration_license_cache.php` refreshes empty cache signatures; `seed_docs_migration_ui.php` seeds analysis history and Discovery journey for Migration Playwright captures.
+
+## [2.13.4] - 2026-05-23
+
+### Security — updates
+
+- **Release signatures:** `ReleaseVerifier::CORE_SIGNATURE_MANDATORY_FROM` gates mandatory Ed25519 on Core ZIP apply from **2.13.4**; commercial extensions always require **`signature_hex`**. Applies map **`422`** **`release_signature_invalid`** with rollback-safe messaging.
+- **`DolistoreClient` / Updates:** JWT download-token and product signature metadata align with **`KNOT_RELEASE_CHANNEL`**.
+
+### Documentation
+
+- **Runbooks:** `docs/runbooks/updates-apply.md` — signature policy, **`KNOT_RELEASE_CHANNEL`** matrix, Core vs extension rules.
+- **Troubleshooting:** `docs/troubleshooting/extension-signature-invalid.md`.
+- **E2E checklist template:** `docs/testing/updates-e2e-extensions.md`.
+- **`docs/ecosystem-handoff.md` / `docs/legal/public-release-readiness.md`** — Core+extension signing posture; **`pro-pack-mirror`** abandoned for updates.
 
 ## [2.13.3] - 2026-05-23
 
@@ -101,7 +120,7 @@ remain accurate for upgrades; new installs use the free GPL ZIP and optional ext
   `docs/release-audit-checklist.md`, optional `pre-commit-release-zip.sh`,
   CI workflow `release-audit.yml` (Pro Pack / Migration / generic commercial ZIPs;
   complements `audit_dolistore_zip.py` for Dolistore Core packages).
-- **Legal / licensing:** root `LICENSE` (GPL-3.0-or-later), `LICENSE-EXCEPTION.md`
+- **Legal / licensing:** root `LICENSE` (GPL-3.0-or-later), `LINKING-EXCEPTION.md`
   (draft counsel), ADR-021, `license-boundary.md`, `license-portal.md`,
   `compliance-status-2026-05.md`, trademark audit annex.
 - **Manifest:** accept `validation: license` alias (normalised to `dolistore`).
@@ -128,7 +147,7 @@ remain accurate for upgrades; new installs use the free GPL ZIP and optional ext
   apply Core unchanged (GitHub only).
 - **Docs:** `docs/runbooks/updates-apply.md` (apply flow + rollback hints).
 - **Tests:** Playwright `tests/e2e/specs/updates-smoke.spec.ts`; `UpdateStatusCacheMultiEntityTest`; `OfficialExtensionManifestSignatureTest`.
-- **Legal v2.1 (2026-05-22):** expanded `LICENSE-EXCEPTION.md`; internal GDPR procedures; VM re-sign Pro Pack + Migration manifests; compliance status refresh.
+- **Legal v2.1 (2026-05-22):** expanded `LINKING-EXCEPTION.md`; internal GDPR procedures; VM re-sign Pro Pack + Migration manifests; compliance status refresh.
 - **Manifest release ops:** runbook `docs/runbooks/extension-manifest-release.md`,
   sync script `scripts/sync_extension_manifest_signature.py`, 90d transition pins
   in `OfficialManifestSignatures`, `tampered` hints in Connectors + Setup.

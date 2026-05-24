@@ -100,9 +100,16 @@ async function handleApply(slug: string) {
   try {
     const data = (await knotApi.updatesApply({ slug })) as UpdatesApplyResult;
     toast.success(t('updatesPage.applySuccess', { slug: data.slug ?? slug }));
-    await load();
+    await load(true);
   } catch (err) {
-    const e = err as Error & { details?: Record<string, unknown> };
+    const e = err as Error & { details?: Record<string, unknown>; error_code?: string; code?: string };
+    const code = e.error_code ?? e.code ?? '';
+    if (code === 'release_signature_invalid') {
+      toast.error(t('updatesPage.signatureInvalidTitle'), {
+        body: t('updatesPage.signatureInvalidBody'),
+      });
+      return;
+    }
     const instr = e.details?.instructions;
     const extra =
       Array.isArray(instr) && instr.length > 0 ? ` — ${instr.join(' ')}` : '';
