@@ -313,6 +313,8 @@
     "confirmBody": "Les fichiers de {slug} seront remplacés sur ce serveur.",
     "applySuccess": "Mise à jour appliquée ({slug}).",
     "applyError": "Échec de l'application.",
+    "signatureInvalidTitle": "Signature de release invalide",
+    "signatureInvalidBody": "Le paquet n'a pas passé la vérification Ed25519. N'appliquez pas l'update tant qu'un artefact signé n'est pas disponible via Knot Tools.",
     "loadMarketplaceHint": "Impossible de résoudre l'URL d'achat — ouvrir le marketplace manuellement."
   },
   "observability": {
@@ -764,6 +766,7 @@
       "unknown_action": "Action non prise en charge.",
       "compatibility_failed": "Analyse de compatibilité en échec. Consultez les journaux serveur.",
       "zip_failed": "Impossible de créer l’archive d’export.",
+      "release_signature_invalid": "Échec de la vérification de signature du release. Le téléchargement peut être altéré ou signé avec une clé inconnue.",
       "payload_too_large": "Corps de requête trop volumineux.",
       "license_required": "Ce workflow utilise des connecteurs nécessitant une licence payante active sur cette instance.",
       "clone_failed": "Impossible de cloner le workflow.",

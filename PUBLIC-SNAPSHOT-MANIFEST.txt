@@ -1,4 +1,4 @@
-generated_at=2026-05-24T00:45:55Z
+generated_at=2026-05-24T05:51:20Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/dependabot.yml
@@ -6,8 +6,9 @@ target_repo=knot-tools/knot-core
 .gitignore
 CHANGELOG.md
 LICENSE
-LICENSE-EXCEPTION.md
 LICENSES.md
+LINKING-EXCEPTION.md
+NOTICE
 PUBLIC-SNAPSHOT-MANIFEST.txt
 README.md
 SECURITY.md
@@ -56,6 +57,7 @@ api/state_machine.php
 api/templates.php
 api/updates.doc.php
 api/updates.php
+api/updates_apply.doc.php
 api/updates_apply.php
 api/variables.php
 api/webhook.php
@@ -285,7 +287,6 @@ data/compatibility/demo-knot-tools-coverage-status.json
 data/compatibility/dolibarr-catalog.json
 data/compatibility/dolibarr-classes-classification.json
 data/compatibility/dolibarr-classes-full-inventory.json
-data/compatibility/modules-activation-log.md
 data/compatibility/snapshots/dolibarr-21.0.4.json
 data/compatibility/snapshots/reference-diff-demo.json
 data/compatibility/snapshots/sample-v1.json
@@ -722,12 +723,15 @@ tests/Updates/GithubReleasesClientTest.php
 tests/Updates/InstallLockTest.php
 tests/Updates/InstallerTest.php
 tests/Updates/LicenseActivationResolverTest.php
+tests/Updates/ReleaseVerifierPinnedKeysTest.php
 tests/Updates/ReleaseVerifierTest.php
 tests/Updates/UpdateCheckerTest.php
+tests/Updates/UpdateClientChannelFilterTest.php
 tests/Updates/UpdateClientTest.php
 tests/Updates/UpdateLatestResolverTest.php
 tests/Updates/UpdateStatusCacheMultiEntityTest.php
 tests/Updates/UpdatesApplyLogicTest.php
+tests/Updates/UpdatesApplySignatureBindingTest.php
 tests/Updates/ZipDownloaderTest.php
 tests/Version/VersionConsistencyTest.php
 tests/Version/VersionCurrentTest.php

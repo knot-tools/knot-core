@@ -313,6 +313,8 @@
     "confirmBody": "{slug} files will be replaced on this server.",
     "applySuccess": "Update applied ({slug}).",
     "applyError": "Apply failed.",
+    "signatureInvalidTitle": "Release signature invalid",
+    "signatureInvalidBody": "The update package failed Ed25519 verification. Do not retry until a signed artefact is available from Knot Tools.",
     "loadMarketplaceHint": "Could not resolve purchase URL — browse the marketplace manually."
   },
   "observability": {
@@ -764,6 +766,7 @@
       "unknown_action": "Unsupported action.",
       "compatibility_failed": "Compatibility analysis failed. See server logs.",
       "zip_failed": "Could not create the export archive.",
+      "release_signature_invalid": "Release signature verification failed. The download may be tampered or signed with an unknown key.",
       "payload_too_large": "Request body is too large.",
       "license_required": "This workflow uses connectors that require an active paid licence on this instance.",
       "clone_failed": "Could not clone the workflow.",

@@ -717,6 +717,7 @@
       "delete_failed": "Could not delete the resource.",
       "workflow_activation_requires_acknowledgement": "Critical workflow activation requires explicit acknowledgement.",
       "signature_invalid": "Webhook signature verification failed.",
+      "release_signature_invalid": "Release signature verification failed. The download may be tampered or signed with an unknown key.",
       "rate_limited": "Too many requests. Try again later.",
       "ip_forbidden": "The caller IP is not allowed for this webhook.",
       "queue_failed": "Could not queue workflow execution.",
@@ -1958,6 +1959,8 @@
     "confirmBody": "{slug} files will be replaced on this server.",
     "applySuccess": "Update applied ({slug}).",
     "applyError": "Apply failed.",
+    "signatureInvalidTitle": "Release signature invalid",
+    "signatureInvalidBody": "The update package failed Ed25519 verification. Do not retry until a signed artefact is available from Knot Tools.",
     "loadMarketplaceHint": "Could not resolve purchase URL — browse the marketplace manually."
   },
   "licenseDeactivateModal": {

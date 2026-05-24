@@ -108,12 +108,20 @@ if (function_exists('getDolGlobalString')) {
     $insecureTls = in_array($flag, ['1', 'true', 'yes', 'on'], true);
 }
 
+$releaseChannel = function_exists('getDolGlobalString')
+    ? strtolower(trim((string) getDolGlobalString('KNOT_RELEASE_CHANNEL', 'beta')))
+    : 'beta';
+if ($releaseChannel === '') {
+    $releaseChannel = 'beta';
+}
+
 $identity = new InstallationIdentity($configRepo, $db);
 $dolistoreHttp = static function () use (
     $baseUrlLicense,
     $insecureTls,
+    $releaseChannel,
 ): DolistoreClient {
-    return new DolistoreClient($baseUrlLicense, 20, $insecureTls);
+    return new DolistoreClient($baseUrlLicense, 20, $insecureTls, $releaseChannel);
 };
 
 $migrationLog = [];
@@ -153,6 +161,20 @@ $installer = new Installer();
 
 $fallbackLines = Installer::manualFallbackInstructions($liveRoot);
 
+$rejectInvalidReleaseSignature = static function (\RuntimeException $e) use ($fallbackLines): void {
+    $msg = $e->getMessage();
+    if (
+        str_contains($msg, 'signature')
+        || str_contains($msg, 'Signing payload')
+        || str_contains($msg, 'signature_hex')
+    ) {
+        JsonResponse::error('release_signature_invalid', $msg, 422, ['instructions' => $fallbackLines]);
+        exit;
+    }
+
+    throw $e;
+};
+
 $lock = new InstallLock();
 try {
     $lock->acquire();
@@ -178,7 +200,12 @@ try {
             $sigPayloadOpt = isset($body['signature_payload']) && is_array($body['signature_payload'])
                 ? /** @phpstan-ignore-next-line */ $body['signature_payload']
                 : null;
-            ReleaseVerifier::assertOptionalDetachedSignature($sigPayloadOpt, $sigHexOpt !== '' ? $sigHexOpt : null);
+            $targetVersion = trim((string) ($body['version'] ?? ($sigPayloadOpt['version'] ?? '')));
+            try {
+                ReleaseVerifier::assertCoreReleaseSignature($targetVersion, $sigPayloadOpt, $sigHexOpt);
+            } catch (\RuntimeException $e) {
+                $rejectInvalidReleaseSignature($e);
+            }
             $folder = 'knot';
             $liveTarget = $liveRoot;
         } else {
@@ -193,13 +220,18 @@ try {
                 exit;
             }
             ZipDownloader::fetchTo($artifact['zip_url'], $zipPath);
-            GithubReleasesClient::verifyReleaseIntegrity(
-                $zipPath,
-                $artifact['zip_sha256'],
-                /** @phpstan-ignore-next-line */
-                is_array($artifact['signature_payload']) ? $artifact['signature_payload'] : null,
-                $artifact['signature_hex'],
-            );
+            try {
+                GithubReleasesClient::verifyReleaseIntegrity(
+                    $zipPath,
+                    $artifact['zip_sha256'],
+                    /** @phpstan-ignore-next-line */
+                    is_array($artifact['signature_payload']) ? $artifact['signature_payload'] : null,
+                    $artifact['signature_hex'],
+                    $artifact['version'],
+                );
+            } catch (\RuntimeException $e) {
+                $rejectInvalidReleaseSignature($e);
+            }
             $folder = 'knot';
             $liveTarget = $liveRoot;
         }
@@ -288,6 +320,33 @@ try {
         }
         ZipDownloader::fetchTo($downloadUrlIn, $zipPath);
         ReleaseVerifier::assertZipSha256($zipPath, $manualShaHex);
+        $sigHexOpt = strtolower(trim((string) ($body['signature_hex'] ?? '')));
+        $sigPayloadOpt = isset($body['signature_payload']) && is_array($body['signature_payload'])
+            ? /** @phpstan-ignore-next-line */ $body['signature_payload']
+            : null;
+        if ($sigHexOpt === '' || $sigPayloadOpt === null) {
+            $clientObj = $dolistoreHttp();
+            try {
+                $sigMeta = $clientObj->fetchProductSignature($slug, $releaseChannel);
+                $sigHexOpt = strtolower(trim((string) ($sigMeta['signature']['value_hex'] ?? '')));
+                $sigPayloadOpt = is_array($sigMeta['signature_payload'] ?? null)
+                    ? $sigMeta['signature_payload']
+                    : null;
+            } catch (\Throwable $e) {
+                JsonResponse::error(
+                    'backend_unreachable',
+                    'Cannot fetch release signature metadata from Knot license backend.',
+                    502,
+                    ['cause' => $e->getMessage(), 'instructions' => $fallbackLines],
+                );
+                exit;
+            }
+        }
+        try {
+            ReleaseVerifier::assertExtensionReleaseSignature($sigPayloadOpt, $sigHexOpt);
+        } catch (\RuntimeException $e) {
+            $rejectInvalidReleaseSignature($e);
+        }
         $liveTarget = isset($entry['path']) ? rtrim((string) $entry['path'], DIRECTORY_SEPARATOR . '/') : '';
         $customSafe = rtrim((string) DOL_DOCUMENT_ROOT, DIRECTORY_SEPARATOR . '/') . '/custom';
         if (
@@ -366,6 +425,15 @@ try {
     /** @phpstan-ignore-next-line */
     $releaseSha = strtolower(trim((string) ($release['zip_sha256'] ?? '')));
     ReleaseVerifier::assertZipSha256($zipPath, $releaseSha);
+    /** @phpstan-ignore-next-line */
+    $sigHex = strtolower(trim((string) ($release['signature_hex'] ?? '')));
+    /** @phpstan-ignore-next-line */
+    $sigPayload = is_array($release['signature_payload'] ?? null) ? $release['signature_payload'] : null;
+    try {
+        ReleaseVerifier::assertExtensionReleaseSignature($sigPayload, $sigHex);
+    } catch (\RuntimeException $e) {
+        $rejectInvalidReleaseSignature($e);
+    }
     /** @phpstan-ignore-next-line */
     $liveTarget = isset($entry['path']) ? rtrim((string) $entry['path'], DIRECTORY_SEPARATOR . '/') : '';
     $customSafe = rtrim((string) DOL_DOCUMENT_ROOT, DIRECTORY_SEPARATOR . '/') . '/custom';

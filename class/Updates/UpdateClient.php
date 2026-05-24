@@ -47,6 +47,7 @@ class UpdateClient
     public function __construct(
         private readonly string $baseUrl = self::DEFAULT_BASE_URL,
         private readonly int $timeoutSeconds = self::DEFAULT_TIMEOUT_S,
+        private readonly string $releaseChannel = 'beta',
     ) {
     }
 
@@ -85,6 +86,10 @@ class UpdateClient
             return null;
         }
         $url = rtrim($this->baseUrl, '/') . '/api/products/' . rawurlencode($slug) . '/latest';
+        $channel = strtolower(trim($this->releaseChannel));
+        if ($channel !== '') {
+            $url .= '?channel=' . rawurlencode($channel);
+        }
 
         $ch = curl_init($url);
         if ($ch === false) {

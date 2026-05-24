@@ -24,7 +24,60 @@ final class DolistoreClient implements DolistoreClientContract
         private readonly string $baseUrl = self::FALLBACK_BASE_URL,
         private readonly int $timeoutSeconds = 10,
         private readonly bool $insecureTls = false,
+        private readonly string $releaseChannel = 'beta',
     ) {
+    }
+
+    /**
+     * GET /api/products/{slug}/signature — latest release detached signature metadata.
+     *
+     * @return array{
+     *     product_slug: string,
+     *     version: string,
+     *     zip_sha256: string,
+     *     signature_payload: array<string, mixed>|null,
+     *     signature: array{kid: string, algorithm: string, value_hex: string}
+     * }
+     * @throws RuntimeException When transport fails or response is unusable.
+     */
+    public function fetchProductSignature(string $productSlug, ?string $channel = null): array
+    {
+        $slug = strtolower(trim($productSlug));
+        if ($slug === '') {
+            throw new RuntimeException('productSlug is required for product signature fetch');
+        }
+
+        $url = rtrim($this->baseUrl, '/') . '/api/products/' . rawurlencode($slug) . '/signature';
+        $channelNorm = strtolower(trim((string) ($channel ?? $this->releaseChannel)));
+        if ($channelNorm !== '') {
+            $url .= '?channel=' . rawurlencode($channelNorm);
+        }
+
+        $response = $this->getJson($url);
+        $decoded = json_decode($response['body'], true);
+        if (!is_array($decoded) || $response['status'] !== 200) {
+            $msg = is_array($decoded)
+                ? trim((string) ($decoded['error'] ?? ''))
+                : '';
+            throw new RuntimeException(
+                $msg !== '' ? $msg : 'License backend denied product signature fetch.',
+            );
+        }
+
+        $signature = is_array($decoded['signature'] ?? null) ? $decoded['signature'] : [];
+        $payloadRaw = $decoded['signature_payload'] ?? null;
+
+        return [
+            'product_slug' => (string) ($decoded['product_slug'] ?? $slug),
+            'version' => (string) ($decoded['version'] ?? ''),
+            'zip_sha256' => (string) ($decoded['zip_sha256'] ?? ''),
+            'signature_payload' => is_array($payloadRaw) ? $payloadRaw : null,
+            'signature' => [
+                'kid' => (string) ($signature['kid'] ?? ''),
+                'algorithm' => (string) ($signature['algorithm'] ?? 'ed25519'),
+                'value_hex' => (string) ($signature['value_hex'] ?? ''),
+            ],
+        ];
     }
 
     /**
@@ -102,6 +155,10 @@ final class DolistoreClient implements DolistoreClientContract
             'instance_fingerprint' => $fingerprint,
             'product_slug' => $slug,
         ];
+        $channel = strtolower(trim($this->releaseChannel));
+        if ($channel !== '') {
+            $payload['channel'] = $channel;
+        }
         $body = json_encode($payload, JSON_UNESCAPED_SLASHES);
         if ($body === false) {
             throw new RuntimeException('Cannot encode license download token request body');
@@ -444,6 +501,43 @@ final class DolistoreClient implements DolistoreClientContract
         }
 
         return ['status' => $status, 'body' => $resp];
+    }
+
+    /**
+     * @return array{status: int, body: string}
+     */
+    private function getJson(string $url): array
+    {
+        if (!function_exists('curl_init')) {
+            throw new RuntimeException('PHP cURL extension is required for Knot license GET requests.');
+        }
+
+        $ch = curl_init($url);
+        if ($ch === false) {
+            throw new RuntimeException('Cannot initialise cURL');
+        }
+        $ua = InstallationIdentity::knotCoreUserAgent('LicenseSignature');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => $this->timeoutSeconds,
+            CURLOPT_CONNECTTIMEOUT => 5,
+            CURLOPT_HTTPHEADER => [
+                'Accept: application/json',
+                'User-Agent: ' . $ua,
+            ],
+            CURLOPT_SSL_VERIFYPEER => !$this->insecureTls,
+            CURLOPT_SSL_VERIFYHOST => $this->insecureTls ? 0 : 2,
+            CURLOPT_FOLLOWLOCATION => false,
+        ]);
+        $resp = curl_exec($ch);
+        $errno = curl_errno($ch);
+        $error = curl_error($ch);
+        $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if ($resp === false || $errno !== 0) {
+            throw new RuntimeException('cURL transport error: ' . $error);
+        }
+
+        return ['status' => $status, 'body' => (string) $resp];
     }
 
     /**
