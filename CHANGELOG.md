@@ -10,10 +10,12 @@ Source, tags, and GitHub Releases:
 ### Documentation
 
 - **GitHub community profile:** `CONTRIBUTING.md`, issue templates, updated `SECURITY.md` integrity links and Ed25519 policy for releases ≥ 2.13.4.
+- **`SECURITY.md`:** fix French spelling (`chiffrés`).
 
 ### Fixes — updates
 
 - **`ExtensionRegistry`:** ignore installer stash folders matching `*.backup.*` so post-apply scans do not target stale trees (demo E2E apply regression).
+- **`DolistoreClient`:** rename cURL response variable in `postWithCurl()` to avoid shadowing the POST body parameter.
 - **`UpdatesView`:** force-refresh notify cache after a successful apply (`load(true)`).
 
 ### Public beta (in progress)
