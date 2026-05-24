@@ -55,9 +55,8 @@ final class PinnedPublicKeys
      */
     private const LICENSE_SIGNING_KEYS = [
         [
-            // Generated on the production VM (license.knot.tools) on
-            // 2026-04-30 at deployment of V2.5.0a; private seed lives only in
-            // /var/www/vhosts/license.knot.tools/license-app/.env.
+            // Production license signing key (lic-2026-04), deployed 2026-04-30.
+            // Private seed is stored only in the license backend environment.
             'kid'        => 'lic-2026-04',
             'purpose'    => 'license_signing',
             'publicHex'  => '61e5593e4bb243ecc08921025ca6855aaad3e399204dcecc0b7f5db47aef1785',
@@ -73,9 +72,8 @@ final class PinnedPublicKeys
      */
     private const RELEASE_SIGNING_KEYS = [
         [
-            // Generated on the production VM (license.knot.tools) on
-            // 2026-04-30 at deployment of V2.5.0a; private seed lives only in
-            // /var/www/vhosts/license.knot.tools/license-app/.env.
+            // Production release signing key (rel-2026-04), deployed 2026-04-30.
+            // Private seed is stored only in the license backend environment.
             'kid'        => 'rel-2026-04',
             'purpose'    => 'release_signing',
             'publicHex'  => '628d5479fee21f70088115ea3dba50264d404d5a82782d6d20c781d3d27e188e',
