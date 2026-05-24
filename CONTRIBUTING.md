@@ -11,14 +11,16 @@ Thank you for considering a contribution to **Knot Core**, the GPL-3.0 Dolibarr 
 
 ## Pull requests
 
-External pull requests against **`knot-tools/knot-core`** are welcome when they:
+During the **public beta**, **`knot-tools/knot-core` does not accept pull requests from outside the maintainer team**. Forking is disabled on the repository; issues and security reports remain the right channel for community input.
+
+When we open external contributions again, pull requests should:
 
 - Solve a tracked issue or a clearly scoped improvement.
 - Include tests for behavioural changes (PHPUnit / Vitest as applicable).
 - Update `CHANGELOG.md` under `[Unreleased]` for user-visible changes.
 - Follow the conventions below.
 
-We aim for an initial review within **5 business days**. See the [Code of Conduct](https://github.com/knot-tools/.github/blob/main/CODE_OF_CONDUCT.md).
+We aim for an initial review within **5 business days** once external PRs are enabled. See [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
 
 ## Style and conventions
 
