@@ -93,7 +93,7 @@ More guides on **[docs.knot.tools](https://docs.knot.tools/core/getting-started/
 
 ## Licence
 
-**GPL-3.0-or-later** — see [`LICENSE`](LICENSE). Commercial extensions use separate licences when loaded through Knot Core's extension interfaces; see [`LICENSE-EXCEPTION.md`](LICENSE-EXCEPTION.md).
+**GPL-3.0-or-later** — see [`LICENSE`](LICENSE). Commercial extensions use separate licences when loaded through Knot Core's extension interfaces; see [`LINKING-EXCEPTION.md`](LINKING-EXCEPTION.md).
 
 Dependency licences: [`LICENSES.md`](LICENSES.md).
 
