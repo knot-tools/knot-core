@@ -22,6 +22,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class RuntimeLoggerTest extends TestCase
 {
+    /** Fake Stripe live key for masking tests — not a real or vendor-documented example. */
+    private const FAKE_STRIPE_LIVE_KEY = 'sk_live_knottestonly00000001';
     private string $tmpDir;
 
     protected function setUp(): void
@@ -121,12 +123,12 @@ final class RuntimeLoggerTest extends TestCase
         $logger->logNodeExecution([
             'nodeId' => 'a',
             'status' => 'error',
-            'error' => 'API call failed: Bearer sk_live_4eC39HqLyjWDarjtT1zdp7dc',
+            'error' => 'API call failed: Bearer ' . self::FAKE_STRIPE_LIVE_KEY,
         ]);
         $files = glob($this->tmpDir . '/runtime-*.jsonl');
         $contents = (string) file_get_contents($files[0]);
         // Either redacted in place or the literal token is gone.
-        self::assertStringNotContainsString('sk_live_4eC39HqLyjWDarjtT1zdp7dc', $contents);
+        self::assertStringNotContainsString(self::FAKE_STRIPE_LIVE_KEY, $contents);
     }
 
     public function testDiskUsageStatsAggregatesPerFile(): void
