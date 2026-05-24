@@ -408,18 +408,18 @@ final class DolistoreClient implements DolistoreClientContract
             CURLOPT_SSL_VERIFYHOST => $this->insecureTls ? 0 : 2,
             CURLOPT_FOLLOWLOCATION => false,
         ]);
-        $body = curl_exec($ch);
+        $responseBody = curl_exec($ch);
         $errno = curl_errno($ch);
         $error = curl_error($ch);
         $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if ($body === false || $errno !== 0) {
+        if ($responseBody === false || $errno !== 0) {
             throw new RuntimeException('cURL transport error: ' . $error);
         }
         if ($status < 200 || $status >= 300) {
             throw new RuntimeException("License backend HTTP $status");
         }
 
-        return ['status' => $status, 'body' => (string) $body];
+        return ['status' => $status, 'body' => (string) $responseBody];
     }
 
     /**

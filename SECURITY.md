@@ -33,7 +33,7 @@ Ne pas ouvrir d’issue publique GitHub pour une vulnérabilité non corrigée.
 
 ## Engagements produit
 
-- Credentials chiffres AES-256-GCM
+- Credentials chiffrés AES-256-GCM
 - Aucun secret dans logs, exports ou UI
 - API interne protégée par session Dolibarr, CSRF et droits Knot
 - Audit log pour actions sensibles
