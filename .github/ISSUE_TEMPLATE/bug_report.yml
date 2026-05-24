@@ -1,0 +1,108 @@
+name: 🐛 Bug report
+description: Report a reproducible bug in Knot Core
+title: "[Bug] "
+labels: ["bug", "beta"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. The more
+        precise the steps, the faster we can fix.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: In one or two sentences, what does not work?
+      placeholder: When I activate a workflow with a webhook trigger, ...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Be precise. Numbered list helps.
+      placeholder: |
+        1. Go to ...
+        2. Click on ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: health
+    attributes:
+      label: Output of /custom/knot/api/health.php
+      description: Paste the JSON output. Strip any sensitive value first.
+      render: json
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow JSON (if relevant)
+      description: Drag-drop a `.knot.json` here or paste it. Anonymise credentials.
+      render: json
+  - type: input
+    id: knot_version
+    attributes:
+      label: Knot version
+      placeholder: 2.13.4
+    validations:
+      required: true
+  - type: input
+    id: dolibarr_version
+    attributes:
+      label: Dolibarr version
+      placeholder: 21.0.5
+    validations:
+      required: true
+  - type: input
+    id: php_version
+    attributes:
+      label: PHP version
+      placeholder: 8.2.18
+    validations:
+      required: true
+  - type: dropdown
+    id: hosting
+    attributes:
+      label: Hosting
+      options:
+        - Plesk
+        - cPanel
+        - OVH mutualisé
+        - IONOS
+        - Docker / OrbStack
+        - VPS Linux (other)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser (if UI bug)
+      placeholder: Firefox 142 / Chrome 130 / Safari 17
+  - type: textarea
+    id: logs
+    attributes:
+      label: Runtime log (documents/knot/log/runtime.jsonl)
+      description: Last 50 lines of the relevant execution.
+      render: shell
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmations
+      options:
+        - label: I have searched existing issues for duplicates.
+          required: true
+        - label: I have removed any client-confidential data from this report.
+          required: true

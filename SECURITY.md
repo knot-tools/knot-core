@@ -27,9 +27,9 @@ Ne pas ouvrir d’issue publique GitHub pour une vulnérabilité non corrigée.
 
 ## Intégrité des releases
 
-- ZIP Knot Core : checksum SHA256 publié sur [knot.tools/downloads/data/releases.json](https://knot.tools/downloads/data/releases.json)
-- Guide de vérification : [`website/downloads/VERIFY.md`](https://knot.tools/downloads/VERIFY.md) (dans le repo website)
-- Signature Ed25519 : clé publique épinglée dans ce dépôt lorsque `signature_hex` est renseigné dans le manifest
+- ZIP Knot Core : checksum SHA256 publié dans [releases.json](https://knot.tools/downloads/data/releases.json)
+- Guide de vérification : [knot.tools/downloads/verify/](https://knot.tools/downloads/verify/)
+- Signature Ed25519 (releases **≥ 2.13.4**) : `signature_hex` et `signature_payload` dans le manifest ; clé publique épinglée **`rel-2026-04`** dans [`class/Licensing/PinnedPublicKeys.php`](class/Licensing/PinnedPublicKeys.php)
 
 ## Engagements produit
 

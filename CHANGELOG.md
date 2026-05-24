@@ -1,10 +1,15 @@
 # Changelog
 
-Knot is in **private beta**. Release notes and upgrade announcements are
-published on **[knot.tools](https://knot.tools)**. This repository is
-distributed as a **single code snapshot** (no public Git history or tags).
+**Knot Core** is in **public beta** under **GPL-3.0**. Downloadable releases:
+**[knot.tools/downloads/knot-core/latest](https://knot.tools/downloads/knot-core/latest)**.
+Source, tags, and GitHub Releases:
+**[github.com/knot-tools/knot-core](https://github.com/knot-tools/knot-core)**.
 
 ## [Unreleased]
+
+### Documentation
+
+- **GitHub community profile:** `CONTRIBUTING.md`, issue templates, updated `SECURITY.md` integrity links and Ed25519 policy for releases ≥ 2.13.4.
 
 ### Fixes — updates
 

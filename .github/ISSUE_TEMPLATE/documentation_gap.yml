@@ -1,0 +1,23 @@
+name: 📚 Documentation gap
+description: Missing or confusing documentation
+title: "[Docs] "
+labels: ["documentation", "beta"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Which page / section?
+      placeholder: docs/admin-guide/installation.md
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: What is missing or confusing?
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement
+      description: Optional — what would have helped you?

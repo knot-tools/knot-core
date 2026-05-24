@@ -1,0 +1,49 @@
+name: 💡 Feature request
+description: Suggest a new feature or enhancement
+title: "[Feat] "
+labels: ["enhancement", "beta"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem you are facing
+      description: What use case does Knot fail to cover today?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your proposed solution
+      description: How would you like Knot to behave?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: What workarounds have you already tried?
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - New connector
+        - Editor UI
+        - Workflow engine
+        - Marketplace
+        - Documentation
+        - Admin / observability
+        - Pro Pack
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: How critical is this for you?
+      options:
+        - Nice to have
+        - Helpful but not blocking
+        - Blocker for adoption
+    validations:
+      required: true
