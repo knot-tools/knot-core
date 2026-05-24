@@ -1,0 +1,23 @@
+{
+  "ref": "KNOT-SHOWCASE-003",
+  "label": "Shopify order → Tiers + Commande Dolibarr",
+  "description": "Webhook Shopify orders/create crée le tiers (si absent) et la commande Dolibarr correspondante.",
+  "category": "ecommerce",
+  "icon": "shopping-cart",
+  "metadata": { "showcase": true, "demoSource": "showcase" },
+  "definition": {
+    "nodes": [
+      { "id": "trg", "type": "trigger.webhook", "position": { "x": 50, "y": 80 }, "data": { "type": "trigger.webhook", "label": "Shopify orders/create", "config": { "method": "POST", "verifyHmac": true } } },
+      { "id": "tiers", "type": "action.dolibarr.object", "position": { "x": 320, "y": 80 }, "data": { "type": "action.dolibarr.object", "label": "Upsert tiers", "config": { "object": "societe", "action": "upsert", "match": "email" } } },
+      { "id": "commande", "type": "action.dolibarr.object", "position": { "x": 600, "y": 80 }, "data": { "type": "action.dolibarr.object", "label": "Créer commande", "config": { "object": "commande", "action": "create" } } },
+      { "id": "lines", "type": "logic.loop", "position": { "x": 880, "y": 80 }, "data": { "type": "logic.loop", "label": "Pour chaque ligne", "config": { "itemsPath": "$json.line_items", "realIteration": true } } },
+      { "id": "addLine", "type": "action.dolibarr.object", "position": { "x": 1140, "y": 80 }, "data": { "type": "action.dolibarr.object", "label": "Ajouter ligne", "config": { "object": "commande_line", "action": "add" } } }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trg", "target": "tiers" },
+      { "id": "e2", "source": "tiers", "target": "commande" },
+      { "id": "e3", "source": "commande", "target": "lines" },
+      { "id": "e4", "source": "lines", "target": "addLine", "sourceHandle": "iteration" }
+    ]
+  }
+}

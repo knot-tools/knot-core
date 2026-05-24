@@ -1,0 +1,64 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-02T12:00:00Z",
+  "workflow": {
+    "label": "PMEw3-WEEK-E — Cron heartbeat",
+    "description": "E2E PME week: scheduled tick writes audit (also runnable via manual sync).",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "PMEw3_WEEK_E",
+        "label": "PMEw3-WEEK-E — Cron heartbeat",
+        "tags": ["pme-week"],
+        "settings": { "timeoutSeconds": 60, "errorPolicy": "stop", "logPayloads": false },
+        "schedules": [
+          {
+            "cronExpression": "0 4 * * *",
+            "timezone": "UTC",
+            "isActive": true
+          }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "tr_e",
+          "type": "trigger.cron",
+          "label": "Daily 04:00 UTC",
+          "position": { "x": 40, "y": 120 },
+          "config": { "cronExpression": "0 4 * * *", "timezone": "UTC" }
+        },
+        {
+          "id": "set_e",
+          "type": "logic.set",
+          "label": "Checkpoint",
+          "position": { "x": 320, "y": 120 },
+          "config": {
+            "values": {
+              "checkpoint": "PMEw3-WEEK-E",
+              "triggerUser": "{{$json.userId}}"
+            }
+          }
+        },
+        {
+          "id": "al_e",
+          "type": "notification.alert",
+          "label": "Audit only",
+          "position": { "x": 600, "y": 120 },
+          "config": {
+            "title": "PME-WEEK cron heartbeat",
+            "message": "{{$json}}",
+            "severity": "info",
+            "tag": "PMW-E",
+            "channels": {
+              "audit": { "enabled": true }
+            }
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e_te_se", "source": "tr_e", "target": "set_e", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e_se_ae", "source": "set_e", "target": "al_e", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

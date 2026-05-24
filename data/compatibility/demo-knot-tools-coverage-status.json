@@ -1,0 +1,19 @@
+{
+    "generated_at": "2026-05-02T23:16:08+00:00",
+    "inventory_source": "filesystem_scan_upstream_tarball",
+    "dolibarr_baseline_tag": "21.0.4",
+    "filesystem_class_entries": 405,
+    "curated_catalog_map_slugs": 27,
+    "introspection_scan_entries_catalog": 106,
+    "scan_include_custom": false,
+    "scanner": {
+        "inventory_classification": "scripts/scan-all-dolibarr-classes.php",
+        "catalog_and_audit_include": "scripts/compatibility/export_dolibarr_audit_tables.php",
+        "slug_matrix": "scripts/compatibility/generate_dolibarr_crud_slug_matrix.php",
+        "documentation": "docs/testing/demo-validation-matrix-phase4.md"
+    },
+    "demo_capture": {
+        "label": "Upstream Dolibarr 21.0.4 source tree scanned locally — no hostname or absolute paths committed"
+    },
+    "note": "Inventory JSON exposes only `dol_document_root_basename`; set `KNOT_SCAN_INCLUDE_CUSTOM=1` to scan `custom/` on a deployment clone."
+}

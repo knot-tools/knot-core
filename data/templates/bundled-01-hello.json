@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "workflow": {},
+  "nodes": [
+    {
+      "id": "t_manual",
+      "type": "trigger.manual",
+      "label": "Start",
+      "position": { "x": 80, "y": 120 },
+      "config": {}
+    },
+    {
+      "id": "s_prepare",
+      "type": "logic.set",
+      "label": "Prepare",
+      "position": { "x": 380, "y": 120 },
+      "config": { "values": { "message": "Hello from bundled template" } }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "t_manual",
+      "target": "s_prepare",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "ref": "KNOT-SHOWCASE-004",
+  "label": "Lead form → IA scoring → CRM",
+  "description": "Webhook formulaire web → OpenRouter score le lead (1-10) → tag Dolibarr + alerte Slack si score >= 7.",
+  "category": "crm",
+  "icon": "sparkles",
+  "metadata": { "showcase": true, "demoSource": "showcase" },
+  "definition": {
+    "nodes": [
+      { "id": "trg", "type": "trigger.webhook", "position": { "x": 50, "y": 80 }, "data": { "type": "trigger.webhook", "label": "Form submission", "config": { "method": "POST" } } },
+      { "id": "ai", "type": "action.ai.prompt", "position": { "x": 320, "y": 80 }, "data": { "type": "action.ai.prompt", "label": "Scoring lead", "config": { "model": "anthropic/claude-3-haiku", "prompt": "Score le lead {{$json.message}} de 1 à 10. Réponds en JSON {score:n}" } } },
+      { "id": "if", "type": "logic.condition", "position": { "x": 600, "y": 80 }, "data": { "type": "logic.condition", "label": "Score >= 7 ?", "config": { "expression": "$json.score >= 7" } } },
+      { "id": "tag", "type": "action.dolibarr.object", "position": { "x": 880, "y": 40 }, "data": { "type": "action.dolibarr.object", "label": "Tag CRM hot-lead", "config": { "object": "societe", "action": "tag", "tag": "hot-lead" } } },
+      { "id": "slack", "type": "action.slack", "position": { "x": 880, "y": 140 }, "data": { "type": "action.slack", "label": "Alerter #sales", "config": { "channel": "#sales", "text": "Hot lead: {{$json.name}} ({{$json.score}}/10)" } } }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trg", "target": "ai" },
+      { "id": "e2", "source": "ai", "target": "if" },
+      { "id": "e3", "source": "if", "target": "tag", "sourceHandle": "true" },
+      { "id": "e4", "source": "if", "target": "slack", "sourceHandle": "true" }
+    ]
+  }
+}

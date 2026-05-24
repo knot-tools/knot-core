@@ -1,0 +1,111 @@
+{
+    "knotExport": "1.0",
+    "exportedAt": "2026-05-02T21:55:53+00:00",
+    "workflow": {
+        "label": "DEMO-ERP-CONTRACT-01 \u2014 Fetch + note + audit",
+        "description": "Validates contrat slug through fetch, add_note, notification (harness creates contract via REST).",
+        "definition": {
+            "schemaVersion": "1.0",
+            "workflow": {
+                "ref": "DEMO_ERP_CONTRACT_01",
+                "label": "DEMO-ERP-CONTRACT-01 \u2014 Fetch + note + audit",
+                "tags": [
+                    "demo-erp-pack",
+                    "mono-tenant"
+                ],
+                "settings": {
+                    "timeoutSeconds": 180,
+                    "errorPolicy": "stop",
+                    "logPayloads": true
+                }
+            },
+            "nodes": [
+                {
+                    "id": "t1",
+                    "type": "trigger.manual",
+                    "label": "Start",
+                    "position": {
+                        "x": 40,
+                        "y": 120
+                    },
+                    "config": []
+                },
+                {
+                    "id": "fetch_ct",
+                    "type": "dolibarr.object",
+                    "label": "Load contract",
+                    "position": {
+                        "x": 280,
+                        "y": 120
+                    },
+                    "config": {
+                        "operation": "fetch",
+                        "objectType": "contrat",
+                        "id": "{{$json.contractId}}"
+                    }
+                },
+                {
+                    "id": "note_ct",
+                    "type": "dolibarr.object",
+                    "label": "Stamp note",
+                    "position": {
+                        "x": 520,
+                        "y": 120
+                    },
+                    "config": {
+                        "operation": "add_note",
+                        "objectType": "contrat",
+                        "id": "{{$json.id}}",
+                        "note": "DEMO-ERP-CONTRACT harness note {{now}}"
+                    }
+                },
+                {
+                    "id": "al_ct",
+                    "type": "notification.alert",
+                    "label": "Audit contract",
+                    "position": {
+                        "x": 760,
+                        "y": 120
+                    },
+                    "config": {
+                        "title": "Demo ERP \u2014 contract touched",
+                        "message": "id={{$json.id}} noteAdded={{$json.noteAdded}}",
+                        "severity": "info",
+                        "tag": "DEMO-ERP-CONTRACT",
+                        "channels": {
+                            "audit": {
+                                "enabled": true
+                            }
+                        }
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "id": "e_t_fc",
+                    "source": "t1",
+                    "target": "fetch_ct",
+                    "sourceHandle": "main",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_fc_n",
+                    "source": "fetch_ct",
+                    "target": "note_ct",
+                    "sourceHandle": "main",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_n_a",
+                    "source": "note_ct",
+                    "target": "al_ct",
+                    "sourceHandle": "main",
+                    "targetHandle": "main",
+                    "type": "knot"
+                }
+            ]
+        }
+    }
+}

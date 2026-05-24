@@ -1,0 +1,72 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-01T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "02 — Relance facture impayee (J+30)",
+    "description": "Workflow cron quotidien : detecte les factures impayees > 30 jours, boucle, envoie un email de relance au tiers. Cas d'usage le plus demande chez les PME Dolibarr.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "STARTER_RELANCE_FACTURE",
+        "label": "02 — Relance facture impayee (J+30)",
+        "tags": ["starter", "compta", "demo"],
+        "settings": { "timeoutSeconds": 120, "errorPolicy": "continue", "logPayloads": true },
+        "schedules": [
+          { "cronExpression": "0 9 * * *", "timezone": "Europe/Paris", "isActive": false }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "trigger_cron",
+          "type": "trigger.cron",
+          "label": "Tous les jours 09:00",
+          "subtitle": "Europe/Paris",
+          "position": { "x": 80, "y": 200 },
+          "config": { "cronExpression": "0 9 * * *", "timezone": "Europe/Paris" }
+        },
+        {
+          "id": "sql_overdue",
+          "type": "dolibarr.sql_query",
+          "label": "Factures impayees J+30",
+          "subtitle": "SELECT facture",
+          "position": { "x": 380, "y": 200 },
+          "config": {
+            "sql": "SELECT f.rowid AS facture_id, f.ref, f.total_ttc, f.date_lim_reglement, s.email AS soc_email, s.nom AS soc_name FROM llx_facture f JOIN llx_societe s ON s.rowid = f.fk_soc WHERE f.fk_statut = 1 AND f.paye = 0 AND DATEDIFF(NOW(), f.date_lim_reglement) >= 30 AND s.email IS NOT NULL AND s.email <> '' LIMIT 50",
+            "splitItems": true
+          }
+        },
+        {
+          "id": "loop_invoices",
+          "type": "logic.loop",
+          "label": "Pour chaque facture",
+          "subtitle": "continueOnItemError",
+          "position": { "x": 700, "y": 200 },
+          "config": {
+            "items": "{{$json.rows}}",
+            "continueOnItemError": true,
+            "maxItems": 50
+          }
+        },
+        {
+          "id": "send_email",
+          "type": "action.email",
+          "label": "Email de relance",
+          "subtitle": "Vers soc_email",
+          "position": { "x": 1020, "y": 200 },
+          "config": {
+            "credentialId": "REPLACE_WITH_SMTP_CREDENTIAL_ID",
+            "to": "{{$json.soc_email}}",
+            "subject": "Relance amiable — facture {{$json.ref}}",
+            "body": "Bonjour {{$json.soc_name}},\n\nNotre facture {{$json.ref}} ({{$json.total_ttc}} EUR) etait due le {{$json.date_lim_reglement}}.\nMerci de proceder au reglement ou de nous contacter en cas de difficulte.\n\nCordialement,\nL'equipe comptable"
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_cron", "target": "sql_overdue", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e2", "source": "sql_overdue", "target": "loop_invoices", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e3", "source": "loop_invoices", "target": "send_email", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

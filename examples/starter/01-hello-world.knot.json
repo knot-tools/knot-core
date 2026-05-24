@@ -1,0 +1,57 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-01T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "01 — Hello World",
+    "description": "Premier workflow Knot : trigger manuel + Set + notification UI. Permet de comprendre l'editeur et la simulation en moins de 30 secondes.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "STARTER_HELLO_WORLD",
+        "label": "01 — Hello World",
+        "tags": ["starter", "demo"],
+        "settings": { "timeoutSeconds": 30, "errorPolicy": "stop", "logPayloads": true }
+      },
+      "nodes": [
+        {
+          "id": "trigger_manual",
+          "type": "trigger.manual",
+          "label": "Demarrer",
+          "subtitle": "Run depuis l'editeur",
+          "position": { "x": 80, "y": 160 },
+          "config": {}
+        },
+        {
+          "id": "set_message",
+          "type": "logic.set",
+          "label": "Composer le message",
+          "subtitle": "Hello + timestamp",
+          "position": { "x": 380, "y": 160 },
+          "config": {
+            "values": {
+              "greeting": "Hello Knot",
+              "ts": "{{$now}}"
+            }
+          }
+        },
+        {
+          "id": "notify",
+          "type": "notification.alert",
+          "label": "Afficher dans Knot",
+          "subtitle": "Niveau info",
+          "position": { "x": 700, "y": 160 },
+          "config": {
+            "level": "info",
+            "title": "Hello World",
+            "message": "{{$json.greeting}} a {{$json.ts}}"
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_manual", "target": "set_message", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e2", "source": "set_message", "target": "notify", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

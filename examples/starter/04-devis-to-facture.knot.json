@@ -1,0 +1,74 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-01T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "04 — Devis valide vers Facture",
+    "description": "Synchronisation automatique : a chaque devis Dolibarr valide, cree la facture associee. Demontre les triggers Dolibarr natifs et l'introspection specialisee.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "STARTER_DEVIS_FACTURE",
+        "label": "04 — Devis valide vers Facture",
+        "tags": ["starter", "compta", "introspection"],
+        "settings": { "timeoutSeconds": 60, "errorPolicy": "stop", "logPayloads": true }
+      },
+      "nodes": [
+        {
+          "id": "trigger_event",
+          "type": "trigger.dolibarr_event",
+          "label": "Devis valide",
+          "subtitle": "PROPAL_VALIDATE",
+          "position": { "x": 80, "y": 200 },
+          "config": {
+            "events": ["PROPAL_VALIDATE"]
+          }
+        },
+        {
+          "id": "if_amount",
+          "type": "logic.if",
+          "label": "Montant > 0 ?",
+          "subtitle": "Filtre devis non vides",
+          "position": { "x": 380, "y": 200 },
+          "config": {
+            "mode": "all",
+            "conditions": [
+              { "left": "{{$json.object.total_ttc}}", "operator": "greater", "right": "0" }
+            ]
+          }
+        },
+        {
+          "id": "create_invoice",
+          "type": "dolibarr.specialized",
+          "label": "Creer facture depuis devis",
+          "subtitle": "createFromProposal",
+          "position": { "x": 700, "y": 140 },
+          "config": {
+            "objectType": "facture",
+            "verb": "createFromProposal",
+            "args": {
+              "proposalId": "{{$json.object.id}}"
+            }
+          }
+        },
+        {
+          "id": "notify_skip",
+          "type": "notification.alert",
+          "label": "Skipped (montant 0)",
+          "subtitle": "Niveau warning",
+          "position": { "x": 700, "y": 280 },
+          "config": {
+            "level": "warning",
+            "title": "Devis ignore",
+            "message": "Devis {{$json.object.ref}} ignore — montant 0"
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_event", "target": "if_amount", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e2", "source": "if_amount", "target": "create_invoice", "sourceHandle": "true", "targetHandle": "main", "type": "knot" },
+        { "id": "e3", "source": "if_amount", "target": "notify_skip", "sourceHandle": "false", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

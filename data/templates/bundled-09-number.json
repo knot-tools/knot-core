@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "workflow": {},
+  "nodes": [
+    {
+      "id": "t_manual",
+      "type": "trigger.manual",
+      "label": "Start",
+      "position": { "x": 80, "y": 120 },
+      "config": {}
+    },
+    {
+      "id": "n1",
+      "type": "logic.number",
+      "label": "Add",
+      "position": { "x": 380, "y": 120 },
+      "config": { "operation": "add", "a": "10", "b": "32" }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "t_manual",
+      "target": "n1",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    }
+  ]
+}

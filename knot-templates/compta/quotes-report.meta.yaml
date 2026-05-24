@@ -1,0 +1,18 @@
+title: "Rapport des 10 derniers devis (cron)"
+description: |
+  Envoie par email un rapport HTML listant les 10 derniers devis (propales)
+  Dolibarr. Idéal pour avoir un snapshot quotidien dans la boîte du
+  responsable commercial.
+descriptionEn: |
+  Email a HTML report listing the 10 latest quotes from Dolibarr. Useful
+  for a daily snapshot in the sales manager inbox.
+category: compta
+tags: [demo, report, email, quotes, cron, dolibarr]
+requiredConnectors:
+  - trigger.cron
+  - dolibarr.sql_query
+  - action.email
+requiredKnotVersion: ">=2.5.0"
+author: knot
+license: MIT
+preview: []

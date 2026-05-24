@@ -1,0 +1,123 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-04-26T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "Test import — Salutation conditionnelle",
+    "description": "Workflow de démonstration importable pour vérifier l'éditeur, la simulation et l'exécution. Manual → Set → If → 2 branches Set.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "WF_TEST_IMPORT",
+        "label": "Test import — Salutation conditionnelle",
+        "tags": ["demo", "test", "import"],
+        "settings": {
+          "timeoutSeconds": 30,
+          "errorPolicy": "stop",
+          "logPayloads": true
+        }
+      },
+      "nodes": [
+        {
+          "id": "manual_1",
+          "type": "trigger.manual",
+          "label": "Démarrage manuel",
+          "subtitle": "Run depuis l'éditeur",
+          "position": { "x": 80, "y": 200 },
+          "config": {}
+        },
+        {
+          "id": "set_input",
+          "type": "logic.set",
+          "label": "Préparer données",
+          "subtitle": "message + count + status",
+          "position": { "x": 360, "y": 200 },
+          "config": {
+            "values": {
+              "message": "Bonjour depuis Knot",
+              "count": 42,
+              "status": "active"
+            }
+          }
+        },
+        {
+          "id": "if_count",
+          "type": "logic.if",
+          "label": "count > 10 ?",
+          "subtitle": "Branche True / False",
+          "position": { "x": 660, "y": 200 },
+          "config": {
+            "mode": "all",
+            "conditions": [
+              {
+                "left": "{{$json.count}}",
+                "operator": "greater",
+                "right": "10"
+              }
+            ]
+          }
+        },
+        {
+          "id": "set_high",
+          "type": "logic.set",
+          "label": "Branche True",
+          "subtitle": "count élevé",
+          "position": { "x": 960, "y": 100 },
+          "config": {
+            "values": {
+              "branch_taken": "true",
+              "final_message": "{{$json.message}} — beaucoup ({{$json.count}})"
+            }
+          }
+        },
+        {
+          "id": "set_low",
+          "type": "logic.set",
+          "label": "Branche False",
+          "subtitle": "count faible",
+          "position": { "x": 960, "y": 300 },
+          "config": {
+            "values": {
+              "branch_taken": "false",
+              "final_message": "{{$json.message}} — peu ({{$json.count}})"
+            }
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "source": "manual_1",
+          "target": "set_input",
+          "sourceHandle": "main",
+          "targetHandle": "main",
+          "type": "knot"
+        },
+        {
+          "id": "e2",
+          "source": "set_input",
+          "target": "if_count",
+          "sourceHandle": "main",
+          "targetHandle": "main",
+          "type": "knot"
+        },
+        {
+          "id": "e3",
+          "source": "if_count",
+          "target": "set_high",
+          "sourceHandle": "true",
+          "targetHandle": "main",
+          "type": "knot"
+        },
+        {
+          "id": "e4",
+          "source": "if_count",
+          "target": "set_low",
+          "sourceHandle": "false",
+          "targetHandle": "main",
+          "type": "knot"
+        }
+      ]
+    }
+  }
+}

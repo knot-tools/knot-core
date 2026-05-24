@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0",
+  "workflow": {},
+  "nodes": [
+    {
+      "id": "t_manual",
+      "type": "trigger.manual",
+      "label": "Start",
+      "position": { "x": 80, "y": 120 },
+      "config": {}
+    },
+    {
+      "id": "s_a",
+      "type": "logic.set",
+      "label": "Fields A",
+      "position": { "x": 360, "y": 120 },
+      "config": { "values": { "a": 1 } }
+    },
+    {
+      "id": "m1",
+      "type": "logic.merge",
+      "label": "Merge shallow",
+      "position": { "x": 620, "y": 120 },
+      "config": { "strategy": "shallow" }
+    },
+    {
+      "id": "s_b",
+      "type": "logic.set",
+      "label": "Fields B",
+      "position": { "x": 880, "y": 120 },
+      "config": { "values": { "b": 2 } }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "t_manual",
+      "target": "s_a",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    },
+    {
+      "id": "e2",
+      "source": "s_a",
+      "target": "m1",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    },
+    {
+      "id": "e3",
+      "source": "m1",
+      "target": "s_b",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    }
+  ]
+}

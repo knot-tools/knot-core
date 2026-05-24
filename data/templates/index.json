@@ -1,0 +1,137 @@
+{
+  "version": "1",
+  "templates": [
+    {
+      "slug": "bundled-01-hello",
+      "title": "Hello — manual trigger + set",
+      "description": "Minimal graph: run manually, assign a payload field with logic.set.",
+      "category": "getting-started",
+      "difficulty": "beginner",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-01-hello.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-02-cron-set",
+      "title": "Daily stub — cron + set",
+      "description": "Scheduled trigger with timezone-safe cron expression (stub payload only).",
+      "category": "automation",
+      "difficulty": "beginner",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-02-cron-set.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-03-branch-ifelse",
+      "title": "Branch with if / else",
+      "description": "Manual trigger then logic.ifElse on a boolean expression path.",
+      "category": "logic",
+      "difficulty": "beginner",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-03-branch-ifelse.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-04-switch",
+      "title": "Switch routing",
+      "description": "Route execution with logic.switch on a string discriminator.",
+      "category": "logic",
+      "difficulty": "intermediate",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-04-switch.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-05-merge",
+      "title": "Merge two paths",
+      "description": "Two set nodes converging into logic.merge (linear demo).",
+      "category": "logic",
+      "difficulty": "intermediate",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-05-merge.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-06-filter",
+      "title": "Filter payload",
+      "description": "Keep rows matching a simple condition with logic.filter.",
+      "category": "logic",
+      "difficulty": "intermediate",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-06-filter.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-07-json",
+      "title": "Parse JSON string",
+      "description": "Manual trigger then logic.json to parse sample JSON text.",
+      "category": "integration",
+      "difficulty": "beginner",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-07-json.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-08-string",
+      "title": "String operations",
+      "description": "Uppercase and trim a field using logic.string.",
+      "category": "logic",
+      "difficulty": "beginner",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-08-string.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-09-number",
+      "title": "Number math",
+      "description": "Add two numbers with logic.number.",
+      "category": "logic",
+      "difficulty": "beginner",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-09-number.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-10-wait",
+      "title": "Wait pause",
+      "description": "Short logic.wait between two set steps (dry-run friendly).",
+      "category": "logic",
+      "difficulty": "beginner",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-10-wait.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-11-http-safe",
+      "title": "HTTP GET (example.com)",
+      "description": "GET https://example.com after preparing headers (safe public endpoint).",
+      "category": "integration",
+      "difficulty": "beginner",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-11-http-safe.json",
+      "demoInvalid": false
+    },
+    {
+      "slug": "bundled-12-demo-invalid",
+      "title": "Demo invalid graph (lint)",
+      "description": "Intentionally missing trigger — shows linter warnings; not for production.",
+      "category": "getting-started",
+      "difficulty": "beginner",
+      "tier": "free",
+      "modulesRequired": [],
+      "file": "bundled-12-demo-invalid.json",
+      "demoInvalid": true
+    }
+  ]
+}

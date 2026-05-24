@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knot.tools/schemas/workflow-definition-v1.schema.json",
+  "title": "Knot workflow definition",
+  "type": "object",
+  "required": ["schemaVersion", "nodes", "edges"],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "workflow": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type"],
+        "additionalProperties": true,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "minLength": 1 },
+          "label": { "type": "string" },
+          "position": { "type": "object", "additionalProperties": true },
+          "config": { "type": "object", "additionalProperties": true },
+          "credentials": {},
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "target"],
+        "additionalProperties": true,
+        "properties": {
+          "id": { "type": "string" },
+          "source": { "type": "string", "minLength": 1 },
+          "target": { "type": "string", "minLength": 1 },
+          "sourcePort": { "type": "string" },
+          "targetPort": { "type": "string" },
+          "type": { "type": "string" }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

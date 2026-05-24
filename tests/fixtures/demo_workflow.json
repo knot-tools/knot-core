@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0",
+  "workflow": {
+    "ref": "WF_DEMO",
+    "label": "Demo workflow",
+    "description": "Manual trigger followed by a set node.",
+    "status": "draft",
+    "tags": ["demo"],
+    "settings": {
+      "timeoutSeconds": 30,
+      "retry": {
+        "maxAttempts": 3,
+        "strategy": "exponential",
+        "initialDelaySeconds": 5
+      },
+      "singleInstance": false,
+      "errorPolicy": "stop",
+      "logPayloads": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "manual_1",
+      "type": "trigger.manual",
+      "label": "Manual Trigger",
+      "position": { "x": 80, "y": 120 },
+      "config": {},
+      "credentials": null,
+      "notes": ""
+    },
+    {
+      "id": "set_1",
+      "type": "logic.set",
+      "label": "Prepare Data",
+      "position": { "x": 360, "y": 120 },
+      "config": {
+        "values": {
+          "message": "Hello {{$workflow.ref}}"
+        }
+      },
+      "credentials": null,
+      "notes": ""
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_1",
+      "source": "manual_1",
+      "target": "set_1",
+      "sourcePort": "main",
+      "targetPort": "main",
+      "type": "success"
+    }
+  ],
+  "metadata": {
+    "createdWith": "Knot",
+    "createdAt": "2026-04-26T00:00:00Z",
+    "updatedAt": "2026-04-26T00:00:00Z"
+  }
+}

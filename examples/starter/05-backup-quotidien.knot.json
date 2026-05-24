@@ -1,0 +1,74 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-01T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "05 — Backup quotidien des workflows",
+    "description": "Pattern self-backup : chaque nuit, exporte tous les workflows actifs en JSON et envoie l'archive a l'admin par email. Utile pour disaster recovery beta.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "STARTER_BACKUP_QUOTIDIEN",
+        "label": "05 — Backup quotidien des workflows",
+        "tags": ["starter", "ops"],
+        "settings": { "timeoutSeconds": 300, "errorPolicy": "stop", "logPayloads": false },
+        "schedules": [
+          { "cronExpression": "0 3 * * *", "timezone": "Europe/Paris", "isActive": false }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "trigger_cron",
+          "type": "trigger.cron",
+          "label": "Tous les jours 03:00",
+          "subtitle": "Europe/Paris",
+          "position": { "x": 80, "y": 200 },
+          "config": { "cronExpression": "0 3 * * *", "timezone": "Europe/Paris" }
+        },
+        {
+          "id": "sql_workflows",
+          "type": "dolibarr.sql_query",
+          "label": "Lister workflows",
+          "subtitle": "active + draft",
+          "position": { "x": 380, "y": 200 },
+          "config": {
+            "sql": "SELECT rowid AS id, ref, label, status, json_definition FROM llx_knot_workflow WHERE entity = {{$context.entity}} AND status IN ('active','draft') ORDER BY rowid",
+            "splitItems": false
+          }
+        },
+        {
+          "id": "set_archive",
+          "type": "logic.set",
+          "label": "Composer archive",
+          "subtitle": "JSON minifie",
+          "position": { "x": 700, "y": 200 },
+          "config": {
+            "values": {
+              "filename": "knot-backup-{{$today}}.json",
+              "count": "{{$json.rows.length}}",
+              "payload": "{{$json.rows}}"
+            }
+          }
+        },
+        {
+          "id": "send_email",
+          "type": "action.email",
+          "label": "Email a l'admin",
+          "subtitle": "Avec metadata",
+          "position": { "x": 1020, "y": 200 },
+          "config": {
+            "credentialId": "REPLACE_WITH_SMTP_CREDENTIAL_ID",
+            "to": "REPLACE_WITH_ADMIN_EMAIL",
+            "subject": "[Knot] Backup quotidien — {{$json.count}} workflows",
+            "body": "Backup automatique des workflows Knot.\n\nFichier : {{$json.filename}}\nNombre de workflows : {{$json.count}}\n\nCe message est genere par le workflow 05-backup-quotidien."
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_cron", "target": "sql_workflows", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e2", "source": "sql_workflows", "target": "set_archive", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e3", "source": "set_archive", "target": "send_email", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

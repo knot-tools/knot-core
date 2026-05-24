@@ -1,0 +1,3654 @@
+{
+    "generated_at": "2026-05-02T23:13:04+00:00",
+    "source": "filesystem_scan",
+    "dol_document_root_basename": "21.0.4",
+    "include_custom": false,
+    "class_count": 405,
+    "classes": [
+        {
+            "file": "accountancy/class/accountancysystem.class.php",
+            "class": "AccountancySystem",
+            "extends": "CommonObject",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "accountancy/class/accountingaccount.class.php",
+            "class": "AccountingAccount",
+            "extends": "CommonObject",
+            "table_element": "accounting_account",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "accountancy/class/accountingjournal.class.php",
+            "class": "AccountingJournal",
+            "extends": "CommonObject",
+            "table_element": "accounting_journal",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "accountancy/class/api_accountancy.class.php",
+            "class": "Accountancy",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "accountancy/class/bookkeeping.class.php",
+            "class": "BookKeeping",
+            "extends": "CommonObject",
+            "table_element": "accounting_bookkeeping",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "accountancy/class/lettering.class.php",
+            "class": "Lettering",
+            "extends": "BookKeeping",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "adherents/canvas/default/actions_adherentcard_default.class.php",
+            "class": "ActionsAdherentCardDefault",
+            "extends": "ActionsAdherentCardCommon",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "adherents/class/adherent.class.php",
+            "class": "Adherent",
+            "extends": "CommonObject",
+            "table_element": "adherent",
+            "fieldsBraceCountGuess": 1,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "adherents/class/adherent_type.class.php",
+            "class": "AdherentType",
+            "extends": "CommonObject",
+            "table_element": "adherent_type",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "adherents/class/adherentstats.class.php",
+            "class": "AdherentStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "adherents/class/api_members.class.php",
+            "class": "Members",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "adherents/class/api_memberstypes.class.php",
+            "class": "MembersTypes",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "adherents/class/api_subscriptions.class.php",
+            "class": "Subscriptions",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "adherents/class/subscription.class.php",
+            "class": "Subscription",
+            "extends": "CommonObject",
+            "table_element": "subscription",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "admin/remotestore/class/PSWebServiceLibrary.class.php",
+            "class": "PrestaShopWebserviceException",
+            "extends": "Exception",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": true
+        },
+        {
+            "file": "api/class/api_documents.class.php",
+            "class": "Documents",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "api/class/api_setup.class.php",
+            "class": "Setup",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "api/class/api_status.class.php",
+            "class": "Status",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "asset/class/asset.class.php",
+            "class": "Asset",
+            "extends": "CommonObject",
+            "table_element": "asset",
+            "fieldsBraceCountGuess": 18,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "asset/class/assetaccountancycodes.class.php",
+            "class": "AssetAccountancyCodes",
+            "extends": "CommonObject",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "asset/class/assetdepreciationoptions.class.php",
+            "class": "AssetDepreciationOptions",
+            "extends": "CommonObject",
+            "table_element": null,
+            "fieldsBraceCountGuess": 8,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "asset/class/assetmodel.class.php",
+            "class": "AssetModel",
+            "extends": "CommonObject",
+            "table_element": "asset_model",
+            "fieldsBraceCountGuess": 12,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "bom/class/api_boms.class.php",
+            "class": "Boms",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "bom/class/bom.class.php",
+            "class": "BOM",
+            "extends": "CommonObject",
+            "table_element": "bom_bom",
+            "fieldsBraceCountGuess": 10,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "bom/class/bomline.class.php",
+            "class": "BOMLine",
+            "extends": "CommonObjectLine",
+            "table_element": "bom_bomline",
+            "fieldsBraceCountGuess": 6,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "bookcal/class/availabilities.class.php",
+            "class": "Availabilities",
+            "extends": "CommonObject",
+            "table_element": "bookcal_availabilities",
+            "fieldsBraceCountGuess": 15,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "bookcal/class/calendar.class.php",
+            "class": "Calendar",
+            "extends": "CommonObject",
+            "table_element": "bookcal_calendar",
+            "fieldsBraceCountGuess": 16,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "bookmarks/class/bookmark.class.php",
+            "class": "Bookmark",
+            "extends": "CommonObject",
+            "table_element": "bookmark",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "categories/class/api_categories.class.php",
+            "class": "Categories",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "categories/class/categorie.class.php",
+            "class": "Categorie",
+            "extends": "CommonObject",
+            "table_element": "categorie",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "comm/action/class/actioncomm.class.php",
+            "class": "ActionComm",
+            "extends": "CommonObject",
+            "table_element": "actioncomm",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "comm/action/class/actioncommreminder.class.php",
+            "class": "ActionCommReminder",
+            "extends": "CommonObject",
+            "table_element": "actioncomm_reminder",
+            "fieldsBraceCountGuess": 2,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "comm/action/class/api_agendaevents.class.php",
+            "class": "AgendaEvents",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "comm/mailing/class/advtargetemailing.class.php",
+            "class": "AdvanceTargetingMailing",
+            "extends": "CommonObject",
+            "table_element": "mailing_advtarget",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "comm/mailing/class/html.formadvtargetemailing.class.php",
+            "class": "FormAdvTargetEmailing",
+            "extends": "Form",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "comm/mailing/class/mailing.class.php",
+            "class": "Mailing",
+            "extends": "CommonObject",
+            "table_element": "mailing",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "comm/propal/class/api_proposals.class.php",
+            "class": "Proposals",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "comm/propal/class/propal.class.php",
+            "class": "Propal",
+            "extends": "CommonObject",
+            "table_element": "propal",
+            "fieldsBraceCountGuess": 1,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "comm/propal/class/propaleligne.class.php",
+            "class": "PropaleLigne",
+            "extends": "CommonObjectLine",
+            "table_element": "propaldet",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "comm/propal/class/propalestats.class.php",
+            "class": "PropaleStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "commande/class/api_orders.class.php",
+            "class": "Orders",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "commande/class/commande.class.php",
+            "class": "Commande",
+            "extends": "CommonOrder",
+            "table_element": "commande",
+            "fieldsBraceCountGuess": 1,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "commande/class/commandestats.class.php",
+            "class": "CommandeStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "commande/class/orderline.class.php",
+            "class": "OrderLine",
+            "extends": "CommonOrderLine",
+            "table_element": "commandedet",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/bank/class/account.class.php",
+            "class": "Account",
+            "extends": "CommonObject",
+            "table_element": "bank_account",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/bank/class/api_bankaccounts.class.php",
+            "class": "BankAccounts",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/bank/class/paymentvarious.class.php",
+            "class": "PaymentVarious",
+            "extends": "CommonObject",
+            "table_element": "payment_various",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/cashcontrol/class/cashcontrol.class.php",
+            "class": "CashControl",
+            "extends": "CommonObject",
+            "table_element": "pos_cash_fence",
+            "fieldsBraceCountGuess": 1,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/deplacement/class/deplacement.class.php",
+            "class": "Deplacement",
+            "extends": "CommonObject",
+            "table_element": "deplacement",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/deplacement/class/deplacementstats.class.php",
+            "class": "DeplacementStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/facture/class/api_invoices.class.php",
+            "class": "Invoices",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/facture/class/facture-rec.class.php",
+            "class": "FactureRec",
+            "extends": "CommonInvoice",
+            "table_element": "facture_rec",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/facture/class/facture.class.php",
+            "class": "Facture",
+            "extends": "CommonInvoice",
+            "table_element": "facture",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/facture/class/factureligne.class.php",
+            "class": "FactureLigne",
+            "extends": "CommonInvoiceLine",
+            "table_element": "facturedet",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/facture/class/facturestats.class.php",
+            "class": "FactureStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/localtax/class/localtax.class.php",
+            "class": "Localtax",
+            "extends": "CommonObject",
+            "table_element": "localtax",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/paiement/cheque/class/remisecheque.class.php",
+            "class": "RemiseCheque",
+            "extends": "CommonObject",
+            "table_element": "bordereau_cheque",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/paiement/class/cpaiement.class.php",
+            "class": "Cpaiement",
+            "extends": "CommonDict",
+            "table_element": "c_paiement",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/paiement/class/paiement.class.php",
+            "class": "Paiement",
+            "extends": "CommonObject",
+            "table_element": "paiement",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/prelevement/class/bonprelevement.class.php",
+            "class": "BonPrelevement",
+            "extends": "CommonObject",
+            "table_element": "prelevement_bons",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/sociales/class/chargesociales.class.php",
+            "class": "ChargeSociales",
+            "extends": "CommonObject",
+            "table_element": "chargesociales",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/sociales/class/paymentsocialcontribution.class.php",
+            "class": "PaymentSocialContribution",
+            "extends": "CommonObject",
+            "table_element": "paiementcharge",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/tva/class/paymentvat.class.php",
+            "class": "PaymentVAT",
+            "extends": "CommonObject",
+            "table_element": "payment_vat",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "compta/tva/class/tva.class.php",
+            "class": "Tva",
+            "extends": "CommonObject",
+            "table_element": "tva",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "contact/canvas/default/actions_contactcard_default.class.php",
+            "class": "ActionsContactCardDefault",
+            "extends": "ActionsContactCardCommon",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "contact/class/contact.class.php",
+            "class": "Contact",
+            "extends": "CommonObject",
+            "table_element": "socpeople",
+            "fieldsBraceCountGuess": 8,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "contrat/class/api_contracts.class.php",
+            "class": "Contracts",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "contrat/class/contrat.class.php",
+            "class": "Contrat",
+            "extends": "CommonObject",
+            "table_element": "contrat",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "contrat/class/contratligne.class.php",
+            "class": "ContratLigne",
+            "extends": "CommonObjectLine",
+            "table_element": "contratdet",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/ccountry.class.php",
+            "class": "Ccountry",
+            "extends": "CommonDict",
+            "table_element": "c_country",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/cgenericdic.class.php",
+            "class": "CGenericDic",
+            "extends": "CommonDict",
+            "table_element": "undefined",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/cleadstatus.class.php",
+            "class": "CLeadStatus",
+            "extends": "CommonDict",
+            "table_element": "c_lead_status",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/comment.class.php",
+            "class": "Comment",
+            "extends": "CommonObject",
+            "table_element": "comment",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/commoninvoice.class.php",
+            "class": "CommonInvoice",
+            "extends": "CommonObject",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/commonobjectline.class.php",
+            "class": "CommonObjectLine",
+            "extends": "CommonObject",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/commonorder.class.php",
+            "class": "CommonOrder",
+            "extends": "CommonObject",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/commonstickergenerator.class.php",
+            "class": "CommonStickerGenerator",
+            "extends": "CommonDocGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/conf.class.php",
+            "class": "Conf",
+            "extends": "stdClass",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/cproductnature.class.php",
+            "class": "CProductNature",
+            "extends": "CommonDict",
+            "table_element": "c_product_nature",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/cregion.class.php",
+            "class": "Cregion",
+            "extends": "CommonDict",
+            "table_element": "c_regions",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/cstate.class.php",
+            "class": "Cstate",
+            "extends": "CommonDict",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/ctypent.class.php",
+            "class": "Ctypent",
+            "extends": "CommonDict",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/ctyperesource.class.php",
+            "class": "Ctyperesource",
+            "extends": "CommonDict",
+            "table_element": "c_type_resource",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/cunits.class.php",
+            "class": "CUnits",
+            "extends": "CommonDict",
+            "table_element": "c_units",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/defaultvalues.class.php",
+            "class": "DefaultValues",
+            "extends": "CommonObject",
+            "table_element": "default_values",
+            "fieldsBraceCountGuess": 7,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/discount.class.php",
+            "class": "DiscountAbsolute",
+            "extends": "CommonObject",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/dolexception.class.php",
+            "class": "DolException",
+            "extends": "Exception",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/dolreceiptprinter.class.php",
+            "class": "dolReceiptPrinter",
+            "extends": "Printer",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/emailsenderprofile.class.php",
+            "class": "EmailSenderProfile",
+            "extends": "CommonObject",
+            "table_element": "c_email_senderprofile",
+            "fieldsBraceCountGuess": 2,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/fiscalyear.class.php",
+            "class": "Fiscalyear",
+            "extends": "CommonObject",
+            "table_element": "accounting_fiscalyear",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/genericobject.class.php",
+            "class": "GenericObject",
+            "extends": "CommonObject",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/html.formaccounting.class.php",
+            "class": "FormAccounting",
+            "extends": "Form",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/html.formcategory.class.php",
+            "class": "FormCategory",
+            "extends": "Form",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/html.formcompany.class.php",
+            "class": "FormCompany",
+            "extends": "Form",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/html.formcron.class.php",
+            "class": "FormCron",
+            "extends": "Form",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/html.formmail.class.php",
+            "class": "FormMail",
+            "extends": "Form",
+            "table_element": "c_email_templates",
+            "fieldsBraceCountGuess": 9,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/html.formmailing.class.php",
+            "class": "FormMailing",
+            "extends": "Form",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/html.formorder.class.php",
+            "class": "FormOrder",
+            "extends": "Form",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/html.formprojet.class.php",
+            "class": "FormProjets",
+            "extends": "Form",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/lessc.class.php",
+            "class": "lessc_formatter_compressed",
+            "extends": "lessc_formatter_classic",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/link.class.php",
+            "class": "Link",
+            "extends": "CommonObject",
+            "table_element": "links",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/class/timespent.class.php",
+            "class": "TimeSpent",
+            "extends": "CommonObject",
+            "table_element": "element_time",
+            "fieldsBraceCountGuess": 15,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/db/mysqli.class.php",
+            "class": "DoliDBMysqli",
+            "extends": "DoliDB",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/db/pgsql.class.php",
+            "class": "DoliDBPgsql",
+            "extends": "DoliDB",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/db/sqlite3.class.php",
+            "class": "DoliDBSqlite3",
+            "extends": "DoliDB",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/barcode/modules_barcode.class.php",
+            "class": "ModeleNumRefBarCode",
+            "extends": "CommonNumRefGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/cheque/doc/pdf_blochet.class.php",
+            "class": "BordereauChequeBlochet",
+            "extends": "ModeleChequeReceipts",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/export/exportcsv.class.php",
+            "class": "ExportCsv",
+            "extends": "ModeleExports",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/member/doc/doc_generic_member_odt.class.php",
+            "class": "doc_generic_member_odt",
+            "extends": "ModelePDFMember",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/member/doc/pdf_standard_member.class.php",
+            "class": "pdf_standard_member",
+            "extends": "CommonStickerGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/member/modules_member.class.php",
+            "class": "ModelePDFMember",
+            "extends": "CommonDocGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modAccounting.class.php",
+            "class": "modAccounting",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modAdherent.class.php",
+            "class": "modAdherent",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modAgenda.class.php",
+            "class": "modAgenda",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modAi.class.php",
+            "class": "modAi",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modApi.class.php",
+            "class": "modApi",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modAsset.class.php",
+            "class": "modAsset",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modBanque.class.php",
+            "class": "modBanque",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modBarcode.class.php",
+            "class": "modBarcode",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modBlockedLog.class.php",
+            "class": "modBlockedLog",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modBom.class.php",
+            "class": "modBom",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modBookCal.class.php",
+            "class": "modBookCal",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modBookmark.class.php",
+            "class": "modBookmark",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modCategorie.class.php",
+            "class": "modCategorie",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modClickToDial.class.php",
+            "class": "modClickToDial",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modCollab.class.php",
+            "class": "modCollab",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modCommande.class.php",
+            "class": "modCommande",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modComptabilite.class.php",
+            "class": "modComptabilite",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modContrat.class.php",
+            "class": "modContrat",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modCron.class.php",
+            "class": "modCron",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modDataPolicy.class.php",
+            "class": "modDataPolicy",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modDav.class.php",
+            "class": "modDav",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modDebugBar.class.php",
+            "class": "modDebugBar",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modDeplacement.class.php",
+            "class": "modDeplacement",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modDocumentGeneration.class.php",
+            "class": "modDocumentGeneration",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modDon.class.php",
+            "class": "modDon",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modDynamicPrices.class.php",
+            "class": "modDynamicPrices",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modECM.class.php",
+            "class": "modECM",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modEmailCollector.class.php",
+            "class": "modEmailCollector",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modEventOrganization.class.php",
+            "class": "modEventOrganization",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modExpedition.class.php",
+            "class": "modExpedition",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modExpenseReport.class.php",
+            "class": "modExpenseReport",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modExport.class.php",
+            "class": "modExport",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modExternalRss.class.php",
+            "class": "modExternalRss",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modExternalSite.class.php",
+            "class": "modExternalSite",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modFTP.class.php",
+            "class": "modFTP",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modFacture.class.php",
+            "class": "modFacture",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modFckeditor.class.php",
+            "class": "modFckeditor",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modFicheinter.class.php",
+            "class": "modFicheinter",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modFournisseur.class.php",
+            "class": "modFournisseur",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modGeoIPMaxmind.class.php",
+            "class": "modGeoIPMaxmind",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modGravatar.class.php",
+            "class": "modGravatar",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modHRM.class.php",
+            "class": "modHRM",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modHoliday.class.php",
+            "class": "modHoliday",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modImport.class.php",
+            "class": "modImport",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modIncoterm.class.php",
+            "class": "modIncoterm",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modIntracommreport.class.php",
+            "class": "modIntracommreport",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modKnowledgeManagement.class.php",
+            "class": "modKnowledgeManagement",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modLabel.class.php",
+            "class": "modLabel",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modLdap.class.php",
+            "class": "modLdap",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modLoan.class.php",
+            "class": "modLoan",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modMailing.class.php",
+            "class": "modMailing",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modMailmanSpip.class.php",
+            "class": "modMailmanSpip",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modMargin.class.php",
+            "class": "modMargin",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modModuleBuilder.class.php",
+            "class": "modModuleBuilder",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modMrp.class.php",
+            "class": "modMrp",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modMultiCurrency.class.php",
+            "class": "modMultiCurrency",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modNotification.class.php",
+            "class": "modNotification",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modOauth.class.php",
+            "class": "modOauth",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modOpenIDConnect.class.php",
+            "class": "modOpenIDConnect",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modOpenSurvey.class.php",
+            "class": "modOpenSurvey",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modPartnership.class.php",
+            "class": "modPartnership",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modPaybox.class.php",
+            "class": "modPaybox",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modPaymentByBankTransfer.class.php",
+            "class": "modPaymentByBankTransfer",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modPaypal.class.php",
+            "class": "modPaypal",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modPrelevement.class.php",
+            "class": "modPrelevement",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modPrinting.class.php",
+            "class": "modPrinting",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modProduct.class.php",
+            "class": "modProduct",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modProductBatch.class.php",
+            "class": "modProductBatch",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modProjet.class.php",
+            "class": "modProjet",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modPropale.class.php",
+            "class": "modPropale",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modReceiptPrinter.class.php",
+            "class": "modReceiptPrinter",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modReception.class.php",
+            "class": "modReception",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modRecruitment.class.php",
+            "class": "modRecruitment",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modResource.class.php",
+            "class": "modResource",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modSalaries.class.php",
+            "class": "modSalaries",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modService.class.php",
+            "class": "modService",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modSocialNetworks.class.php",
+            "class": "modSocialNetworks",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modSociete.class.php",
+            "class": "modSociete",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modStock.class.php",
+            "class": "modStock",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modStockTransfer.class.php",
+            "class": "modStockTransfer",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modStripe.class.php",
+            "class": "modStripe",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modSupplierProposal.class.php",
+            "class": "modSupplierProposal",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modSyslog.class.php",
+            "class": "modSyslog",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modTakePos.class.php",
+            "class": "modTakePos",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modTax.class.php",
+            "class": "modTax",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modTicket.class.php",
+            "class": "modTicket",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modUser.class.php",
+            "class": "modUser",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modVariants.class.php",
+            "class": "modVariants",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modWebPortal.class.php",
+            "class": "modWebPortal",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modWebServices.class.php",
+            "class": "modWebServices",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modWebhook.class.php",
+            "class": "modWebhook",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modWebsite.class.php",
+            "class": "modWebsite",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modWorkflow.class.php",
+            "class": "modWorkflow",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modWorkstation.class.php",
+            "class": "modWorkstation",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/modZapier.class.php",
+            "class": "modZapier",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/printsheet/doc/pdf_standardlabel.class.php",
+            "class": "pdf_standardlabel",
+            "extends": "CommonStickerGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/printsheet/doc/pdf_tcpdflabel.class.php",
+            "class": "pdf_tcpdflabel",
+            "extends": "CommonStickerGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/product/modules_product.class.php",
+            "class": "ModelePDFProduct",
+            "extends": "CommonDocGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/product_batch/modules_product_batch.class.php",
+            "class": "ModelePDFProductBatch",
+            "extends": "CommonDocGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/rapport/pdf_paiement.class.php",
+            "class": "pdf_paiement",
+            "extends": "CommonDocGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/rapport/pdf_paiement_fourn.class.php",
+            "class": "pdf_paiement_fourn",
+            "extends": "pdf_paiement",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/security/captcha/modCaptchaStandard.class.php",
+            "class": "modCaptchaStandard",
+            "extends": "ModeleCaptcha",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/security/generate/modGeneratePassNone.class.php",
+            "class": "modGeneratePassNone",
+            "extends": "ModeleGenPassword",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/security/generate/modGeneratePassPerso.class.php",
+            "class": "modGeneratePassPerso",
+            "extends": "ModeleGenPassword",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/security/generate/modGeneratePassStandard.class.php",
+            "class": "modGeneratePassStandard",
+            "extends": "ModeleGenPassword",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/societe/modules_societe.class.php",
+            "class": "ModeleThirdPartyDoc",
+            "extends": "CommonDocGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/user/modules_user.class.php",
+            "class": "ModelePDFUser",
+            "extends": "CommonDocGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/modules/usergroup/modules_usergroup.class.php",
+            "class": "ModelePDFUserGroup",
+            "extends": "CommonDocGenerator",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_20_all_Logevents.class.php",
+            "class": "InterfaceLogevents",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_20_modWorkflow_WorkflowManager.class.php",
+            "class": "InterfaceWorkflowManager",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_50_modAgenda_ActionsAuto.class.php",
+            "class": "InterfaceActionsAuto",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_50_modBlockedlog_ActionsBlockedLog.class.php",
+            "class": "InterfaceActionsBlockedLog",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_50_modEventOrganization_EventOrganization.class.php",
+            "class": "InterfaceEventOrganization",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_50_modLdap_Ldapsynchro.class.php",
+            "class": "InterfaceLdapsynchro",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_50_modMailmanspip_Mailmanspipsynchro.class.php",
+            "class": "InterfaceMailmanSpipsynchro",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_50_modNotification_Notification.class.php",
+            "class": "InterfaceNotification",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_50_modTicket_TicketEmail.class.php",
+            "class": "InterfaceTicketEmail",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_80_modStripe_Stripe.class.php",
+            "class": "InterfaceStripe",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_90_modSociete_ContactRoles.class.php",
+            "class": "InterfaceContactRoles",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_95_modWebhook_WebhookTriggers.class.php",
+            "class": "InterfaceWebhookTriggers",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "core/triggers/interface_95_modZapier_ZapierTriggers.class.php",
+            "class": "InterfaceZapierTriggers",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": true
+        },
+        {
+            "file": "cron/class/cronjob.class.php",
+            "class": "Cronjob",
+            "extends": "CommonObject",
+            "table_element": "cronjob",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "custom/knot/core/modules/modKnot.class.php",
+            "class": "modKnot",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "custom/knot/core/triggers/interface_99_modKnot_KnotTriggers.class.php",
+            "class": "InterfaceKnotTriggers",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "delivery/class/delivery.class.php",
+            "class": "Delivery",
+            "extends": "CommonObject",
+            "table_element": "delivery",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "don/class/api_donations.class.php",
+            "class": "Donations",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "don/class/don.class.php",
+            "class": "Don",
+            "extends": "CommonObject",
+            "table_element": "don",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "don/class/donstats.class.php",
+            "class": "DonationStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "don/class/paymentdonation.class.php",
+            "class": "PaymentDonation",
+            "extends": "CommonObject",
+            "table_element": "payment_donation",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "ecm/class/ecmdirectory.class.php",
+            "class": "EcmDirectory",
+            "extends": "CommonObject",
+            "table_element": "ecm_directories",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "ecm/class/ecmfiles.class.php",
+            "class": "EcmFiles",
+            "extends": "CommonObject",
+            "table_element": "ecm_files",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "emailcollector/class/emailcollector.class.php",
+            "class": "EmailCollector",
+            "extends": "CommonObject",
+            "table_element": "emailcollector_emailcollector",
+            "fieldsBraceCountGuess": 7,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "emailcollector/class/emailcollectoraction.class.php",
+            "class": "EmailCollectorAction",
+            "extends": "CommonObject",
+            "table_element": "emailcollector_emailcollectoraction",
+            "fieldsBraceCountGuess": 6,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "emailcollector/class/emailcollectorfilter.class.php",
+            "class": "EmailCollectorFilter",
+            "extends": "CommonObject",
+            "table_element": "emailcollector_emailcollectorfilter",
+            "fieldsBraceCountGuess": 6,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "eventorganization/class/conferenceorbooth.class.php",
+            "class": "ConferenceOrBooth",
+            "extends": "ActionComm",
+            "table_element": "actioncomm",
+            "fieldsBraceCountGuess": 8,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "eventorganization/class/conferenceorboothattendee.class.php",
+            "class": "ConferenceOrBoothAttendee",
+            "extends": "CommonObject",
+            "table_element": "eventorganization_conferenceorboothattendee",
+            "fieldsBraceCountGuess": 18,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expedition/class/api_shipments.class.php",
+            "class": "Shipments",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expedition/class/expedition.class.php",
+            "class": "Expedition",
+            "extends": "CommonObject",
+            "table_element": "expedition",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expedition/class/expeditionligne.class.php",
+            "class": "ExpeditionLigne",
+            "extends": "CommonObjectLine",
+            "table_element": "expeditiondet",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expedition/class/expeditionlinebatch.class.php",
+            "class": "ExpeditionLineBatch",
+            "extends": "CommonObject",
+            "table_element": "expeditiondet_batch",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expedition/class/expeditionstats.class.php",
+            "class": "ExpeditionStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expensereport/class/api_expensereports.class.php",
+            "class": "ExpenseReports",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expensereport/class/expensereport.class.php",
+            "class": "ExpenseReport",
+            "extends": "CommonObject",
+            "table_element": "expensereport",
+            "fieldsBraceCountGuess": 1,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expensereport/class/expensereport_ik.class.php",
+            "class": "ExpenseReportIk",
+            "extends": "CommonObject",
+            "table_element": "expensereport_ik",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expensereport/class/expensereport_rule.class.php",
+            "class": "ExpenseReportRule",
+            "extends": "CommonObject",
+            "table_element": "expensereport_rules",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expensereport/class/expensereportline.class.php",
+            "class": "ExpenseReportLine",
+            "extends": "CommonObjectLine",
+            "table_element": "expensereport_det",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expensereport/class/expensereportstats.class.php",
+            "class": "ExpenseReportStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "expensereport/class/paymentexpensereport.class.php",
+            "class": "PaymentExpenseReport",
+            "extends": "CommonObject",
+            "table_element": "payment_expensereport",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fichinter/class/api_interventions.class.php",
+            "class": "Interventions",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fichinter/class/fichinter.class.php",
+            "class": "Fichinter",
+            "extends": "CommonObject",
+            "table_element": "fichinter",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fichinter/class/fichinterligne.class.php",
+            "class": "FichinterLigne",
+            "extends": "CommonObjectLine",
+            "table_element": "fichinterdet",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fichinter/class/fichinterrec.class.php",
+            "class": "FichinterRec",
+            "extends": "Fichinter",
+            "table_element": "fichinter_rec",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fichinter/class/fichinterstats.class.php",
+            "class": "FichinterStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/api_supplier_invoices.class.php",
+            "class": "SupplierInvoices",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/api_supplier_orders.class.php",
+            "class": "SupplierOrders",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/fournisseur.class.php",
+            "class": "Fournisseur",
+            "extends": "Societe",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/fournisseur.commande.class.php",
+            "class": "CommandeFournisseur",
+            "extends": "CommonOrder",
+            "table_element": "commande_fournisseur",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/fournisseur.commande.dispatch.class.php",
+            "class": "CommandeFournisseurDispatch",
+            "extends": "ReceptionLineBatch",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/fournisseur.facture-rec.class.php",
+            "class": "FactureFournisseurRec",
+            "extends": "CommonInvoice",
+            "table_element": "facture_fourn_rec",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/fournisseur.facture-rec.ligne.class.php",
+            "class": "FactureFournisseurLigneRec",
+            "extends": "CommonInvoiceLine",
+            "table_element": "facture_fourn_det_rec",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/fournisseur.facture.class.php",
+            "class": "FactureFournisseur",
+            "extends": "CommonInvoice",
+            "table_element": "facture_fourn",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/fournisseur.facture.ligne.class.php",
+            "class": "SupplierInvoiceLine",
+            "extends": "CommonObjectLine",
+            "table_element": "facture_fourn_det",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/fournisseur.orderline.class.php",
+            "class": "CommandeFournisseurLigne",
+            "extends": "CommonOrderLine",
+            "table_element": "commande_fournisseurdet",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/fournisseur.product.class.php",
+            "class": "ProductFournisseur",
+            "extends": "Product",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "fourn/class/paiementfourn.class.php",
+            "class": "PaiementFourn",
+            "extends": "Paiement",
+            "table_element": "paiementfourn",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "holiday/class/holiday.class.php",
+            "class": "Holiday",
+            "extends": "CommonObject",
+            "table_element": "holiday",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "hrm/class/establishment.class.php",
+            "class": "Establishment",
+            "extends": "CommonObject",
+            "table_element": "establishment",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "hrm/class/evaluation.class.php",
+            "class": "Evaluation",
+            "extends": "CommonObject",
+            "table_element": "hrm_evaluation",
+            "fieldsBraceCountGuess": 13,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "hrm/class/evaluationdet.class.php",
+            "class": "EvaluationLine",
+            "extends": "CommonObjectLine",
+            "table_element": "hrm_evaluationdet",
+            "fieldsBraceCountGuess": 14,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "hrm/class/job.class.php",
+            "class": "Job",
+            "extends": "CommonObject",
+            "table_element": "hrm_job",
+            "fieldsBraceCountGuess": 15,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "hrm/class/position.class.php",
+            "class": "Position",
+            "extends": "CommonObject",
+            "table_element": "hrm_job_user",
+            "fieldsBraceCountGuess": 14,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "hrm/class/skill.class.php",
+            "class": "Skill",
+            "extends": "CommonObject",
+            "table_element": "hrm_skill",
+            "fieldsBraceCountGuess": 15,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "hrm/class/skilldet.class.php",
+            "class": "Skilldet",
+            "extends": "CommonObjectLine",
+            "table_element": "hrm_skilldet",
+            "fieldsBraceCountGuess": 14,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "hrm/class/skillrank.class.php",
+            "class": "SkillRank",
+            "extends": "CommonObject",
+            "table_element": "hrm_skillrank",
+            "fieldsBraceCountGuess": 14,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/adapters/EWKB.class.php",
+            "class": "EWKB",
+            "extends": "WKB",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/adapters/EWKT.class.php",
+            "class": "EWKT",
+            "extends": "WKT",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/adapters/GPX.class.php",
+            "class": "GPX",
+            "extends": "GeoAdapter",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/adapters/GeoHash.class.php",
+            "class": "GeoHash",
+            "extends": "GeoAdapter",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/adapters/GeoJSON.class.php",
+            "class": "GeoJSON",
+            "extends": "GeoAdapter",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/adapters/GeoRSS.class.php",
+            "class": "GeoRSS",
+            "extends": "GeoAdapter",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/adapters/GoogleGeocode.class.php",
+            "class": "GoogleGeocode",
+            "extends": "GeoAdapter",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/adapters/KML.class.php",
+            "class": "KML",
+            "extends": "GeoAdapter",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/adapters/WKB.class.php",
+            "class": "WKB",
+            "extends": "GeoAdapter",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/adapters/WKT.class.php",
+            "class": "WKT",
+            "extends": "GeoAdapter",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/geometry/Collection.class.php",
+            "class": "Collection",
+            "extends": "Geometry",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/geometry/GeometryCollection.class.php",
+            "class": "GeometryCollection",
+            "extends": "Collection",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/geometry/LineString.class.php",
+            "class": "LineString",
+            "extends": "Collection",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/geometry/MultiLineString.class.php",
+            "class": "MultiLineString",
+            "extends": "Collection",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/geometry/MultiPoint.class.php",
+            "class": "MultiPoint",
+            "extends": "Collection",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/geometry/MultiPolygon.class.php",
+            "class": "MultiPolygon",
+            "extends": "Collection",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/geometry/Point.class.php",
+            "class": "Point",
+            "extends": "Geometry",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "includes/geoPHP/lib/geometry/Polygon.class.php",
+            "class": "Polygon",
+            "extends": "Collection",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "intracommreport/class/intracommreport.class.php",
+            "class": "IntracommReport",
+            "extends": "CommonObject",
+            "table_element": "intracommreport",
+            "fieldsBraceCountGuess": 9,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "knowledgemanagement/class/api_knowledgemanagement.class.php",
+            "class": "KnowledgeManagement",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "knowledgemanagement/class/knowledgerecord.class.php",
+            "class": "KnowledgeRecord",
+            "extends": "CommonObject",
+            "table_element": "knowledgemanagement_knowledgerecord",
+            "fieldsBraceCountGuess": 13,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "loan/class/loan.class.php",
+            "class": "Loan",
+            "extends": "CommonObject",
+            "table_element": "loan",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "loan/class/loanschedule.class.php",
+            "class": "LoanSchedule",
+            "extends": "CommonObject",
+            "table_element": "loan_schedule",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "loan/class/paymentloan.class.php",
+            "class": "PaymentLoan",
+            "extends": "CommonObject",
+            "table_element": "payment_loan",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "modulebuilder/template/class/actions_mymodule.class.php",
+            "class": "ActionsMyModule",
+            "extends": "CommonHookActions",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "modulebuilder/template/class/api_mymodule.class.php",
+            "class": "MyModuleApi",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "modulebuilder/template/class/myobject.class.php",
+            "class": "MyObject",
+            "extends": "CommonObject",
+            "table_element": "mymodule_myobject",
+            "fieldsBraceCountGuess": 23,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "modulebuilder/template/core/modules/modMyModule.class.php",
+            "class": "modMyModule",
+            "extends": "DolibarrModules",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "modulebuilder/template/core/triggers/interface_99_modMyModule_MyModuleTriggers.class.php",
+            "class": "InterfaceMyModuleTriggers",
+            "extends": "DolibarrTriggers",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "mrp/class/api_mos.class.php",
+            "class": "Mos",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "mrp/class/mo.class.php",
+            "class": "Mo",
+            "extends": "CommonObject",
+            "table_element": "mrp_mo",
+            "fieldsBraceCountGuess": 11,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "mrp/class/moline.class.php",
+            "class": "MoLine",
+            "extends": "CommonObjectLine",
+            "table_element": "mrp_production",
+            "fieldsBraceCountGuess": 6,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "multicurrency/class/api_multicurrencies.class.php",
+            "class": "MultiCurrencies",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "multicurrency/class/currencyrate.class.php",
+            "class": "CurrencyRate",
+            "extends": "CommonObjectLine",
+            "table_element": "multicurrency_rate",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "multicurrency/class/multicurrency.class.php",
+            "class": "MultiCurrency",
+            "extends": "CommonObject",
+            "table_element": "multicurrency",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "opensurvey/class/opensurveysondage.class.php",
+            "class": "Opensurveysondage",
+            "extends": "CommonObject",
+            "table_element": "opensurvey_sondage",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "partnership/class/api_partnerships.class.php",
+            "class": "Partnerships",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "partnership/class/partnership.class.php",
+            "class": "Partnership",
+            "extends": "CommonObject",
+            "table_element": "partnership",
+            "fieldsBraceCountGuess": 16,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "partnership/class/partnership_type.class.php",
+            "class": "PartnershipType",
+            "extends": "CommonObject",
+            "table_element": "c_partnership_type",
+            "fieldsBraceCountGuess": 8,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/class/api_products.class.php",
+            "class": "Products",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/class/product.class.php",
+            "class": "Product",
+            "extends": "CommonObject",
+            "table_element": "product",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/class/productbatch.class.php",
+            "class": "Productbatch",
+            "extends": "CommonObject",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/class/productcustomerprice.class.php",
+            "class": "ProductCustomerPrice",
+            "extends": "CommonObject",
+            "table_element": "product_customer_price",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/class/productfournisseurprice.class.php",
+            "class": "ProductFournisseurPrice",
+            "extends": "CommonObject",
+            "table_element": "product_fournisseur_price",
+            "fieldsBraceCountGuess": 12,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/class/propalmergepdfproduct.class.php",
+            "class": "Propalmergepdfproduct",
+            "extends": "CommonObject",
+            "table_element": "propal_merge_pdf_product",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/inventory/class/inventory.class.php",
+            "class": "Inventory",
+            "extends": "CommonObject",
+            "table_element": "inventory",
+            "fieldsBraceCountGuess": 2,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/stock/class/api_stockmovements.class.php",
+            "class": "StockMovements",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/stock/class/api_warehouses.class.php",
+            "class": "Warehouses",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/stock/class/entrepot.class.php",
+            "class": "Entrepot",
+            "extends": "CommonObject",
+            "table_element": "entrepot",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/stock/class/mouvementstock.class.php",
+            "class": "MouvementStock",
+            "extends": "CommonObject",
+            "table_element": "stock_mouvement",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/stock/class/productlot.class.php",
+            "class": "Productlot",
+            "extends": "CommonObject",
+            "table_element": "product_lot",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/stock/class/productstockentrepot.class.php",
+            "class": "ProductStockEntrepot",
+            "extends": "CommonObject",
+            "table_element": "product_warehouse_properties",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/stock/stocktransfer/class/stocktransfer.class.php",
+            "class": "StockTransfer",
+            "extends": "CommonObject",
+            "table_element": "stocktransfer_stocktransfer",
+            "fieldsBraceCountGuess": 14,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "product/stock/stocktransfer/class/stocktransferline.class.php",
+            "class": "StockTransferLine",
+            "extends": "CommonObjectLine",
+            "table_element": "stocktransfer_stocktransferline",
+            "fieldsBraceCountGuess": 14,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "projet/class/api_projects.class.php",
+            "class": "Projects",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "projet/class/api_tasks.class.php",
+            "class": "Tasks",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "projet/class/project.class.php",
+            "class": "Project",
+            "extends": "CommonObject",
+            "table_element": "projet",
+            "fieldsBraceCountGuess": 13,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "projet/class/projectstats.class.php",
+            "class": "ProjectStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "projet/class/task.class.php",
+            "class": "Task",
+            "extends": "CommonObjectLine",
+            "table_element": "projet_task",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "projet/class/taskstats.class.php",
+            "class": "TaskStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "reception/class/api_receptions.class.php",
+            "class": "Receptions",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "reception/class/reception.class.php",
+            "class": "Reception",
+            "extends": "CommonObject",
+            "table_element": "reception",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "reception/class/receptionlinebatch.class.php",
+            "class": "ReceptionLineBatch",
+            "extends": "CommonObjectLine",
+            "table_element": "receptiondet_batch",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "reception/class/receptionstats.class.php",
+            "class": "ReceptionStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "recruitment/class/api_recruitments.class.php",
+            "class": "Recruitments",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "recruitment/class/recruitmentcandidature.class.php",
+            "class": "RecruitmentCandidature",
+            "extends": "CommonObject",
+            "table_element": "recruitment_recruitmentcandidature",
+            "fieldsBraceCountGuess": 14,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "recruitment/class/recruitmentjobposition.class.php",
+            "class": "RecruitmentJobPosition",
+            "extends": "CommonObject",
+            "table_element": "recruitment_recruitmentjobposition",
+            "fieldsBraceCountGuess": 14,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "resource/class/dolresource.class.php",
+            "class": "Dolresource",
+            "extends": "CommonObject",
+            "table_element": "resource",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "salaries/class/api_salaries.class.php",
+            "class": "Salaries",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "salaries/class/paymentsalary.class.php",
+            "class": "PaymentSalary",
+            "extends": "CommonObject",
+            "table_element": "payment_salary",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "salaries/class/salariesstats.class.php",
+            "class": "SalariesStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "salaries/class/salary.class.php",
+            "class": "Salary",
+            "extends": "CommonObject",
+            "table_element": "salary",
+            "fieldsBraceCountGuess": 1,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "societe/canvas/company/actions_card_company.class.php",
+            "class": "ActionsCardCompany",
+            "extends": "ActionsCardCommon",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "societe/canvas/individual/actions_card_individual.class.php",
+            "class": "ActionsCardIndividual",
+            "extends": "ActionsCardCommon",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "societe/class/api_contacts.class.php",
+            "class": "Contacts",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "societe/class/api_thirdparties.class.php",
+            "class": "Thirdparties",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "societe/class/client.class.php",
+            "class": "Client",
+            "extends": "Societe",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "societe/class/companybankaccount.class.php",
+            "class": "CompanyBankAccount",
+            "extends": "Account",
+            "table_element": "societe_rib",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "societe/class/companypaymentmode.class.php",
+            "class": "CompanyPaymentMode",
+            "extends": "CommonObject",
+            "table_element": "societe_rib",
+            "fieldsBraceCountGuess": 4,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "societe/class/societe.class.php",
+            "class": "Societe",
+            "extends": "CommonObject",
+            "table_element": "societe",
+            "fieldsBraceCountGuess": 4,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "societe/class/societeaccount.class.php",
+            "class": "SocieteAccount",
+            "extends": "CommonObject",
+            "table_element": "societe_account",
+            "fieldsBraceCountGuess": 8,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "stripe/class/actions_stripe.class.php",
+            "class": "ActionsStripeconnect",
+            "extends": "CommonHookActions",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "stripe/class/stripe.class.php",
+            "class": "Stripe",
+            "extends": "CommonObject",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "supplier_proposal/class/api_supplier_proposals.class.php",
+            "class": "SupplierProposals",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "supplier_proposal/class/supplier_proposal.class.php",
+            "class": "SupplierProposal",
+            "extends": "CommonObject",
+            "table_element": "supplier_proposal",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "ticket/class/actions_ticket.class.php",
+            "class": "ActionsTicket",
+            "extends": "CommonHookActions",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "ticket/class/api_tickets.class.php",
+            "class": "Tickets",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "ticket/class/cticketcategory.class.php",
+            "class": "CTicketCategory",
+            "extends": "CommonObject",
+            "table_element": "c_ticket_category",
+            "fieldsBraceCountGuess": 10,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "ticket/class/ticket.class.php",
+            "class": "Ticket",
+            "extends": "CommonObject",
+            "table_element": "ticket",
+            "fieldsBraceCountGuess": 1,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "ticket/class/ticketstats.class.php",
+            "class": "TicketStats",
+            "extends": "Stats",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "user/class/api_users.class.php",
+            "class": "Users",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "user/class/user.class.php",
+            "class": "User",
+            "extends": "CommonObject",
+            "table_element": "user",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": true
+        },
+        {
+            "file": "user/class/userbankaccount.class.php",
+            "class": "UserBankAccount",
+            "extends": "Account",
+            "table_element": "user_rib",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "user/class/usergroup.class.php",
+            "class": "UserGroup",
+            "extends": "CommonObject",
+            "table_element": "usergroup",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "variants/class/ProductAttribute.class.php",
+            "class": "ProductAttribute",
+            "extends": "CommonObject",
+            "table_element": "product_attribute",
+            "fieldsBraceCountGuess": 6,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "variants/class/ProductAttributeValue.class.php",
+            "class": "ProductAttributeValue",
+            "extends": "CommonObjectLine",
+            "table_element": "product_attribute_value",
+            "fieldsBraceCountGuess": 6,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webhook/class/api_webhook.class.php",
+            "class": "Webhook",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webhook/class/target.class.php",
+            "class": "Target",
+            "extends": "CommonObject",
+            "table_element": "webhook_target",
+            "fieldsBraceCountGuess": 17,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/class/html.formwebportal.class.php",
+            "class": "FormWebPortal",
+            "extends": "Form",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/class/webportalinvoice.class.php",
+            "class": "WebPortalInvoice",
+            "extends": "Facture",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/class/webportalmember.class.php",
+            "class": "WebPortalMember",
+            "extends": "Adherent",
+            "table_element": null,
+            "fieldsBraceCountGuess": 1,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/class/webportalorder.class.php",
+            "class": "WebPortalOrder",
+            "extends": "Commande",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/class/webportalpartnership.class.php",
+            "class": "WebPortalPartnership",
+            "extends": "Partnership",
+            "table_element": null,
+            "fieldsBraceCountGuess": 1,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/class/webportalpropal.class.php",
+            "class": "WebPortalPropal",
+            "extends": "Propal",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/controllers/default.controller.class.php",
+            "class": "DefaultController",
+            "extends": "Controller",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/controllers/document.controller.class.php",
+            "class": "DocumentController",
+            "extends": "Controller",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/controllers/invoicelist.controller.class.php",
+            "class": "InvoiceListController",
+            "extends": "Controller",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/controllers/login.controller.class.php",
+            "class": "LoginController",
+            "extends": "Controller",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/controllers/membercard.controller.class.php",
+            "class": "MemberCardController",
+            "extends": "Controller",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/controllers/orderlist.controller.class.php",
+            "class": "OrderListController",
+            "extends": "Controller",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/controllers/partnershipcard.controller.class.php",
+            "class": "PartnershipCardController",
+            "extends": "Controller",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "webportal/controllers/propallist.controller.class.php",
+            "class": "PropalListController",
+            "extends": "Controller",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "website/class/website.class.php",
+            "class": "Website",
+            "extends": "CommonObject",
+            "table_element": "website",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "website/class/websitepage.class.php",
+            "class": "WebsitePage",
+            "extends": "CommonObject",
+            "table_element": "website_page",
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "workstation/class/api_workstations.class.php",
+            "class": "Workstations",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "workstation/class/workstation.class.php",
+            "class": "Workstation",
+            "extends": "CommonObject",
+            "table_element": "workstation_workstation",
+            "fieldsBraceCountGuess": 10,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "workstation/class/workstationresource.class.php",
+            "class": "WorkstationResource",
+            "extends": "CommonObject",
+            "table_element": "workstation_workstation_resource",
+            "fieldsBraceCountGuess": 2,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "workstation/class/workstationusergroup.class.php",
+            "class": "WorkstationUserGroup",
+            "extends": "CommonObject",
+            "table_element": "workstation_workstation_usergroup",
+            "fieldsBraceCountGuess": 2,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "zapier/class/api_zapier.class.php",
+            "class": "Zapier",
+            "extends": "DolibarrApi",
+            "table_element": null,
+            "fieldsBraceCountGuess": 0,
+            "has_fetch": false,
+            "external_effect_suspect": false
+        },
+        {
+            "file": "zapier/class/hook.class.php",
+            "class": "Hook",
+            "extends": "CommonObject",
+            "table_element": "zapier_hook",
+            "fieldsBraceCountGuess": 8,
+            "has_fetch": true,
+            "external_effect_suspect": false
+        }
+    ]
+}

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0",
+  "workflow": {},
+  "nodes": [
+    {
+      "id": "t_manual",
+      "type": "trigger.manual",
+      "label": "Start",
+      "position": { "x": 80, "y": 120 },
+      "config": {}
+    },
+    {
+      "id": "s1",
+      "type": "logic.set",
+      "label": "Before wait",
+      "position": { "x": 340, "y": 120 },
+      "config": { "values": { "step": 1 } }
+    },
+    {
+      "id": "w1",
+      "type": "logic.wait",
+      "label": "Pause",
+      "position": { "x": 560, "y": 120 },
+      "config": { "seconds": 0 }
+    },
+    {
+      "id": "s2",
+      "type": "logic.set",
+      "label": "After wait",
+      "position": { "x": 780, "y": 120 },
+      "config": { "values": { "step": 2 } }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "t_manual",
+      "target": "s1",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    },
+    {
+      "id": "e2",
+      "source": "s1",
+      "target": "w1",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    },
+    {
+      "id": "e3",
+      "source": "w1",
+      "target": "s2",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    }
+  ]
+}

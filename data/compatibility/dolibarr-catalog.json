@@ -1,0 +1,1165 @@
+{
+    "format": "knot.dolibarr-catalog",
+    "formatVersion": 1,
+    "generatedAt": "2026-05-03T01:59:51+00:00",
+    "baseline": {
+        "documentRootBasename": "html",
+        "note": "Pin exact Dolibarr tag via CI (dolibarr-matrix) or record git tag in docs."
+    },
+    "counts": {
+        "mapSlugs": 27,
+        "scanDescriptors": 106
+    },
+    "map": {
+        "thirdparty": {
+            "file": "/societe/class/societe.class.php",
+            "class": "Societe",
+            "module": "societe",
+            "label": "ThirdParty"
+        },
+        "contact": {
+            "file": "/contact/class/contact.class.php",
+            "class": "Contact",
+            "module": "societe",
+            "label": "Contact"
+        },
+        "propal": {
+            "file": "/comm/propal/class/propal.class.php",
+            "class": "Propal",
+            "module": "propal",
+            "label": "Proposal",
+            "line": {
+                "file": "/comm/propal/class/propal.class.php",
+                "class": "PropaleLigne"
+            }
+        },
+        "commande": {
+            "file": "/commande/class/commande.class.php",
+            "class": "Commande",
+            "module": "commande",
+            "label": "Order",
+            "line": {
+                "file": "/commande/class/commande.class.php",
+                "class": "OrderLine"
+            }
+        },
+        "facture": {
+            "file": "/compta/facture/class/facture.class.php",
+            "class": "Facture",
+            "module": "facture",
+            "label": "Bill",
+            "line": {
+                "file": "/compta/facture/class/facture.class.php",
+                "class": "FactureLigne"
+            }
+        },
+        "product": {
+            "file": "/product/class/product.class.php",
+            "class": "Product",
+            "module": "product",
+            "label": "Product"
+        },
+        "service": {
+            "file": "/product/class/product.class.php",
+            "class": "Product",
+            "module": "service",
+            "label": "Service"
+        },
+        "project": {
+            "file": "/projet/class/project.class.php",
+            "class": "Project",
+            "module": "projet",
+            "label": "Project"
+        },
+        "task": {
+            "file": "/projet/class/task.class.php",
+            "class": "Task",
+            "module": "projet",
+            "label": "Task"
+        },
+        "ticket": {
+            "file": "/ticket/class/ticket.class.php",
+            "class": "Ticket",
+            "module": "ticket",
+            "label": "Ticket"
+        },
+        "user": {
+            "file": "/user/class/user.class.php",
+            "class": "User",
+            "module": "user",
+            "label": "User"
+        },
+        "member": {
+            "file": "/adherents/class/adherent.class.php",
+            "class": "Adherent",
+            "module": "adherent",
+            "label": "Member"
+        },
+        "entrepot": {
+            "file": "/product/stock/class/entrepot.class.php",
+            "class": "Entrepot",
+            "module": "stock",
+            "label": "Warehouse"
+        },
+        "stockmove": {
+            "file": "/product/stock/class/mouvementstock.class.php",
+            "class": "MouvementStock",
+            "module": "stock",
+            "label": "StockMovement"
+        },
+        "agenda": {
+            "file": "/comm/action/class/actioncomm.class.php",
+            "class": "ActionComm",
+            "module": "agenda",
+            "label": "Agenda"
+        },
+        "actioncomm": {
+            "file": "/comm/action/class/actioncomm.class.php",
+            "class": "ActionComm",
+            "module": "agenda",
+            "label": "Action"
+        },
+        "categorie": {
+            "file": "/categories/class/categorie.class.php",
+            "class": "Categorie",
+            "module": "categorie",
+            "label": "Category"
+        },
+        "bankaccount": {
+            "file": "/compta/bank/class/account.class.php",
+            "class": "Account",
+            "module": "banque",
+            "label": "BankAccount"
+        },
+        "expense": {
+            "file": "/expensereport/class/expensereport.class.php",
+            "class": "ExpenseReport",
+            "module": "expensereport",
+            "label": "ExpenseReport"
+        },
+        "expedition": {
+            "file": "/expedition/class/expedition.class.php",
+            "class": "Expedition",
+            "module": "expedition",
+            "label": "Shipment",
+            "line": {
+                "file": "/expedition/class/expeditionligne.class.php",
+                "class": "ExpeditionLigne"
+            }
+        },
+        "holiday": {
+            "file": "/holiday/class/holiday.class.php",
+            "class": "Holiday",
+            "module": "holiday",
+            "label": "Leave"
+        },
+        "mailing": {
+            "file": "/comm/mailing/class/mailing.class.php",
+            "class": "Mailing",
+            "module": "mailing",
+            "label": "Mailing"
+        },
+        "facturefourn": {
+            "file": "/fourn/class/fournisseur.facture.class.php",
+            "class": "FactureFournisseur",
+            "module": "fournisseur",
+            "label": "SupplierInvoice",
+            "line": {
+                "file": "/fourn/class/fournisseur.facture.class.php",
+                "class": "SupplierInvoiceLine"
+            }
+        },
+        "commandefourn": {
+            "file": "/fourn/class/fournisseur.commande.class.php",
+            "class": "CommandeFournisseur",
+            "module": "fournisseur",
+            "label": "SupplierOrder",
+            "line": {
+                "file": "/fourn/class/fournisseur.commande.class.php",
+                "class": "CommandeFournisseurLigne"
+            }
+        },
+        "propalfourn": {
+            "file": "/supplier_proposal/class/supplier_proposal.class.php",
+            "class": "SupplierProposal",
+            "module": "supplier_proposal",
+            "label": "SupplierProposal",
+            "line": {
+                "file": "/supplier_proposal/class/supplier_proposal.class.php",
+                "class": "SupplierProposalLine"
+            }
+        },
+        "contrat": {
+            "file": "/contrat/class/contrat.class.php",
+            "class": "Contrat",
+            "module": "contrat",
+            "label": "Contract",
+            "line": {
+                "file": "/contrat/class/contratligne.class.php",
+                "class": "ContratLigne"
+            }
+        },
+        "paiement": {
+            "file": "/compta/paiement/class/paiement.class.php",
+            "class": "Paiement",
+            "module": "banque",
+            "label": "Payment"
+        }
+    },
+    "scan": [
+        {
+            "slug": "accountancysystem",
+            "file": "/accountancy/class/accountancysystem.class.php",
+            "class": "AccountancySystem",
+            "module": "accountancy",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "accountingaccount",
+            "file": "/accountancy/class/accountingaccount.class.php",
+            "class": "AccountingAccount",
+            "module": "accountancy",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "accountingjournal",
+            "file": "/accountancy/class/accountingjournal.class.php",
+            "class": "AccountingJournal",
+            "module": "accountancy",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "actioncomm",
+            "file": "/comm/action/class/actioncomm.class.php",
+            "class": "ActionComm",
+            "module": "comm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "actioncommreminder",
+            "file": "/comm/action/class/actioncommreminder.class.php",
+            "class": "ActionCommReminder",
+            "module": "comm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "adherenttype",
+            "file": "/adherents/class/adherent_type.class.php",
+            "class": "AdherentType",
+            "module": "adherents",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "advancetargetingmailing",
+            "file": "/comm/mailing/class/advtargetemailing.class.php",
+            "class": "AdvanceTargetingMailing",
+            "module": "comm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "asset",
+            "file": "/asset/class/asset.class.php",
+            "class": "Asset",
+            "module": "asset",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": true
+        },
+        {
+            "slug": "assetaccountancycodes",
+            "file": "/asset/class/assetaccountancycodes.class.php",
+            "class": "AssetAccountancyCodes",
+            "module": "asset",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "assetdepreciationoptions",
+            "file": "/asset/class/assetdepreciationoptions.class.php",
+            "class": "AssetDepreciationOptions",
+            "module": "asset",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "assetmodel",
+            "file": "/asset/class/assetmodel.class.php",
+            "class": "AssetModel",
+            "module": "asset",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "availabilities",
+            "file": "/bookcal/class/availabilities.class.php",
+            "class": "Availabilities",
+            "module": "bookcal",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "bankaccount",
+            "file": "/compta/bank/class/account.class.php",
+            "class": "Account",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "bom",
+            "file": "/bom/class/bom.class.php",
+            "class": "BOM",
+            "module": "bom",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": true
+        },
+        {
+            "slug": "bonprelevement",
+            "file": "/compta/prelevement/class/bonprelevement.class.php",
+            "class": "BonPrelevement",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "bookkeeping",
+            "file": "/accountancy/class/bookkeeping.class.php",
+            "class": "BookKeeping",
+            "module": "accountancy",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "bookmark",
+            "file": "/bookmarks/class/bookmark.class.php",
+            "class": "Bookmark",
+            "module": "bookmarks",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "calendar",
+            "file": "/bookcal/class/calendar.class.php",
+            "class": "Calendar",
+            "module": "bookcal",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "cashcontrol",
+            "file": "/compta/cashcontrol/class/cashcontrol.class.php",
+            "class": "CashControl",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "categorie",
+            "file": "/categories/class/categorie.class.php",
+            "class": "Categorie",
+            "module": "categories",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "chargesociales",
+            "file": "/compta/sociales/class/chargesociales.class.php",
+            "class": "ChargeSociales",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "commande",
+            "file": "/commande/class/commande.class.php",
+            "class": "Commande",
+            "module": "commande",
+            "source": "core",
+            "parent": "CommonOrder",
+            "supportsLines": true
+        },
+        {
+            "slug": "commandefourn",
+            "file": "/fourn/class/fournisseur.commande.class.php",
+            "class": "CommandeFournisseur",
+            "module": "fourn",
+            "source": "core",
+            "parent": "CommonOrder",
+            "supportsLines": true
+        },
+        {
+            "slug": "companypaymentmode",
+            "file": "/societe/class/companypaymentmode.class.php",
+            "class": "CompanyPaymentMode",
+            "module": "societe",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "conferenceorboothattendee",
+            "file": "/eventorganization/class/conferenceorboothattendee.class.php",
+            "class": "ConferenceOrBoothAttendee",
+            "module": "eventorganization",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "contact",
+            "file": "/contact/class/contact.class.php",
+            "class": "Contact",
+            "module": "contact",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "contrat",
+            "file": "/contrat/class/contrat.class.php",
+            "class": "Contrat",
+            "module": "contrat",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "cticketcategory",
+            "file": "/ticket/class/cticketcategory.class.php",
+            "class": "CTicketCategory",
+            "module": "ticket",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "currencyrate",
+            "file": "/multicurrency/class/currencyrate.class.php",
+            "class": "CurrencyRate",
+            "module": "multicurrency",
+            "source": "core",
+            "parent": "CommonObjectLine",
+            "supportsLines": false
+        },
+        {
+            "slug": "delivery",
+            "file": "/delivery/class/delivery.class.php",
+            "class": "Delivery",
+            "module": "delivery",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "deplacement",
+            "file": "/compta/deplacement/class/deplacement.class.php",
+            "class": "Deplacement",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "dolresource",
+            "file": "/resource/class/dolresource.class.php",
+            "class": "Dolresource",
+            "module": "resource",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "don",
+            "file": "/don/class/don.class.php",
+            "class": "Don",
+            "module": "don",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "ecmdirectory",
+            "file": "/ecm/class/ecmdirectory.class.php",
+            "class": "EcmDirectory",
+            "module": "ecm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "ecmfiles",
+            "file": "/ecm/class/ecmfiles.class.php",
+            "class": "EcmFiles",
+            "module": "ecm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "entrepot",
+            "file": "/product/stock/class/entrepot.class.php",
+            "class": "Entrepot",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "establishment",
+            "file": "/hrm/class/establishment.class.php",
+            "class": "Establishment",
+            "module": "hrm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "evaluation",
+            "file": "/hrm/class/evaluation.class.php",
+            "class": "Evaluation",
+            "module": "hrm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "expedition",
+            "file": "/expedition/class/expedition.class.php",
+            "class": "Expedition",
+            "module": "expedition",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": true
+        },
+        {
+            "slug": "expense",
+            "file": "/expensereport/class/expensereport.class.php",
+            "class": "ExpenseReport",
+            "module": "expensereport",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "expensereportik",
+            "file": "/expensereport/class/expensereport_ik.class.php",
+            "class": "ExpenseReportIk",
+            "module": "expensereport",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "expensereportrule",
+            "file": "/expensereport/class/expensereport_rule.class.php",
+            "class": "ExpenseReportRule",
+            "module": "expensereport",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "facture",
+            "file": "/compta/facture/class/facture.class.php",
+            "class": "Facture",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonInvoice",
+            "supportsLines": true
+        },
+        {
+            "slug": "facturefourn",
+            "file": "/fourn/class/fournisseur.facture.class.php",
+            "class": "FactureFournisseur",
+            "module": "fourn",
+            "source": "core",
+            "parent": "CommonInvoice",
+            "supportsLines": true
+        },
+        {
+            "slug": "facturefournisseurrec",
+            "file": "/fourn/class/fournisseur.facture-rec.class.php",
+            "class": "FactureFournisseurRec",
+            "module": "fourn",
+            "source": "core",
+            "parent": "CommonInvoice",
+            "supportsLines": false
+        },
+        {
+            "slug": "facturerec",
+            "file": "/compta/facture/class/facture-rec.class.php",
+            "class": "FactureRec",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonInvoice",
+            "supportsLines": false
+        },
+        {
+            "slug": "fichinter",
+            "file": "/fichinter/class/fichinter.class.php",
+            "class": "Fichinter",
+            "module": "fichinter",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "holiday",
+            "file": "/holiday/class/holiday.class.php",
+            "class": "Holiday",
+            "module": "holiday",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "intracommreport",
+            "file": "/intracommreport/class/intracommreport.class.php",
+            "class": "IntracommReport",
+            "module": "intracommreport",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "inventory",
+            "file": "/product/inventory/class/inventory.class.php",
+            "class": "Inventory",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "job",
+            "file": "/hrm/class/job.class.php",
+            "class": "Job",
+            "module": "hrm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "knowledgerecord",
+            "file": "/knowledgemanagement/class/knowledgerecord.class.php",
+            "class": "KnowledgeRecord",
+            "module": "knowledgemanagement",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "loan",
+            "file": "/loan/class/loan.class.php",
+            "class": "Loan",
+            "module": "loan",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "loanschedule",
+            "file": "/loan/class/loanschedule.class.php",
+            "class": "LoanSchedule",
+            "module": "loan",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "localtax",
+            "file": "/compta/localtax/class/localtax.class.php",
+            "class": "Localtax",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "mailing",
+            "file": "/comm/mailing/class/mailing.class.php",
+            "class": "Mailing",
+            "module": "comm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "member",
+            "file": "/adherents/class/adherent.class.php",
+            "class": "Adherent",
+            "module": "adherents",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "mo",
+            "file": "/mrp/class/mo.class.php",
+            "class": "Mo",
+            "module": "mrp",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": true
+        },
+        {
+            "slug": "multicurrency",
+            "file": "/multicurrency/class/multicurrency.class.php",
+            "class": "MultiCurrency",
+            "module": "multicurrency",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "opensurveysondage",
+            "file": "/opensurvey/class/opensurveysondage.class.php",
+            "class": "Opensurveysondage",
+            "module": "opensurvey",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "paiement",
+            "file": "/compta/paiement/class/paiement.class.php",
+            "class": "Paiement",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "partnership",
+            "file": "/partnership/class/partnership.class.php",
+            "class": "Partnership",
+            "module": "partnership",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "partnershiptype",
+            "file": "/partnership/class/partnership_type.class.php",
+            "class": "PartnershipType",
+            "module": "partnership",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "paymentdonation",
+            "file": "/don/class/paymentdonation.class.php",
+            "class": "PaymentDonation",
+            "module": "don",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "paymentexpensereport",
+            "file": "/expensereport/class/paymentexpensereport.class.php",
+            "class": "PaymentExpenseReport",
+            "module": "expensereport",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "paymentloan",
+            "file": "/loan/class/paymentloan.class.php",
+            "class": "PaymentLoan",
+            "module": "loan",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "paymentsalary",
+            "file": "/salaries/class/paymentsalary.class.php",
+            "class": "PaymentSalary",
+            "module": "salaries",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "paymentsocialcontribution",
+            "file": "/compta/sociales/class/paymentsocialcontribution.class.php",
+            "class": "PaymentSocialContribution",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "paymentvarious",
+            "file": "/compta/bank/class/paymentvarious.class.php",
+            "class": "PaymentVarious",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "paymentvat",
+            "file": "/compta/tva/class/paymentvat.class.php",
+            "class": "PaymentVAT",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "position",
+            "file": "/hrm/class/position.class.php",
+            "class": "Position",
+            "module": "hrm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "product",
+            "file": "/product/class/product.class.php",
+            "class": "Product",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "productattribute",
+            "file": "/variants/class/ProductAttribute.class.php",
+            "class": "ProductAttribute",
+            "module": "variants",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "productattributevalue",
+            "file": "/variants/class/ProductAttributeValue.class.php",
+            "class": "ProductAttributeValue",
+            "module": "variants",
+            "source": "core",
+            "parent": "CommonObjectLine",
+            "supportsLines": false
+        },
+        {
+            "slug": "productbatch",
+            "file": "/product/class/productbatch.class.php",
+            "class": "Productbatch",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "productcustomerprice",
+            "file": "/product/class/productcustomerprice.class.php",
+            "class": "ProductCustomerPrice",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "productfournisseurprice",
+            "file": "/product/class/productfournisseurprice.class.php",
+            "class": "ProductFournisseurPrice",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "productlot",
+            "file": "/product/stock/class/productlot.class.php",
+            "class": "Productlot",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "productstockentrepot",
+            "file": "/product/stock/class/productstockentrepot.class.php",
+            "class": "ProductStockEntrepot",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "project",
+            "file": "/projet/class/project.class.php",
+            "class": "Project",
+            "module": "projet",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "propal",
+            "file": "/comm/propal/class/propal.class.php",
+            "class": "Propal",
+            "module": "comm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": true
+        },
+        {
+            "slug": "propalfourn",
+            "file": "/supplier_proposal/class/supplier_proposal.class.php",
+            "class": "SupplierProposal",
+            "module": "supplier_proposal",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": true
+        },
+        {
+            "slug": "propalmergepdfproduct",
+            "file": "/product/class/propalmergepdfproduct.class.php",
+            "class": "Propalmergepdfproduct",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "reception",
+            "file": "/reception/class/reception.class.php",
+            "class": "Reception",
+            "module": "reception",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": true
+        },
+        {
+            "slug": "recruitmentcandidature",
+            "file": "/recruitment/class/recruitmentcandidature.class.php",
+            "class": "RecruitmentCandidature",
+            "module": "recruitment",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "recruitmentjobposition",
+            "file": "/recruitment/class/recruitmentjobposition.class.php",
+            "class": "RecruitmentJobPosition",
+            "module": "recruitment",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "remisecheque",
+            "file": "/compta/paiement/cheque/class/remisecheque.class.php",
+            "class": "RemiseCheque",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "salary",
+            "file": "/salaries/class/salary.class.php",
+            "class": "Salary",
+            "module": "salaries",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "skill",
+            "file": "/hrm/class/skill.class.php",
+            "class": "Skill",
+            "module": "hrm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "skilldet",
+            "file": "/hrm/class/skilldet.class.php",
+            "class": "Skilldet",
+            "module": "hrm",
+            "source": "core",
+            "parent": "CommonObjectLine",
+            "supportsLines": false
+        },
+        {
+            "slug": "skillrank",
+            "file": "/hrm/class/skillrank.class.php",
+            "class": "SkillRank",
+            "module": "hrm",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "societeaccount",
+            "file": "/societe/class/societeaccount.class.php",
+            "class": "SocieteAccount",
+            "module": "societe",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "stockmove",
+            "file": "/product/stock/class/mouvementstock.class.php",
+            "class": "MouvementStock",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "stocktransfer",
+            "file": "/product/stock/stocktransfer/class/stocktransfer.class.php",
+            "class": "StockTransfer",
+            "module": "product",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "subscription",
+            "file": "/adherents/class/subscription.class.php",
+            "class": "Subscription",
+            "module": "adherents",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "task",
+            "file": "/projet/class/task.class.php",
+            "class": "Task",
+            "module": "projet",
+            "source": "core",
+            "parent": "CommonObjectLine",
+            "supportsLines": false
+        },
+        {
+            "slug": "thirdparty",
+            "file": "/societe/class/societe.class.php",
+            "class": "Societe",
+            "module": "societe",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "ticket",
+            "file": "/ticket/class/ticket.class.php",
+            "class": "Ticket",
+            "module": "ticket",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "tva",
+            "file": "/compta/tva/class/tva.class.php",
+            "class": "Tva",
+            "module": "compta",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "user",
+            "file": "/user/class/user.class.php",
+            "class": "User",
+            "module": "user",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "usergroup",
+            "file": "/user/class/usergroup.class.php",
+            "class": "UserGroup",
+            "module": "user",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "website",
+            "file": "/website/class/website.class.php",
+            "class": "Website",
+            "module": "website",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "websitepage",
+            "file": "/website/class/websitepage.class.php",
+            "class": "WebsitePage",
+            "module": "website",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "workstation",
+            "file": "/workstation/class/workstation.class.php",
+            "class": "Workstation",
+            "module": "workstation",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "workstationresource",
+            "file": "/workstation/class/workstationresource.class.php",
+            "class": "WorkstationResource",
+            "module": "workstation",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        },
+        {
+            "slug": "workstationusergroup",
+            "file": "/workstation/class/workstationusergroup.class.php",
+            "class": "WorkstationUserGroup",
+            "module": "workstation",
+            "source": "core",
+            "parent": "CommonObject",
+            "supportsLines": false
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0",
+  "workflow": {},
+  "nodes": [
+    {
+      "id": "t_manual",
+      "type": "trigger.manual",
+      "label": "Start",
+      "position": { "x": 80, "y": 120 },
+      "config": {}
+    },
+    {
+      "id": "s_rows",
+      "type": "logic.set",
+      "label": "Sample rows",
+      "position": { "x": 360, "y": 120 },
+      "config": { "values": { "status": "open" } }
+    },
+    {
+      "id": "f1",
+      "type": "logic.filter",
+      "label": "Keep open",
+      "position": { "x": 620, "y": 120 },
+      "config": { "left": "{{$json.status}}", "operator": "equals", "right": "open" }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "t_manual",
+      "target": "s_rows",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    },
+    {
+      "id": "e2",
+      "source": "s_rows",
+      "target": "f1",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    }
+  ]
+}

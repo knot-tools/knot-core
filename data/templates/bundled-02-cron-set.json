@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "workflow": {},
+  "nodes": [
+    {
+      "id": "t_cron",
+      "type": "trigger.cron",
+      "label": "Daily",
+      "position": { "x": 80, "y": 120 },
+      "config": { "cronExpression": "0 9 * * *", "timezone": "UTC" }
+    },
+    {
+      "id": "s_marker",
+      "type": "logic.set",
+      "label": "Mark run",
+      "position": { "x": 380, "y": 120 },
+      "config": { "values": { "kind": "cron_stub", "day": "{{$now}}" } }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "t_cron",
+      "target": "s_marker",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    }
+  ]
+}

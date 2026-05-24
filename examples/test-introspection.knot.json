@@ -1,0 +1,162 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-04-29T05:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "ref": "WF_DEMO_INTROSPECTION",
+    "label": "Demo — Introspection : Tiers + Devis avec lignes + Facture",
+    "description": "Démonstration de l'introspection V2.1. Crée un tiers de test, attache un devis avec deux lignes, valide le devis, génère la facture associée et envoie un récapitulatif. À déclencher manuellement depuis l'éditeur (Run). Démontre le passage de données typées (entiers, dates, foreign keys, lines) entre nœuds dolibarr.object grâce au schéma JSON-Schema.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "WF_DEMO_INTROSPECTION",
+        "label": "Demo — Introspection : Tiers + Devis avec lignes + Facture",
+        "tags": ["demo", "introspection", "v2.1", "tiers", "propal", "facture"],
+        "settings": {
+          "timeoutSeconds": 120,
+          "errorPolicy": "stop",
+          "logPayloads": true
+        }
+      },
+      "nodes": [
+        {
+          "id": "trigger_manual",
+          "type": "trigger.manual",
+          "label": "Démarrage manuel",
+          "subtitle": "Cliquer sur Run pour déclencher",
+          "position": { "x": 80, "y": 280 },
+          "config": {}
+        },
+        {
+          "id": "create_tiers",
+          "type": "dolibarr.object",
+          "label": "Créer le tiers",
+          "subtitle": "Knot Test Customer SAS",
+          "position": { "x": 360, "y": 280 },
+          "config": {
+            "objectType": "thirdparty",
+            "operation": "create",
+            "fields": {
+              "nom": "Knot Test Customer SAS",
+              "name_alias": "KNOTDEMO-{{$workflow.executionId}}",
+              "client": 1,
+              "fournisseur": 0,
+              "code_client": "auto",
+              "email": "knot-demo@example.com",
+              "phone": "+33 1 23 45 67 89",
+              "town": "Fort-de-France",
+              "zip": "97200",
+              "fk_pays": 1,
+              "fk_stcomm": 1,
+              "status": 1
+            }
+          }
+        },
+        {
+          "id": "create_propal",
+          "type": "dolibarr.object",
+          "label": "Créer le devis avec 2 lignes",
+          "subtitle": "Propal liée au tiers + lignes typées",
+          "position": { "x": 680, "y": 280 },
+          "config": {
+            "objectType": "propal",
+            "operation": "create",
+            "fields": {
+              "ref": "auto",
+              "fk_soc": "{{$nodes.create_tiers.json.id}}",
+              "fk_statut": 0,
+              "datep": "{{$now}}",
+              "fin_validite": "{{$now+30d}}",
+              "model_pdf": "azur",
+              "note_public": "Démo Knot — devis généré par workflow d'introspection."
+            },
+            "lines": [
+              {
+                "desc": "Audit conseil — forfait demi-journée",
+                "qty": 1,
+                "subprice": 480.0,
+                "tva_tx": 8.5
+              },
+              {
+                "desc": "Mise en place workflow Knot — abonnement annuel",
+                "qty": 12,
+                "subprice": 79.0,
+                "tva_tx": 8.5
+              }
+            ]
+          }
+        },
+        {
+          "id": "validate_propal",
+          "type": "dolibarr.object",
+          "label": "Valider le devis",
+          "subtitle": "change_status → valid",
+          "position": { "x": 1000, "y": 280 },
+          "config": {
+            "objectType": "propal",
+            "operation": "change_status",
+            "id": "{{$nodes.create_propal.json.id}}",
+            "statusMethod": "valid"
+          }
+        },
+        {
+          "id": "create_facture",
+          "type": "dolibarr.object",
+          "label": "Créer la facture",
+          "subtitle": "Facture liée au devis validé",
+          "position": { "x": 1320, "y": 280 },
+          "config": {
+            "objectType": "facture",
+            "operation": "create",
+            "fields": {
+              "ref": "auto",
+              "type": 0,
+              "subtype": 0,
+              "fk_soc": "{{$nodes.create_tiers.json.id}}",
+              "paye": 0,
+              "fk_cond_reglement": 1,
+              "fk_statut": 0,
+              "datef": "{{$now}}",
+              "date_lim_reglement": "{{$now+30d}}",
+              "model_pdf": "crabe",
+              "note_public": "Facture issue du devis {{$nodes.create_propal.json.id}} (workflow démo)."
+            },
+            "lines": [
+              {
+                "desc": "Audit conseil — forfait demi-journée",
+                "qty": 1,
+                "subprice": 480.0,
+                "tva_tx": 8.5
+              },
+              {
+                "desc": "Mise en place workflow Knot — abonnement annuel",
+                "qty": 12,
+                "subprice": 79.0,
+                "tva_tx": 8.5
+              }
+            ]
+          }
+        },
+        {
+          "id": "report",
+          "type": "action.email",
+          "label": "Email récapitulatif",
+          "subtitle": "Envoi du récap au superadmin",
+          "position": { "x": 1640, "y": 280 },
+          "config": {
+            "to": "{{$env.adminEmail}}",
+            "subject": "[Knot] Démo introspection : tiers + devis + facture créés",
+            "body": "<!doctype html><html><body style=\"margin:0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#f8fafc;color:#0f172a\"><div style=\"max-width:640px;margin:0 auto;padding:32px 24px\"><div style=\"background:linear-gradient(135deg,#6366f1,#a855f7);padding:24px 28px;border-radius:14px 14px 0 0;color:#fff\"><div style=\"font-size:13px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.9\">Knot V2.1 — Introspection</div><h1 style=\"margin:6px 0 0;font-size:22px;font-weight:800\">Démonstration réussie</h1></div><div style=\"background:#fff;padding:24px 28px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 14px 14px;line-height:1.6\"><p>Le workflow d'introspection a créé les objets suivants&nbsp;:</p><ul><li><strong>Tiers</strong> : <code>#{{$nodes.create_tiers.json.id}}</code></li><li><strong>Devis</strong> : <code>#{{$nodes.create_propal.json.id}}</code> (avec {{$nodes.create_propal.json.linesAdded}} lignes)</li><li><strong>Facture</strong> : <code>#{{$nodes.create_facture.json.id}}</code> (avec {{$nodes.create_facture.json.linesAdded}} lignes)</li></ul><p>Tous les champs ont été validés contre le JSON-Schema introspecté à partir de la classe Dolibarr correspondante.</p><div style=\"margin-top:20px;padding-top:16px;border-top:1px dashed #e2e8f0;font-size:12px;color:#64748b\">Workflow <em>WF_DEMO_INTROSPECTION</em> &mdash; généré pour valider la sortie V2.1.</div></div></div></body></html>"
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_manual", "target": "create_tiers", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e2", "source": "create_tiers", "target": "create_propal", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e3", "source": "create_propal", "target": "validate_propal", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e4", "source": "validate_propal", "target": "create_facture", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e5", "source": "create_facture", "target": "report", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

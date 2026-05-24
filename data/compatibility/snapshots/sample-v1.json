@@ -1,0 +1,22 @@
+{
+  "schema_version": "knot.snapshot.v1",
+  "generated_at": "2026-05-01T00:00:00Z",
+  "dolibarr_version": "21.0.0",
+  "objects": {
+    "facture": {
+      "slug": "facture",
+      "class": "Facture",
+      "fields_hash": "aaaaaaaaaaaa",
+      "property_keys": ["ref", "note_public"],
+      "property_types": {
+        "ref": "string",
+        "note_public": "string"
+      },
+      "status_constants": {
+        "STATUS_DRAFT": 0
+      },
+      "transition_verbs": ["validate", "setpaid"]
+    }
+  },
+  "warnings": []
+}

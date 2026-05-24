@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "required": ["success"],
+  "properties": {
+    "success": { "type": "boolean" },
+    "data": { "type": ["object", "array", "null"] },
+    "error": {
+      "type": ["object", "null"],
+      "properties": {
+        "code": { "type": "string" },
+        "message": { "type": "string" },
+        "details": { "type": ["object", "null"] }
+      }
+    },
+    "meta": { "type": ["object", "null"] }
+  }
+}

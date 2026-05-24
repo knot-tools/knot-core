@@ -1,0 +1,36 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-02T12:00:00Z",
+  "workflow": {
+    "label": "PMEw3-WEEK-FAIL — controlled stop_error",
+    "description": "Negative branch: synchronous execute expects HTTP 500 JSON envelope.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "PMEw3_WEEK_FAIL",
+        "label": "PMEw3-WEEK-FAIL — controlled stop_error",
+        "tags": ["pme-week", "negative"],
+        "settings": { "timeoutSeconds": 30, "errorPolicy": "stop", "logPayloads": false }
+      },
+      "nodes": [
+        {
+          "id": "t_fail",
+          "type": "trigger.manual",
+          "label": "Start",
+          "position": { "x": 40, "y": 120 },
+          "config": []
+        },
+        {
+          "id": "boom",
+          "type": "logic.stop_error",
+          "label": "Fail",
+          "position": { "x": 320, "y": 120 },
+          "config": { "message": "PME-WEEK intentional failure node" }
+        }
+      ],
+      "edges": [
+        { "id": "e_tf_b", "source": "t_fail", "target": "boom", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

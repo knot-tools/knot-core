@@ -1,0 +1,6 @@
+parameters:
+    level: 6
+    paths:
+        - class
+    bootstrapFiles:
+        - tests/stubs/dolibarr.php

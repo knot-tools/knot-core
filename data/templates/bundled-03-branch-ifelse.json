@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1.0",
+  "workflow": {},
+  "nodes": [
+    {
+      "id": "t_manual",
+      "type": "trigger.manual",
+      "label": "Start",
+      "position": { "x": 60, "y": 140 },
+      "config": {}
+    },
+    {
+      "id": "if_route",
+      "type": "logic.if",
+      "label": "Flag check",
+      "position": { "x": 320, "y": 140 },
+      "config": {
+        "mode": "all",
+        "conditions": [{ "left": "{{$json.flag}}", "operator": "equals", "right": "1" }]
+      }
+    },
+    {
+      "id": "s_yes",
+      "type": "logic.set",
+      "label": "Yes path",
+      "position": { "x": 580, "y": 60 },
+      "config": { "values": { "branch": "yes" } }
+    },
+    {
+      "id": "s_no",
+      "type": "logic.set",
+      "label": "No path",
+      "position": { "x": 580, "y": 220 },
+      "config": { "values": { "branch": "no" } }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "t_manual",
+      "target": "if_route",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    },
+    {
+      "id": "e2",
+      "source": "if_route",
+      "target": "s_yes",
+      "sourceHandle": "true",
+      "targetHandle": "main",
+      "type": "success"
+    },
+    {
+      "id": "e3",
+      "source": "if_route",
+      "target": "s_no",
+      "sourceHandle": "false",
+      "targetHandle": "main",
+      "type": "success"
+    }
+  ]
+}

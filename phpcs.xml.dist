@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ruleset name="Knot">
+    <description>
+        Knot module - PSR-12 strict, LineLength relaxed.
+
+        We enforce all PSR-12 "MUST" rules (file header order, brace style,
+        indentation, visibility, blank lines, use ordering, etc.) but drop
+        the soft "lines SHOULD NOT exceed 120 characters" recommendation.
+        Knot deliberately accepts longer lines for:
+          - Dolibarr native method signatures and parameter lists
+          - Hex digests and signed payload literals
+          - i18n strings passed to $langs->trans() / dol_print_error()
+        Aggressive splitting of those would degrade readability or risk
+        breaking translation extraction.
+    </description>
+
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg value="p"/>
+
+    <rule ref="PSR12">
+        <exclude name="Generic.Files.LineLength"/>
+    </rule>
+</ruleset>

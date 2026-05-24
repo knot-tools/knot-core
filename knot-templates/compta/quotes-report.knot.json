@@ -1,0 +1,84 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-04-29T05:30:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "ref": "WF_DEMO_QUOTES_REPORT",
+    "label": "Demo — Rapport des 10 derniers devis (cron 1 min)",
+    "description": "Envoie par email un rapport HTML listant les 10 derniers devis (propales) Dolibarr. Déclenché toutes les minutes par le cron interne. Note technique : le moteur Knot fixe la prochaine exécution à +60 s, donc une fréquence sub-minute n'est pas atteignable, c'est une limite native du cron Unix. Le destinataire est volontairement hardcodé pour cette démo ; en production, branche un nœud Variables Knot (vars.report_recipient) ou une lookup safe (follow-up V2.5 — cf docs/roadmap.md). NB : la table llx_user est dans la denylist V2.2 (protège pass_crypted), donc on n'y touche pas en SQL brut.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "WF_DEMO_QUOTES_REPORT",
+        "label": "Demo — Rapport des 10 derniers devis (cron 1 min)",
+        "tags": ["demo", "report", "email", "quotes", "cron"],
+        "settings": {
+          "timeoutSeconds": 60,
+          "errorPolicy": "stop",
+          "logPayloads": true
+        },
+        "schedules": [
+          {
+            "cronExpression": "* * * * *",
+            "timezone": "America/Martinique",
+            "isActive": true
+          }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "trigger_cron",
+          "type": "trigger.cron",
+          "label": "Toutes les minutes",
+          "subtitle": "Active la planification du workflow",
+          "position": { "x": 80, "y": 220 },
+          "config": {
+            "cronExpression": "* * * * *",
+            "timezone": "America/Martinique"
+          }
+        },
+        {
+          "id": "fetch_quotes_html",
+          "type": "dolibarr.sql_query",
+          "label": "10 derniers devis",
+          "subtitle": "Aggrège en lignes HTML prêtes à coller dans le mail",
+          "position": { "x": 380, "y": 220 },
+          "config": {
+            "query": "SELECT (SELECT COUNT(*) FROM llx_propal) AS total_devis, IFNULL(GROUP_CONCAT(html_row ORDER BY datep_iso DESC SEPARATOR '') , '<tr><td colspan=\"5\" style=\"padding:12px;color:#64748b;font-style:italic\">Aucun devis enregistré</td></tr>') AS body FROM ( SELECT p.datep AS datep_iso, CONCAT( '<tr>', '<td style=\"padding:8px 12px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#6366f1\">', IFNULL(p.ref,'-'), '</td>', '<td style=\"padding:8px 12px;border-bottom:1px solid #e2e8f0\">', IFNULL(s.nom,'<i>-</i>'), '</td>', '<td style=\"padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#64748b\">', DATE_FORMAT(IFNULL(p.datep,p.tms), '%Y-%m-%d'), '</td>', '<td style=\"padding:8px 12px;border-bottom:1px solid #e2e8f0;text-align:right;font-variant-numeric:tabular-nums\">', FORMAT(IFNULL(p.total_ttc,0), 2), '&nbsp;€</td>', '<td style=\"padding:8px 12px;border-bottom:1px solid #e2e8f0\">', CASE p.fk_statut WHEN 0 THEN '<span style=\"color:#64748b\">Brouillon</span>' WHEN 1 THEN '<span style=\"color:#6366f1\">Ouvert</span>' WHEN 2 THEN '<span style=\"color:#10b981\">Signé</span>' WHEN 3 THEN '<span style=\"color:#ef4444\">Refusé</span>' WHEN 4 THEN '<span style=\"color:#64748b\">Facturé</span>' ELSE CONCAT('Statut ', p.fk_statut) END, '</td>', '</tr>' ) AS html_row FROM llx_propal p LEFT JOIN llx_societe s ON s.rowid = p.fk_soc ORDER BY p.datep DESC, p.rowid DESC LIMIT 10 ) AS last10",
+            "limit": 1
+          }
+        },
+        {
+          "id": "send_report",
+          "type": "action.email",
+          "label": "Envoi rapport admin",
+          "subtitle": "HTML — destinataire admin (à personnaliser)",
+          "position": { "x": 700, "y": 220 },
+          "config": {
+            "to": "knot-admin@example.com",
+            "subject": "[Knot] Rapport — 10 derniers devis Dolibarr",
+            "body": "<!doctype html><html><body style=\"margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#f8fafc;color:#0f172a\"><div style=\"max-width:760px;margin:0 auto;padding:32px 24px\"><div style=\"background:linear-gradient(135deg,#6366f1,#a855f7);padding:24px 28px;border-radius:14px 14px 0 0;color:#fff\"><div style=\"font-size:13px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.9\">Knot Workflow Automation</div><h1 style=\"margin:6px 0 0;font-size:24px;font-weight:800\">Rapport — 10 derniers devis</h1><div style=\"margin-top:8px;font-size:14px;opacity:0.92\">Voici le snapshot des derniers devis enregistrés dans Dolibarr.</div></div><div style=\"background:#fff;padding:24px 28px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 14px 14px\"><table style=\"width:100%;border-collapse:collapse;font-size:14px\"><thead><tr style=\"background:#f1f5f9;text-align:left\"><th style=\"padding:10px 12px;font-weight:700;color:#475569\">Référence</th><th style=\"padding:10px 12px;font-weight:700;color:#475569\">Tiers</th><th style=\"padding:10px 12px;font-weight:700;color:#475569\">Date</th><th style=\"padding:10px 12px;font-weight:700;color:#475569;text-align:right\">Montant TTC</th><th style=\"padding:10px 12px;font-weight:700;color:#475569\">Statut</th></tr></thead><tbody>{{$nodes.fetch_quotes_html.json.rows.0.body}}</tbody></table><div style=\"margin-top:20px;padding-top:16px;border-top:1px dashed #e2e8f0;font-size:12px;color:#64748b\">Total devis dans la base : <strong>{{$nodes.fetch_quotes_html.json.rows.0.total_devis}}</strong> &mdash; envoi automatique par Knot &mdash; workflow <em>WF_DEMO_QUOTES_REPORT</em>.</div></div></div></body></html>"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "source": "trigger_cron",
+          "target": "fetch_quotes_html",
+          "sourceHandle": "main",
+          "targetHandle": "main",
+          "type": "knot"
+        },
+        {
+          "id": "e2",
+          "source": "fetch_quotes_html",
+          "target": "send_report",
+          "sourceHandle": "main",
+          "targetHandle": "main",
+          "type": "knot"
+        }
+      ]
+    }
+  }
+}

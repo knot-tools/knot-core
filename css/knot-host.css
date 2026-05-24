@@ -1,0 +1,534 @@
+/**
+ * Knot Host Reskin
+ * Copyright (C) 2026 Knot — GPL-3.0-or-later
+ *
+ * Hides Dolibarr's default left menu (admin sidebar, search box, bookmark
+ * blocks…) on Knot pages and lets the main content stretch full width.
+ * The actual Knot navigation is rendered server-side by tpl/knot-leftnav
+ * .tpl.php and styled below.
+ *
+ * The top bar (mainmenu, login block, version pill) is intentionally left
+ * untouched: users keep the familiar Dolibarr top navigation. Only the
+ * page body and our custom side rail are restyled.
+ */
+
+@import url('./knot-tokens.css');
+
+/* ---------- Body ---------- */
+
+body,
+body.classlogin,
+.fiche,
+#id-container,
+#id-right,
+#id-content,
+.id-container {
+    background: var(--knot-color-bg) !important;
+    color: var(--knot-color-text);
+}
+
+/* ---------- Hide Dolibarr's left column on Knot pages ---------- */
+
+#id-left,
+.side-nav,
+.menu_top,
+.vmenu,
+.blockvmenubookmarks,
+.blockvmenusearch,
+.blockvmenuhelp {
+    display: none !important;
+}
+
+/* ---------- Promote our custom nav into the freed slot ----------
+ *
+ * Dolibarr's wrapper IDs change between themes (eldy uses #id-right,
+ * other layouts may not). Rather than betting on a single host wrapper,
+ * we push every Knot content block sideways so the rail never overlaps,
+ * regardless of the surrounding shell.
+ */
+
+body .knot-shell,
+body #knot-app,
+body .knot-engine-banner {
+    margin-left: var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px)) !important;
+    margin-right: 0 !important;
+    min-width: 0;
+    max-width: 100%;
+}
+
+body.knot-nav-collapsed {
+    --knot-nav-width: var(--knot-mc-sidebar-w-collapsed, 64px);
+}
+
+.knot-nav {
+    position: fixed;
+    top: 60px; /* below Dolibarr top bar */
+    left: 0;
+    bottom: 0;
+    width: var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px));
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg,
+        var(--knot-color-surface) 0%,
+        var(--knot-color-bg) 100%);
+    border-right: 1px solid var(--knot-color-border);
+    padding: 12px 10px 10px;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+    font-family: var(--knot-font-sans);
+    color: var(--knot-color-text);
+    transition: width var(--knot-duration-fast, 150ms) var(--knot-ease, ease);
+}
+
+.knot-engine-banner {
+    margin-right: 12px !important;
+}
+
+.knot-nav__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 8px 12px;
+    border-bottom: 1px solid var(--knot-color-border);
+    margin-bottom: 10px;
+}
+
+.knot-nav__brand-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    background: var(--knot-gradient-hero);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+    overflow: hidden;
+}
+.knot-nav__brand-mark img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+    display: block;
+}
+
+.knot-nav__brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.knot-nav__brand-name {
+    font-weight: 800;
+    font-size: 17px;
+    color: var(--knot-color-text);
+    letter-spacing: -0.01em;
+}
+
+.knot-nav__brand-sub {
+    font-size: 11px;
+    color: var(--knot-color-text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+}
+
+.knot-nav__list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+/* Anchor color reset — Dolibarr's global a:link / a:visited rules use
+ * higher specificity than our utility, so we force inheritance here.
+ */
+.knot-nav a,
+.knot-nav a:link,
+.knot-nav a:visited,
+.knot-nav a:hover,
+.knot-nav a:active,
+.knot-nav a:focus {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+.knot-nav__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: var(--knot-radius-sm);
+    color: var(--knot-color-text) !important;
+    text-decoration: none !important;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: background var(--knot-duration-fast) var(--knot-ease),
+                color var(--knot-duration-fast) var(--knot-ease),
+                border-color var(--knot-duration-fast) var(--knot-ease),
+                transform var(--knot-duration-fast) var(--knot-ease);
+    position: relative;
+}
+
+.knot-nav__item:hover {
+    background: var(--knot-color-primary-soft);
+    color: var(--knot-color-primary-strong) !important;
+    border-color: var(--knot-color-border);
+}
+
+.knot-nav__item.is-active {
+    background: var(--knot-color-primary-soft);
+    color: var(--knot-color-primary-strong) !important;
+    border-color: var(--knot-color-primary);
+    box-shadow: 0 0 0 1px var(--knot-color-primary) inset;
+}
+
+.knot-nav__item .knot-nav__label,
+.knot-nav__item .knot-nav__icon {
+    color: inherit;
+}
+
+.knot-nav__icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    background: var(--knot-color-surface-soft);
+    color: var(--knot-color-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.knot-nav__item.is-active .knot-nav__icon {
+    background: var(--knot-color-primary);
+    color: #ffffff;
+}
+
+.knot-nav__item:hover .knot-nav__icon {
+    background: var(--knot-color-primary);
+    color: #ffffff;
+}
+
+/* ADR-20: extension-contributed sidebar items.
+   Visually identical to native items by default — the badge below
+   only surfaces when an admin must finish the extension's onboarding
+   (permission missing for non-admin: item is hidden upstream).      */
+.knot-nav__item--ext {
+    /* hook for future per-extension theming; no default override */
+}
+
+.knot-nav__item--ext-cta {
+    position: relative;
+}
+
+.knot-nav__item--ext-cta::after {
+    content: "!";
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--knot-color-warning, #f59e0b);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 14px;
+    text-align: center;
+}
+
+/* ----- Premium sidebar entry (ADR-20 Phase 6g §D10) -----
+ * Paid add-ons (`category: "premium"` in their manifest) carry a
+ * subtle gold tint and a "Pro" badge so the operator immediately
+ * spots paid functionality next to the GPL-3.0 Core items. The
+ * effect is purposely restrained: no neon, no sparkles, just a
+ * warm border + soft gradient + small badge. The active state
+ * uses a stronger gradient so the highlight survives the hover
+ * transition without competing with the gold tint.
+ */
+.knot-nav__item--ext-premium {
+    position: relative;
+    background-image: var(--knot-gradient-premium-subtle);
+    border-left: 2px solid var(--knot-color-premium-gold);
+}
+
+.knot-nav__item--ext-premium:hover {
+    background-image: linear-gradient(135deg, rgba(232, 201, 122, 0.32) 0%, rgba(200, 166, 87, 0.18) 100%);
+    border-left-color: var(--knot-color-premium-gold-strong);
+}
+
+.knot-nav__item--ext-premium.is-active {
+    background-image: var(--knot-gradient-premium);
+    color: var(--knot-color-premium-text-on-gold);
+    border-left-color: var(--knot-color-premium-gold-strong);
+    box-shadow: var(--knot-shadow-premium);
+}
+
+.knot-nav__item--ext-premium.is-active .knot-nav__icon i,
+.knot-nav__item--ext-premium.is-active .knot-nav__label {
+    color: var(--knot-color-premium-text-on-gold);
+}
+
+.knot-nav__pro-badge {
+    margin-left: auto;
+    padding: 1px 7px;
+    border-radius: 6px;
+    background: var(--knot-color-premium-gold);
+    color: var(--knot-color-premium-text-on-gold);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.4;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+}
+
+.knot-nav__item--ext-premium.is-active .knot-nav__pro-badge {
+    background: rgba(58, 44, 8, 0.85);
+    color: var(--knot-gradient-premium);
+    color: #fef9e6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .knot-nav__item--ext-premium,
+    .knot-nav__item--ext-premium:hover,
+    .knot-nav__item--ext-premium.is-active {
+        transition: none;
+    }
+}
+
+.knot-nav__label {
+    flex: 1;
+    min-width: 0;
+}
+
+.knot-nav__active-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--knot-color-primary);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18);
+}
+
+.knot-nav__status {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: var(--knot-radius-sm);
+    background: var(--knot-color-surface-soft);
+    border: 1px solid var(--knot-color-border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--knot-color-text-muted);
+}
+
+.knot-nav__status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.knot-nav__status-dot.is-on {
+    background: var(--knot-color-success);
+    box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.25);
+    animation: knot-nav-pulse 2.4s ease-in-out infinite;
+}
+
+.knot-nav__status-dot.is-off {
+    background: var(--knot-color-warning);
+}
+
+.knot-nav__status-label {
+    flex: 1;
+    font-weight: 600;
+}
+
+.knot-nav__status-link {
+    color: var(--knot-color-text-muted) !important;
+    text-decoration: none !important;
+    font-size: 12px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background var(--knot-duration-fast) var(--knot-ease),
+                color var(--knot-duration-fast) var(--knot-ease);
+}
+
+.knot-nav__status-link:hover {
+    background: var(--knot-color-primary-soft);
+    color: var(--knot-color-primary-strong) !important;
+}
+
+.knot-nav__collapse {
+    margin: 8px 0 0;
+    align-self: flex-end;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid var(--knot-color-border);
+    background: var(--knot-color-surface-soft);
+    color: var(--knot-color-text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.knot-nav__collapse:hover {
+    background: var(--knot-color-primary-soft);
+    color: var(--knot-color-primary-strong);
+    border-color: var(--knot-color-primary);
+}
+
+.knot-nav.is-collapsed .knot-nav__brand-text,
+.knot-nav.is-collapsed .knot-nav__label,
+.knot-nav.is-collapsed .knot-nav__status-label,
+.knot-nav.is-collapsed .knot-nav__pro-badge,
+.knot-nav.is-collapsed .knot-nav__active-dot,
+.knot-nav.is-collapsed .knot-nav__badge {
+    display: none !important;
+}
+
+.knot-nav.is-collapsed .knot-nav__brand {
+    justify-content: center;
+    padding-inline: 4px;
+}
+
+.knot-nav.is-collapsed .knot-nav__item {
+    justify-content: center;
+    padding-inline: 8px;
+}
+
+.knot-nav.is-collapsed .knot-nav__status {
+    justify-content: center;
+    padding-inline: 8px;
+}
+
+html[data-knot-density="dense"] .knot-nav {
+    padding-top: 10px;
+}
+
+html[data-knot-density="dense"] .knot-nav__brand {
+    padding: 4px 8px 10px;
+    margin-bottom: 8px;
+}
+
+html[data-knot-density="dense"] .knot-nav__item {
+    padding: 5px 10px;
+    font-size: 12px;
+    gap: 8px;
+}
+
+html[data-knot-density="dense"] .knot-nav__icon {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+}
+
+@keyframes knot-nav-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.25); }
+    50%      { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+}
+
+/* ---------- Responsive: collapse the side rail on small screens ---------- */
+
+@media (max-width: 880px) {
+    .knot-nav {
+        position: relative;
+        width: 100%;
+        top: 0;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--knot-color-border);
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 12px;
+    }
+    .knot-nav__brand {
+        border: 0;
+        margin: 0 8px 0 0;
+        padding: 0;
+    }
+    .knot-nav__list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        flex: 1 1 100%;
+        overflow: visible;
+    }
+    .knot-nav__item {
+        flex: 0 0 auto;
+    }
+    .knot-nav__status {
+        margin: 0;
+    }
+    body .knot-shell,
+    body #knot-app,
+    body .knot-engine-banner {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}
+
+/* ---------- Dolibarr event messages styled to match Knot ---------- */
+
+div.ok,
+div.warning,
+div.error {
+    background: var(--knot-color-surface) !important;
+    color: var(--knot-color-text) !important;
+    border: 1px solid var(--knot-color-border) !important;
+    border-radius: var(--knot-radius-sm) !important;
+    padding: 10px 14px !important;
+    margin: 12px !important;
+}
+
+div.ok    { border-left: 4px solid var(--knot-color-success) !important; }
+div.warning { border-left: 4px solid var(--knot-color-warning) !important; }
+div.error { border-left: 4px solid var(--knot-color-danger) !important; }
+
+/* ---------- Footer ---------- */
+
+#id-bottom,
+.footer,
+footer {
+    background: var(--knot-color-bg) !important;
+    border-top: 1px solid var(--knot-color-border) !important;
+    color: var(--knot-color-text-soft) !important;
+}
+
+/* ---------- Scrollbars ---------- */
+
+body::-webkit-scrollbar,
+#id-right::-webkit-scrollbar,
+.knot-nav__list::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+body::-webkit-scrollbar-thumb,
+#id-right::-webkit-scrollbar-thumb,
+.knot-nav__list::-webkit-scrollbar-thumb {
+    background: var(--knot-color-border-strong);
+    border-radius: 6px;
+}
+
+body::-webkit-scrollbar-thumb:hover,
+#id-right::-webkit-scrollbar-thumb:hover,
+.knot-nav__list::-webkit-scrollbar-thumb:hover {
+    background: var(--knot-color-primary);
+}
+
+body::-webkit-scrollbar-track,
+#id-right::-webkit-scrollbar-track,
+.knot-nav__list::-webkit-scrollbar-track {
+    background: transparent;
+}

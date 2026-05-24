@@ -1,0 +1,441 @@
+{
+    "knotExport": "1.0",
+    "exportedAt": "2026-05-02T12:00:00Z",
+    "exportedBy": "Knot",
+    "workflow": {
+        "label": "Starter 06 — Showroom moteur (logique)",
+        "description": "Demo mono-entité, sans HTTP/Webhook ni email : trigger.manual et logique uniquement. If + Switch imbriqués, boucle `realIteration` par ligne avec branches exclusives puis agrégation sur la sortie `done` du loop. Après `logic.switch`, le JSON courant ne contient plus la ligne brute : utiliser `{{$loop.item.*}}` dans les nœuds du corps (`sku`, `lane`, `qty`). Optionnel après import : un seul `notification.alert` canal audit pour tracer le résultat (aucun SMTP).",
+        "definition": {
+            "schemaVersion": "1.0",
+            "workflow": {
+                "ref": "WF_STARTER_06_SHOWCASE_LOGIC",
+                "label": "Showroom moteur (logique interne)",
+                "tags": ["demo", "starter", "logic-only", "mono-tenant"],
+                "settings": {
+                    "timeoutSeconds": 120,
+                    "errorPolicy": "stop",
+                    "logPayloads": true
+                }
+            },
+            "nodes": [
+                {
+                    "id": "trig",
+                    "type": "trigger.manual",
+                    "label": "Démarrage manuel",
+                    "subtitle": "Import / Simulate",
+                    "position": { "x": 40, "y": 320 },
+                    "config": {}
+                },
+                {
+                    "id": "seed",
+                    "type": "logic.set",
+                    "label": "Panier fictif démo",
+                    "subtitle": "5 lignes, 3 corridors",
+                    "position": { "x": 280, "y": 320 },
+                    "config": {
+                        "values": {
+                            "scenario": {
+                                "name": "pricing-routing-matrix",
+                                "currency": "EUR",
+                                "noExternalCalls": true
+                            },
+                            "items": [
+                                { "sku": "BULK-24", "lane": "bulk", "qty": 24 },
+                                { "sku": "BULK-08", "lane": "bulk", "qty": 8 },
+                                { "sku": "RTL-002", "lane": "retail", "qty": 2 },
+                                { "sku": "RTL-015", "lane": "retail", "qty": 15 },
+                                { "sku": "CLR-042", "lane": "clearance", "qty": 42 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "id": "if_has_lines",
+                    "type": "logic.if",
+                    "label": "Des lignes ?",
+                    "subtitle": "Garde liste vide → sortie courte",
+                    "position": { "x": 520, "y": 320 },
+                    "config": {
+                        "mode": "all",
+                        "conditions": [
+                            {
+                                "left": "{{$json.items}}",
+                                "operator": "is_not_empty",
+                                "right": ""
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "stub_empty_cart",
+                    "type": "logic.set",
+                    "label": "Fin — panier vide",
+                    "subtitle": "Branche false du garde-liste",
+                    "position": { "x": 760, "y": 520 },
+                    "config": {
+                        "values": {
+                            "resolution": "aborted-empty-cart",
+                            "linesProcessed": 0
+                        }
+                    }
+                },
+                {
+                    "id": "loop_lines",
+                    "type": "logic.loop",
+                    "label": "Parcourir chaque SKU",
+                    "subtitle": "realIteration • corps = routing",
+                    "position": { "x": 760, "y": 200 },
+                    "config": {
+                        "itemsPath": "{{$json._passthrough.items}}",
+                        "realIteration": true,
+                        "continueOnItemError": true
+                    }
+                },
+                {
+                    "id": "lane_switch",
+                    "type": "logic.switch",
+                    "label": "Corridor ligne",
+                    "subtitle": "bulk / retail / clearance",
+                    "position": { "x": 1000, "y": 200 },
+                    "config": {
+                        "expression": "{{$json.lane}}",
+                        "cases": [
+                            { "value": "bulk", "output": "case_1" },
+                            { "value": "retail", "output": "case_2" }
+                        ]
+                    }
+                },
+                {
+                    "id": "bulk_deep_cut",
+                    "type": "logic.if",
+                    "label": "Bulk profond ?",
+                    "subtitle": "qty strictement > 12",
+                    "position": { "x": 1280, "y": 80 },
+                    "config": {
+                        "mode": "all",
+                        "conditions": [
+                            {
+                                "left": "{{$loop.item.qty}}",
+                                "operator": "greater",
+                                "right": "12"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "route_bulk_deep",
+                    "type": "logic.set",
+                    "label": "Route palette",
+                    "position": { "x": 1560, "y": 40 },
+                    "config": {
+                        "values": {
+                            "sku": "{{$loop.item.sku}}",
+                            "lane": "{{$loop.item.lane}}",
+                            "routeTag": "BULK_FULL_PALLET",
+                            "pricingBand": "T1-deep",
+                            "note": "Seuil qty>12 ⇒ logistique palettes"
+                        }
+                    }
+                },
+                {
+                    "id": "route_bulk_light",
+                    "type": "logic.set",
+                    "label": "Route carton mixte",
+                    "position": { "x": 1560, "y": 120 },
+                    "config": {
+                        "values": {
+                            "sku": "{{$loop.item.sku}}",
+                            "lane": "{{$loop.item.lane}}",
+                            "routeTag": "BULK_MIXED_CARTON",
+                            "pricingBand": "T2-shallow",
+                            "note": "Volume modéré ⇒ picking carton"
+                        }
+                    }
+                },
+                {
+                    "id": "retail_micro",
+                    "type": "logic.if",
+                    "label": "Colis léger retail ?",
+                    "subtitle": "qty < 3",
+                    "position": { "x": 1280, "y": 200 },
+                    "config": {
+                        "mode": "all",
+                        "conditions": [
+                            {
+                                "left": "{{$loop.item.qty}}",
+                                "operator": "less",
+                                "right": "3"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "route_rtl_micro",
+                    "type": "logic.set",
+                    "label": "Route échantillon",
+                    "position": { "x": 1560, "y": 180 },
+                    "config": {
+                        "values": {
+                            "sku": "{{$loop.item.sku}}",
+                            "lane": "{{$loop.item.lane}}",
+                            "routeTag": "RTL_SAMPLE_TRACK",
+                            "pricingBand": "R-micro",
+                            "note": "File prioritaire petite quantité"
+                        }
+                    }
+                },
+                {
+                    "id": "route_rtl_standard",
+                    "type": "logic.set",
+                    "label": "Route panier détail",
+                    "position": { "x": 1560, "y": 260 },
+                    "config": {
+                        "values": {
+                            "sku": "{{$loop.item.sku}}",
+                            "lane": "{{$loop.item.lane}}",
+                            "routeTag": "RTL_STANDARD_AUDIT",
+                            "pricingBand": "R-standard",
+                            "note": "Flux magasin habituel"
+                        }
+                    }
+                },
+                {
+                    "id": "clr_liquid_gate",
+                    "type": "logic.if",
+                    "label": "Destockage liquidation ?",
+                    "subtitle": "qty > 55",
+                    "position": { "x": 1280, "y": 360 },
+                    "config": {
+                        "mode": "all",
+                        "conditions": [
+                            {
+                                "left": "{{$loop.item.qty}}",
+                                "operator": "greater",
+                                "right": "55"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "route_clr_mass",
+                    "type": "logic.set",
+                    "label": "Route masse / liquidation",
+                    "position": { "x": 1560, "y": 340 },
+                    "config": {
+                        "values": {
+                            "sku": "{{$loop.item.sku}}",
+                            "lane": "{{$loop.item.lane}}",
+                            "routeTag": "CLR_LIQUIDATION",
+                            "pricingBand": "C-mass",
+                            "note": "Seuil liquidation directe magasin entrepôt"
+                        }
+                    }
+                },
+                {
+                    "id": "clr_aggressive_gate",
+                    "type": "logic.if",
+                    "label": "Remise forte ?",
+                    "subtitle": "35 < qty ≤ 55",
+                    "position": { "x": 1560, "y": 420 },
+                    "config": {
+                        "mode": "all",
+                        "conditions": [
+                            {
+                                "left": "{{$loop.item.qty}}",
+                                "operator": "greater",
+                                "right": "35"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "route_clr_push",
+                    "type": "logic.set",
+                    "label": "Route démarque agile",
+                    "position": { "x": 1840, "y": 400 },
+                    "config": {
+                        "values": {
+                            "sku": "{{$loop.item.sku}}",
+                            "lane": "{{$loop.item.lane}}",
+                            "routeTag": "CLR_AGGRESSIVE_MARKDOWN",
+                            "pricingBand": "C-push",
+                            "note": "Branche enchaînée après rejet liquidation"
+                        }
+                    }
+                },
+                {
+                    "id": "route_clr_floor",
+                    "type": "logic.set",
+                    "label": "Route plancher léger",
+                    "position": { "x": 1840, "y": 480 },
+                    "config": {
+                        "values": {
+                            "sku": "{{$loop.item.sku}}",
+                            "lane": "{{$loop.item.lane}}",
+                            "routeTag": "CLR_SOFT_FLOOR",
+                            "pricingBand": "C-soft",
+                            "note": "Deuxième If sur clearance (branche conditionnelle en cascade)"
+                        }
+                    }
+                },
+                {
+                    "id": "recap_aggregate",
+                    "type": "logic.set",
+                    "label": "Synthèse exécution",
+                    "subtitle": "Après agrégateur loop/done",
+                    "position": { "x": 880, "y": 40 },
+                    "config": {
+                        "values": {
+                            "linesProcessed": "{{$json.count}}",
+                            "perLineSnapshots": "{{$json.items}}",
+                            "template": "WF_STARTER_06_SHOWCASE_LOGIC",
+                            "routingSummary": "{{$json}}",
+                            "_usage": {
+                                "noEmail": true,
+                                "multiEntityBypass": false
+                            }
+                        }
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "id": "e_tr_seed",
+                    "source": "trig",
+                    "target": "seed",
+                    "sourceHandle": "main",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_seed_if",
+                    "source": "seed",
+                    "target": "if_has_lines",
+                    "sourceHandle": "main",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_if_true_loop",
+                    "source": "if_has_lines",
+                    "target": "loop_lines",
+                    "sourceHandle": "true",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_if_false_stub",
+                    "source": "if_has_lines",
+                    "target": "stub_empty_cart",
+                    "sourceHandle": "false",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_loop_iter_switch",
+                    "source": "loop_lines",
+                    "target": "lane_switch",
+                    "sourceHandle": "iteration",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_loop_done_recap",
+                    "source": "loop_lines",
+                    "target": "recap_aggregate",
+                    "sourceHandle": "done",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_sw_c1_bulk",
+                    "source": "lane_switch",
+                    "target": "bulk_deep_cut",
+                    "sourceHandle": "case_1",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_sw_c2_rtl",
+                    "source": "lane_switch",
+                    "target": "retail_micro",
+                    "sourceHandle": "case_2",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_sw_default_clr",
+                    "source": "lane_switch",
+                    "target": "clr_liquid_gate",
+                    "sourceHandle": "default",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_bulk_if_t_deep",
+                    "source": "bulk_deep_cut",
+                    "target": "route_bulk_deep",
+                    "sourceHandle": "true",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_bulk_if_f_light",
+                    "source": "bulk_deep_cut",
+                    "target": "route_bulk_light",
+                    "sourceHandle": "false",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_rtl_if_micro",
+                    "source": "retail_micro",
+                    "target": "route_rtl_micro",
+                    "sourceHandle": "true",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_rtl_if_std",
+                    "source": "retail_micro",
+                    "target": "route_rtl_standard",
+                    "sourceHandle": "false",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_clr_li_mass",
+                    "source": "clr_liquid_gate",
+                    "target": "route_clr_mass",
+                    "sourceHandle": "true",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_clr_li_next",
+                    "source": "clr_liquid_gate",
+                    "target": "clr_aggressive_gate",
+                    "sourceHandle": "false",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_clr_aggr_push",
+                    "source": "clr_aggressive_gate",
+                    "target": "route_clr_push",
+                    "sourceHandle": "true",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_clr_aggr_floor",
+                    "source": "clr_aggressive_gate",
+                    "target": "route_clr_floor",
+                    "sourceHandle": "false",
+                    "targetHandle": "main",
+                    "type": "knot"
+                }
+            ]
+        }
+    }
+}

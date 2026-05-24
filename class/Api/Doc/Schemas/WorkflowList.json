@@ -1,0 +1,19 @@
+{
+  "allOf": [
+    { "$ref": "#/components/schemas/Envelope" },
+    {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "workflows": {
+              "type": "array",
+              "items": { "$ref": "#/components/schemas/Workflow" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

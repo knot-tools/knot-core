@@ -1,0 +1,143 @@
+{
+    "knotExport": "1.0",
+    "exportedAt": "2026-05-02T21:55:53+00:00",
+    "workflow": {
+        "label": "DEMO-ERP-COMM-01 \u2014 VAT branch on thirdparty",
+        "description": "Fetch societe by id; branch on tva_intra empty vs set (multi-node logic, no HTTP).",
+        "definition": {
+            "schemaVersion": "1.0",
+            "workflow": {
+                "ref": "DEMO_ERP_COMM_01",
+                "label": "DEMO-ERP-COMM-01 \u2014 VAT branch on thirdparty",
+                "tags": [
+                    "demo-erp-pack",
+                    "mono-tenant"
+                ],
+                "settings": {
+                    "timeoutSeconds": 180,
+                    "errorPolicy": "stop",
+                    "logPayloads": true
+                }
+            },
+            "nodes": [
+                {
+                    "id": "t1",
+                    "type": "trigger.manual",
+                    "label": "Start",
+                    "position": {
+                        "x": 40,
+                        "y": 120
+                    },
+                    "config": []
+                },
+                {
+                    "id": "fetch_tp",
+                    "type": "dolibarr.object",
+                    "label": "Load thirdparty",
+                    "position": {
+                        "x": 280,
+                        "y": 120
+                    },
+                    "config": {
+                        "operation": "fetch",
+                        "objectType": "thirdparty",
+                        "id": "{{$json.socid}}"
+                    }
+                },
+                {
+                    "id": "i_vat",
+                    "type": "logic.if",
+                    "label": "VAT intracom non-empty?",
+                    "position": {
+                        "x": 520,
+                        "y": 120
+                    },
+                    "config": {
+                        "mode": "all",
+                        "conditions": [
+                            {
+                                "left": "{{$json.object.tva_intra}}",
+                                "operator": "is_not_empty",
+                                "right": ""
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "a_eu",
+                    "type": "notification.alert",
+                    "label": "VAT intracom branch",
+                    "position": {
+                        "x": 760,
+                        "y": 40
+                    },
+                    "config": {
+                        "title": "Demo ERP \u2014 VAT classification",
+                        "message": "intracom=yes id={{$json._passthrough.object.id}} ref={{$json._passthrough.object.ref}}",
+                        "severity": "info",
+                        "tag": "DEMO-ERP-VAT-HIGH",
+                        "channels": {
+                            "audit": {
+                                "enabled": true
+                            }
+                        }
+                    }
+                },
+                {
+                    "id": "a_dom",
+                    "type": "notification.alert",
+                    "label": "Domestic VAT branch",
+                    "position": {
+                        "x": 760,
+                        "y": 200
+                    },
+                    "config": {
+                        "title": "Demo ERP \u2014 VAT classification",
+                        "message": "intracom=no id={{$json._passthrough.object.id}} ref={{$json._passthrough.object.ref}}",
+                        "severity": "info",
+                        "tag": "DEMO-ERP-VAT-LOW",
+                        "channels": {
+                            "audit": {
+                                "enabled": true
+                            }
+                        }
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "id": "e_t_f",
+                    "source": "t1",
+                    "target": "fetch_tp",
+                    "sourceHandle": "main",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_f_i",
+                    "source": "fetch_tp",
+                    "target": "i_vat",
+                    "sourceHandle": "main",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_i_t",
+                    "source": "i_vat",
+                    "target": "a_eu",
+                    "sourceHandle": "true",
+                    "targetHandle": "main",
+                    "type": "knot"
+                },
+                {
+                    "id": "e_i_f",
+                    "source": "i_vat",
+                    "target": "a_dom",
+                    "sourceHandle": "false",
+                    "targetHandle": "main",
+                    "type": "knot"
+                }
+            ]
+        }
+    }
+}

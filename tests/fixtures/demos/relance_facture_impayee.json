@@ -1,0 +1,23 @@
+{
+  "ref": "KNOT-SHOWCASE-001",
+  "label": "Relance facture impayée (J+30)",
+  "description": "Cron quotidien : récupère les factures impayées > 30 jours, envoie un email de relance et notifie #compta sur Slack.",
+  "category": "comptabilite",
+  "icon": "alert-triangle",
+  "metadata": { "showcase": true, "demoSource": "showcase" },
+  "definition": {
+    "nodes": [
+      { "id": "trg", "type": "trigger.cron", "position": { "x": 50, "y": 80 }, "data": { "type": "trigger.cron", "label": "Tous les jours 9h", "config": { "expression": "0 9 * * *" } } },
+      { "id": "list", "type": "action.dolibarr.object", "position": { "x": 320, "y": 80 }, "data": { "type": "action.dolibarr.object", "label": "Lister factures impayées", "config": { "object": "facture", "action": "list", "filters": { "paye": 0, "datedueLte": "now-30d" } } } },
+      { "id": "loop", "type": "logic.loop", "position": { "x": 600, "y": 80 }, "data": { "type": "logic.loop", "label": "Pour chaque facture", "config": { "itemsPath": "$json.list", "realIteration": true } } },
+      { "id": "email", "type": "action.email", "position": { "x": 880, "y": 40 }, "data": { "type": "action.email", "label": "Email relance", "config": { "to": "{{$item.email_client}}", "subject": "Relance facture {{$item.ref}}", "body": "Bonjour, votre facture {{$item.ref}} reste impayée." } } },
+      { "id": "slack", "type": "action.slack", "position": { "x": 880, "y": 140 }, "data": { "type": "action.slack", "label": "Slack #compta", "config": { "channel": "#compta", "text": "Facture {{$item.ref}} relancée." } } }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trg", "target": "list" },
+      { "id": "e2", "source": "list", "target": "loop" },
+      { "id": "e3", "source": "loop", "target": "email", "sourceHandle": "iteration" },
+      { "id": "e4", "source": "loop", "target": "slack", "sourceHandle": "iteration" }
+    ]
+  }
+}

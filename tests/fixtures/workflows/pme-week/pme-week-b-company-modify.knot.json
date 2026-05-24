@@ -1,0 +1,56 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-02T12:00:00Z",
+  "workflow": {
+    "label": "PMEw3-WEEK-B — COMPANY_MODIFY checkpoint",
+    "description": "E2E PME week: societe MODIFY hook path.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "PMEw3_WEEK_B",
+        "label": "PMEw3-WEEK-B — COMPANY_MODIFY checkpoint",
+        "tags": ["pme-week"],
+        "settings": { "timeoutSeconds": 120, "errorPolicy": "stop", "logPayloads": false }
+      },
+      "nodes": [
+        {
+          "id": "tr_b",
+          "type": "trigger.dolibarr_event",
+          "label": "Company modify",
+          "position": { "x": 40, "y": 120 },
+          "config": { "events": ["COMPANY_MODIFY"] }
+        },
+        {
+          "id": "fetch_b",
+          "type": "dolibarr.object",
+          "label": "Reload société",
+          "position": { "x": 320, "y": 120 },
+          "config": {
+            "operation": "fetch",
+            "objectType": "thirdparty",
+            "id": "{{$json.objectId}}"
+          }
+        },
+        {
+          "id": "al_b",
+          "type": "notification.alert",
+          "label": "Audit only",
+          "position": { "x": 600, "y": 120 },
+          "config": {
+            "title": "PME-WEEK société modifiée",
+            "message": "ref={{$json.object.ref}}",
+            "severity": "info",
+            "tag": "PMW-B",
+            "channels": {
+              "audit": { "enabled": true }
+            }
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e_tb_fb", "source": "tr_b", "target": "fetch_b", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e_fb_ab", "source": "fetch_b", "target": "al_b", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

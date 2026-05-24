@@ -1,0 +1,23 @@
+{
+  "ref": "KNOT-SHOWCASE-002",
+  "label": "Stripe paid → Facture validée",
+  "description": "Webhook Stripe charge.succeeded crée une facture validée dans Dolibarr et envoie le PDF par email.",
+  "category": "paiement",
+  "icon": "credit-card",
+  "metadata": { "showcase": true, "demoSource": "showcase" },
+  "definition": {
+    "nodes": [
+      { "id": "trg", "type": "trigger.webhook", "position": { "x": 50, "y": 80 }, "data": { "type": "trigger.webhook", "label": "Stripe charge.succeeded", "config": { "method": "POST", "verifyHmac": true } } },
+      { "id": "tiers", "type": "action.dolibarr.object", "position": { "x": 320, "y": 80 }, "data": { "type": "action.dolibarr.object", "label": "Upsert tiers", "config": { "object": "societe", "action": "upsert", "match": "email" } } },
+      { "id": "facture", "type": "action.dolibarr.object", "position": { "x": 600, "y": 80 }, "data": { "type": "action.dolibarr.object", "label": "Créer facture validée", "config": { "object": "facture", "action": "create", "validate": true } } },
+      { "id": "pdf", "type": "action.dolibarr.pdf", "position": { "x": 880, "y": 80 }, "data": { "type": "action.dolibarr.pdf", "label": "Générer PDF", "config": {} } },
+      { "id": "email", "type": "action.email", "position": { "x": 1140, "y": 80 }, "data": { "type": "action.email", "label": "Email PDF", "config": { "to": "{{$item.email_client}}", "subject": "Votre facture", "attachPdf": true } } }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trg", "target": "tiers" },
+      { "id": "e2", "source": "tiers", "target": "facture" },
+      { "id": "e3", "source": "facture", "target": "pdf" },
+      { "id": "e4", "source": "pdf", "target": "email" }
+    ]
+  }
+}

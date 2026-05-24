@@ -1,0 +1,48 @@
+{
+  "schema_version": "knot.snapshot.v1",
+  "generated_at": "2026-05-03T15:00:00Z",
+  "dolibarr_version": "21.0.4-demo-diff",
+  "objects": {
+    "facture": {
+      "slug": "facture",
+      "class": "Facture",
+      "fields_hash": "ref81f9older01",
+      "property_keys": ["ref"],
+      "property_types": {
+        "ref": "string"
+      },
+      "status_constants": {
+        "STATUS_DRAFT": 0,
+        "STATUS_VALIDATED": 1
+      },
+      "transition_verbs": ["validate", "setpaid"]
+    },
+    "commande": {
+      "slug": "commande",
+      "class": "Commande",
+      "fields_hash": "cmd51b2c9e8f01",
+      "property_keys": ["ref"],
+      "property_types": {
+        "ref": "string"
+      },
+      "status_constants": {
+        "STATUS_DRAFT": 0
+      },
+      "transition_verbs": ["validate"]
+    },
+    "propal": {
+      "slug": "propal",
+      "class": "Propal",
+      "fields_hash": "prp33d4e5f607",
+      "property_keys": ["ref"],
+      "property_types": {
+        "ref": "string"
+      },
+      "status_constants": {
+        "STATUS_DRAFT": 0
+      },
+      "transition_verbs": ["validate", "classifyclosed"]
+    }
+  },
+  "warnings": []
+}

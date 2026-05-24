@@ -1,0 +1,67 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-01T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "03 — Webhook vers tache Dolibarr",
+    "description": "Workflow declenche par un webhook HTTP : cree automatiquement une tache (actioncomm) dans Dolibarr a partir des donnees recues. Demontre les triggers HTTP et l'introspection objet.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "STARTER_WEBHOOK_TASK",
+        "label": "03 — Webhook vers tache Dolibarr",
+        "tags": ["starter", "webhook", "dolibarr"],
+        "settings": { "timeoutSeconds": 30, "errorPolicy": "stop", "logPayloads": true }
+      },
+      "nodes": [
+        {
+          "id": "trigger_webhook",
+          "type": "trigger.webhook",
+          "label": "Webhook entrant",
+          "subtitle": "POST /api/webhook.php",
+          "position": { "x": 80, "y": 200 },
+          "config": {
+            "method": "POST",
+            "responseMode": "echo"
+          }
+        },
+        {
+          "id": "set_task_payload",
+          "type": "logic.set",
+          "label": "Construire la tache",
+          "subtitle": "Mapper les champs",
+          "position": { "x": 380, "y": 200 },
+          "config": {
+            "values": {
+              "label": "{{$json.subject}}",
+              "note": "{{$json.message}}",
+              "datep": "{{$now}}",
+              "type_code": "AC_TASK"
+            }
+          }
+        },
+        {
+          "id": "create_task",
+          "type": "dolibarr.object",
+          "label": "Creer actioncomm",
+          "subtitle": "type=task",
+          "position": { "x": 700, "y": 200 },
+          "config": {
+            "operation": "create",
+            "objectType": "actioncomm",
+            "fields": {
+              "label": "{{$json.label}}",
+              "note": "{{$json.note}}",
+              "datep": "{{$json.datep}}",
+              "type_code": "{{$json.type_code}}"
+            }
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_webhook", "target": "set_task_payload", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e2", "source": "set_task_payload", "target": "create_task", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

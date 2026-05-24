@@ -1,0 +1,114 @@
+/**
+ * Knot frontend styles entry
+ * Copyright (C) 2026 Knot — GPL-3.0-or-later
+ *
+ * Tokens are imported by the host PHP page. The bundle adds Tailwind utilities
+ * (prefixed `k-`) and component-specific styles.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  #knot-app {
+    font-family: var(--knot-font-sans);
+    color: var(--knot-color-text);
+    background: var(--knot-color-bg);
+  }
+
+  #knot-app *, #knot-app *::before, #knot-app *::after {
+    box-sizing: border-box;
+  }
+
+  /*
+   * Neutralize host CSS (Dolibarr injects link/heading/table colors that
+   * would otherwise override our utility classes via higher specificity).
+   * Components opt-in to color via `k-text-knot-*` utilities.
+   */
+  #knot-app a,
+  #knot-app a:link,
+  #knot-app a:visited,
+  #knot-app a:hover,
+  #knot-app a:active {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  #knot-app h1,
+  #knot-app h2,
+  #knot-app h3,
+  #knot-app h4,
+  #knot-app h5,
+  #knot-app h6,
+  #knot-app p,
+  #knot-app td,
+  #knot-app th,
+  #knot-app li,
+  #knot-app span,
+  #knot-app label,
+  #knot-app code {
+    color: inherit;
+  }
+
+  #knot-app table,
+  #knot-app th,
+  #knot-app td {
+    background: transparent;
+    border: 0;
+  }
+
+  #knot-app input,
+  #knot-app select,
+  #knot-app textarea,
+  #knot-app button {
+    color: inherit;
+    background: transparent;
+    font-family: inherit;
+  }
+
+  #knot-app input::placeholder,
+  #knot-app textarea::placeholder {
+    color: var(--knot-color-text-soft);
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  @media (max-width: 900px) {
+    #knot-app table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Editor keeps a 3-column grid on desktop; only narrow viewports stack. */
+    #knot-app .knot-editor-layout {
+      grid-template-columns: 1fr !important;
+      grid-template-rows: auto auto minmax(520px, 1fr);
+    }
+
+    #knot-app .knot-editor-layout > aside {
+      max-height: 280px;
+    }
+
+    #knot-app .knot-editor-layout > main {
+      min-height: 520px;
+    }
+
+    #knot-app .knot-editor-layout .vue-flow {
+      min-height: 480px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #knot-app .k-p-6 {
+      padding: 1rem !important;
+    }
+
+    #knot-app .k-fixed.k-inset-y-0.k-right-0 {
+      width: 100% !important;
+    }
+  }
+}

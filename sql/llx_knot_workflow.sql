@@ -1,0 +1,20 @@
+CREATE TABLE llx_knot_workflow (
+  rowid integer AUTO_INCREMENT PRIMARY KEY,
+  ref varchar(64) NOT NULL,
+  label varchar(255) NOT NULL,
+  description text NULL,
+  status varchar(32) NOT NULL DEFAULT 'draft',
+  json_definition longtext NULL,
+  tags text NULL,
+  version_schema varchar(16) NOT NULL DEFAULT '1.0',
+  single_instance tinyint NOT NULL DEFAULT 0,
+  activation_warning_dismissed tinyint NOT NULL DEFAULT 0,
+  entity integer NOT NULL DEFAULT 1,
+  fk_user_creat integer NULL,
+  fk_user_modif integer NULL,
+  date_creation datetime NOT NULL,
+  tms timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_knot_workflow_ref_entity (ref, entity),
+  KEY idx_knot_workflow_entity_status (entity, status),
+  KEY idx_knot_workflow_tms (tms)
+) ENGINE=innodb;

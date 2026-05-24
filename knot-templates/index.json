@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-04-29T10:00:00Z",
+  "templates": [
+    {
+      "slug": "compta/quotes-report",
+      "title": "Rapport des 10 derniers devis (cron)",
+      "description": "Envoie par email un rapport HTML listant les 10 derniers devis (propales) Dolibarr. Idéal pour avoir un snapshot quotidien dans la boîte du responsable commercial.",
+      "category": "compta",
+      "tags": ["demo", "report", "email", "quotes", "cron", "dolibarr"],
+      "requiredConnectors": ["trigger.cron", "dolibarr.sql_query", "action.email"],
+      "requiredKnotVersion": ">=2.5.0",
+      "author": "knot",
+      "license": "MIT",
+      "downloadUrl": "https://raw.githubusercontent.com/knot/knot-templates/main/compta/quotes-report.knot.json"
+    }
+  ]
+}

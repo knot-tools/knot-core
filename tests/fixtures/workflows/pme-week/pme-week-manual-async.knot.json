@@ -1,0 +1,44 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-02T12:00:00Z",
+  "workflow": {
+    "label": "PMEw3-WEEK-IDEM — manual async enqueue",
+    "description": "Minimal manual workflow for async idempotency key replay.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "PMEw3_WEEK_IDEM",
+        "label": "PMEw3-WEEK-IDEM — manual async enqueue",
+        "tags": ["pme-week", "infra"],
+        "settings": { "timeoutSeconds": 60, "errorPolicy": "stop", "logPayloads": false }
+      },
+      "nodes": [
+        {
+          "id": "t_m",
+          "type": "trigger.manual",
+          "label": "Start",
+          "position": { "x": 40, "y": 120 },
+          "config": []
+        },
+        {
+          "id": "al_m",
+          "type": "notification.alert",
+          "label": "Audit",
+          "position": { "x": 320, "y": 120 },
+          "config": {
+            "title": "PME-WEEK async idempotent",
+            "message": "marker",
+            "severity": "info",
+            "tag": "PMW-IDEM",
+            "channels": {
+              "audit": { "enabled": true }
+            }
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e_tm_am", "source": "t_m", "target": "al_m", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

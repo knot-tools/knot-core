@@ -1,0 +1,361 @@
+{
+  "schemaVersion": 1,
+  "description": "Risk parity fixtures: server WorkflowRiskAnalyzer vs frontend resolveNodeRisk. Each case includes a metadata snapshot matching api/connectors.php for Vitest; PHP tests ignore metadata and use ConnectorRegistry.",
+  "cases": [
+    {
+      "id": "trigger-manual",
+      "type": "trigger.manual",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "trigger.manual",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "trigger-cron",
+      "type": "trigger.cron",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "trigger.cron",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "trigger-webhook",
+      "type": "trigger.webhook",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "trigger.webhook",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "trigger-dolibarr-event",
+      "type": "trigger.dolibarr_event",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "trigger.dolibarr_event",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "logic-if",
+      "type": "logic.if",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "logic.if",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "logic-set",
+      "type": "logic.set",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "logic.set",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "logic-loop",
+      "type": "logic.loop",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "logic.loop",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "logic-merge",
+      "type": "logic.merge",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "logic.merge",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "logic-switch",
+      "type": "logic.switch",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "logic.switch",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "logic-crypto",
+      "type": "logic.crypto",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "logic.crypto",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "logic-execute-workflow",
+      "type": "logic.execute_workflow",
+      "config": { "workflowId": 1 },
+      "expectedRiskLevel": "caution",
+      "metadata": {
+        "id": "logic.execute_workflow",
+        "riskLevel": "caution",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "logic-approval-wait",
+      "type": "logic.approval_wait",
+      "config": { "message": "Approve?" },
+      "expectedRiskLevel": "caution",
+      "metadata": {
+        "id": "logic.approval_wait",
+        "riskLevel": "caution",
+        "sideEffects": ["mail"]
+      }
+    },
+    {
+      "id": "logic-stop-error",
+      "type": "logic.stop_error",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "logic.stop_error",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "logic-respond-webhook",
+      "type": "logic.respond_webhook",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "logic.respond_webhook",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "action-email",
+      "type": "action.email",
+      "config": { "to": "a@example.com", "subject": "x", "body": "y" },
+      "expectedRiskLevel": "caution",
+      "metadata": {
+        "id": "action.email",
+        "riskLevel": "caution",
+        "sideEffects": ["mail"]
+      }
+    },
+    {
+      "id": "notification-alert",
+      "type": "notification.alert",
+      "config": { "title": "t", "message": "m" },
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "notification.alert",
+        "riskLevel": "safe",
+        "sideEffects": []
+      }
+    },
+    {
+      "id": "dolibarr-read-object",
+      "type": "dolibarr.read_object",
+      "config": { "objectType": "invoice", "objectId": 1 },
+      "expectedRiskLevel": "safe",
+      "metadata": {
+        "id": "dolibarr.read_object",
+        "riskLevel": "safe",
+        "sideEffects": ["db"]
+      }
+    },
+    {
+      "id": "dolibarr-object-fetch",
+      "type": "dolibarr.object",
+      "config": {
+        "operation": "fetch",
+        "objectType": "facture"
+      },
+      "expectedRiskLevel": "critical",
+      "metadata": {
+        "id": "dolibarr.object",
+        "riskLevel": "critical",
+        "sideEffects": ["db"],
+        "riskByConfig": {
+          "fetch": "safe",
+          "create": "caution",
+          "update": "caution",
+          "add_note": "caution",
+          "generate_pdf": "caution",
+          "change_status": "critical",
+          "delete": "critical"
+        }
+      }
+    },
+    {
+      "id": "dolibarr-object-create",
+      "type": "dolibarr.object",
+      "config": {
+        "operation": "create",
+        "objectType": "facture"
+      },
+      "expectedRiskLevel": "critical",
+      "metadata": {
+        "id": "dolibarr.object",
+        "riskLevel": "critical",
+        "sideEffects": ["db"],
+        "riskByConfig": {
+          "fetch": "safe",
+          "create": "caution",
+          "update": "caution",
+          "add_note": "caution",
+          "generate_pdf": "caution",
+          "change_status": "critical",
+          "delete": "critical"
+        }
+      }
+    },
+    {
+      "id": "dolibarr-object-update",
+      "type": "dolibarr.object",
+      "config": {
+        "operation": "update",
+        "objectType": "facture"
+      },
+      "expectedRiskLevel": "critical",
+      "metadata": {
+        "id": "dolibarr.object",
+        "riskLevel": "critical",
+        "sideEffects": ["db"],
+        "riskByConfig": {
+          "fetch": "safe",
+          "create": "caution",
+          "update": "caution",
+          "add_note": "caution",
+          "generate_pdf": "caution",
+          "change_status": "critical",
+          "delete": "critical"
+        }
+      }
+    },
+    {
+      "id": "dolibarr-object-delete",
+      "type": "dolibarr.object",
+      "config": {
+        "operation": "delete",
+        "objectType": "facture"
+      },
+      "expectedRiskLevel": "critical",
+      "metadata": {
+        "id": "dolibarr.object",
+        "riskLevel": "critical",
+        "sideEffects": ["db"],
+        "riskByConfig": {
+          "fetch": "safe",
+          "create": "caution",
+          "update": "caution",
+          "add_note": "caution",
+          "generate_pdf": "caution",
+          "change_status": "critical",
+          "delete": "critical"
+        }
+      }
+    },
+    {
+      "id": "dolibarr-object-change-status",
+      "type": "dolibarr.object",
+      "config": {
+        "operation": "change_status",
+        "objectType": "facture"
+      },
+      "expectedRiskLevel": "critical",
+      "metadata": {
+        "id": "dolibarr.object",
+        "riskLevel": "critical",
+        "sideEffects": ["db"],
+        "riskByConfig": {
+          "fetch": "safe",
+          "create": "caution",
+          "update": "caution",
+          "add_note": "caution",
+          "generate_pdf": "caution",
+          "change_status": "critical",
+          "delete": "critical"
+        }
+      }
+    },
+    {
+      "id": "dolibarr-object-fetch-discovery",
+      "type": "dolibarr.object",
+      "config": {
+        "operation": "fetch",
+        "objectType": "facture",
+        "objectRegistryMode": "discovery_unverified"
+      },
+      "expectedRiskLevel": "critical",
+      "metadata": {
+        "id": "dolibarr.object",
+        "riskLevel": "critical",
+        "sideEffects": ["db"],
+        "riskByConfig": {
+          "fetch": "safe",
+          "create": "caution",
+          "update": "caution",
+          "add_note": "caution",
+          "generate_pdf": "caution",
+          "change_status": "critical",
+          "delete": "critical"
+        }
+      }
+    },
+    {
+      "id": "dolibarr-sql-query",
+      "type": "dolibarr.sql_query",
+      "config": { "query": "SELECT 1" },
+      "expectedRiskLevel": "critical",
+      "metadata": {
+        "id": "dolibarr.sql_query",
+        "riskLevel": "critical",
+        "sideEffects": ["db"]
+      }
+    },
+    {
+      "id": "dolibarr-specialized",
+      "type": "dolibarr.specialized",
+      "config": { "operation": "validate_invoice", "id": 1 },
+      "expectedRiskLevel": "critical",
+      "metadata": {
+        "id": "dolibarr.specialized",
+        "riskLevel": "critical",
+        "sideEffects": ["db", "accounting"]
+      }
+    },
+    {
+      "id": "unknown-connector",
+      "type": "connector.future.not_registered",
+      "config": {},
+      "expectedRiskLevel": "safe",
+      "metadata": null
+    }
+  ]
+}

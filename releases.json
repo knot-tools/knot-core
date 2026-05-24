@@ -1,0 +1,19 @@
+{
+  "schema_version": "knot-core-releases@v1",
+  "latest": {
+    "version": "2.13.3",
+    "channel": "beta",
+    "published_at": "2026-05-23T23:41:36+00:00",
+    "zip_url": "https://knot.tools/downloads/knot-core/latest",
+    "zip_sha256": "c4b0f456e14ba574cee7e46d0a34b9ee1d9412efa171287bf88f00fed68007f1",
+    "signature_hex": "",
+    "signature_payload": null,
+    "dolibarr_min": "20.0.0",
+    "dolibarr_max": "23.99.99",
+    "php_min": "8.1.0",
+    "php_max": "8.4.99",
+    "breaking_change": false
+  },
+  "_comment": "CI or scripts/release/build-core-release.sh must fill signature_hex when signing key is configured.",
+  "_docs": "https://github.com/knot-tools/knot-core/blob/main/docs/RELEASE.md"
+}

@@ -1,0 +1,56 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-02T12:00:00Z",
+  "workflow": {
+    "label": "PMEw3-WEEK-A — COMPANY_CREATE checkpoint",
+    "description": "E2E PME week: hydrate societe by objectId, audit-only alert.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "PMEw3_WEEK_A",
+        "label": "PMEw3-WEEK-A — COMPANY_CREATE checkpoint",
+        "tags": ["pme-week"],
+        "settings": { "timeoutSeconds": 120, "errorPolicy": "stop", "logPayloads": false }
+      },
+      "nodes": [
+        {
+          "id": "tr_a",
+          "type": "trigger.dolibarr_event",
+          "label": "Company create",
+          "position": { "x": 40, "y": 120 },
+          "config": { "events": ["COMPANY_CREATE"] }
+        },
+        {
+          "id": "fetch_a",
+          "type": "dolibarr.object",
+          "label": "Load société",
+          "position": { "x": 320, "y": 120 },
+          "config": {
+            "operation": "fetch",
+            "objectType": "thirdparty",
+            "id": "{{$json.objectId}}"
+          }
+        },
+        {
+          "id": "al_a",
+          "type": "notification.alert",
+          "label": "Audit only",
+          "position": { "x": 600, "y": 120 },
+          "config": {
+            "title": "PME-WEEK société créée",
+            "message": "ref={{$json.object.ref}} id={{$json.objectId}}",
+            "severity": "info",
+            "tag": "PMW-A",
+            "channels": {
+              "audit": { "enabled": true }
+            }
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e_tr_fa", "source": "tr_a", "target": "fetch_a", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e_fa_al", "source": "fetch_a", "target": "al_a", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

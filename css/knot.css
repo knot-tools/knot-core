@@ -1,0 +1,1052 @@
+/**
+ * Knot Design System — server-rendered admin styles
+ * Copyright (C) 2026 Knot
+ * Licensed under GPL-3.0-or-later
+ *
+ * v2.0.0
+ * Generic visual identity for Knot UI surfaces (setup wizard, dashboard).
+ * Tokens are defined in css/knot-tokens.css (single source of truth).
+ * No external font/image dependency. Uses Dolibarr's bundled FontAwesome.
+ */
+
+@import url('./knot-tokens.css');
+
+/* ---------- Shell ---------- */
+
+.knot-shell {
+  --knot-content-max: 1180px;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--knot-color-text);
+  background: var(--knot-color-bg);
+  margin: -16px -10px 0;
+  padding: 32px clamp(16px, 4vw, 48px) 64px;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.knot-shell *,
+.knot-shell *::before,
+.knot-shell *::after {
+  box-sizing: border-box;
+}
+
+/*
+ * Reset host CSS bleed (Dolibarr admin stylesheet sets a global link color
+ * with higher specificity than utility classes). Knot components opt-in to
+ * color via the .knot-btn / .knot-feature__cta / .knot-pill modifiers.
+ */
+.knot-shell a,
+.knot-shell a:link,
+.knot-shell a:visited,
+.knot-shell a:hover,
+.knot-shell a:active {
+  color: inherit;
+  text-decoration: none;
+}
+
+.knot-shell h1,
+.knot-shell h2,
+.knot-shell h3 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.knot-shell p {
+  margin: 0;
+  color: var(--knot-color-text-muted);
+  line-height: 1.6;
+}
+
+/* ---------- Hero ---------- */
+
+.knot-hero {
+  position: relative;
+  padding: 56px 48px;
+  border-radius: var(--knot-radius-lg);
+  overflow: hidden;
+  isolation: isolate;
+  margin-bottom: 28px;
+  color: #fff;
+  box-shadow: var(--knot-shadow-lg);
+  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.25);
+}
+
+.knot-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* V2.5.0b chantier 8 — align with knot.tools landing.
+   * Layered: dark base, gradient hero on top, noise grain
+   * for high-DPI texture. Stays under the floating blobs that
+   * already animate via ::before / ::after. */
+  background:
+    var(--knot-noise),
+    radial-gradient(at 20% 20%, rgba(99, 102, 241, 0.55) 0%, transparent 45%),
+    radial-gradient(at 80% 30%, rgba(236, 72, 153, 0.45) 0%, transparent 42%),
+    radial-gradient(at 60% 90%, rgba(139, 92, 246, 0.4) 0%, transparent 50%),
+    linear-gradient(135deg, #0b0b1a 0%, #1c1338 50%, #2b1245 100%);
+  background-blend-mode: overlay, normal, normal, normal, normal;
+}
+
+.knot-hero__bg::before,
+.knot-hero__bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+}
+
+.knot-hero__bg::before {
+  width: 420px;
+  height: 420px;
+  background: rgba(255, 255, 255, 0.22);
+  top: -160px;
+  right: -160px;
+  animation: knot-float 14s ease-in-out infinite;
+}
+
+.knot-hero__bg::after {
+  width: 360px;
+  height: 360px;
+  background: rgba(56, 189, 248, 0.45);
+  bottom: -140px;
+  left: -60px;
+  animation: knot-float 18s ease-in-out infinite reverse;
+}
+
+.knot-hero__content {
+  position: relative;
+  max-width: 720px;
+}
+
+/* Symbol watermark anchored bottom-right of the hero. Behind the bg blobs in
+ * z-order but above the gradient. Decorative only. */
+.knot-hero__logo {
+  position: absolute;
+  right: 24px;
+  bottom: 16px;
+  z-index: 0;
+  opacity: 0.18;
+  pointer-events: none;
+  transform: rotate(-6deg);
+}
+.knot-hero__logo img {
+  width: 240px;
+  height: 240px;
+  display: block;
+  filter: drop-shadow(0 8px 24px rgba(15, 23, 42, 0.35));
+}
+@media (max-width: 720px) {
+  .knot-hero__logo { display: none; }
+}
+
+.knot-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--knot-radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.knot-hero__dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(255, 196, 99, 0.55));
+  animation: knot-pulse 2.4s ease-in-out infinite;
+}
+
+.knot-hero__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 14px;
+  margin: 18px 0 14px;
+  font-size: clamp(32px, 4.4vw, 52px);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.knot-hero__brand {
+  background: linear-gradient(135deg, #ffffff, #fde68a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.knot-hero .knot-hero__sub,
+.knot-hero__sub {
+  font-size: clamp(16px, 1.8vw, 22px);
+  font-weight: 600;
+  color: #ffffff !important;
+}
+
+.knot-hero .knot-hero__lead,
+.knot-hero__lead {
+  color: #ffffff !important;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.55;
+  max-width: 640px;
+  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.45);
+}
+
+.knot-hero .knot-hero__badge,
+.knot-hero .knot-chip {
+  color: #ffffff !important;
+}
+
+.knot-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.knot-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--knot-radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.knot-chip i {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* V2.5.0b chantier 4 — beta-tester strip variants for the
+ * setup hero. Inherits the glass chip, but adds a hover / status
+ * tint for clickable links and quick-glance health indicators. */
+.knot-chip--link {
+  text-decoration: none;
+  transition: background-color var(--knot-duration-fast) var(--knot-ease);
+}
+.knot-chip--link:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+.knot-chip--ok {
+  background: rgba(52, 211, 153, 0.28);
+  border-color: rgba(110, 231, 183, 0.55);
+}
+.knot-chip--warn {
+  background: rgba(251, 191, 36, 0.30);
+  border-color: rgba(252, 211, 77, 0.6);
+}
+
+/* ---------- Grid ---------- */
+
+.knot-grid {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  margin-bottom: 22px;
+}
+
+.knot-grid--two {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Setup: breathing room between introspection block and feature tiles below */
+#knot-introspection {
+  margin-bottom: 28px;
+}
+
+@media (max-width: 1100px) {
+  .knot-grid {
+    grid-template-columns: 1fr;
+  }
+  .knot-grid--two {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Card ---------- */
+
+.knot-card {
+  position: relative;
+  background: var(--knot-color-surface);
+  border: 1px solid var(--knot-color-border);
+  border-radius: var(--knot-radius-md);
+  padding: 26px;
+  box-shadow: var(--knot-shadow-sm);
+  transition: transform var(--knot-duration) var(--knot-ease),
+              box-shadow var(--knot-duration) var(--knot-ease);
+}
+
+.knot-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--knot-shadow-md);
+}
+
+.knot-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.knot-card__title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--knot-color-text);
+}
+
+.knot-card__hint {
+  font-size: 12px;
+  color: var(--knot-color-text-soft);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Progress + Steps ---------- */
+
+.knot-progress {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.knot-progress__track {
+  flex: 1;
+  height: 10px;
+  border-radius: var(--knot-radius-pill);
+  background: var(--knot-color-border);
+  overflow: hidden;
+}
+
+.knot-progress__fill {
+  height: 100%;
+  background: var(--knot-gradient-hero);
+  border-radius: inherit;
+  transition: width 600ms var(--knot-ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.knot-progress__fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: knot-shimmer 2.4s linear infinite;
+}
+
+.knot-progress__fill.is-complete {
+  background: var(--knot-gradient-success);
+}
+
+.knot-progress__value {
+  min-width: 56px;
+  text-align: right;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--knot-color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.knot-steps {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: knot-step;
+}
+
+.knot-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--knot-color-border);
+  border-radius: var(--knot-radius-sm);
+  background: var(--knot-color-surface-soft);
+  transition: all var(--knot-duration) var(--knot-ease);
+}
+
+.knot-step:hover {
+  border-color: var(--knot-color-primary);
+  background: var(--knot-color-primary-soft);
+}
+
+.knot-step__index {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--knot-color-surface);
+  border: 1px solid var(--knot-color-border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--knot-color-text-muted);
+}
+
+.knot-step.is-done .knot-step__index {
+  background: var(--knot-gradient-success);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.knot-step__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.knot-step__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--knot-color-text);
+  margin-bottom: 4px;
+}
+
+.knot-step__title i {
+  color: var(--knot-color-primary);
+  font-size: 13px;
+}
+
+.knot-step.is-done .knot-step__title i {
+  color: var(--knot-color-success);
+}
+
+.knot-step__desc {
+  font-size: 13px;
+  color: var(--knot-color-text-muted);
+  line-height: 1.5;
+}
+
+/* ---------- Checks ---------- */
+
+.knot-checks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.knot-check {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: var(--knot-radius-sm);
+  background: var(--knot-color-surface-soft);
+  border: 1px solid var(--knot-color-border);
+  transition: border-color var(--knot-duration) var(--knot-ease);
+}
+
+.knot-check.is-ok {
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.knot-check.is-warn {
+  border-color: rgba(245, 158, 11, 0.45);
+  background: var(--knot-color-warning-soft);
+}
+
+.knot-check__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--knot-color-primary-soft);
+  color: var(--knot-color-primary-strong);
+  font-size: 16px;
+}
+
+.knot-check.is-warn .knot-check__icon {
+  background: rgba(245, 158, 11, 0.18);
+  color: var(--knot-color-warning);
+}
+
+.knot-check__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--knot-color-text);
+}
+
+.knot-check__detail {
+  font-size: 12px;
+  color: var(--knot-color-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.knot-check__status {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.knot-check.is-ok .knot-check__status {
+  color: var(--knot-color-success);
+}
+
+.knot-check.is-warn .knot-check__status {
+  color: var(--knot-color-warning);
+}
+
+/* ---------- Feature cards ---------- */
+
+.knot-card--feature {
+  padding: 26px;
+}
+
+.knot-feature__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 16px;
+  background: var(--knot-color-primary-soft);
+  color: var(--knot-color-primary-strong);
+}
+
+.knot-feature__icon--accent {
+  background: var(--knot-color-accent-soft);
+  color: var(--knot-color-accent);
+}
+
+.knot-feature__icon--success {
+  background: var(--knot-color-success-soft);
+  color: var(--knot-color-success);
+}
+
+.knot-feature__title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--knot-color-text);
+}
+
+.knot-feature__desc {
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.knot-card--link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.knot-card--link:hover {
+  transform: translateY(-3px);
+  border-color: var(--knot-color-primary);
+  box-shadow: var(--knot-shadow-md);
+}
+
+.knot-feature__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--knot-color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.knot-card--link:hover .knot-feature__cta {
+  color: var(--knot-color-primary-strong);
+}
+
+/* ---------- Engine summary ---------- */
+
+.knot-card--engine {
+  padding: 26px 28px;
+  margin-bottom: 22px;
+  background: linear-gradient(135deg, var(--knot-color-surface) 0%, var(--knot-color-surface-soft) 100%);
+}
+
+.knot-engine__head {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.knot-engine__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--knot-color-primary-soft);
+  color: var(--knot-color-primary-strong);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.knot-engine__title {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.knot-engine__desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--knot-color-text-muted);
+  margin: 0;
+}
+
+.knot-engine__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.knot-engine__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--knot-color-surface);
+  border: 1px solid var(--knot-color-border);
+}
+
+.knot-engine__label {
+  flex: 1 1 200px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--knot-color-text);
+}
+
+.knot-engine__hint {
+  font-size: 12px;
+  color: var(--knot-color-text-soft, #64748b);
+  line-height: 1.5;
+}
+
+.knot-engine__hint code {
+  background: var(--knot-color-surface-muted, #f1f5f9);
+  border: 1px solid var(--knot-color-border, #e2e8f0);
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 11.5px;
+}
+
+.knot-engine__row--stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.knot-engine__row--stacked .knot-engine__label {
+  flex: 0 0 auto;
+}
+
+.knot-cron-url {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.knot-cron-url__input {
+  flex: 1 1 320px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--knot-color-border, #e2e8f0);
+  border-radius: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  background: var(--knot-color-surface-muted, #f8fafc);
+  color: var(--knot-color-text, #0f172a);
+}
+
+.knot-cron-url__input:focus {
+  outline: 2px solid var(--knot-color-primary, #6366f1);
+  outline-offset: 2px;
+}
+
+.knot-banner {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 18px 22px;
+  margin: 0 0 22px;
+  border-radius: 14px;
+  border: 1px solid;
+}
+
+.knot-banner--warn {
+  background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+  border-color: #fbbf24;
+  color: #78350f;
+}
+
+.knot-banner--info {
+  background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+  border-color: #818cf8;
+  color: #1e1b4b;
+}
+
+.knot-banner--info .knot-banner__icon {
+  background: rgba(99, 102, 241, 0.2);
+  color: #4338ca;
+}
+
+.knot-banner__icon {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(251, 191, 36, 0.25);
+  color: #b45309;
+  font-size: 18px;
+}
+
+.knot-banner__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.knot-banner__title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.knot-banner__text {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0 0 8px;
+}
+
+.knot-banner__text strong {
+  font-weight: 700;
+}
+
+.knot-cta__cron {
+  margin: 18px 0 12px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--knot-color-surface-muted, #f8fafc);
+  border: 1px dashed var(--knot-color-border, #e2e8f0);
+}
+
+.knot-cta__cron-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--knot-color-primary, #6366f1);
+  font-size: 14px;
+}
+
+.knot-cta__cron-text {
+  font-size: 13px;
+  color: var(--knot-color-text-soft, #64748b);
+  line-height: 1.55;
+  margin: 0 0 12px;
+}
+
+.knot-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.knot-pill--ok {
+  background: var(--knot-color-success-soft);
+  color: var(--knot-color-success);
+}
+
+.knot-pill--warn {
+  background: var(--knot-color-warning-soft);
+  color: var(--knot-color-warning);
+}
+
+.knot-btn--xs {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.knot-cta__hint {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--knot-color-text-soft);
+  font-style: italic;
+}
+
+/* ---------- CTA ---------- */
+
+.knot-card--cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px;
+  background: var(--knot-color-surface);
+  border: 1px solid var(--knot-color-border);
+  border-radius: var(--knot-radius-md);
+  box-shadow: var(--knot-shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.knot-card--cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--knot-gradient-soft);
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.knot-card--cta > * {
+  position: relative;
+  z-index: 1;
+}
+
+.knot-cta__state {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.knot-cta__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: var(--knot-color-surface);
+  border: 1px solid var(--knot-color-border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--knot-color-primary);
+  box-shadow: var(--knot-shadow-xs);
+  flex-shrink: 0;
+}
+
+.knot-cta__icon--pulse {
+  animation: knot-pulse-soft 3s var(--knot-ease) infinite;
+}
+
+.knot-cta__state--success .knot-cta__icon {
+  background: var(--knot-gradient-success);
+  border-color: transparent;
+  color: #fff;
+}
+
+.knot-cta__state--warn .knot-cta__icon {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border-color: transparent;
+  color: #fff;
+}
+
+.knot-cta__title {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--knot-color-text);
+}
+
+.knot-cta__desc {
+  font-size: 14px;
+}
+
+.knot-cta__actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ---------- Buttons ---------- */
+
+.knot-inline-form {
+  margin: 0;
+  padding: 0;
+}
+
+.knot-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  border-radius: var(--knot-radius-sm);
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--knot-duration) var(--knot-ease),
+              box-shadow var(--knot-duration) var(--knot-ease),
+              background-color var(--knot-duration) var(--knot-ease);
+}
+
+.knot-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.knot-btn--primary {
+  background: var(--knot-gradient-hero);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35);
+}
+
+.knot-btn--primary:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(99, 102, 241, 0.45);
+}
+
+.knot-btn--ghost {
+  background: var(--knot-color-surface);
+  color: var(--knot-color-text);
+  border-color: var(--knot-color-border-strong);
+  border-width: 1.5px;
+  font-weight: 700;
+}
+
+.knot-btn--ghost i {
+  color: var(--knot-color-primary);
+}
+
+.knot-btn--ghost:hover {
+  background: var(--knot-color-primary-soft);
+  border-color: var(--knot-color-primary);
+  color: var(--knot-color-primary-strong);
+}
+
+@media (prefers-color-scheme: dark) {
+  .knot-btn--ghost {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: var(--knot-color-text);
+  }
+  .knot-btn--ghost i {
+    color: #c7c9ff;
+  }
+  .knot-btn--ghost:hover {
+    background: rgba(99, 102, 241, 0.22);
+    border-color: var(--knot-color-primary);
+    color: #ffffff;
+  }
+}
+
+/* ---------- Footer ---------- */
+
+.knot-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--knot-color-border);
+  font-size: 12.5px;
+  color: var(--knot-color-text-soft);
+}
+
+.knot-footer__brand {
+  font-weight: 700;
+  color: var(--knot-color-text);
+}
+
+.knot-footer__sep {
+  opacity: 0.4;
+}
+
+/* ---------- Animations ---------- */
+
+@keyframes knot-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.35); }
+  50%      { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+}
+
+@keyframes knot-pulse-soft {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
+
+@keyframes knot-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes knot-float {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(20px, -30px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knot-hero__bg::before,
+  .knot-hero__bg::after,
+  .knot-hero__dot,
+  .knot-progress__fill::after,
+  .knot-cta__icon--pulse {
+    animation: none;
+  }
+  .knot-card,
+  .knot-step,
+  .knot-btn--primary {
+    transition: none;
+  }
+}
+
+/* ---------- App shell (placeholder for editor) ---------- */
+
+.knot-app-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr 340px;
+  min-height: 580px;
+  background: var(--knot-color-surface);
+  border-radius: var(--knot-radius-md);
+  border: 1px solid var(--knot-color-border);
+  box-shadow: var(--knot-shadow-sm);
+  overflow: hidden;
+}

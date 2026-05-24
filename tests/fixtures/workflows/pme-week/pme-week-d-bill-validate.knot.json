@@ -1,0 +1,56 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-02T12:00:00Z",
+  "workflow": {
+    "label": "PMEw3-WEEK-D — BILL_VALIDATE checkpoint",
+    "description": "E2E PME week: customer invoice validated.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "PMEw3_WEEK_D",
+        "label": "PMEw3-WEEK-D — BILL_VALIDATE checkpoint",
+        "tags": ["pme-week"],
+        "settings": { "timeoutSeconds": 120, "errorPolicy": "stop", "logPayloads": false }
+      },
+      "nodes": [
+        {
+          "id": "tr_d",
+          "type": "trigger.dolibarr_event",
+          "label": "Invoice validated",
+          "position": { "x": 40, "y": 120 },
+          "config": { "events": ["BILL_VALIDATE"] }
+        },
+        {
+          "id": "fetch_d",
+          "type": "dolibarr.object",
+          "label": "Load facture",
+          "position": { "x": 320, "y": 120 },
+          "config": {
+            "operation": "fetch",
+            "objectType": "facture",
+            "id": "{{$json.objectId}}"
+          }
+        },
+        {
+          "id": "al_d",
+          "type": "notification.alert",
+          "label": "Audit only",
+          "position": { "x": 600, "y": 120 },
+          "config": {
+            "title": "PME-WEEK facture validée",
+            "message": "ref={{$json.object.ref}}",
+            "severity": "info",
+            "tag": "PMW-D",
+            "channels": {
+              "audit": { "enabled": true }
+            }
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e_td_fd", "source": "tr_d", "target": "fetch_d", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e_fd_ad", "source": "fetch_d", "target": "al_d", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

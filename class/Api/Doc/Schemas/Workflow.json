@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required": ["id", "ref", "label", "isActive", "entity"],
+  "properties": {
+    "id": { "type": "integer" },
+    "ref": { "type": "string", "maxLength": 64 },
+    "label": { "type": "string", "maxLength": 255 },
+    "description": { "type": ["string", "null"] },
+    "isActive": { "type": "boolean" },
+    "entity": { "type": "integer" },
+    "definitionVersion": { "type": "integer" },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  }
+}

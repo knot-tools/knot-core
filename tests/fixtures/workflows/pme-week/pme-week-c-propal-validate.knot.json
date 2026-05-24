@@ -1,0 +1,56 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-05-02T12:00:00Z",
+  "workflow": {
+    "label": "PMEw3-WEEK-C — PROPAL_VALIDATE checkpoint",
+    "description": "E2E PME week: validated proposal snapshot.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "PMEw3_WEEK_C",
+        "label": "PMEw3-WEEK-C — PROPAL_VALIDATE checkpoint",
+        "tags": ["pme-week"],
+        "settings": { "timeoutSeconds": 120, "errorPolicy": "stop", "logPayloads": false }
+      },
+      "nodes": [
+        {
+          "id": "tr_c",
+          "type": "trigger.dolibarr_event",
+          "label": "Propal validated",
+          "position": { "x": 40, "y": 120 },
+          "config": { "events": ["PROPAL_VALIDATE"] }
+        },
+        {
+          "id": "fetch_c",
+          "type": "dolibarr.object",
+          "label": "Load propal",
+          "position": { "x": 320, "y": 120 },
+          "config": {
+            "operation": "fetch",
+            "objectType": "propal",
+            "id": "{{$json.objectId}}"
+          }
+        },
+        {
+          "id": "al_c",
+          "type": "notification.alert",
+          "label": "Audit only",
+          "position": { "x": 600, "y": 120 },
+          "config": {
+            "title": "PME-WEEK propal validée",
+            "message": "ref={{$json.object.ref}}",
+            "severity": "info",
+            "tag": "PMW-C",
+            "channels": {
+              "audit": { "enabled": true }
+            }
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e_tc_fc", "source": "tr_c", "target": "fetch_c", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e_fc_ac", "source": "fetch_c", "target": "al_c", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

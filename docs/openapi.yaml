@@ -1,0 +1,545 @@
+
+openapi: 3.1.0
+info:
+  title: Knot internal API
+  version: 2.5.0
+  description: "Internal REST API consumed by the Knot frontend (Vue 3).
+All endpoints require an authenticated Dolibarr session and a CSRF token on mutating verbs unless explicitly stated.
+"
+  license:
+    name: GPL-3.0-or-later
+tags:
+  - name: operations
+    description: Audit, onboarding, and operational endpoints
+  - name: catalog
+    description: Connector and module discovery
+  - name: credentials
+    description: Encrypted credential vault
+  - name: executions
+    description: Workflow execution history and control
+  - name: templates
+    description: Workflow templates
+  - name: licensing
+    description: Licence status and activation
+  - name: marketplace
+    description: Marketplace catalogue
+  - name: metrics
+    description: Dashboard metrics
+  - name: workflows
+    description: Workflow CRUD and editor API
+servers:
+  - url: "https://{instance}/custom/knot"
+    variables:
+      instance:
+        default: crm.example.com
+paths:
+  /api/audit.php:
+    get:
+      summary: Query the audit log (sensitive operations only)
+      tags:
+        - operations
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "500":
+          description: Internal server error
+      description: "Returns rows from `llx_knot_audit_log` filtered by entity.
+Requires **`workflow.read`** or administrator.
+
+Query: `action_type` / `entity_type` (alnum plus `._-`, max 128); aliases `actionType` / `entityType`; `q` server-side search (truncated 200 chars, restricthtml); `user_id`, `since`, `limit` (default 100, max 500), `offset`. `format=csv` exports up to 5000 rows with the same filters and records `audit.export_csv`.
+"
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->read
+  /api/connectors.php:
+    get:
+      summary: Discover registered connectors and their JSON schema
+      tags:
+        - catalog
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "500":
+          description: Internal server error
+      description: "Returns the connectors discovered by the {@see Knot\\Connectors\\ConnectorRegistry}
+including those provided by Knot Pro Pack when its license is valid.
+Connectors gated by an inactive licence are returned with `available=false`
+so the editor can render them locked instead of hiding them.
+"
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->read
+  /api/credentials.php:
+    get:
+      summary: List, create, update or delete credentials (encrypted AES-256-GCM at rest)
+      tags:
+        - credentials
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "400":
+          description: Bad request — payload invalid or schema mismatch
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "404":
+          description: Not found
+        "500":
+          description: Internal server error
+      description: "Secrets are never returned in clear; the response only echoes a masked
+preview. POST/PUT/DELETE require a CSRF token in `X-Knot-Csrf` and the
+`knot->credential->write` permission.
+"
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->credential->read
+  /api/execute.php:
+    post:
+      summary: Execute a workflow synchronously or asynchronously
+      tags:
+        - executions
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "202":
+          description: HTTP 202
+        "400":
+          description: Bad request — payload invalid or schema mismatch
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "404":
+          description: Not found
+        "500":
+          description: Internal server error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Envelope"
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->execute
+  /api/executions.php:
+    get:
+      summary: List recent workflow executions or fetch a single one with its logs
+      tags:
+        - executions
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "400":
+          description: Bad request — payload invalid or schema mismatch
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "404":
+          description: Not found
+        "500":
+          description: Internal server error
+      description: "List endpoint accepts optional `workflow_id`, `limit`, `offset`, and `status`. Allowed `status` values: `queued`, `running`, `success`, `error`, `timeout`, `cancelled`, and aggregate `failed` (matches `error` and `timeout`)."
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->read
+  /api/gallery.php:
+    get:
+      summary: Proxy for the public knot-templates gallery
+      tags:
+        - templates
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "400":
+          description: Bad request — payload invalid or schema mismatch
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "404":
+          description: Not found
+        "502":
+          description: Bad gateway — upstream dependency failed
+      description: "Without `slug`, returns the gallery index. With `slug=<category/name>`,
+returns the corresponding workflow JSON ready to import."
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->read
+  /api/health.php:
+    get:
+      summary: Module healthcheck (tables, schedules, executions, license dev mode)
+      tags:
+        - operations
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "500":
+          description: Internal server error
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->read
+  /api/license_status.php:
+    get:
+      summary: Inspect the active licences for installed Knot extensions
+      tags:
+        - licensing
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "500":
+          description: Internal server error
+      description: "Returns one entry per discovered extension manifest with its
+validation status (`valid`, `expired`, `not_required`,
+`invalid_signature`…), expiry date and issuer where available.
+"
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->read
+  /api/marketplace.php:
+    get:
+      summary: Curated marketplace index of Knot extensions
+      tags:
+        - marketplace
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "404":
+          description: Not found
+        "502":
+          description: Bad gateway — upstream dependency failed
+      description: "Reads the curated catalog (extensions + mirrored templates metadata) aggregated for the Knot SPA Marketplace view.
+
+Requires `knot.workflow.read`.
+
+**HTTP 403** with `{ success: false, error.code = marketplace_ui_disabled }` when the Dolibarr constant **`KNOT_MARKETPLACE_UI_ENABLED`** disables the catalog aggregator (license activation endpoints stay on separate routes). Administrators toggle this from **Knot → Setup → Marketplace**."
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->read
+  /api/metrics.php:
+    get:
+      summary: Prometheus metrics endpoint (or JSON for the dashboard heatmap)
+      tags:
+        - metrics
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "404":
+          description: Not found
+      description: "Gated by `KNOT_METRICS_PROMETHEUS_ENABLED`. Authenticated either by
+bearer token (`KNOT_METRICS_BEARER_TOKEN`) or by being called from localhost.
+Pass `?format=json` to receive structured JSON for the dashboard."
+  /api/onboarding.php:
+    get:
+      summary: First-run wizard precondition snapshot
+      tags:
+        - operations
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->read
+    post:
+      summary: Mark wizard completed / reset / import starter templates
+      tags:
+        - operations
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "201":
+          description: Created
+        "400":
+          description: Bad request — payload invalid or schema mismatch
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "405":
+          description: HTTP 405
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: admin
+  /api/workflows.php:
+    get:
+      summary: List workflows for the current entity
+      tags:
+        - workflows
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkflowList"
+        "400":
+          description: Bad request — payload invalid or schema mismatch
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "500":
+          description: Internal server error
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->read
+    post:
+      summary: Create a new workflow
+      tags:
+        - workflows
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad request — payload invalid or schema mismatch
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "422":
+          description: Unprocessable entity
+        "500":
+          description: Internal server error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Workflow"
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->write
+    patch:
+      summary: Update an existing workflow
+      tags:
+        - workflows
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "400":
+          description: Bad request — payload invalid or schema mismatch
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "404":
+          description: Not found
+        "409":
+          description: Conflict
+        "500":
+          description: Internal server error
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Workflow"
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->write
+    delete:
+      summary: Delete a workflow (soft delete via `is_active = 0`)
+      tags:
+        - workflows
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Envelope"
+        "401":
+          description: Unauthorised — Dolibarr session missing or expired
+        "403":
+          description: Forbidden — current user lacks required permission
+        "404":
+          description: Not found
+        "500":
+          description: Internal server error
+      security:
+        - dolibarrSession: []
+          csrfToken: []
+      x-knot-permission: knot->workflow->write
+components:
+  schemas:
+    Envelope:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+        data:
+          description: Response payload (object or array depending on endpoint).
+          nullable: true
+        error:
+          type:
+            - object
+            - "null"
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type:
+                - object
+                - "null"
+        meta:
+          type:
+            - object
+            - "null"
+    Workflow:
+      type: object
+      required:
+        - id
+        - ref
+        - label
+        - isActive
+        - entity
+      properties:
+        id:
+          type: integer
+        ref:
+          type: string
+          maxLength: 64
+        label:
+          type: string
+          maxLength: 255
+        description:
+          type:
+            - string
+            - "null"
+        isActive:
+          type: boolean
+        entity:
+          type: integer
+        definitionVersion:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    WorkflowList:
+      allOf:
+        - $ref: "#/components/schemas/Envelope"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                workflows:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Workflow"
+  securitySchemes:
+    dolibarrSession:
+      type: apiKey
+      name: DOLSESSID
+      in: cookie
+    csrfToken:
+      type: apiKey
+      name: X-Knot-Csrf
+      in: header

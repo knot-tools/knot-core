@@ -1,0 +1,25 @@
+<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+  </defs>
+  <g stroke="url(#g)" stroke-width="8" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M 128 54 L 192 91 L 192 165 L 128 202 L 64 165 L 64 91 Z"/>
+    <line x1="128" y1="128" x2="128" y2="54"/>
+    <line x1="128" y1="128" x2="192" y2="91"/>
+    <line x1="128" y1="128" x2="192" y2="165"/>
+    <line x1="128" y1="128" x2="128" y2="202"/>
+    <line x1="128" y1="128" x2="64" y2="165"/>
+    <line x1="128" y1="128" x2="64" y2="91"/>
+  </g>
+  <circle cx="128" cy="54" r="12" fill="url(#g)"/>
+  <circle cx="192" cy="91" r="12" fill="url(#g)"/>
+  <circle cx="192" cy="165" r="12" fill="url(#g)"/>
+  <circle cx="128" cy="202" r="12" fill="url(#g)"/>
+  <circle cx="64" cy="165" r="12" fill="url(#g)"/>
+  <circle cx="64" cy="91" r="12" fill="url(#g)"/>
+  <circle cx="128" cy="128" r="16" fill="url(#g)"/>
+  <circle cx="128" cy="128" r="6" fill="white"/>
+</svg>

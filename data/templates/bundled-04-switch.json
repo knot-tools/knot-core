@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.0",
+  "workflow": {},
+  "nodes": [
+    {
+      "id": "t_manual",
+      "type": "trigger.manual",
+      "label": "Start",
+      "position": { "x": 60, "y": 140 },
+      "config": {}
+    },
+    {
+      "id": "s_kind",
+      "type": "logic.set",
+      "label": "Kind",
+      "position": { "x": 300, "y": 140 },
+      "config": { "values": { "kind": "alpha" } }
+    },
+    {
+      "id": "sw",
+      "type": "logic.switch",
+      "label": "Route",
+      "position": { "x": 540, "y": 140 },
+      "config": {
+        "expression": "{{$json.kind}}",
+        "cases": [
+          { "value": "alpha", "output": "case_1" },
+          { "value": "beta", "output": "case_2" }
+        ]
+      }
+    },
+    {
+      "id": "s_out",
+      "type": "logic.set",
+      "label": "Result",
+      "position": { "x": 820, "y": 140 },
+      "config": { "values": { "picked": "switch-done" } }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "t_manual",
+      "target": "s_kind",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    },
+    {
+      "id": "e2",
+      "source": "s_kind",
+      "target": "sw",
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "success"
+    },
+    {
+      "id": "e3",
+      "source": "sw",
+      "target": "s_out",
+      "sourceHandle": "case_1",
+      "targetHandle": "main",
+      "type": "success"
+    }
+  ]
+}

@@ -1,0 +1,277 @@
+/**
+ * Knot Design Tokens
+ * Copyright (C) 2026 Knot
+ * Licensed under GPL-3.0-or-later
+ *
+ * Source-of-truth for Knot's design system.
+ * Consumed by:
+ *   - css/knot.css (server-rendered admin pages)
+ *   - frontend/tailwind.config.ts (Vue editor bundle)
+ *
+ * NEVER hard-code colors, radius, shadows or spacing in Knot UI files.
+ * Always reference the variables defined here.
+ */
+
+:root {
+  /* ----- Radius ----- */
+  --knot-radius-sm: 8px;
+  --knot-radius-md: 14px;
+  --knot-radius-lg: 22px;
+  --knot-radius-pill: 999px;
+
+  /* ----- Spacing ----- */
+  --knot-space-1: 4px;
+  --knot-space-2: 8px;
+  --knot-space-3: 12px;
+  --knot-space-4: 16px;
+  --knot-space-5: 20px;
+  --knot-space-6: 24px;
+  --knot-space-8: 32px;
+  --knot-space-10: 40px;
+  --knot-space-12: 48px;
+  --knot-space-16: 64px;
+
+  /* ----- Shadows ----- */
+  --knot-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --knot-shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+  --knot-shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
+  --knot-shadow-lg: 0 28px 60px rgba(15, 23, 42, 0.12);
+
+  /* ----- Surfaces ----- */
+  --knot-color-bg: #f6f7fb;
+  --knot-color-surface: #ffffff;
+  --knot-color-surface-soft: #f9fafc;
+  --knot-color-border: #e6e9f2;
+  --knot-color-border-strong: #d3d8e6;
+
+  /* ----- Text ----- */
+  --knot-color-text: #0f172a;
+  --knot-color-text-muted: #5b6478;
+  --knot-color-text-soft: #8b94a8;
+
+  /* ----- Brand ----- */
+  --knot-color-primary: #6366f1;
+  --knot-color-primary-soft: #eef2ff;
+  --knot-color-primary-strong: #4338ca;
+  --knot-color-accent: #8b5cf6;
+  --knot-color-accent-soft: #f3eaff;
+
+  /* ----- Status ----- */
+  --knot-color-success: #10b981;
+  --knot-color-success-soft: #ecfdf5;
+  --knot-color-warning: #f59e0b;
+  --knot-color-warning-soft: #fff7ed;
+  --knot-color-danger: #ef4444;
+  --knot-color-danger-soft: #fef2f2;
+  --knot-color-info: #0ea5e9;
+  --knot-color-info-soft: #f0f9ff;
+
+  /* ----- Gradients ----- */
+  --knot-gradient-hero: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  --knot-gradient-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(236, 72, 153, 0.08));
+  --knot-gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --knot-gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --knot-gradient-danger: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+
+  /* ----- Premium (paid add-ons) -----
+   * Restrained gold palette tuned for the Knot dashboard: warm but
+   * not garish, readable on the indigo brand background, and dark
+   * enough that a "Pro" badge stays legible against it. Used only
+   * by paid extensions (`category: "premium"` in their manifest)
+   * in the sidebar and any future "upgrade to Pro" surfaces. Keep
+   * the palette narrow on purpose — too many gold tints would
+   * cheapen the signal. */
+  --knot-color-premium-gold: #c8a657;
+  --knot-color-premium-gold-soft: #fdf6e3;
+  --knot-color-premium-gold-strong: #8a6a1d;
+  --knot-color-premium-text-on-gold: #3a2c08;
+  --knot-gradient-premium: linear-gradient(135deg, #f5e9c8 0%, #e7c97a 50%, #c8a657 100%);
+  --knot-gradient-premium-subtle: linear-gradient(135deg, rgba(232, 201, 122, 0.18) 0%, rgba(200, 166, 87, 0.10) 100%);
+  --knot-shadow-premium: 0 2px 8px rgba(200, 166, 87, 0.28);
+
+  /* ----- Motion ----- */
+  --knot-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --knot-duration: 240ms;
+  --knot-duration-fast: 120ms;
+  --knot-duration-slow: 480ms;
+
+  /* ----- Typography ----- */
+  --knot-font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --knot-font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --knot-font-size-xs: 12px;
+  --knot-font-size-sm: 13px;
+  --knot-font-size-base: 14px;
+  --knot-font-size-md: 16px;
+  --knot-font-size-lg: 19px;
+  --knot-font-size-xl: 22px;
+  --knot-font-size-2xl: 28px;
+  --knot-font-size-3xl: 34px;
+
+  /* ----- Refresh 2026 — Glassmorphism v2 (subtle) ----- */
+  /* Used by overlays, command palette, modals. Combines backdrop-blur
+   * with a translucent surface so content stays readable above busy
+   * dashboards without the heavy 2020-era frosted-glass look. */
+  --knot-glass-bg: rgba(255, 255, 255, 0.72);
+  --knot-glass-bg-strong: rgba(255, 255, 255, 0.86);
+  --knot-glass-border: rgba(15, 23, 42, 0.06);
+  --knot-glass-blur: 18px;
+
+  /* ----- Refresh 2026 — Mesh gradient hero ----- */
+  /* Static layered radial gradients evoking calm depth. Cheap to render
+   * (no canvas), prefers-reduced-motion safe. Used on Dashboard hero
+   * card and onboarding wizard headers. */
+  --knot-mesh-bg:
+    radial-gradient(at 18% 22%, rgba(99, 102, 241, 0.18) 0%, transparent 42%),
+    radial-gradient(at 82% 18%, rgba(236, 72, 153, 0.14) 0%, transparent 38%),
+    radial-gradient(at 70% 82%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
+    linear-gradient(135deg, #f8f9ff 0%, #f4f3ff 100%);
+
+  /* ----- Refresh 2026 — Noise texture ----- */
+  /* Inline SVG fractal noise. ~1.6 KB base64. Applied at 4-6 % opacity
+   * on hero surfaces to break up flat gradients on high-resolution
+   * displays. */
+  --knot-noise:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+
+  /* ----- Refresh 2026 — Skeleton loaders ----- */
+  /* Two-tone bg used by KSkeleton. The animation pulses opacity rather
+   * than the position so it stays cheap on long lists. */
+  --knot-skeleton-base: #eef0f6;
+  --knot-skeleton-highlight: #f7f8fb;
+
+  /* ----- Refresh 2026 — Pro Pack badge ----- */
+  --knot-pro-badge-bg: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --knot-pro-badge-fg: #ffffff;
+  --knot-pro-lock-bg: rgba(99, 102, 241, 0.08);
+  --knot-pro-lock-border: rgba(99, 102, 241, 0.22);
+
+  /* ----- Phase 6g — Density modes -----
+   * Three-level density scale consumed by dashboards and extensions
+   * to adapt to the operator's preference (default = comfortable).
+   * The shell selects via `html[data-knot-density="cozy|dense"]`;
+   * the absence of the attribute keeps the default values below. */
+  --knot-density-pad-x: var(--knot-space-4);
+  --knot-density-pad-y: var(--knot-space-4);
+  --knot-density-row: 40px;
+  --knot-density-card-pad: var(--knot-space-5);
+  --knot-density-card-gap: var(--knot-space-4);
+  --knot-density-font: var(--knot-font-size-base);
+
+  /* ----- Phase 6g — Mission Control shell -----
+   * Geometric primitives shared by the Knot Core editor and the
+   * Knot Migration mission control shell. Centralising them here
+   * keeps both shells visually aligned when one extension renders
+   * inside another (e.g. preview.php?mode=migration). */
+  --knot-mc-sidebar-w: 240px;
+  --knot-mc-sidebar-w-collapsed: 64px;
+  --knot-mc-topbar-h: 56px;
+  /* Viewport-fixed toasts/alerts: sit below Dolibarr menu + bookmarks (override on #knot-app if needed). */
+  --knot-dolibarr-chrome-top: 4.5rem;
+  --knot-mc-drawer-w: 360px;
+  --knot-mc-content-max: 1440px;
+  --knot-mc-card-radius: var(--knot-radius-md);
+  --knot-mc-section-gap: var(--knot-space-8);
+
+  /* ----- Refresh 2026 — Toast surfaces ----- */
+  /* Slightly tinted-and-bordered so each level reads at a glance even
+   * for users who can't easily distinguish hue. */
+  --knot-toast-success-bg: #ecfdf5;
+  --knot-toast-success-border: #6ee7b7;
+  --knot-toast-warning-bg: #fffbeb;
+  --knot-toast-warning-border: #fcd34d;
+  --knot-toast-danger-bg: #fef2f2;
+  --knot-toast-danger-border: #fca5a5;
+  --knot-toast-info-bg: #f0f9ff;
+  --knot-toast-info-border: #7dd3fc;
+}
+
+html[data-knot-theme="dark"] {
+  --knot-color-bg: #0b1020;
+  --knot-color-surface: #11172b;
+  --knot-color-surface-soft: #161d33;
+  --knot-color-border: #2a3252;
+  --knot-color-border-strong: #3a4368;
+  --knot-color-text: #f1f4ff;
+  --knot-color-text-muted: #c5cce6;
+  --knot-color-text-soft: #98a2c2;
+  --knot-color-primary: #a5b4fc;
+  --knot-color-primary-strong: #c7d2fe;
+  --knot-color-primary-soft: rgba(129, 140, 248, 0.18);
+  --knot-color-accent: #c4b5fd;
+  --knot-color-accent-soft: rgba(167, 139, 250, 0.18);
+  --knot-color-success: #34d399;
+  --knot-color-success-soft: rgba(52, 211, 153, 0.18);
+  --knot-color-warning: #fbbf24;
+  --knot-color-warning-soft: rgba(251, 191, 36, 0.18);
+  --knot-color-danger: #fca5a5;
+  --knot-color-danger-soft: rgba(248, 113, 113, 0.18);
+  --knot-color-info: #7dd3fc;
+  --knot-color-info-soft: rgba(125, 211, 252, 0.18);
+  --knot-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --knot-shadow-md: 0 16px 36px rgba(0, 0, 0, 0.45);
+  --knot-shadow-lg: 0 28px 60px rgba(0, 0, 0, 0.55);
+
+  /* Refresh 2026 dark overrides */
+  --knot-glass-bg: rgba(17, 23, 43, 0.72);
+  --knot-glass-bg-strong: rgba(17, 23, 43, 0.88);
+  --knot-glass-border: rgba(255, 255, 255, 0.06);
+  --knot-mesh-bg:
+    radial-gradient(at 18% 22%, rgba(129, 140, 248, 0.22) 0%, transparent 42%),
+    radial-gradient(at 82% 18%, rgba(244, 114, 182, 0.16) 0%, transparent 38%),
+    radial-gradient(at 70% 82%, rgba(52, 211, 153, 0.14) 0%, transparent 40%),
+    linear-gradient(135deg, #0f1530 0%, #161d3b 100%);
+  --knot-skeleton-base: #1a2240;
+  --knot-skeleton-highlight: #232c52;
+  --knot-pro-lock-bg: rgba(165, 180, 252, 0.10);
+  --knot-pro-lock-border: rgba(165, 180, 252, 0.28);
+  --knot-toast-success-bg: rgba(52, 211, 153, 0.16);
+  --knot-toast-success-border: rgba(52, 211, 153, 0.42);
+  --knot-toast-warning-bg: rgba(251, 191, 36, 0.16);
+  --knot-toast-warning-border: rgba(251, 191, 36, 0.42);
+  --knot-toast-danger-bg: rgba(248, 113, 113, 0.16);
+  --knot-toast-danger-border: rgba(248, 113, 113, 0.42);
+  --knot-toast-info-bg: rgba(125, 211, 252, 0.16);
+  --knot-toast-info-border: rgba(125, 211, 252, 0.42);
+}
+
+/* ----- Refresh 2026 — Reduced motion ----- */
+/* Respect user setting: drop animations entirely instead of scaling
+ * them down. Keeps the UI calm and accessible. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --knot-duration: 0ms;
+    --knot-duration-fast: 0ms;
+    --knot-duration-slow: 0ms;
+  }
+}
+
+/* ----- Phase 6g — Density mode overrides ----- */
+html[data-knot-density="cozy"] {
+  --knot-density-pad-x: var(--knot-space-6);
+  --knot-density-pad-y: var(--knot-space-5);
+  --knot-density-row: 48px;
+  --knot-density-card-pad: var(--knot-space-6);
+  --knot-density-card-gap: var(--knot-space-5);
+  --knot-density-font: 15px;
+}
+
+html[data-knot-density="dense"] {
+  --knot-density-pad-x: var(--knot-space-3);
+  --knot-density-pad-y: var(--knot-space-2);
+  --knot-density-row: 32px;
+  --knot-density-card-pad: var(--knot-space-4);
+  --knot-density-card-gap: var(--knot-space-3);
+  --knot-density-font: var(--knot-font-size-sm);
+}
+
+/*
+ * Note: dark mode is opt-in via the DarkModeToggle (frontend) which sets
+ * `data-knot-theme="dark"` on <html> and persists `knot.theme` in
+ * localStorage. Server-rendered pages (admin/setup.php) read the same key
+ * via a tiny inline script before paint so the theme stays consistent
+ * across the whole module.
+ *
+ * We deliberately do NOT auto-switch on `prefers-color-scheme: dark` to
+ * avoid a mismatch between the Vue editor (which defaults to light) and
+ * the PHP admin pages (which would otherwise auto-dark on a dark OS).
+ */

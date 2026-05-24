@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Public knot-core repo: filtered tests per docs/legal/tests-leak-audit.md -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         executionOrder="depends,defects"
+         requireCoverageMetadata="false"
+         beStrictAboutCoverageMetadata="false"
+         beStrictAboutOutputDuringTests="true"
+         failOnRisky="true"
+         failOnWarning="true">
+    <testsuites>
+        <testsuite name="Knot">
+            <directory>tests</directory>
+            <exclude>tests/fixtures</exclude>
+            <exclude>tests/stubs</exclude>
+            <exclude>tests/e2e</exclude>
+            <exclude>tests/MissionInternal</exclude>
+            <exclude>tests/Scripts</exclude>
+            <exclude>tests/Migration/ProPackManifestParityTest.php</exclude>
+            <exclude>tests/Licensing/OfficialExtensionManifestSignatureTest.php</exclude>
+            <exclude>tests/Unit/RealisticSeedHelpersTest.php</exclude>
+            <exclude>tests/PurgeExpiredDemoUsersTest.php</exclude>
+            <exclude>tests/Dolibarr/ObjectIntrospectorGoldenTest.php</exclude>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>class</directory>
+        </include>
+    </source>
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="memory_limit" value="-1"/>
+        <env name="KNOT_TEST" value="1"/>
+    </php>
+</phpunit>

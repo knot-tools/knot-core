@@ -1,0 +1,55 @@
+# Knot Core public repo (.gitignore) — copied by publish-to-public.sh
+# Double safety with core/.gitignore and publish-to-public.sh filters.
+
+# Vitest coverage — clover.xml embeds absolute dev machine paths
+frontend/coverage/
+coverage/
+**/clover.xml
+*.lcov
+lcov.info
+
+# Dependencies (regenerate per README)
+/vendor/
+/node_modules/
+/frontend/node_modules/
+
+# Build / local artifacts
+/build/
+.phpunit.cache/
+*.min.js.map
+*.min.css.map
+
+# Environment — never commit secrets
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.DS_Store
+*.swp
+
+# Internal paths — must never appear in knot-core or distribution ZIP
+/docs/legal/
+/docs/architecture/decisions/
+/docs/decisions/
+/scripts/
+/examples/_test_e2e/
+
+# Playwright / demo VM (public tree keeps PHPUnit license harness only)
+/tests/e2e/*
+!/tests/e2e/Support/
+!/tests/e2e/fixtures/
+/tests/e2e/Support/*
+!/tests/e2e/Support/LicenseServerHarness.php
+/tests/e2e/fixtures/*
+!/tests/e2e/fixtures/license-server.php
+/tests/MissionInternal/
+/tests/Scripts/
+/tests/fixtures/workflows/mission-internal/
+
+# Demo VM secrets (private repo only)
+/demo/
+
+# TLS / keys
+*.pem
+*.key

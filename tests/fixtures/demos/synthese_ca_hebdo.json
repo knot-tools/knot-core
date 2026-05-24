@@ -1,0 +1,21 @@
+{
+  "ref": "KNOT-SHOWCASE-005",
+  "label": "Synthèse CA hebdo (lundi 8h)",
+  "description": "Cron lundi 8h : SQL CA semaine + résumé IA + email à l'équipe direction.",
+  "category": "reporting",
+  "icon": "bar-chart",
+  "metadata": { "showcase": true, "demoSource": "showcase" },
+  "definition": {
+    "nodes": [
+      { "id": "trg", "type": "trigger.cron", "position": { "x": 50, "y": 80 }, "data": { "type": "trigger.cron", "label": "Lundi 8h", "config": { "expression": "0 8 * * 1" } } },
+      { "id": "sql", "type": "action.dolibarr.sql", "position": { "x": 320, "y": 80 }, "data": { "type": "action.dolibarr.sql", "label": "CA semaine S-1", "config": { "sql": "SELECT SUM(total_ttc) AS ca FROM llx_facture WHERE datef >= DATE_SUB(NOW(), INTERVAL 7 DAY) AND fk_statut > 0" } } },
+      { "id": "summary", "type": "action.ai.prompt", "position": { "x": 600, "y": 80 }, "data": { "type": "action.ai.prompt", "label": "Résumé IA", "config": { "model": "anthropic/claude-3-haiku", "prompt": "Rédige un résumé exécutif du CA hebdomadaire {{$json.ca}}€." } } },
+      { "id": "email", "type": "action.email", "position": { "x": 880, "y": 80 }, "data": { "type": "action.email", "label": "Email direction", "config": { "to": "direction@example.com", "subject": "CA semaine S-1", "body": "{{$json.summary}}" } } }
+    ],
+    "edges": [
+      { "id": "e1", "source": "trg", "target": "sql" },
+      { "id": "e2", "source": "sql", "target": "summary" },
+      { "id": "e3", "source": "summary", "target": "email" }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "workflow": {},
+  "nodes": [
+    {
+      "id": "orphan_set",
+      "type": "logic.set",
+      "label": "No trigger demo",
+      "position": { "x": 200, "y": 120 },
+      "config": { "values": { "note": "invalid-demo" } }
+    }
+  ],
+  "edges": []
+}
