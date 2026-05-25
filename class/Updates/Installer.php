@@ -87,33 +87,57 @@ final class Installer
         clearstatcache(true);
         self::purgeDirContents(dirname($incoming));
         @rmdir(dirname($incoming));
+    }
 
-        // Keep `backup` on filesystem for manual recovery — drop pointers only.
+    /**
+     * Clears in-memory rollback pointers after migrations succeed.
+     * The `.backup.*` directory remains on disk for manual recovery.
+     */
+    public function commitSwap(): void
+    {
         $this->livePath = null;
         $this->backupPath = null;
     }
 
-    public function rollback(): void
+    public function canRollback(): bool
     {
-        $this->restoreBackupQuiet();
+        return $this->livePath !== null
+            && $this->backupPath !== null
+            && is_dir($this->backupPath);
     }
 
-    private function restoreBackupQuiet(): void
+    public function rollback(): bool
     {
+        if (!$this->canRollback()) {
+            return false;
+        }
+
         $live = $this->livePath;
         $backup = $this->backupPath;
         $this->livePath = null;
         $this->backupPath = null;
 
-        if ($backup !== null && $live !== null) {
-            if (is_dir($live)) {
-                @$this->rrmdirQuiet($live);
-            }
-            if (is_dir($backup)) {
-                @rename($backup, $live);
-            }
-            clearstatcache(true);
+        if ($backup === null || $live === null) {
+            return false;
         }
+
+        if (is_dir($live)) {
+            @$this->rrmdirQuiet($live);
+        }
+        if (!is_dir($backup)) {
+            return false;
+        }
+        if (!@rename($backup, $live)) {
+            return false;
+        }
+        clearstatcache(true);
+
+        return is_dir($live);
+    }
+
+    private function restoreBackupQuiet(): void
+    {
+        $this->rollback();
     }
 
     /**

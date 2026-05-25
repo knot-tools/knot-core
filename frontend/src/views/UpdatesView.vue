@@ -100,14 +100,35 @@ async function handleApply(slug: string) {
   try {
     const data = (await knotApi.updatesApply({ slug })) as UpdatesApplyResult;
     toast.success(t('updatesPage.applySuccess', { slug: data.slug ?? slug }));
+    const migrationCount = Array.isArray(data.migrations) ? data.migrations.length : 0;
+    if (migrationCount > 0) {
+      toast.info(t('updatesPage.migrationsApplied', { count: migrationCount }));
+    }
     await load(true);
   } catch (err) {
-    const e = err as Error & { details?: Record<string, unknown>; error_code?: string; code?: string };
+    const e = err as Error & {
+      details?: { rollback?: string; instructions?: unknown; migrations?: unknown[] };
+      error_code?: string;
+      code?: string;
+    };
     const code = e.error_code ?? e.code ?? '';
     if (code === 'release_signature_invalid') {
       toast.error(t('updatesPage.signatureInvalidTitle'), {
         body: t('updatesPage.signatureInvalidBody'),
       });
+      return;
+    }
+    if (code === 'migration_failed') {
+      const rollback = e.details?.rollback;
+      if (rollback === 'restored') {
+        toast.warning(t('updatesPage.migrationFailedRestored'), {
+          body: e.message ?? String(err),
+        });
+      } else {
+        toast.error(t('updatesPage.migrationFailedCritical'), {
+          body: e.message ?? String(err),
+        });
+      }
       return;
     }
     const instr = e.details?.instructions;

@@ -56,13 +56,17 @@ final class Migrator
                     continue;
                 }
                 $startedAt = microtime(true);
-                $status = 'applied';
                 try {
                     $this->applyFile($file);
                 } catch (\Throwable $e) {
-                    $status = 'error: ' . substr($e->getMessage(), 0, 220);
+                    throw new \RuntimeException(
+                        sprintf('Migration %s/%s failed: %s', $version, $name, $e->getMessage()),
+                        0,
+                        $e,
+                    );
                 }
                 $duration = (int) ((microtime(true) - $startedAt) * 1000);
+                $status = 'applied';
                 $this->recordHistory($version, $name, $status, $duration);
                 $applied[] = [
                     'version' => $version,

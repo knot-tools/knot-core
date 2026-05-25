@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Knot\Extension;
 
+use Knot\Updates\ExtensionPostApplyRunner;
+
 /**
  * Validates `knot-extension.json` manifests.
  *
@@ -217,6 +219,17 @@ final class ManifestSchema
             }
         }
 
+        $postApplyNorm = null;
+        if (array_key_exists('postApply', $manifest) && $manifest['postApply'] !== null) {
+            $postApplyResult = self::validatePostApply($manifest['postApply'], $namespace);
+            foreach ($postApplyResult['errors'] as $postApplyErr) {
+                $errors[] = $postApplyErr;
+            }
+            if ($postApplyResult['errors'] === []) {
+                $postApplyNorm = $postApplyResult['normalised'];
+            }
+        }
+
         if ($errors !== []) {
             return ['valid' => false, 'errors' => $errors, 'normalised' => null];
         }
@@ -235,6 +248,69 @@ final class ManifestSchema
                 'connectors' => $connectorsNorm,
                 'namespace' => $namespace,
                 'ui' => $uiNorm,
+                'postApply' => $postApplyNorm,
+            ],
+        ];
+    }
+
+    /**
+     * Validate optional postApply hook for in-product update migrations.
+     *
+     * @param mixed $postApply
+     * @return array{errors: array<int, string>, normalised: ?array<string, mixed>}
+     */
+    public static function validatePostApply($postApply, ?string $manifestNamespace): array
+    {
+        $errors = [];
+
+        if (!is_array($postApply)) {
+            return ['errors' => ['postApply must be an object'], 'normalised' => null];
+        }
+
+        $contractVersion = $postApply['contractVersion'] ?? null;
+        if (!is_int($contractVersion) && !is_string($contractVersion)) {
+            $errors[] = 'postApply.contractVersion must be an integer';
+        } else {
+            $contractInt = (int) $contractVersion;
+            if ($contractInt < 1) {
+                $errors[] = 'postApply.contractVersion must be >= 1';
+            } elseif ($contractInt > ExtensionPostApplyRunner::SUPPORTED_CONTRACT_VERSION) {
+                $errors[] = 'postApply.contractVersion is newer than this Knot Core release supports';
+            }
+        }
+
+        $autoload = $postApply['autoload'] ?? null;
+        if (!is_string($autoload) || trim($autoload) === '') {
+            $errors[] = 'postApply.autoload must be a non-empty relative path';
+        } elseif (
+            str_contains($autoload, '..')
+            || str_starts_with($autoload, '/')
+            || str_starts_with($autoload, '\\')
+        ) {
+            $errors[] = 'postApply.autoload must not contain parent directory segments';
+        }
+
+        $runner = $postApply['migrationRunner'] ?? null;
+        if (!is_string($runner) || trim($runner) === '') {
+            $errors[] = 'postApply.migrationRunner must be a non-empty FQCN string';
+        } elseif (!preg_match('/^[A-Za-z_][A-Za-z0-9_]*(\\\\[A-Za-z_][A-Za-z0-9_]*)+$/', $runner)) {
+            $errors[] = 'postApply.migrationRunner is not a valid PHP FQCN';
+        } elseif ($manifestNamespace === null || trim($manifestNamespace) === '') {
+            $errors[] = 'postApply requires manifest.namespace to validate migrationRunner';
+        } elseif (!str_starts_with($runner, rtrim($manifestNamespace, '\\') . '\\')) {
+            $errors[] = 'postApply.migrationRunner must be under manifest.namespace';
+        }
+
+        if ($errors !== []) {
+            return ['errors' => $errors, 'normalised' => null];
+        }
+
+        return [
+            'errors' => [],
+            'normalised' => [
+                'contractVersion' => (int) $contractVersion,
+                'autoload' => trim((string) $autoload),
+                'migrationRunner' => trim((string) $runner),
             ],
         ];
     }

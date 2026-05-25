@@ -48,6 +48,55 @@ Les add-ons utilisent des catégories préfixées (ex. `saas`, `communication`, 
 
 ### 4. Manifest (`knot-extension.json`)
 
+#### Hook `postApply` (migrations BDD après Apply in-product)
+
+Depuis Core **2.14+**, un add-on peut déclarer un bloc optionnel **`postApply`** pour exécuter
+des migrations SQL **après** le swap de fichiers réussi (`api/updates_apply.php`). Core ne
+hardcode jamais un slug d'extension : tout passe par le manifest + autoload de l'extension.
+
+```json
+{
+  "postApply": {
+    "contractVersion": 1,
+    "autoload": "autoload.php",
+    "migrationRunner": "Knot\\Extension\\Migration\\Migration\\Migrator"
+  }
+}
+```
+
+| Champ | Règle |
+|-------|--------|
+| `contractVersion` | Entier ≥ 1. Core **2.14** supporte uniquement `1` ; une version plus récente est rejetée à la validation manifest. |
+| `autoload` | Chemin relatif à la racine de l'extension (pas de `..`, pas de chemin absolu). Chargé une fois avant instanciation du runner. |
+| `migrationRunner` | FQCN PHP sous `manifest.namespace`. Constructeur **`($db, $extensionRoot)`**, méthode **`run(): array`** retournant des entrées `{ version, file, status, durationMs }`. |
+
+Comportement Core :
+
+- Si `postApply` est absent → Apply retourne `migrations: []` après swap.
+- Si le runner lève une exception → **rollback fichiers automatique** + HTTP **422** (rollback OK) ou **500** (rollback échoué).
+- Le **`Migrator` Core** et les Migrators officiels sont **fail-fast** : la première erreur SQL interrompt la chaîne (pas de `status: "error: …"` + continuation).
+
+**Convention fichiers SQL :** `<extensionRoot>/sql/migrations/v{semver}/NN_descriptive_name.sql`.
+
+**Convention table d'historique :** `llx_knot_<slug_sans_prefixe>_ext_history` (ex.
+`llx_knot_migration_ext_history`, `llx_knot_propack_ext_history`). La table est créée par le
+Migrator au premier run (`CREATE TABLE IF NOT EXISTS`).
+
+**DDL only :** les migrations `.sql` ne contiennent que du schéma (`CREATE` / `ALTER`). Le DML
+(seed, données multi-entité) reste dans `modKnotXxx::init()` ou `Repository::seed()` à
+l'activation module.
+
+**Politique BDD Pro Pack :** le Pro Pack consomme les primitives Core (`llx_const`,
+`llx_knot_credentials`, `llx_knot_idempotency`, `llx_knot_extension_state`, `llx_knot_audit_log`).
+Une table dédiée Pro Pack n'est justifiée que pour une donnée métier intrinsèquement liée à un
+connecteur Pro (ex. curseur de pagination Shopify). L'infra `Migrator` + table d'historique vide
+ready-to-use couvre les futures migrations sans table fourre-tout.
+
+Validation : [`ManifestSchema::validatePostApply()`](../class/Extension/ManifestSchema.php).
+Exécution : [`ExtensionPostApplyRunner`](../class/Updates/ExtensionPostApplyRunner.php).
+
+---
+
 Un add-on dépose un manifest à sa racine (exemple dans `pro-pack/knot-extension.json`) :
 
 ```json

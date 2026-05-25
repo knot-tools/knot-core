@@ -22,7 +22,7 @@ use Knot\Licensing\Bootstrap;
 use Knot\Licensing\DolistoreClient;
 use Knot\Licensing\InstanceBinder;
 use Knot\Licensing\InstallationIdentity;
-use Knot\Migration\Migrator;
+use Knot\Repository\AuditLogRepository;
 use Knot\Repository\KnotConfigRepository;
 use Knot\Updates\GithubReleasesClient;
 use Knot\Updates\Installer;
@@ -30,6 +30,7 @@ use Knot\Updates\InstallLock;
 use Knot\Updates\ReleaseVerifier;
 use Knot\Updates\LicenseActivationResolver;
 use Knot\Updates\UpdatesApplyPolicy;
+use Knot\Updates\UpdatesApplyPostSwap;
 use Knot\Updates\ZipDownloader;
 
 JsonResponse::installFatalHandler();
@@ -52,6 +53,8 @@ if (!extension_loaded('curl')) {
     JsonResponse::error('curl_required', 'PHP cURL extension is required for apply flows.', 500);
     exit;
 }
+
+@set_time_limit(600);
 
 $dataRoot = defined('DOL_DATA_ROOT') ? (string) DOL_DATA_ROOT : sys_get_temp_dir();
 $knotDataDir = rtrim($dataRoot, DIRECTORY_SEPARATOR . '/') . DIRECTORY_SEPARATOR . 'knot';
@@ -124,13 +127,27 @@ $dolistoreHttp = static function () use (
     return new DolistoreClient($baseUrlLicense, 20, $insecureTls, $releaseChannel);
 };
 
+/** @phpstan-ignore-next-line */
+$doliDbGlobal = $db;
+/** @phpstan-ignore-next-line */
+$confGlobal = $conf;
+/** @phpstan-ignore-next-line */
+$userGlobal = $user;
+
+$entityId = (int) ($confGlobal->entity ?? 1);
+$userId = isset($userGlobal->id) ? (int) $userGlobal->id : null;
+$auditRepo = new AuditLogRepository($doliDbGlobal);
+$targetVersion = trim((string) ($body['version'] ?? ''));
+
+$auditRepo->record('updates.apply.started', 'updates', null, $userId, [
+    'slug' => $slug,
+    'targetVersion' => $targetVersion !== '' ? $targetVersion : null,
+], $entityId);
+
 $migrationLog = [];
 
 $stagingParent = $knotDataDir . DIRECTORY_SEPARATOR . 'update-stage-' . bin2hex(random_bytes(6));
 $zipPath = $knotDataDir . DIRECTORY_SEPARATOR . 'update-artifact-' . bin2hex(random_bytes(5)) . '.zip';
-
-/** @phpstan-ignore-next-line */
-$doliDbGlobal = $db;
 
 $purgeTree = static function (string $path): void {
     if ($path === '') {
@@ -173,6 +190,97 @@ $rejectInvalidReleaseSignature = static function (\RuntimeException $e) use ($fa
     }
 
     throw $e;
+};
+
+/**
+ * @param array<string, mixed> $extraSuccess
+ */
+$respondMigrationFailure = static function (array $failureResult) use ($fallbackLines): void {
+    /** @var string $rollback */
+    $rollback = (string) ($failureResult['rollback'] ?? 'failed');
+    JsonResponse::error(
+        'migration_failed',
+        (string) ($failureResult['message'] ?? 'Database migration failed.'),
+        UpdatesApplyPostSwap::migrationFailureHttpStatus($rollback),
+        [
+            'instructions' => $fallbackLines,
+            'migrations' => $failureResult['migrations'] ?? [],
+            'rollback' => $rollback,
+        ],
+    );
+    exit;
+};
+
+/**
+ * @param array<string, mixed> $extraSuccess
+ */
+$swapAndMigrate = static function (
+    string $liveTarget,
+    string $prepared,
+    bool $isCore,
+    array $extraSuccess = [],
+) use (
+    $installer,
+    $doliDbGlobal,
+    $auditRepo,
+    $entityId,
+    $userId,
+    $slug,
+    $respondMigrationFailure,
+    &$migrationLog,
+): void {
+    try {
+        $installer->swap($prepared, $liveTarget);
+    } catch (\Throwable $e) {
+        $installer->rollback();
+        JsonResponse::error(
+            'apply_failed',
+            $e->getMessage(),
+            500,
+            ['instructions' => Installer::manualFallbackInstructions($liveTarget)],
+        );
+        exit;
+    }
+
+    UpdatesApplyPostSwap::clearExtensionRegistryCache();
+    $auditRepo->record('updates.apply.swapped', 'updates', null, $userId, [
+        'slug' => $slug,
+        'path' => $liveTarget,
+    ], $entityId);
+
+    $result = $isCore
+        ? UpdatesApplyPostSwap::migrateCore(
+            $doliDbGlobal,
+            $installer,
+            $liveTarget,
+            $auditRepo,
+            $entityId,
+            $userId,
+            $slug,
+        )
+        : UpdatesApplyPostSwap::migrateExtension(
+            $doliDbGlobal,
+            $installer,
+            $liveTarget,
+            $auditRepo,
+            $entityId,
+            $userId,
+            $slug,
+        );
+
+    if (($result['rollback'] ?? 'none') !== 'none') {
+        $respondMigrationFailure($result);
+    }
+
+    $migrationLog = $result['migrations'];
+
+    JsonResponse::success(array_merge([
+        'slug' => $slug,
+        'path' => $liveTarget,
+        'migrations' => $migrationLog,
+        'manual_fallback_instructions' => Installer::manualFallbackInstructions($liveTarget),
+    ], $extraSuccess));
+    exit;
 };
 
 $lock = new InstallLock();
@@ -237,40 +345,7 @@ try {
         }
 
         $prepared = $installer->prepare($zipPath, $stagingParent, $folder);
-        try {
-            $installer->swap($prepared, $liveTarget);
-        } catch (\Throwable $e) {
-            $installer->rollback();
-            JsonResponse::error(
-                'apply_failed',
-                $e->getMessage(),
-                500,
-                ['instructions' => $fallbackLines],
-            );
-            exit;
-        }
-
-        if (class_exists(Migrator::class)) {
-            try {
-                $migrationLog = (new Migrator($doliDbGlobal, $liveTarget))->run();
-            } catch (\Throwable $e) {
-                JsonResponse::error(
-                    'migration_failed',
-                    'Module files were updated but database migration failed: ' . $e->getMessage(),
-                    500,
-                    ['instructions' => $fallbackLines, 'migrations' => $migrationLog],
-                );
-                exit;
-            }
-        }
-
-        JsonResponse::success([
-            'slug' => $slug,
-            'path' => $liveTarget,
-            'migrations' => $migrationLog,
-            'manual_fallback_instructions' => $fallbackLines,
-        ]);
-        exit;
+        $swapAndMigrate($liveTarget, $prepared, true);
     }
 
     // Commercial extensions share the Dolistore JWT download-token path.
@@ -358,25 +433,7 @@ try {
         }
         $topFolder = basename($liveTarget);
         $prepared = $installer->prepare($zipPath, $stagingParent, $topFolder);
-        try {
-            $installer->swap($prepared, $liveTarget);
-        } catch (\Throwable $e) {
-            $installer->rollback();
-            JsonResponse::error(
-                'apply_failed',
-                $e->getMessage(),
-                500,
-                ['instructions' => $fallbackLines],
-            );
-            exit;
-        }
-
-        JsonResponse::success([
-            'slug' => $slug,
-            'path' => $liveTarget,
-            'manual_fallback_instructions' => $fallbackLines,
-        ]);
-        exit;
+        $swapAndMigrate($liveTarget, $prepared, false);
     }
 
     $clientObj = $dolistoreHttp();
@@ -447,26 +504,7 @@ try {
     $topFolder = basename($liveTarget);
 
     $prepared = $installer->prepare($zipPath, $stagingParent, $topFolder);
-    try {
-        $installer->swap($prepared, $liveTarget);
-    } catch (\Throwable $e) {
-        $installer->rollback();
-        JsonResponse::error(
-            'apply_failed',
-            $e->getMessage(),
-            500,
-            ['instructions' => $fallbackLines],
-        );
-        exit;
-    }
-
-    JsonResponse::success([
-        'slug' => $slug,
-        'path' => $liveTarget,
-        'release' => $release,
-        'migrations' => $migrationLog,
-        'manual_fallback_instructions' => $fallbackLines,
-    ]);
+    $swapAndMigrate($liveTarget, $prepared, false, ['release' => $release]);
 } catch (\Throwable $e) {
     $installer->rollback();
     JsonResponse::error(

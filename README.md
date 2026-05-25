@@ -11,12 +11,19 @@
 
 **Knot Tools™** is a registered trademark. This repository ships **Knot Core**, the GPL-3.0 Dolibarr module. Product and extension information: **[knot.tools](https://knot.tools)**.
 
+> **Public beta** — product site: **[knot.tools](https://knot.tools)**. Documentation: **[docs.knot.tools](https://docs.knot.tools/)**.
+
+[![Status](https://img.shields.io/badge/status-public%20beta-8B5CF6?style=flat-square)](https://knot.tools)
 [![CI](https://github.com/knot-tools/knot-core/actions/workflows/ci.yml/badge.svg)](https://github.com/knot-tools/knot-core/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/github/v/release/knot-tools/knot-core?style=flat-square&color=8B5CF6)](https://github.com/knot-tools/knot-core/releases/latest)
 [![Dolibarr](https://img.shields.io/badge/Dolibarr-V20%2B-1F2937?style=flat-square)](https://www.dolibarr.org)
 [![PHP](https://img.shields.io/badge/PHP-8.1%2B-777BB4?style=flat-square&logo=php&logoColor=white)](https://www.php.net)
 [![PSR-12](https://img.shields.io/badge/code%20style-PSR--12-1F2937?style=flat-square)](https://www.php-fig.org/psr/psr-12/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Vue](https://img.shields.io/badge/Vue-3.5-42B883?style=flat-square&logo=vue.js&logoColor=white)](https://vuejs.org)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev)
+[![Tailwind](https://img.shields.io/badge/Tailwind-3-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Tests](https://img.shields.io/badge/tests-PHPUnit_·_Vitest-EC4899?style=flat-square)](#tests)
 [![License](https://img.shields.io/badge/license-GPL--3.0-green?style=flat-square)](LICENSE)
 
 </div>
