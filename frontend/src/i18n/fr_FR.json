@@ -13,8 +13,8 @@
     "templates": "Modèles",
     "variables": "Variables",
     "audit": "Audit",
-    "doctor": "Doctor",
-    "inbox": "Inbox",
+    "doctor": "Diagnostic",
+    "inbox": "Boîte de réception",
     "assistant": "Assistant",
     "book": "Manuel",
     "marketplace": "Marketplace"
@@ -60,7 +60,7 @@
     }
   },
   "capabilitiesPage": {
-    "title": "Capabilities",
+    "title": "Capacités",
     "subtitle": "Manifeste des possibilités de Knot sur cette instance Dolibarr (support et contrôle de compatibilité).",
     "cachedLabel": "Réponse mise en cache :",
     "cachedYes": "oui (TTL 5 min)",
@@ -166,7 +166,7 @@
     "pinnedOutputHint": "Quand défini, le moteur utilise ce JSON au lieu d’exécuter le nœud — uniquement pour workflows de test.",
     "unpinOutput": "Désépingler",
     "deleteNode": "Supprimer le nœud",
-    "simulationTraceTitle": "Simulation",
+    "simulationTraceTitle": "Trace de simulation",
     "versionsDrawerTitle": "Versions du workflow",
     "versionsDrawerLead": "Les snapshots automatiques sont créés à chaque enregistrement.",
     "versionsLoading": "Chargement des versions…",
@@ -188,12 +188,23 @@
     "schedulePresetFirstOfMonth": "1er du mois 9h",
     "scheduleSaveFailed": "Échec de l’enregistrement de la planification.",
     "defaultWorkflowName": "Workflow sans titre",
-    "starterManualLabel": "Run manually",
-    "starterManualSubtitle": "Triggered from editor",
-    "starterSetLabel": "Prepare payload",
-    "starterSetSubtitle": "message, recipient",
-    "starterEmailLabel": "Send email",
-    "starterEmailSubtitle": "SMTP via Dolibarr"
+    "starterManualLabel": "Lancer manuellement",
+    "starterManualSubtitle": "Depuis l'éditeur",
+    "starterSetLabel": "Préparer la charge utile",
+    "starterSetSubtitle": "message, destinataire",
+    "starterEmailLabel": "Envoyer un e-mail",
+    "starterEmailSubtitle": "SMTP via Dolibarr",
+    "problemsTitle": "Problèmes",
+    "paletteSections": {
+      "trigger": "Déclencheurs",
+      "logic": "Logique",
+      "communication": "Communication",
+      "notification": "Alertes",
+      "saas": "SaaS",
+      "ai": "IA",
+      "dolibarr": "Dolibarr",
+      "universal": "Universel"
+    }
   },
   "search": {
     "placeholder": "Rechercher un workflow…",
@@ -368,7 +379,7 @@
     "objectPlaceholder": "— sélectionner —",
     "operationLabel": "Opération",
     "optionMapSuffix": " · MAP",
-    "optionDiscoverySuffix": " · discovery",
+    "optionDiscoverySuffix": " · découverte",
     "descriptorCacheTitle": "Cache d'introspection absent ou vide",
     "descriptorCacheBody": "Tu ne verras que les objets MAP curatés jusqu'à un rafraîchissement. Ouvre le setup admin et utilise « Rafraîchir l'introspection ».",
     "descriptorCacheLink": "Setup Knot — introspection",
@@ -902,7 +913,7 @@
     "starterWebhookTaskName": "Webhook → tâche",
     "starterWebhookTaskDesc": "HTTP + actioncomm",
     "starterProposalInvoiceName": "Devis → facture",
-    "starterProposalInvoiceDesc": "Event + specialized",
+    "starterProposalInvoiceDesc": "Événement + spécialisé",
     "starterBackupName": "Backup quotidien",
     "starterBackupDesc": "Cron + SQL + email",
     "startersImported": "{count} templates importés. Retrouve-les dans Workflows en draft.",
@@ -1074,14 +1085,14 @@
     "descriptorRows": "Descripteurs (fichier) :",
     "apiSlugsHint": "· Slugs exposés API (MAP + découverts) :",
     "refreshCacheHint": "Rafraîchis le cache depuis",
-    "introspectionAnchor": "setup → introspection",
+    "introspectionAnchor": "configuration → introspection",
     "groupSystem": "Système & PHP",
     "groupInstall": "Installation Dolibarr",
     "groupEngine": "Moteur Knot",
     "missingTables": "Tables SQL manquantes :",
     "missingTablesHint": "Allez dans la configuration et cliquez sur Confirmer pour réinstaller les tables manquantes.",
     "missingTablesHintBefore": "Aller au",
-    "setupLinkLabel": "setup",
+    "setupLinkLabel": "configuration",
     "missingTablesHintAfter": "et cliquer sur « Confirmer » pour réinstaller les tables manquantes.",
     "cardVersion": "Version",
     "cardWorkflows": "Workflows",
@@ -1117,7 +1128,7 @@
   "workflowsPage": {
     "subtitleCounts": "{count} workflows — {active} actifs · {draft} brouillons",
     "fromTemplate": "Depuis un modèle",
-    "exportZip": "Export ZIP",
+    "exportZip": "Exporter ZIP",
     "newWorkflow": "Nouveau workflow",
     "searchPlaceholder": "Rechercher des workflows…",
     "allStatuses": "Tous les statuts",
@@ -1182,15 +1193,15 @@
     "addButton": "Ajouter",
     "deleteConfirmTitle": "Supprimer la variable",
     "deleteConfirmMessage": "Supprimer la variable « {ref} » ?",
-    "scopeGlobal": "global",
-    "scopeWorkflow": "workflow",
+    "scopeGlobal": "Global",
+    "scopeWorkflow": "Workflow",
     "scopeEnv": "env"
   },
   "auditPage": {
     "title": "Journal d'audit",
     "subtitle": "Toutes les opérations sensibles (création, exécution, modification, suppression).",
     "exportCsvTitle": "Exporter les filtres courants en CSV",
-    "exportCsv": "Export CSV",
+    "exportCsv": "Exporter CSV",
     "placeholderActionType": "type d'action",
     "placeholderEntityType": "type d'entité",
     "placeholderSearch": "recherche plein texte…",
@@ -1247,15 +1258,15 @@
     "output": "Sortie",
     "pinOutput": "Épingler la sortie",
     "unknownType": "inconnu",
-    "resultSuccess": "Success",
-    "resultError": "Error",
+    "resultSuccess": "Succès",
+    "resultError": "Erreur",
     "nodeTiming": "{type} · {ms} ms"
   },
   "bookPage": {
-    "title": "Workflow book",
-    "refresh": "Refresh",
+    "title": "Carnet des workflows",
+    "refresh": "Actualiser",
     "subtitle": "Tout ce qui va s'exécuter dans Dolibarr — workflows actifs, déclencheurs, conflits potentiels, en un coup d'œil.",
-    "exportMd": "Export Markdown",
+    "exportMd": "Exporter Markdown",
     "loadFailed": "Échec du chargement du livre.",
     "kpiActive": "Actifs",
     "kpiTotal": "/ {n} au total",
@@ -1269,7 +1280,7 @@
     "sharedTrigger": "Trigger partagé :",
     "tabList": "Liste",
     "tabMatrix": "Matrice",
-    "tabTimeline": "Timeline",
+    "tabTimeline": "Chronologie",
     "activeWorkflowsTitle": "Workflows actifs",
     "triggersCovered": "Triggers couverts :",
     "runsTotalTitle": "{n} exécutions au total",
@@ -1278,10 +1289,10 @@
     "waitingTitle": "En attente",
     "openEditor": "Ouvrir dans l'éditeur →",
     "nativeConflictHeading": "#{id} {label} ↔ Dolibarr",
-    "listRunsLine": "⚡ {n} runs",
+    "listRunsLine": "⚡ {n} exécutions",
     "emptyActive": "Aucun workflow actif pour le moment. Créez-en un depuis le tableau de bord ou l'éditeur.",
     "matrixTitle": "Matrice de couverture (trigger × actions Dolibarr)",
-    "matrixColTrigger": "Trigger",
+    "matrixColTrigger": "Déclencheur",
     "matrixEmpty": "Aucun workflow actif. Activez au moins un workflow pour voir la couverture.",
     "matrixHint": "Une cellule colorée signale qu'au moins un workflow combine ce trigger et cette action Dolibarr. Les cellules jaunes regroupent plusieurs workflows sur la même surface — vérifiez l'absence d'effets de bord.",
     "timelineTitle": "Timeline des dernières exécutions",
@@ -1289,12 +1300,12 @@
     "lastRefresh": "Dernière actualisation :",
     "noDolibarrAction": "(aucune action Dolibarr)",
     "mdTitle": "# Knot — Workflow book",
-    "mdGenerated": "_Generated: {date}_",
-    "mdActiveCount": "- Active workflows: **{n}**",
-    "mdTotalCount": "- Total workflows: **{n}**",
+    "mdGenerated": "_Généré : {date}_",
+    "mdActiveCount": "- Workflows actifs : **{n}**",
+    "mdTotalCount": "- Workflows au total : **{n}**",
     "mdNativeCount": "- Native Dolibarr automations detected: **{n}**",
-    "mdTriggerConflictsCount": "- Trigger conflicts: **{n}**",
-    "mdNativeConflictsCount": "- Native conflicts: **{n}**",
+    "mdTriggerConflictsCount": "- Conflits de déclencheurs : **{n}**",
+    "mdNativeConflictsCount": "- Conflits natifs : **{n}**",
     "mdSectionActive": "## Active workflows",
     "mdSectionTriggerConflicts": "## Trigger conflicts",
     "mdSectionNativeOverlaps": "## Native Dolibarr overlaps"
@@ -1348,8 +1359,8 @@
     "curlTitle": "Tester avec curl",
     "copyCurlTitle": "Copier la commande curl",
     "copyLabelUrl": "URL",
-    "copyLabelSecret": "Secret",
-    "copyLabelCurl": "curl",
+    "copyLabelSecret": "Copier le secret",
+    "copyLabelCurl": "Copier cURL",
     "securityTitle": "Sécurité.",
     "securityBody": "Ne partage jamais le token publiquement. Si tu suspectes une fuite, régénère le secret HMAC — toutes les intégrations existantes devront être mises à jour."
   },
@@ -1408,6 +1419,110 @@
             "description": "Expéditeur optionnel si la politique du serveur l’autorise."
           }
         }
+      },
+      "slack": {
+        "label": "Slack",
+        "description": "Publier un message via webhook Slack"
+      },
+      "discord": {
+        "label": "Discord",
+        "description": "Publier un message via webhook Discord"
+      },
+      "telegram": {
+        "label": "Telegram",
+        "description": "Envoyer un message via bot Telegram"
+      },
+      "twilio_sms": {
+        "label": "Twilio SMS",
+        "description": "Envoyer un SMS via Twilio Programmable SMS"
+      },
+      "ovh_sms": {
+        "label": "OVH SMS",
+        "description": "Envoyer un SMS via l’API OVHcloud SMS"
+      },
+      "whatsapp_cloud": {
+        "label": "WhatsApp Cloud",
+        "description": "Envoyer un message WhatsApp via l’API Meta Cloud (Business)"
+      },
+      "whatsapp_twilio": {
+        "label": "WhatsApp (Twilio)",
+        "description": "Envoyer un message WhatsApp via un expéditeur Twilio"
+      },
+      "stripe": {
+        "label": "Stripe",
+        "description": "Clients, paiements, factures et abonnements Stripe"
+      },
+      "woocommerce": {
+        "label": "WooCommerce",
+        "description": "Lire et écrire commandes, produits et clients WooCommerce"
+      },
+      "sftp": {
+        "label": "SFTP",
+        "description": "Téléverser, télécharger ou lister des fichiers sur un serveur SFTP"
+      },
+      "shopify": {
+        "label": "Shopify",
+        "description": "Lire et écrire commandes, produits et clients Shopify"
+      },
+      "prestashop": {
+        "label": "PrestaShop",
+        "description": "Webservice PrestaShop (commandes, produits, clients, …)"
+      },
+      "notion": {
+        "label": "Notion",
+        "description": "Pages, bases, blocs et recherche via l’API Notion"
+      },
+      "airtable": {
+        "label": "Airtable",
+        "description": "Lister, créer ou mettre à jour des enregistrements Airtable"
+      },
+      "github": {
+        "label": "GitHub",
+        "description": "Issues, pull requests, releases et dispatches Actions"
+      },
+      "gitlab": {
+        "label": "GitLab",
+        "description": "Issues, MR, pipelines et releases (cloud ou self-hosted)"
+      },
+      "google_sheets": {
+        "label": "Google Sheets",
+        "description": "Lire, ajouter ou mettre à jour des plages de feuille"
+      },
+      "google_drive": {
+        "label": "Google Drive",
+        "description": "Lister, téléverser, copier, partager ou supprimer des fichiers Drive"
+      },
+      "gmail": {
+        "label": "Gmail",
+        "description": "Envoyer des messages et lire la boîte via l’API Gmail"
+      },
+      "google_calendar": {
+        "label": "Google Calendar",
+        "description": "Créer, mettre à jour ou interroger événements et disponibilités"
+      },
+      "ai_openai": {
+        "label": "OpenAI Chat",
+        "description": "Appeler des LLM OpenAI / compatibles OpenAI"
+      },
+      "ai_anthropic": {
+        "label": "Anthropic Chat",
+        "description": "Appeler l’API Messages Anthropic"
+      },
+      "ai_ollama": {
+        "label": "Ollama (local)",
+        "description": "LLM local via Ollama (sans cloud)"
+      },
+      "ai_mistral": {
+        "label": "Mistral Chat",
+        "description": "Appeler les complétions chat Mistral"
+      },
+      "ai_gemini": {
+        "label": "Gemini Chat",
+        "description": "Appeler Google Gemini generateContent"
+      },
+      "http": {
+        "label": "Requête HTTP",
+        "description": "Appeler n’importe quel endpoint REST/JSON"
       }
     },
     "trigger": {
@@ -1456,6 +1571,14 @@
             "description": "Filtre optionnel : types d’éléments Dolibarr (ex. invoice, societe)."
           }
         }
+      },
+      "stripe_webhook": {
+        "label": "Webhook Stripe",
+        "description": "Écouter les événements Stripe avec vérification HMAC"
+      },
+      "shopify_webhook": {
+        "label": "Webhook Shopify",
+        "description": "Écouter les topics Shopify avec vérification X-Shopify-Hmac-Sha256"
       }
     },
     "logic": {
@@ -1701,7 +1824,7 @@
         }
       },
       "crypto": {
-        "label": "Crypto",
+        "label": "Chiffrement",
         "description": "Hachages, HMAC, Base64 et primitives associées.",
         "fields": {
           "operation": {
@@ -1944,8 +2067,8 @@
     },
     "notification": {
       "alert": {
-        "label": "Envoyer une alerte (audit)",
-        "description": "Écrit une entrée dans le journal d’audit. Utilisez le Pro Pack « Envoi d’alerte (multi-canal) » pour Slack, Discord, e-mail ou webhooks.",
+        "label": "Envoyer une alerte",
+        "description": "Diffuser une alerte via Slack, Discord, e-mail, webhook et journal d’audit.",
         "fields": {
           "title": {
             "title": "Titre de l’alerte",
@@ -1968,7 +2091,7 @@
           }
         },
         "severity": {
-          "info": "INFO",
+          "info": "Info",
           "warn": "AVERT.",
           "error": "ERREUR",
           "critical": "CRITIQUE"

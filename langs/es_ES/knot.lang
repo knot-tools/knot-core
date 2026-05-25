@@ -1,0 +1,317 @@
+Knot=Knot Core
+KnotBrandName=Knot Core
+KnotBrandTagline=Automatización de workflows
+KnotDesc=Automatización visual de workflows para Dolibarr
+KnotDescLong=Knot Core permite crear y ejecutar workflows visuales 100%% locales en Dolibarr.
+KnotSetup=Configuración
+KnotDashboard=Panel de control
+KnotObservability=Observabilidad
+KnotWorkflows=Workflows
+KnotNewWorkflow=Nuevo workflow
+KnotExecutions=Ejecuciones
+KnotNavBook=Book
+KnotNavInbox=Aprobaciones
+KnotNavAssistant=Asistente
+KnotNavVariables=Variables
+KnotNavAudit=Registro de auditoría
+KnotNavUpdates=Actualizaciones
+KnotNavDoctor=Diagnóstico
+KnotNavProPackMigration=Knot Pro Pack
+KnotNavCollapse=Contraer menú
+KnotCapabilities=Capacidades
+KnotCompatibility=Compatibilidad de esquema
+KnotQueue=Cola
+KnotCheckMenus=Menús Knot
+KnotEngineTitle=Motor Knot
+KnotEngineExplanation=Activar el módulo en Dolibarr instala el código (tablas, permisos, menús). El motor de ejecución es un interruptor aparte: cuando está en pausa, las páginas siguen accesibles pero ningún workflow se ejecuta (cron suspendido, webhooks ignorados). Úselo durante mantenimiento o para detener todas las automatizaciones con un clic sin desinstalar.
+KnotEngineRowModule=Módulo Dolibarr
+KnotEngineRowEngine=Motor de ejecución
+KnotEngineRowMenus=Menús izquierdos
+KnotEngineEnabled=Activado
+KnotEngineRunning=En ejecución
+KnotEnginePaused=En pausa
+KnotEnginePause=Pausar motor
+KnotEngineActivateFirst=Activar motor
+KnotEngineResume=Iniciar motor
+KnotEngineRefreshMenus=Actualizar menús
+KnotEnginePausedMsg=Motor Knot en pausa. Los workflows no se ejecutarán.
+KnotEngineResumedMsg=Motor Knot iniciado. Los workflows en cola se procesarán.
+KnotMenusRefreshedMsg=Menús Knot actualizados (%s entradas).
+KnotFeatureOpenEditor=Abrir el editor
+KnotFeatureBrowseWorkflows=Ver workflows
+KnotFeatureViewExecutions=Ver ejecuciones
+KnotFeatureOpenCatalog=Explorar el catálogo
+KnotFeatureOpenCredentials=Gestionar credenciales
+KnotCtaOpenDashboard=Abrir panel de control
+KnotCtaOpenWorkflows=Ver workflows
+KnotCtaHint=Este botón solo inicia el motor de ejecución (cron + cola). El módulo sigue accesible aunque el motor esté en pausa.
+KnotEngineDisabledBanner=El motor Knot está en pausa. Puede editar workflows pero no se ejecutará ninguna ejecución hasta iniciar el motor desde la pantalla de configuración.
+
+# --- Wizard / Hero ---
+KnotSetupTitle=Asistente de configuración Knot
+KnotBadgeBeta=Build beta interna
+KnotHeroSub=Orqueste sus automatizaciones Dolibarr
+KnotHeroLead=Knot es un orquestador visual de workflows, 100%% local, seguro y extensible. Este asistente comprueba su instalación y activa el motor en segundos.
+KnotChipLocal=100%% local
+KnotChipExtensible=Extensible
+KnotChipEncrypted=Credenciales cifradas
+
+# --- Progress + Steps ---
+KnotProgressTitle=Progreso de la instalación
+KnotProgressHint=%s de %s comprobaciones correctas
+KnotStep1Title=Esquema de base de datos
+KnotStep1Desc=Tablas, permisos y menús aprovisionados por Dolibarr.
+KnotStep2Title=Seguridad y cifrado
+KnotStep2Desc=Clave AES-256-GCM derivada de su instancia Dolibarr.
+KnotStep3Title=Motor de ejecución
+KnotStep3Desc=Cola en base de datos y worker cron listos para ejecutar sus workflows.
+KnotStep4Title=Activación final
+KnotStep4Desc=Marque la configuración como completada para activar el motor.
+
+# --- Checks ---
+KnotChecksTitle=Comprobaciones del sistema
+KnotChecksHint=Diagnóstico automático
+KnotCheckDolibarr=Dolibarr V20+
+KnotCheckPhp=PHP 8.1+
+KnotCheckTables=Tablas Knot
+KnotCheckRights=Permisos
+KnotCheckCron=Worker cron
+KnotCheckRegistered=Registrado
+KnotCheckMissing=Faltante
+KnotCheckLoaded=Cargado
+
+# --- Features ---
+KnotFeature1Title=Editor visual
+KnotFeature1Desc=Arrastre, suelte y conecte nodos. Sin código, potencia completa bajo demanda.
+KnotFeature2Title=Catálogo de conectores
+KnotFeature2Desc=HTTP, IA, correo, objetos Dolibarr, webhooks, planificadores. Extensible por módulo.
+KnotFeature3Title=Credenciales
+KnotFeature3Desc=Credenciales cifradas, enmascaramiento de secretos, registro de auditoría, código de usuario en entorno aislado.
+
+# --- CTA ---
+KnotCtaTitle=Listo para activar Knot
+KnotCtaPending=Corrija las advertencias anteriores antes de activar el motor.
+KnotCtaReady=Todas las comprobaciones correctas. Active el motor para empezar.
+KnotCtaConfirm=Activar Knot
+KnotCtaDoneTitle=Knot está activo
+KnotCtaDoneDesc=El motor está en marcha, el cron está armado y los permisos configurados. Es hora de crear su primer workflow.
+KnotCtaSetupCompleteEnginePausedTitle=Configuración completa — motor en pausa
+KnotCtaSetupCompleteEnginePausedDesc=Su configuración y permisos están listos, pero el motor de ejecución está en pausa. Reanúdelo en la sección Motor arriba para ejecutar workflows y tareas programadas.
+KnotCtaEngineControlsLink=Controles del motor
+KnotCtaReset=Restablecer configuración
+KnotSetupCompletedMsg=Configuración Knot completada. El motor está activo.
+KnotSetupResetMsg=Configuración restablecida. El motor está en pausa.
+
+# --- admin/setup.php (KnotSetup* action messages + UI) ---
+KnotSetupCompleteErrorMsg=Error en la configuración Knot (paso finalizar): %s
+KnotSetupCronEnabledMsg=Trabajos cron Knot activados.
+KnotSetupCronTestMsg=Prueba cron completada: %s trabajo(s) procesado(s).
+KnotSetupCronTestFailed=Prueba cron fallida: %s
+KnotSetupBackupZipMsg=Copia ZIP creada en documents/knot/backups/: %s
+KnotSetupBackupSqlMsg=Copia SQL creada en documents/knot/backups/: %s
+KnotSetupBackupError=Copia de seguridad: %s
+KnotSetupBackupConfirm=¿Ejecutar una copia completa ahora?
+KnotSetupIntrospectionRefreshed=Introspección actualizada: %s objetos descubiertos (documents/knot/dolibarr_descriptors.json).
+KnotSetupIntrospectionRefreshFailed=Actualización fallida: %s
+KnotSetupSeedDemoRestored=%s workflow(s) guía restaurado(s) (estado desactivado).
+KnotSetupSeedDemoAllPresent=Todas las guías demo ya están presentes.
+KnotSetupMigrationsNone=Migraciones Knot: nada pendiente (ya actualizado).
+KnotSetupMigrationsApplied=Migraciones Knot aplicadas (%1$d): %2$s
+KnotSetupMigrationsFailed=Migraciones Knot fallidas: %s
+KnotSetupEngineActivationError=Activación del motor Knot fallida: %s
+KnotSetupIntrospectionAutoGenerated=Introspección Dolibarr generada automáticamente (%s objetos).
+KnotSetupIntrospectionAutoUnavailable=Introspección automática no disponible: %s
+KnotSetupMenusRegisteredDetail=%1$d registrado(s) (mínimo %2$d)
+KnotSetupMenusMinimumDetail=%1$d / %2$d mínimo
+KnotSetupCheckOpenSsl=OpenSSL
+KnotSetupCheckCurl=cURL
+KnotSetupCheckJson=JSON
+KnotSetupCheckMbstring=Mbstring
+KnotSetupBetaDocsChip=Documentación beta
+KnotSetupBetaReportBugChip=Informar de un bug
+KnotSetupBetaHealthcheckPrefix=Comprobación de salud:
+KnotSetupCronBannerFreshTitle=Cron Dolibarr: aún no hay ejecución registrada
+KnotSetupCronBannerFreshBody=Copiar la URL cron del hosting no garantiza una ejecución inmediata: o la primera ejecución está programada en los próximos minutos (frecuencia habitual cada 5 min), o la tarea programada aún no está activa. Use el botón <strong>« %s »</strong> en la sección del motor Knot abajo para forzar una ejecución inmediata y confirme que desaparece esta alerta.
+KnotSetupCronBannerFreshCtaDown=Ir a la sección del motor Knot
+KnotSetupCronBannerStaleTitle=El disparador cron externo parece detenido
+KnotSetupCronBannerStaleParaNoAgo=<strong>KnotCronWorker</strong> está activado en Dolibarr, pero <strong>no se ha ejecutado recientemente</strong>. Confirme que el cron del hosting sigue llamando a la URL cron, o ejecute una prueba desde la sección del motor.
+KnotSetupCronBannerStaleParaAgo=<strong>KnotCronWorker</strong> está activado en Dolibarr, pero no se ha ejecutado desde hace <strong>%s minutos</strong>. Confirme que el cron del hosting sigue llamando a la URL cron, o ejecute una prueba desde la sección del motor.
+KnotSetupCronBannerStaleSolution=<strong>Cómo corregir:</strong> pegue la URL de planificación (URL cron) de la sección del motor y verifique que se ejecuta cada <strong>5 minutos</strong>.
+KnotSetupCronBannerStaleSeeUrl=Ver el campo URL cron
+KnotSetupIntrospectionTitle=Introspección de objetos Dolibarr
+KnotSetupIntrospectionHint=Fuera del asistente PHP de instalación — vuelva a ejecutar tras instalar módulos, Dolistore o actualizar Dolibarr
+KnotSetupIntrospectionLead=El <strong>archivo caché</strong> abajo cuenta entradas del último escaneo. La pantalla <a href="%1$s">Capacidades</a> también muestra cuántos <strong>objetos se exponen a la API</strong> (MAP actual + slugs descubiertos) — puede <strong>diferir</strong> porque el MAP siempre incluye algunos slugs aunque falten en el escaneo. Lista técnica: <a href="%2$s"><code>dolibarr_schemas.php?list=1</code></a>.
+KnotSetupIntrospectionCacheLabel=Caché de descriptores
+KnotSetupIntrospectionCacheEmpty=Caché vacía (solo MAP estático)
+KnotSetupIntrospectionObjectsFound=%s objetos descubiertos
+KnotSetupIntrospectionGeneratedAtPrefix=generado %s
+KnotSetupIntrospectionRefreshBtn=Actualizar introspección
+KnotSetupIntrospectionTechHint=Nuevo escaneo de <code>htdocs/&lt;module&gt;/class/*.class.php</code> y <code>htdocs/custom/*/class/*.class.php</code>. Archivo caché <code>documents/knot/dolibarr_descriptors.json</code>. Exclusiones: constante <code>KNOT_INTROSPECTION_BLOCKLIST</code> CSV de clases.
+KnotSetupIntrospectionBlocklistTail=<br>Actualmente bloqueado: <code>%s</code>
+KnotSetupSqlMigrationsLabel=Migraciones SQL
+KnotSetupSqlMigrationsHint=Actualizaciones de esquema idempotentes (llx_knot_migration_history)
+KnotSetupApplyMigrationsButton=Aplicar migraciones
+KnotSetupCronjobLabel=Cronjob
+KnotSetupCronStatusEnabled=Activado
+KnotSetupCronStatusInactive=Inactivo
+KnotSetupCronStatusMissing=Faltante
+KnotSetupCronEnableButton=Activar
+KnotSetupCronLastRun=Última ejecución: %s
+KnotSetupCronNeverRun=nunca ejecutado aún
+KnotSetupCronScheduleUrl=Planificación (URL cron)
+KnotSetupCronUrlHint=Pegue esta URL en el panel <strong>Cron Jobs</strong> de su hosting (cPanel, Plesk, OVH, Hostinger, …) con frecuencia de <strong>5 minutos</strong>. No se requiere SSH ni root.<br>Ejemplo CLI: <code>*/5 * * * * wget -q -O - "&lt;su URL arriba&gt;" &gt;/dev/null</code><br><em>userlogin=%s</em>
+KnotSetupCronUrlUserConfigured=proviene de la constante Dolibarr <code>CRON_DOLIBARRUSER</code>.
+KnotSetupCronUrlUserAdmin=Seleccionado automáticamente (primer admin activo). Para fijar otro usuario, configure <code>CRON_DOLIBARRUSER</code> en <em>Inicio → Configuración → Otros</em>.
+KnotSetupCronUrlUserCurrent=Usa su login de sesión porque no se encontró admin. Válido para instancias mono-usuario; configure <code>CRON_DOLIBARRUSER</code> para fijar un usuario.
+KnotSetupPhpTimezoneLabel=Zona horaria PHP
+KnotSetupPhpServerTimeLabel=Hora del servidor ahora: <strong>%s</strong>
+KnotSetupPhpTimezoneUtcHint=PHP está en <strong>UTC</strong>, desplazando las marcas de tiempo respecto a la hora local. Configure <code>date.timezone</code> en su panel PHP (MultiPHP INI Editor, PHP Settings …) o añada <code>.user.ini</code> en el docroot con<br><code>date.timezone = "Europe/Paris"</code><br>Use su zona regional (<code>America/Toronto</code>, …). Knot sigue funcionando (timestamps Unix); solo cambia la visualización.
+KnotSetupPhpTimezoneOkHint=PHP usa <code>date.timezone = %s</code>. Las marcas de tiempo Knot se muestran en esta zona.
+KnotSetupPreloadedGuidesLabel=Guías integradas
+KnotSetupPreloadedGuidesPill=%s disponibles
+KnotSetupRestoreGuidesBtn=Restaurar guías
+KnotSetupKnotBackupLabel=Copia Knot
+KnotSetupKnotBackupHint=ZIP (SQL + documents/knot) vía PHP — apto para hosting compartido
+KnotSetupBackupBeforeUpdateBtn=Copia antes de actualizar
+KnotSetupExtInstalledTitle=Extensiones Knot instaladas
+KnotSetupExtNoneDetected=Ninguna detectada
+KnotSetupExtNoneHint=Añada add-ons instalando un módulo Dolibarr <code>modKnot*</code> bajo <code>htdocs/custom/</code>.
+KnotSetupExtLoadedCount=%s cargada(s)
+KnotSetupExtIssuesCount=%s problema(s)
+KnotSetupExtColId=ID
+KnotSetupExtColLabel=Etiqueta
+KnotSetupExtColVersion=Versión
+KnotSetupExtColCategory=Categoría
+KnotSetupExtColStatus=Estado
+KnotSetupExtColLicense=Licencia
+KnotSetupExtLicenseExpires=expira %s
+KnotLicenseManifestOutdated=Manifiesto obsoleto: actualice la extensión desde Productos instalados (con Knot Core si cambió el manifiesto).
+KnotSetupExtDash=—
+KnotSetupExtDisableHint=Desactive sin desinstalar listando los <code>id</code> de extensión en <code>KNOT_EXTENSIONS_DISABLED</code> separados por comas. Detalles en <code>docs/connector-authoring-guide.md</code>.
+KnotSetupCtaCronTitle=Paso obligatorio — programe el cron del hosting
+KnotSetupCtaCronBody=Los workflows programados y webhooks asíncronos requieren que su hosting llame a esta URL cada <strong>5 minutos</strong>. Cópiela en el panel <em>Cron Jobs</em> (cPanel, Plesk, OVH, Hostinger, IONOS, …) — no se requiere SSH ni root.
+KnotSetupCopy=Copiar
+KnotSetupCopied=Copiado
+KnotSetupCronTestNow=Probar ahora
+
+# --- Footer ---
+KnotFooterTagline=Automatización local, sin compromisos.
+
+# --- Common ---
+KnotHealth=Salud
+KnotHealthOk=OK
+KnotHealthWarning=Requiere atención
+KnotHealthWorkerRunNow=Ejecutar comprobación de salud ahora
+KnotHealthWorkerRunMsg=Instantánea de métricas de salud actualizada. Ejecuciones bloqueadas reclamadas: %s.
+KnotHealthWorkerRunError=Worker de salud fallido: %s
+KnotSetupHealthTitle=Salud del motor
+KnotSetupHealthBadgeHealthy=Saludable
+KnotSetupHealthBadgeIssues=Problemas
+KnotSetupHealthQueued=%s en cola
+KnotSetupHealthRunning=%s en ejecución
+KnotSetupHealthSuccess=%s correctas
+KnotSetupHealthErrors=%s errores
+KnotSetupHealthTimeouts=%s timeouts (24 h)
+KnotSetupHealthCronGloballyDisabled=Las tareas programadas Dolibarr están desactivadas globalmente — actívelas antes de que KnotHealthWorker se ejecute en timer, o use Ejecutar comprobación de salud ahora.
+KnotSetupHealthCronJobDisabled=El trabajo KnotHealthWorker existe pero está desactivado en Tareas programadas — actívelo allí o use Ejecutar comprobación de salud ahora.
+KnotSetupHealthCronRowMissing=KnotHealthWorker falta en Tareas programadas — reactive el módulo Knot o repare la tabla cron tras actualizar.
+KnotSetupHealthCronLast=KnotHealthWorker Dolibarr — última ejecución: %s, próxima planificada: %s.
+KnotSetupHealthCronLastOnly=KnotHealthWorker Dolibarr — última ejecución: %s.
+KnotSetupHealthCronNever=KnotHealthWorker Dolibarr — nunca ejecutado. Active las filas cron Knot y configure la URL cron del hosting.
+KnotSetupHealthSnapshotLast=Última instantánea de salud almacenada: %s — las métricas persisten en cada ejecución KnotHealthWorker (aprox. cada cinco minutos).
+KnotSetupHealthSnapshotExplain=Instantánea persistida aún no almacenada — cola y ejecuciones en curso consultadas en vivo abajo. Los totales completados usan métricas almacenadas si existen; use Ejecutar comprobación de salud o espere al worker programado.
+KnotSetupHealthCronVsPersistGap=Dolibarr registró una ejecución KnotHealthWorker, pero las constantes KNOT_HEALTH_* están vacías — Ejecutar comprobación de salud actualiza KNOT_HEALTH_* de inmediato.
+
+# --- Permissions / engine ---
+KnotWorkflowRead=Leer workflows Knot
+KnotWorkflowWrite=Crear y actualizar workflows Knot
+KnotWorkflowExecute=Ejecutar workflows Knot
+KnotCredentialManage=Gestionar credenciales Knot
+KnotAdminConfigure=Configurar Knot
+KnotEngineDisabled=El motor Knot está desactivado.
+KnotNoInlineSecrets=Los secretos nunca deben introducirse directamente en un workflow.
+
+# --- Legacy fallbacks ---
+KnotSetupWelcome=Bienvenido a Knot
+KnotSetupIntro=Knot se inicializa como módulo Dolibarr de propósito general.
+KnotSetupPhaseATitle=Pasos fase A
+KnotSetupStepRequirements=Comprobar requisitos
+KnotSetupStepEncryption=Configurar cifrado de credenciales
+KnotSetupStepPermissions=Configurar permisos
+KnotSetupStepEngine=Activar el motor en fase B
+KnotSetupCompleted=Configuración completada
+
+# Marketplace v2 (V2.5.0c)
+KnotMarketplaceTitle=Marketplace
+KnotMarketplaceTabPacks=Packs
+KnotMarketplaceTabTemplates=Plantillas
+KnotMarketplaceTabMigration=Pro Pack
+KnotMarketplaceTierFree=Gratis
+KnotMarketplaceTierBeta=Beta
+KnotMarketplaceTierPro=Pro
+KnotMarketplaceTierEnterprise=Enterprise
+KnotMarketplaceFromTemplate=Desde una plantilla
+KnotMarketplaceUseTemplate=Usar esta plantilla
+KnotMarketplaceStaleCache=Catálogo mostrado desde caché local — license.knot.tools temporalmente inaccesible.
+KnotMarketplaceInstallSteps=Cómo instalar
+
+# Phase 5 — Marketplace tier gating (V2.5.0d)
+KnotMarketplaceSectionTitle=Marketplace
+KnotMarketplaceSectionExplanation=Modo escaparate: listar plantillas Pro/Enterprise bloqueadas con candado y enlace de compra. Modo estricto: las plantillas sin licencia quedan totalmente ocultas.
+KnotMarketplacePreviewMode=Modo de visualización
+KnotMarketplacePreviewLockedOn=Modo escaparate (recomendado)
+KnotMarketplacePreviewLockedOff=Modo estricto
+KnotMarketplacePreviewSwitchToStrict=Cambiar a estricto
+KnotMarketplacePreviewSwitchToShowcase=Mostrar escaparate
+KnotMarketplacePreviewSwitchedToShowcase=Escaparate Marketplace activado: las plantillas Pro/Enterprise aparecen bloqueadas con candado.
+KnotMarketplacePreviewSwitchedToStrict=Modo estricto Marketplace activado: las plantillas sin licencia están ocultas.
+KnotMarketplacePreviewHint=El modo escaparate ayuda a descubrir add-ons (recomendado en beta). El modo estricto oculta por completo el contenido sin licencia para una instalación más discreta.
+KnotMarketplaceUiDisabledApi=El agregador de catálogo Marketplace está desactivado en esta instancia (/api/marketplace.php). La activación de licencia y plantillas locales siguen disponibles; contacte al administrador para reactivar la UI del catálogo si es necesario.
+KnotMarketplaceUiChrome=UI de catálogo Marketplace y agregador API
+KnotMarketplaceUiChromeHint=Desactiva la entrada lateral Knot y devuelve HTTP 403 en /api/marketplace.php y /api/templates.php. No bloquea activación de licencia, capacidades, conectores ni /api/bundled_templates.php.
+KnotSetupUpdatesTitle=Actualizaciones de producto
+KnotSetupUpdatesHint=Consulta metadatos de release en knot.tools y GitHub para Knot Core y extensiones instaladas. Resultados en caché 24 h; use el botón abajo para forzar comprobación en vivo.
+KnotSetupUpdatesCheckBtn=Comprobar actualizaciones ahora
+KnotSetupUpdatesManageLink=Abrir página de actualizaciones
+KnotMarketplaceUiChromeOn=Activada
+KnotMarketplaceUiChromeOff=Oculta
+KnotMarketplaceUiChromeSwitchOff=Desactivar agregador de catálogo
+KnotMarketplaceUiChromeSwitchOn=Activar agregador de catálogo
+KnotMarketplaceUiSwitchedOn=UI de catálogo Marketplace activada: rutas de catálogo y entrada lateral visibles de nuevo para usuarios con permiso de lectura de workflows.
+KnotMarketplaceUiSwitchedOff=UI de catálogo Marketplace desactivada: /api/marketplace.php y /api/templates.php devuelven 403; activación de licencia sin cambios.
+KnotMarketplaceLocked=Bloqueado
+KnotMarketplaceLockedReasonPro=Requiere Pro Pack activo
+KnotMarketplaceLockedReasonEnterprise=Requiere Enterprise activo
+
+# License cache (Dolistore validation extensions)
+KnotLicenseCacheColumn=Caché de licencia
+KnotLicenseCacheInvalidate=Invalidar caché de licencia
+KnotLicenseCacheHint=Borra la respuesta de licencia en caché para esta extensión (tras renovación o si la validación está obsoleta).
+KnotLicenseCacheConfirm=¿Invalidar datos de licencia en caché para la extensión %s? La próxima validación volverá a llamar al servidor de licencias.
+KnotLicenseCacheInvalidated=Caché de licencia borrada para la extensión %s.
+KnotLicenseCacheBadExtensionId=Id de extensión no válido.
+
+# Phase 5 — Workflow tier auditor (V2.5.0d)
+KnotImportBlockedTier=Importación bloqueada: este workflow usa conectores de pago no licenciados en esta instancia.
+KnotImportMissingConnectors=Conectores que requieren licencia activa
+
+# Phase 5 — Execution detail / waterfall (V2.5.0d)
+KnotExecutionDetailTitle=Detalle de ejecución
+KnotExecutionDetailBack=Volver a ejecuciones
+KnotExecutionWaterfallTitle=Línea de tiempo de nodos
+KnotExecutionWaterfallEmpty=Ningún nodo ejecutado — el workflow se detuvo antes del primer nodo (validación fallida o error anterior).
+KnotExecutionWaterfallTruncated=Mostrando solo los primeros 500 nodos. Use el JSON del registro en tiempo de ejecución para la traza completa.
+KnotExecutionWaterfallLoading=Cargando línea de tiempo…
+KnotExecutionDuration=Duración
+KnotExecutionStatus=Estado
+KnotExecutionStartedAt=Iniciado a las
+KnotExecutionFinishedAt=Finalizado a las
+KnotExecutionStatusSuccess=Éxito
+KnotExecutionStatusError=Error
+KnotExecutionStatusSkipped=Omitido
+KnotExecutionStatusRunning=En ejecución
+KnotExecutionTotalDuration=Duración total
+
+# Connectors — integration helper (Vue tab)
+KnotConnectorBuilderTab=Nuevo conector
+KnotConnectorBuilderHelp=Ayuda MVP para plantillas JSON y esquemas Dolibarr completos — no es un conector oficial del catálogo.

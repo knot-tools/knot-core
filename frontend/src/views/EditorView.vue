@@ -1164,10 +1164,10 @@ watch(workflowName, () => {
       </div>
 
       <div class="k-flex-1 k-min-h-0 k-overflow-y-auto k-px-3 k-py-3 k-space-y-5">
-        <template v-for="section in PALETTE_SECTIONS" :key="section.title">
+        <template v-for="section in PALETTE_SECTIONS" :key="section.titleKey">
         <section v-if="!search.trim() || filteredIds(section.ids).length > 0">
           <div class="k-px-2 k-text-[11px] k-uppercase k-tracking-wider k-text-knot-text-soft k-font-bold k-mb-2">
-            {{ section.title }}
+            {{ t(section.titleKey) }}
           </div>
           <div class="k-space-y-1.5">
             <template v-for="id in filteredIds(section.ids)" :key="id">

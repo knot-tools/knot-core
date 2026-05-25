@@ -4,6 +4,7 @@
 -->
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { AlertTriangle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-vue-next';
 import type { ValidationIssue } from '../lib/validator';
 import { formatValidationIssueMessage } from '../lib/validator';
@@ -15,6 +16,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'jump', nodeId: string): void;
 }>();
+
+const { t } = useI18n();
 
 const collapsed = ref(false);
 
@@ -45,7 +48,7 @@ function jump(issue: ValidationIssue) {
         <span v-if="warningCount > 0" class="k-flex k-items-center k-gap-1 k-text-knot-warning k-font-semibold">
           <AlertTriangle :size="14" /> {{ warningCount }}
         </span>
-        <span class="k-text-knot-text-muted">Problems</span>
+        <span class="k-text-knot-text-muted">{{ t('editor.problemsTitle') }}</span>
       </div>
       <component :is="collapsed ? ChevronUp : ChevronDown" :size="14" class="k-text-knot-text-muted" />
     </button>

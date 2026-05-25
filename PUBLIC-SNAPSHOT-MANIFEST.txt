@@ -1,4 +1,4 @@
-generated_at=2026-05-25T03:24:07Z
+generated_at=2026-05-25T18:23:25Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/ISSUE_TEMPLATE/bug_report.yml
@@ -367,7 +367,9 @@ frontend/index.html
 frontend/package-lock.json
 frontend/package.json
 frontend/postcss.config.js
+frontend/scripts/i18n-loanword-whitelist.json
 frontend/scripts/lint-i18n-compile.mjs
+frontend/scripts/lint-i18n-loanwords.mjs
 frontend/scripts/lint-i18n.mjs
 frontend/src/App.vue
 frontend/src/__tests__/i18n-compile.test.ts
@@ -548,8 +550,12 @@ knot-templates/README.md
 knot-templates/compta/quotes-report.knot.json
 knot-templates/compta/quotes-report.meta.yaml
 knot-templates/index.json
+langs/de_DE/knot.lang
 langs/en_US/knot.lang
+langs/es_ES/knot.lang
 langs/fr_FR/knot.lang
+langs/it_IT/knot.lang
+langs/pt_PT/knot.lang
 phpcs.xml.dist
 phpstan.neon.dist
 phpunit.xml.dist

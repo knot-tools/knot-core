@@ -112,6 +112,17 @@
     "clearCanvas": "Clear canvas",
     "starterHintDismiss": "Dismiss",
     "paletteSearchPlaceholder": "Search nodes…",
+    "problemsTitle": "Problems",
+    "paletteSections": {
+      "trigger": "Triggers",
+      "logic": "Logic",
+      "communication": "Communication",
+      "notification": "Alerts",
+      "saas": "SaaS",
+      "ai": "AI",
+      "dolibarr": "Dolibarr",
+      "universal": "Universal"
+    },
     "sidebarBrandSubtitle": "Workflow editor",
     "dragPaletteHint": "Drag nodes to the canvas",
     "loadingWorkflow": "Loading workflow…",
@@ -1408,6 +1419,110 @@
             "description": "Optional sender when allowed by server policy."
           }
         }
+      },
+      "slack": {
+        "label": "Slack",
+        "description": "Post a message to a Slack webhook"
+      },
+      "discord": {
+        "label": "Discord",
+        "description": "Post a message to a Discord webhook"
+      },
+      "telegram": {
+        "label": "Telegram",
+        "description": "Send a message via Telegram bot"
+      },
+      "twilio_sms": {
+        "label": "Twilio SMS",
+        "description": "Send a text message via Twilio Programmable SMS"
+      },
+      "ovh_sms": {
+        "label": "OVH SMS",
+        "description": "Send a text message via OVHcloud SMS API"
+      },
+      "whatsapp_cloud": {
+        "label": "WhatsApp Cloud",
+        "description": "Send a WhatsApp message via Meta Cloud API (Business)"
+      },
+      "whatsapp_twilio": {
+        "label": "WhatsApp (Twilio)",
+        "description": "Send a WhatsApp message through a Twilio sender"
+      },
+      "stripe": {
+        "label": "Stripe",
+        "description": "Customers, charges, invoices and subscriptions on Stripe"
+      },
+      "woocommerce": {
+        "label": "WooCommerce",
+        "description": "Read & write WooCommerce orders, products and customers"
+      },
+      "sftp": {
+        "label": "SFTP",
+        "description": "Upload, download or list files on an SFTP server"
+      },
+      "shopify": {
+        "label": "Shopify",
+        "description": "Read & write Shopify orders, products and customers"
+      },
+      "prestashop": {
+        "label": "PrestaShop",
+        "description": "PrestaShop Webservice (orders, products, customers, ...)"
+      },
+      "notion": {
+        "label": "Notion",
+        "description": "Pages, databases, blocks and search via Notion API"
+      },
+      "airtable": {
+        "label": "Airtable",
+        "description": "List, create or update Airtable records"
+      },
+      "github": {
+        "label": "GitHub",
+        "description": "Issues, pull requests, releases and Actions dispatches"
+      },
+      "gitlab": {
+        "label": "GitLab",
+        "description": "Issues, MRs, pipelines and releases (cloud or self-hosted)"
+      },
+      "google_sheets": {
+        "label": "Google Sheets",
+        "description": "Read, append or update spreadsheet ranges"
+      },
+      "google_drive": {
+        "label": "Google Drive",
+        "description": "List, upload, copy, share or delete Drive files"
+      },
+      "gmail": {
+        "label": "Gmail",
+        "description": "Send messages and read mailbox via Gmail API"
+      },
+      "google_calendar": {
+        "label": "Google Calendar",
+        "description": "Create, update or query Calendar events and freebusy"
+      },
+      "ai_openai": {
+        "label": "OpenAI Chat",
+        "description": "Call OpenAI / OpenAI-compatible LLMs"
+      },
+      "ai_anthropic": {
+        "label": "Anthropic Chat",
+        "description": "Call Anthropic Messages API"
+      },
+      "ai_ollama": {
+        "label": "Ollama (local)",
+        "description": "Local LLM via Ollama (no cloud)"
+      },
+      "ai_mistral": {
+        "label": "Mistral Chat",
+        "description": "Call Mistral chat completions"
+      },
+      "ai_gemini": {
+        "label": "Gemini Chat",
+        "description": "Call Google Gemini generateContent"
+      },
+      "http": {
+        "label": "HTTP Request",
+        "description": "Call any REST/JSON endpoint"
       }
     },
     "trigger": {
@@ -1456,6 +1571,14 @@
             "description": "Optional filter: Dolibarr element types (e.g. invoice, societe)."
           }
         }
+      },
+      "stripe_webhook": {
+        "label": "Stripe Webhook",
+        "description": "Listen to Stripe events with HMAC verification"
+      },
+      "shopify_webhook": {
+        "label": "Shopify Webhook",
+        "description": "Listen to Shopify topics with X-Shopify-Hmac-Sha256 verification"
       }
     },
     "logic": {
