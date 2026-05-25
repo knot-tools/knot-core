@@ -79,4 +79,57 @@ final class MigratorV2120Test extends TestCase
         @rmdir($root . '/sql');
         @rmdir($root);
     }
+
+    public function testRunFailsFastOnFirstSqlError(): void
+    {
+        $root = sys_get_temp_dir() . '/knot_mig_v212_fail_' . uniqid('', true);
+        $dir = $root . '/sql/migrations/v2.12.0';
+        @mkdir($dir, 0o777, true);
+        file_put_contents(
+            $dir . '/99_fail.sql',
+            'ALTER TABLE llx_knot_missing ADD COLUMN demo_flag TINYINT DEFAULT 0;',
+        );
+
+        $db = new class() extends \DoliDB {
+            public function query(string $sql)
+            {
+                if (str_starts_with($sql, 'SELECT rowid FROM llx_knot_migration_history')) {
+                    return new \stdClass();
+                }
+
+                return false;
+            }
+
+            public function fetch_object($resource): ?object
+            {
+                return null;
+            }
+
+            public function escape(string $string): string
+            {
+                return addslashes($string);
+            }
+
+            public function lasterror(): string
+            {
+                return 'Table not found';
+            }
+
+            public function idate(int $timestamp): string
+            {
+                return gmdate('Y-m-d H:i:s', $timestamp);
+            }
+        };
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('v2.12.0/99_fail.sql failed');
+
+        (new Migrator($db, $root))->run();
+
+        @unlink($dir . '/99_fail.sql');
+        @rmdir($dir);
+        @rmdir($root . '/sql/migrations');
+        @rmdir($root . '/sql');
+        @rmdir($root);
+    }
 }

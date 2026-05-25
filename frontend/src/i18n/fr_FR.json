@@ -312,7 +312,10 @@
     "confirmTitle": "Appliquer cette mise à jour ?",
     "confirmBody": "Les fichiers de {slug} seront remplacés sur ce serveur.",
     "applySuccess": "Mise à jour appliquée ({slug}).",
+    "migrationsApplied": "{count} migration(s) base de données appliquée(s).",
     "applyError": "Échec de l'application.",
+    "migrationFailedRestored": "Échec de la migration BDD — les fichiers précédents ont été restaurés.",
+    "migrationFailedCritical": "Échec de la migration BDD — la restauration des fichiers a aussi échoué.",
     "signatureInvalidTitle": "Signature de release invalide",
     "signatureInvalidBody": "Le paquet n'a pas passé la vérification Ed25519. N'appliquez pas l'update tant qu'un artefact signé n'est pas disponible via Knot Tools.",
     "loadMarketplaceHint": "Impossible de résoudre l'URL d'achat — ouvrir le marketplace manuellement."

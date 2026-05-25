@@ -1,10 +1,17 @@
-generated_at=2026-05-24T05:51:20Z
+generated_at=2026-05-25T03:24:07Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
+.github/ISSUE_TEMPLATE/bug_report.yml
+.github/ISSUE_TEMPLATE/config.yml
+.github/ISSUE_TEMPLATE/documentation_gap.yml
+.github/ISSUE_TEMPLATE/feature_request.yml
 .github/dependabot.yml
+.github/pull_request_template.md
 .github/workflows/ci.yml
 .gitignore
 CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
 LICENSE
 LICENSES.md
 LINKING-EXCEPTION.md
@@ -262,6 +269,7 @@ class/StateMachine/StateMachineEngine.php
 class/StateMachine/StateMachineEngineInterface.php
 class/StateMachine/TransitionDetector.php
 class/StateMachine/TransitionProbability.php
+class/Updates/ExtensionPostApplyRunner.php
 class/Updates/GithubReleasesClient.php
 class/Updates/InstallLock.php
 class/Updates/Installer.php
@@ -273,6 +281,7 @@ class/Updates/UpdateLatestResolver.php
 class/Updates/UpdateLatestSource.php
 class/Updates/UpdateStatusCache.php
 class/Updates/UpdatesApplyPolicy.php
+class/Updates/UpdatesApplyPostSwap.php
 class/Updates/ZipDownloader.php
 class/Version.php
 class/autoload.php
@@ -719,6 +728,7 @@ tests/Support/LocalZipHttpsHarness.php
 tests/Support/LoopbackUrlPolicy.php
 tests/Support/RedirectJsonHttpHarness.php
 tests/Templates/BundledTemplatesManifestTest.php
+tests/Updates/ExtensionPostApplyRunnerTest.php
 tests/Updates/GithubReleasesClientTest.php
 tests/Updates/InstallLockTest.php
 tests/Updates/InstallerTest.php
@@ -731,6 +741,8 @@ tests/Updates/UpdateClientTest.php
 tests/Updates/UpdateLatestResolverTest.php
 tests/Updates/UpdateStatusCacheMultiEntityTest.php
 tests/Updates/UpdatesApplyLogicTest.php
+tests/Updates/UpdatesApplyPostSwapTest.php
+tests/Updates/UpdatesApplyRollbackTest.php
 tests/Updates/UpdatesApplySignatureBindingTest.php
 tests/Updates/ZipDownloaderTest.php
 tests/Version/VersionConsistencyTest.php
@@ -761,6 +773,7 @@ tests/stubs/commande/class/commande.class.php
 tests/stubs/compta/facture/class/facture.class.php
 tests/stubs/contact/class/contact.class.php
 tests/stubs/core/class/CMailFile.class.php
+tests/stubs/core/modules/DolibarrModules.class.php
 tests/stubs/dolibarr.php
 tests/stubs/product/class/product.class.php
 tests/stubs/projet/class/project.class.php

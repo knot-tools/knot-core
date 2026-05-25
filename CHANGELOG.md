@@ -7,9 +7,34 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.5] - 2026-05-24
+
+### Added
+
+- **Updates Apply — extension DB migrations:** optional manifest `postApply` block
+  (`contractVersion`, `autoload`, `migrationRunner` FQCN). Core loads the extension runner after
+  a successful file swap via `ExtensionPostApplyRunner`; response includes a `migrations` log array.
+- **Updates Apply — audit log:** `updates.apply.started`, `.swapped`, `.migrated`, `.failed`, and
+  `.rolled_back` entries in `llx_knot_audit_log`.
+
+### Changed
+
+- **Updates Apply — automatic file rollback:** Core and extensions roll back the on-disk tree when
+  post-swap SQL migrations fail (`Installer::rollback()` after swap commit window).
+- **Updates Apply — HTTP semantics:** `422` when migration fails but rollback restored files;
+  `500` when rollback itself fails (`details.rollback`: `restored` | `failed`).
+- **Migrator (Core):** fail-fast on first SQL error instead of recording `error:` status and
+  continuing.
+- **Updates Apply:** `set_time_limit(600)` at request start; `ExtensionRegistry::clearCache()` after
+  each successful swap.
+- **Official manifest pins:** Migration and Pro Pack primary digests updated for `postApply` manifests.
+
 ### Documentation
 
-- **GitHub community profile:** `CONTRIBUTING.md`, issue templates, updated `SECURITY.md` integrity links and Ed25519 policy for releases ≥ 2.13.4.
+- **`docs/runbooks/updates-apply.md`**, **`docs/extensibility.md`**, **`docs/testing/updates-e2e-extensions.md`**
+  — post-apply migration contract and operator checklist.
+- **Updates UI:** migration success toasts and distinct `422` / `500` error copy (FR + EN).
+- **GitHub community profile:** public `CONTRIBUTING.md`, issue templates, updated `SECURITY.md` integrity links (`/downloads/verify/`), Ed25519 policy for releases ≥ 2.13.4; `CHANGELOG` header reflects public beta on GitHub.
 - **`SECURITY.md`:** fix French spelling (`chiffrés`).
 
 ### Fixes — updates
@@ -31,8 +56,10 @@ Source, tags, and GitHub Releases:
 - User-facing documentation centre published at **docs.knot.tools** (Knot Tools™), complementing in-repo `core/docs/` technical guides.
 - **Runbook:** [`docs/runbooks/docs-docker-migration-screenshots.md`](docs/runbooks/docs-docker-migration-screenshots.md) — Playwright Migration captures on Docker (licensing profile, `llx_knot_config`, fingerprint pin, troubleshooting).
 
-### Tooling
+### Tooling / community
 
+- **Public GitHub (`knot-core`):** synthetic Stripe test vector in `RuntimeLoggerTest` (avoids Secret Scanning false positives); `CODE_OF_CONDUCT.md` and PR template in public snapshot; CONTRIBUTING clarifies maintainer-only PRs during beta.
+- **Audit pre-push:** `scripts/release/audit-pre-push.sh` — mandatory gitleaks + rules 02/03 greps before every commit/push; **knot-core** target auto-runs extended snapshot audit (see `.cursor/rules/05-validation-before-push.mdc`).
 - **Docs Docker licensing:** `scripts/lib/DocsLicensingProfile.php` pins `Acme Solar`, `licensing.local_salt`, and optional `licensing.docs_pinned_fingerprint` when `KNOT_DOCS_SEED_V1` is set; `seed_docs_migration.php` restores prior licence bindings and writes `value_hex` signatures; `repair_docs_migration_license_cache.php` refreshes empty cache signatures; `seed_docs_migration_ui.php` seeds analysis history and Discovery journey for Migration Playwright captures.
 
 ## [2.13.4] - 2026-05-23

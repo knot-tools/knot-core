@@ -1,26 +1,26 @@
 {
-  "schema_version": "knot-core-releases@v1",
-  "latest": {
-    "version": "2.13.4",
-    "channel": "beta",
-    "published_at": "2026-05-24T05:14:14+00:00",
-    "zip_url": "https://knot.tools/downloads/knot-core/latest",
-    "zip_sha256": "a66f0b603330c5a191be3aa04753a0b11f4c8d8764ea28c8721c00d4066c966b",
-    "signature_hex": "8996c6fd0d72595662be58bee2f528d7b206fa1890615f225837971b7959835d2e0edbdfbdb5ff16a103b9b6dc7073f2d5282b5ba41825b0d46d9abbfe99ea04",
-    "signature_payload": {
-      "channel": "beta",
-      "version": "2.13.4",
-      "zip_sha256": "a66f0b603330c5a191be3aa04753a0b11f4c8d8764ea28c8721c00d4066c966b",
-      "zip_url": "https://knot.tools/downloads/knot-core/latest"
+    "schema_version": "knot-core-releases@v1",
+    "latest": {
+        "version": "2.13.5",
+        "channel": "beta",
+        "published_at": "2026-05-25T03:19:16+00:00",
+        "zip_url": "https://knot.tools/downloads/knot-core/latest",
+        "zip_sha256": "b99fef2e4efa0669b495259f9bd54a2269ebc12e8b43caed33360739aaeffda6",
+        "signature_hex": "1a659c59a2c8d5732b4ed173f6902343fba5619912e04c312f84eee2eac71c099c7e227e01fe47053558a403172b0e7900977b13931df802450514483a46f300",
+        "signature_payload": {
+            "channel": "beta",
+            "version": "2.13.5",
+            "zip_sha256": "b99fef2e4efa0669b495259f9bd54a2269ebc12e8b43caed33360739aaeffda6",
+            "zip_url": "https://knot.tools/downloads/knot-core/latest"
+        },
+        "dolibarr_min": "20.0.0",
+        "dolibarr_max": "23.99.99",
+        "php_min": "8.1.0",
+        "php_max": "8.4.99",
+        "breaking_change": false,
+        "zip_size_bytes": 1886580,
+        "signature_kid": "rel-2026-04"
     },
-    "dolibarr_min": "20.0.0",
-    "dolibarr_max": "23.99.99",
-    "php_min": "8.1.0",
-    "php_max": "8.4.99",
-    "breaking_change": false,
-    "zip_size_bytes": 1876763,
-    "signature_kid": "rel-2026-04"
-  },
-  "_comment": "CI or scripts/release/build-core-release.sh must fill signature_hex when signing key is configured.",
-  "_docs": "https://github.com/knot-tools/knot-core/blob/main/docs/RELEASE.md"
+    "_comment": "Synced from knot-tools/core/releases.json on each Core release.",
+    "_docs": "https://github.com/knot-tools/knot-core/blob/main/docs/RELEASE.md"
 }

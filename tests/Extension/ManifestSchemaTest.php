@@ -668,4 +668,81 @@ final class ManifestSchemaTest extends TestCase
             'author' => 'a',
         ];
     }
+
+    public function testValidPostApplyBlockPasses(): void
+    {
+        $manifest = $this->baseManifest();
+        $manifest['namespace'] = 'Knot\\Extension\\Demo\\';
+        $manifest['postApply'] = [
+            'contractVersion' => 1,
+            'autoload' => 'autoload.php',
+            'migrationRunner' => 'Knot\\Extension\\Demo\\Migration\\Migrator',
+        ];
+
+        $result = ManifestSchema::validate($manifest);
+        self::assertTrue($result['valid'], implode('; ', $result['errors']));
+        self::assertSame(1, $result['normalised']['postApply']['contractVersion']);
+    }
+
+    public function testPostApplyRequiresNamespaceForRunnerValidation(): void
+    {
+        $manifest = $this->baseManifest();
+        $manifest['postApply'] = [
+            'contractVersion' => 1,
+            'autoload' => 'autoload.php',
+            'migrationRunner' => 'Knot\\Extension\\Demo\\Migration\\Migrator',
+        ];
+
+        $result = ManifestSchema::validate($manifest);
+        self::assertFalse($result['valid']);
+        self::assertContains('postApply requires manifest.namespace to validate migrationRunner', $result['errors']);
+    }
+
+    public function testPostApplyRejectsParentPathInAutoload(): void
+    {
+        $manifest = $this->baseManifest();
+        $manifest['namespace'] = 'Knot\\Extension\\Demo\\';
+        $manifest['postApply'] = [
+            'contractVersion' => 1,
+            'autoload' => '../autoload.php',
+            'migrationRunner' => 'Knot\\Extension\\Demo\\Migration\\Migrator',
+        ];
+
+        $result = ManifestSchema::validate($manifest);
+        self::assertFalse($result['valid']);
+        self::assertContains('postApply.autoload must not contain parent directory segments', $result['errors']);
+    }
+
+    public function testPostApplyRejectsUnsupportedContractVersion(): void
+    {
+        $manifest = $this->baseManifest();
+        $manifest['namespace'] = 'Knot\\Extension\\Demo\\';
+        $manifest['postApply'] = [
+            'contractVersion' => 99,
+            'autoload' => 'autoload.php',
+            'migrationRunner' => 'Knot\\Extension\\Demo\\Migration\\Migrator',
+        ];
+
+        $result = ManifestSchema::validate($manifest);
+        self::assertFalse($result['valid']);
+        self::assertContains(
+            'postApply.contractVersion is newer than this Knot Core release supports',
+            $result['errors'],
+        );
+    }
+
+    public function testPostApplyRejectsRunnerOutsideNamespace(): void
+    {
+        $manifest = $this->baseManifest();
+        $manifest['namespace'] = 'Knot\\Extension\\Demo\\';
+        $manifest['postApply'] = [
+            'contractVersion' => 1,
+            'autoload' => 'autoload.php',
+            'migrationRunner' => 'Other\\Migrator',
+        ];
+
+        $result = ManifestSchema::validate($manifest);
+        self::assertFalse($result['valid']);
+        self::assertContains('postApply.migrationRunner must be under manifest.namespace', $result['errors']);
+    }
 }

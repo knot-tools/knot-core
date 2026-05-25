@@ -312,7 +312,10 @@
     "confirmTitle": "Apply this update?",
     "confirmBody": "{slug} files will be replaced on this server.",
     "applySuccess": "Update applied ({slug}).",
+    "migrationsApplied": "{count} database migration(s) applied.",
     "applyError": "Apply failed.",
+    "migrationFailedRestored": "Database migration failed — previous files were restored.",
+    "migrationFailedCritical": "Database migration failed — file rollback also failed.",
     "signatureInvalidTitle": "Release signature invalid",
     "signatureInvalidBody": "The update package failed Ed25519 verification. Do not retry until a signed artefact is available from Knot Tools.",
     "loadMarketplaceHint": "Could not resolve purchase URL — browse the marketplace manually."
