@@ -5,6 +5,21 @@
 Source, tags, and GitHub Releases:
 **[github.com/knot-tools/knot-core](https://github.com/knot-tools/knot-core)**.
 
+## [Unreleased]
+
+## [2.13.7] - 2026-05-25
+
+### Added — i18n
+
+- **Connector catalog i18n:** `labelKey` / `descriptionKey` on palette nodes; ProblemsPanel and EditorView use vue-i18n keys across six locales.
+- **i18n tooling:** `scripts/i18n/apply-connector-catalog-i18n.mjs`, `gen-missing-connector-i18n.mjs`.
+- **Demo deploy:** `scripts/demo_knot_vm_deploy_migration.sh` for Migration bundle on demo VM.
+
+### Changed — i18n
+
+- **FR Core UI:** residual English strings translated in `fr_FR.json` (connectors, editor, nav).
+- **DE/ES/IT/PT:** connector catalog keys aligned with `en_US.json` pivot.
+
 ## [2.13.6] - 2026-05-25
 
 ### Fixes — licensing

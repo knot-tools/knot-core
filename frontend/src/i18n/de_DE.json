@@ -4,19 +4,19 @@
     "tagline": "Workflow-Automatisierung für Dolibarr"
   },
   "nav": {
-    "dashboard": "Übersicht",
+    "dashboard": "Dashboard",
+    "observability": "Observability",
     "workflows": "Workflows",
     "executions": "Ausführungen",
     "credentials": "Anmeldedaten",
-    "connectors": "Konnektoren",
+    "connectors": "Connectors",
     "templates": "Vorlagen",
     "variables": "Variablen",
     "audit": "Audit",
     "doctor": "Diagnose",
     "inbox": "Posteingang",
     "assistant": "Assistent",
-    "book": "Buch",
-    "observability": "Observability",
+    "book": "Book",
     "marketplace": "Marketplace"
   },
   "actions": {
@@ -40,124 +40,324 @@
     "search": "Suchen",
     "loading": "Wird geladen…"
   },
+  "activation": {
+    "titleCritical": "Dieser Workflow führt kritische Aktionen aus",
+    "titleCaution": "Dieser Workflow schreibt Daten",
+    "titleSafe": "Workflow aktivieren",
+    "subtitleCritical": "Lesen Sie die Zusammenfassung unten sorgfältig. Die Aktivierung ermöglicht eine echte Ausführung (Buchhaltung, Löschung usw.).",
+    "subtitleCaution": "Die Aktivierung erlaubt das Erstellen oder Aktualisieren von Dolibarr-Daten oder das Senden von Nachrichten.",
+    "subtitleSafe": "Dieser Workflow liest nur Daten. Aktivieren Sie ihn, um ihn über seinen Trigger auszuführen.",
+    "confirmCritical": "Verstanden — aktivieren",
+    "viewInEditor": "Im Editor anzeigen",
+    "scheduleActive": "Eine Planung oder ein Cron-Trigger kann diesen Workflow automatisch ausführen.",
+    "effects": {
+      "db": "Datenbankänderungen",
+      "mail": "E-Mail-Versand",
+      "http": "Externer HTTP-Aufruf",
+      "accounting": "Auswirkung auf die Buchhaltung",
+      "external-paid": "Kostenpflichtige externe API",
+      "irreversible": "Einige Aktionen sind unwiderruflich."
+    }
+  },
   "capabilitiesPage": {
-    "title": "Capabilities",
-    "subtitle": "Manifest of what Knot can do on this Dolibarr instance (for support and compatibility checks).",
-    "cachedLabel": "Cached response:",
-    "cachedYes": "yes (TTL 5 min)",
-    "cachedNo": "no (fresh build)",
-    "copyJson": "Copy JSON",
-    "copied": "Copied",
-    "refreshCache": "Refresh cache",
-    "clipboardUnavailable": "Clipboard unavailable.",
-    "loadFailed": "Failed to load capabilities.",
-    "knotCard": "Knot",
+    "title": "Funktionen",
+    "subtitle": "Manifest der Knot-Funktionen auf dieser Dolibarr-Instanz (Support und Kompatibilitätsprüfung).",
+    "cachedLabel": "Gecachte Antwort:",
+    "cachedYes": "ja (TTL 5 Min.)",
+    "cachedNo": "nein (frisch erzeugt)",
+    "copyJson": "JSON kopieren",
+    "copied": "Kopiert",
+    "refreshCache": "Cache aktualisieren",
+    "clipboardUnavailable": "Zwischenablage nicht verfügbar.",
+    "loadFailed": "Funktionen konnten nicht geladen werden.",
+    "knotCard": "Knot Core",
     "dolibarrCard": "Dolibarr",
-    "modulesActive": "Modules active:",
-    "supportedObjectsTitle": "Supported object slugs",
-    "supportedObjectsHint": "Curated MAP entries plus discovered slugs exposed to the API — can differ from raw rows in the introspection JSON file.",
-    "descriptorFileTitle": "Descriptor file rows",
-    "descriptorFileHint": "Row count in documents/knot/dolibarr_descriptors.json from the last introspection scan (same metric as Doctor / setup).",
-    "rawJson": "Raw JSON"
+    "modulesActive": "Aktive Modul:",
+    "supportedObjectsTitle": "Unterstützte Objekt-Slugs",
+    "supportedObjectsHint": "Aktuelle MAP plus entdeckte Slugs in der API — kann von der Rohzeilenzahl in der JSON-Introspectionsdatei abweichen.",
+    "descriptorFileTitle": "Zeilen in der Deskriptor-Datei",
+    "descriptorFileHint": "Zeilenanzahl in documents/knot/dolibarr_descriptors.json nach dem letzten Scan (identisch mit Diagnose / Einrichtung).",
+    "rawJson": "Rohes JSON"
   },
   "status": {
     "draft": "Entwurf",
-    "active": "Aktiv",
+    "active": "Actif",
     "disabled": "Deaktiviert",
     "archived": "Archiviert",
     "queued": "In der Warteschlange",
     "running": "Läuft",
     "success": "Erfolg",
-    "error": "Fehler",
+    "error": "Error",
     "cancelled": "Abgebrochen",
     "skipped": "Übersprungen"
   },
+  "workflowImport": {
+    "compatTitle": "Import-Kompatibilitätswarnungen",
+    "compatLead": "{count} Warnung(en):",
+    "compatConfirm": "Import fortsetzen?"
+  },
+  "editor": {
+    "save": "Speichern",
+    "saving": "Wird gespeichert…",
+    "saved": "Gespeichert",
+    "unsaved": "Nicht gespeichert",
+    "undo": "Abbrechen",
+    "redo": "Wiederholen",
+    "arrange": "Aligner",
+    "versions": "Versionen",
+    "run": "Ausführen",
+    "simulate": "Simulieren",
+    "simulatePartialDryRunHint": "Der Simulationsmodus nutzt Dry-run, sofern unterstützt. Logik- und Trigger-Knoten können weiterhin ausgeführt werden.",
+    "starterHint": "Dieses Canvas startet mit einem kleinen Beispiel-Flow. Bearbeiten Sie ihn oder leeren Sie das Canvas, um mit einem leeren Graphen zu beginnen.",
+    "clearCanvas": "Canvas leeren",
+    "starterHintDismiss": "Ausblenden",
+    "paletteSearchPlaceholder": "Knoten suchen…",
+    "sidebarBrandSubtitle": "Workflow-Editor",
+    "dragPaletteHint": "Knoten auf das Canvas ziehen",
+    "loadingWorkflow": "Workflow wird geladen…",
+    "toolbarUndoTitle": "Abbrechen (Cmd+Z)",
+    "toolbarRedoTitle": "Wiederholen (Cmd+Maj+Z)",
+    "toolbarArrangeTitle": "Automatisches Layout",
+    "toolbarArrangeAria": "Layout",
+    "toolbarVersionsTitle": "Versionsverlauf",
+    "toolbarRunTitle": "Workflow ausführen",
+    "runSlowProfileWarning": "Dieser Workflow nutzt HTTP-, KI- oder SaaS-Knoten: Ausführungen werden in die Warteschlange gestellt (Cron) und Simulieren ist auf ~25 s begrenzt.",
+    "toolbarSaveTitle": "Workflow speichern",
+    "toastNodesCopied": "Knoten(s) copied.",
+    "toastScheduleSaved": "Planung gespeichert.",
+    "toastWorkflowSaved": "Workflow gespeichert",
+    "toastExecutionQueued": "Ausführung n° {id} In der Warteschlange",
+    "toastOutputPinned": "Angeheftete Ausgabe auf {nodeId}",
+    "saveFallback": "Speichern fehlgeschlagen",
+    "simulateBeforeSave": "Speichern Sie den Workflow vor der Simulation.",
+    "simulateFailedFallback": "Simulation fehlgeschlagen.",
+    "runBeforeSave": "Speichern Sie den Workflow, bevor Sie ihn ausführen.",
+    "runInactive": "Der Workflow muss aktiv sein, um ausgeführt zu werden.",
+    "runFallback": "Ausführung fehlgeschlagen",
+    "versionsNeedSave": "Speichern Sie den Workflow, bevor Sie Versionen öffnen.",
+    "versionsFallback": "Versionen konnten nicht geladen werden",
+    "rollbackConfirmTitle": "Workflow-Version zurücksetzen",
+    "rollbackConfirmMessage": "Gehen Sie zurück zur Versionsnr. {id}? Zunächst wird ein Snapshot erstellt.",
+    "rollbackSuccess": "Version #{id} wiederhergestellt",
+    "rollbackFallback": "Zurücksetzen fehlgeschlagen",
+    "loadWorkflowFallback": "Workflow konnte nicht geladen werden",
+    "loadWorkflowNotFound": "Workflow nicht gefunden (id={id}). Überprüfen Sie, ob Sie mit der richtigen Entität Dolibarr verbunden sind.",
+    "backToWorkflows": "Workflows",
+    "inspectorTitle": "Inspector",
+    "inspectorSubtitleSelected": "Ausgewählten Knoten bearbeiten",
+    "inspectorSubtitleEmpty": "Wählen Sie einen Knoten zur Konfiguration",
+    "inspectorEmptyCanvas": "Klicken Sie einen Knoten auf dem Canvas, um ihn zu bearbeiten.",
+    "metaWorkflowId": "ID Workflow",
+    "metaStatus": "Status",
+    "metaNodes": "Knoten",
+    "metaEdges": "Kanten",
+    "commonEmDash": "—",
+    "fieldLabelCaption": "Bezeichnung",
+    "fieldSubtitleCaption": "Sous-titre",
+    "fieldTypeCaption": "Typ",
+    "mappingTitle": "Eingabedaten-Zuordnung",
+    "mappingSubtitle": "Ziehen Sie ein angeheftetes Feld stromaufwärts zu einem JSON-String in der Konfiguration oben.",
+    "mappingUpstreamEmpty": "Verbinden Sie einen vorherigen Knoten und pinnen Sie dessen Ausgabe, um ziehbare Datenpfade anzuzeigen.",
+    "continueOnFail": "Bei Fehler fortfahren",
+    "continueOnFailHint": "Zeigt einen roten Fehlerausgang und leitet Fehler über verbundene Kanten weiter.",
+    "cronScheduleVisual": "Visuelle Planung…",
+    "pinnedOutput": "Angeheftete Ausgabe",
+    "pinnedOutputPlaceholder": "{'{'}{' '}{'}'}",
+    "pinnedOutputHint": "Wenn gesetzt, nutzt die Engine dieses JSON statt den Knoten auszuführen. Nur für Test-Workflows verwenden.",
+    "unpinOutput": "Loslösen",
+    "deleteNode": "Knoten löschen",
+    "simulationTraceTitle": "Simulation",
+    "versionsDrawerTitle": "Workflow-Versionen",
+    "versionsDrawerLead": "Auto-snapshots are created on every Speichern.",
+    "versionsLoading": "Versionen werden geladen…",
+    "versionsEmpty": "Noch kein Snapshot. Speichern Sie den Workflow, um die erste Version zu erstellen.",
+    "snapshotLabel": "Snapshot n° {id}",
+    "namedVersionBadge": "Namens",
+    "rollback": "Restaurer",
+    "compare": "Comparer",
+    "scheduleModalTitle": "Visuelle Planung",
+    "schedulePresets": "Voreinstellungen",
+    "scheduleCronExpression": "Cron-Ausdruck",
+    "scheduleTimezone": "Fuseau",
+    "scheduleActive": "Actif",
+    "scheduleCancel": "Abbrechen",
+    "scheduleSave": "Speichern",
+    "schedulePresetHourly": "Jede Stunde",
+    "schedulePresetDailyNine": "Quotidien 9h",
+    "schedulePresetMondayEight": "Lundi 8h",
+    "schedulePresetFirstOfMonth": "1. des Monats 9:00",
+    "scheduleSaveFailed": "Planung konnte nicht gespeichert werden.",
+    "defaultWorkflowName": "Unbenannter Workflow",
+    "starterManualLabel": "Manuell starten",
+    "starterManualSubtitle": "Aus dem Editor ausgelöst",
+    "starterSetLabel": "Bereiten Sie die Nutzlast vor",
+    "starterSetSubtitle": "Nachricht, Empfänger",
+    "starterEmailLabel": "E-Mail senden",
+    "starterEmailSubtitle": "SMTP via Dolibarr",
+    "problemsTitle": "Probleme",
+    "paletteSections": {
+      "trigger": "Trigger",
+      "logic": "Logik",
+      "communication": "Kommunikation",
+      "notification": "Alerts",
+      "saas": "SaaS",
+      "ai": "KI",
+      "dolibarr": "Dolibarr",
+      "universal": "Universal"
+    }
+  },
   "search": {
     "placeholder": "Workflow suchen…",
-    "noResults": "Kein Ergebnis für „{term}“",
-    "clear": "Suche zurücksetzen"
+    "noResults": "Keine Ergebnisse für „{term}“",
+    "clear": "Suche löschen"
   },
   "empty": {
     "workflows": {
-      "title": "Noch kein Workflow",
-      "body": "Erstellen Sie Ihren ersten Workflow, um eine wiederkehrende Aufgabe zu automatisieren. Dauert 5 Minuten.",
+      "title": "Noch keine Workflows",
+      "body": "Erstellen Sie Ihren ersten Workflow, um eine wiederkehrende Aufgabe zu automatisieren. Das dauert 5 Minuten.",
       "primary": "Workflow erstellen",
-      "secondary": "Vorlage importieren"
+      "secondary": "Vorlage Importieren"
     },
     "executions": {
-      "title": "Noch keine Ausführungen",
+      "title": "Derzeit keine Ausführung",
       "body": "Ausführungen erscheinen hier, sobald ein Workflow ausgelöst wird."
     },
     "credentials": {
-      "title": "Keine Zugangsdaten konfiguriert",
-      "body": "Fügen Sie Ihre Zugangsdaten hinzu (HTTP, E-Mail, KI…), um sie in Ihren Workflows zu verwenden."
+      "title": "Keine Anmeldedaten konfiguriert",
+      "body": "Fügen Sie Ihre Kennungen (HTTP, E-Mail, AI…) hinzu, um sie in Ihren workflows zu verwenden."
     }
   },
   "pro": {
     "badge": "Pro",
-    "lockTooltip": "Verfügbar mit dem Knot Pro Pack",
+    "lockTooltip": "Verfügbar mit Knot Pro Pack",
     "upgradeCta": "Pro Pack aktivieren"
   },
   "shell": {
-    "betaBadge": "Public beta · Knot Core {version}",
-    "betaFeedback": "Send feedback",
-    "betaFeedbackAria": "Send beta feedback by email",
+    "betaBadge": "Öffentliche Beta · Knot Core {version}",
+    "betaFeedback": "Feedback senden",
+    "betaFeedbackAria": "Senden Sie Beta-Feedback per E-Mail",
     "demoBanner": {
-      "message": "You are on the shared demo environment — data is reset every 24 hours.",
-      "learnMore": "Install your own instance"
+      "message": "Sie befinden sich in der gemeinsamen Demoumgebung – die Daten werden alle 24 Stunden zurückgesetzt.",
+      "learnMore": "Installer Ihr propre instance"
     }
   },
   "toast": {
     "saved": "Gespeichert",
-    "savedBody": "Ihre Änderungen wurden gespeichert.",
+    "savedBody": "Ihre Änderungen wurden beibehalten.",
     "activated": "Workflow aktiviert",
     "deactivated": "Workflow deaktiviert",
-    "errorTitle": "Ein Fehler ist aufgetreten",
-    "dismiss": "Schließen"
+    "errorTitle": "Etwas ist schiefgelaufen",
+    "dismiss": "Ausblenden"
   },
   "dashboard": {
-    "betaPill": "Public beta · Knot Core {version}",
-    "betaPillGeneric": "Public beta · Knot Core",
-    "heroTitle": "Orchestrate your Dolibarr workflows — visually.",
-    "heroHighlight": "visually.",
-    "heroSubtitle": "The open-source engine that wires your ERP to your whole stack without writing code. 100% on your infrastructure, no mandatory cloud.",
-    "newWorkflow": "New workflow",
-    "importTemplate": "Import a template",
-    "refreshHealth": "Refresh /api/health.php",
-    "statActiveWorkflows": "Active workflows",
-    "statSuccessfulRuns": "Successful runs",
-    "statFailedRuns": "Failed runs",
-    "statQueued": "Queued",
-    "envChecks": "Environment checks",
-    "quickActions": "Quick actions",
-    "openWorkflows": "Open workflows list",
-    "browseExecutions": "Browse executions",
-    "connectorCatalog": "Connector catalog",
-    "credentials": "Credentials",
-    "newWorkflowShort": "New workflow",
+    "betaPill": "Öffentliche Beta · Knot Core {version}",
+    "betaPillGeneric": "Öffentliche Beta · Knot Core",
+    "heroTitle": "Orchestrieren Sie Ihre Dolibarr-Workflows — visuelll.",
+    "heroHighlight": "visuelllement.",
+    "heroSubtitle": "Die Open-Source-Engine, die Ihr ERP mit Ihrem gesamten Business-Stack verbindet — ohne eine Zeile Code. 100 % bei Ihnen, ohne Cloud-Pflicht.",
+    "newWorkflow": "Neuer Workflow",
+    "importTemplate": "Vorlage importieren",
+    "refreshHealth": "Aktualisieren /api/health.php",
+    "statActiveWorkflows": "Workflows actifs",
+    "statSuccessfulRuns": "Erfolgful runs",
+    "statFailedRuns": "Fehlgeschlagen runs",
+    "statQueued": "In der Warteschlange",
+    "envChecks": "Umgebungsprüfungen",
+    "quickActions": "Schnellaktionen",
+    "openWorkflows": "Workflow-Liste",
+    "browseExecutions": "Ausführungen durchsuchen",
+    "connectorCatalog": "Connector-Katalog",
+    "credentials": "Anmeldedaten",
+    "newWorkflowShort": "Neuer Workflow",
     "checkOk": "ok",
-    "checkWarn": "check",
-    "failureHeatmapTitle": "Failure heatmap (7 days)",
-    "failureHeatmapSubtitle": "Error and timeout executions by weekday and hour (server timezone).",
-    "failureHeatmapEmpty": "No failures in this window.",
-    "heatLoadError": "Unable to load health snapshot.",
+    "checkWarn": "überprüfen",
+    "failureHeatmapTitle": "Fehler-Heatmap (7 Tage)",
+    "failureHeatmapSubtitle": "Fehler- und Timeout-Ausführungen nach Wochentag und Stunde (Server-Zeitzone).",
+    "failureHeatmapEmpty": "Keine Fehler in diesem Zeitraum.",
+    "heatLoadError": "Dashboard-Status konnte nicht geladen werden.",
     "weekdaysShort": [
-      "Sun",
-      "Mon",
-      "Tue",
-      "Wed",
-      "Thu",
-      "Fri",
-      "Sat"
+      "So",
+      "Mo",
+      "Di",
+      "Mi",
+      "Do",
+      "Fr",
+      "Sa"
     ]
   },
+  "updatesBadge": {
+    "upToDate": "Alle installierten Produkte sind aktuell.",
+    "oneUpdate": "Aktualisieren available: {slug}",
+    "manyUpdates": "{count} Produktaktualisierungen verfügbar",
+    "refresh": "Actualiser",
+    "loadError": "Es kann nicht nach Updates gesucht werden.",
+    "openUpdates": "Updates öffnen"
+  },
+  "updatesFloatingBanner": {
+    "oneUpdate": "Aktualisieren available for {product} ({version})",
+    "manyUpdates": "{count} Produktaktualisierungen verfügbar",
+    "viewUpdates": "Anzeigen die Updates",
+    "snooze": "Plus tard (7 j)",
+    "ignoreVersion": "Diese Version ignorieren",
+    "dismissAria": "Me rappeler in 7 jours"
+  },
+  "updatesPage": {
+    "heroTitle": "Installierte Produkte",
+    "heroSubtitle": "Release-Metadaten von Knot Tools — beim Anwenden eines Updates werden Knot-Core-Dateien (custom/knot) oder registrierte Erweiterungsverzeichnisse ersetzt.",
+    "productNames": {
+      "knot": "Knot Core",
+      "knotProPack": "Knot Pro Pack",
+      "knotMigration": "Knot Migration"
+    },
+    "refresh": "Actualiser",
+    "checkNow": "Suchen Sie jetzt nach Updates",
+    "colProduct": "Produit",
+    "colInstalled": "Installiert",
+    "colLatest": "Dispo.",
+    "colChannel": "Canal",
+    "colStatus": "Status",
+    "noUpdates": "Keine Updates erkannt.",
+    "apply": "Anwenden",
+    "buy": "Kaufen / reNeueer",
+    "marketplaceUnavailable": "Öffnen Sie marketplace für Kauflinks.",
+    "confirmTitle": "Dieses Update anwenden ?",
+    "confirmBody": "Dateien von {slug} werden auf diesem Server ersetzt.",
+    "applySuccess": "Aktualisieren applied ({slug}).",
+    "migrationsApplied": "{count} Datenbankmigration(en) angewendet.",
+    "applyError": "Anwendung fehlgeschlagen.",
+    "migrationFailedRestored": "Die BDD-Migration ist fehlgeschlagen – vorherige Dateien wurden wiederhergestellt.",
+    "migrationFailedCritical": "Datenbankmigration fehlgeschlagen — Datei-Rollback ebenfalls fehlgeschlagen.",
+    "signatureInvalidTitle": "Release-Signatur ungültig",
+    "signatureInvalidBody": "Das Update-Paket hat die Ed25519-Prüfung nicht bestanden. Versuchen Sie es nicht erneut, bis ein signiertes Artefakt von Knot Tools verfügbar ist.",
+    "loadMarketplaceHint": "Kauf-URL kann nicht aufgelöst werden – öffnen Sie marketplace manuell."
+  },
+  "observability": {
+    "heroPill": "Aggregate · ohne Payload",
+    "heroTitle": "Observability",
+    "heroSubtitle": "Warteschlangentiefe, Fehler-Heatmap und Volumen nach Knotentyp aus den Ausführungstabellen.",
+    "openExecutions": "Ausführungen",
+    "openFailedExecutions": "Fehlgeschlagen executions",
+    "window": "Zeitraum",
+    "days": "jours",
+    "queueWaiting": "In der Warteschlange executions",
+    "queueRunning": "Laufende Ausführungen",
+    "nodesByType": "Knotentypen (Protokoll)",
+    "nodesHint": "Counts and average duration per connector/Knoten Typ. Input/output payloads are never exposed here.",
+    "colNodeType": "Typ de Knoten",
+    "colRuns": "Ausführens",
+    "colErrors": "Errors",
+    "colErrorRate": "Fehlerrate",
+    "colAvgDuration": "Durchschnittliche Dauer",
+    "nodesEmpty": "Keine Knoten-Logs in diesem Fenster.",
+    "loadError": "Observabilitysaggregate konnten nicht geladen werden."
+  },
   "proPackRecommendation": {
-    "globalTitle": "{count} workflow(s) on this instance use {connectors} Knot Pro Pack connector(s)",
-    "workflowTitle": "This workflow uses {connectors} Knot Pro Pack connector(s)",
-    "affectedLabel": "Connectors:",
-    "body": "Activate Knot Pro Pack to run these nodes. Your workflow JSON stays unchanged.",
-    "catalogCta": "View Pro Pack catalog",
-    "buyCta": "Get Pro Pack"
+    "globalTitle": "{count} Workflow(s) auf dieser Instanz nutzen {connectors} Knot-Pro-Pack-Connector(s)",
+    "workflowTitle": "Dieser Workflow nutzt {connectors} Knot-Pro-Pack-Connector(s)",
+    "affectedLabel": "Connectors :",
+    "body": "Aktivieren Sie Knot Pro Pack, um diese Knoten auszuführen. Ihr Workflow-JSON bleibt unverändert.",
+    "catalogCta": "Pro-Pack-Katalog anzeigen",
+    "buyCta": "Obtenir Pro Pack"
   },
   "common": {
     "status": "Status"
@@ -166,872 +366,744 @@
     "thStatus": "Status"
   },
   "dolibarrObject": {
-    "title": "Dolibarr object",
+    "title": "Objekt Dolibarr",
     "registryLabel": "Registry",
-    "registryAllExceptUnverified": "All except unverified",
-    "registryAll": "All",
-    "registryDiscovery": "Discovered only (standard)",
-    "registryDiscoveryUnverified": "Discovered only (expert)",
-    "registryDiscoverySameObjectListHint": "Both options list the same introspection-only objects. Expert mode enables a wider field schema, relaxed checks, and advanced options (e.g. custom status method).",
-    "registryWidenedTitle": "Registry widened automatically",
-    "registryWidenedBody": "This node targets a discovery-only object. The “All except unverified” filter was switched to “Discovered only” to keep the selected object visible.",
-    "objectLabel": "Object",
-    "objectPlaceholder": "— select —",
+    "registryAllExceptUnverified": "Alle außer nicht validiert",
+    "registryAll": "Alle",
+    "registryDiscovery": "Nur Überziehungskredite (Standard)",
+    "registryDiscoveryUnverified": "Nur Überziehungskredite (Experte)",
+    "registryDiscoverySameObjectListHint": "Beide Filter listen dieselben Objekte auf, die durch Selbstbeobachtung entdeckt wurden. Der Expertenmodus aktiviert ein erweitertes Feldschema, entspannte Steuerelemente und erweiterte Optionen (z. B. personalisierte Statusmethode).",
+    "registryWidenedTitle": "Speichern automatisch erweitert",
+    "registryWidenedBody": "Dieser Knoten zielt auf ein reines Discovery-Objekt. Der Filter „Alle außer unverifiziert“ wurde auf „Nur entdeckt“ umgestellt, damit das ausgewählte Objekt sichtbar bleibt.",
+    "objectLabel": "Objekt",
+    "objectPlaceholder": "- wählen -",
     "operationLabel": "Operation",
     "optionMapSuffix": " · MAP",
-    "optionDiscoverySuffix": " · discovery",
-    "descriptorCacheTitle": "Introspection cache missing or empty",
-    "descriptorCacheBody": "You will only see curated MAP objects until a refresh. Open admin setup and run “Refresh introspection”.",
-    "descriptorCacheLink": "Knot setup — introspection",
-    "expertModeTitle": "Expert mode",
-    "expertModeBody": "Wide schema and validation aligned with every described field. Higher risk of inconsistent business data — use with care.",
-    "permissionRequired": "Permission required:",
-    "schemaUnavailable": "Schema unavailable, raw JSON mode.",
+    "optionDiscoverySuffix": " · Discovery",
+    "descriptorCacheTitle": "Introspection-Cache fehlt oder ist leer",
+    "descriptorCacheBody": "Sie sehen nur kuratierte MAP-Objekte bis zur Aktualisierung. Öffnen Sie die Admin-Einrichtung und nutzen Sie die Introspection, um den Cache zu aktualisieren.",
+    "descriptorCacheLink": "Setup Knot — introspection",
+    "expertModeTitle": "Mode expert",
+    "expertModeBody": "Erweitertes Schema und abgestimmte Validierung für alle beschriebenen Felder. Risiko geschäftlicher Inkonsistenzen: Mit Vorsicht verwenden.",
+    "permissionRequired": "Permission requise :",
+    "schemaUnavailable": "Diagramm nicht verfügbar, Rohmodus JSON.",
     "idLabel": "ID",
-    "idPlaceholder": "Numerische Dolibarr-ID oder Knot-Ausdruck",
-    "statusMethodLabel": "Status method",
-    "statusMethodCustomLabel": "Custom method (expert)",
-    "statusMethodCustomPlaceholder": "PHP method name on the class",
-    "statusMethodCustomHint": "When set, overrides the selection at runtime (expert only).",
+    "idPlaceholder": "ID Dolibarr numerisch oder Knotenausdruck",
+    "statusMethodLabel": "Statusmethode",
+    "statusMethodCustomLabel": "Benutzerdefinierte Methode (Experte)",
+    "statusMethodCustomPlaceholder": "PHP-Methodenname für die Klasse",
+    "statusMethodCustomHint": "Falls angegeben, ersetzt es die obige Auswahl zur Laufzeit (nur für Experten).",
     "experimentalSuffix": " (experimental)",
-    "verbVerifiedTitle": "Verb detected and validated in simulation",
-    "verbVerified": "Verified",
-    "verbExperimentalTitle": "Verb detected but simulation reported an error",
+    "verbVerifiedTitle": "Verb in der Simulation erkannt und validiert",
+    "verbVerified": "Verifiziert",
+    "verbExperimentalTitle": "Verb erkannt, aber Simulation meldete einen Fehler",
     "verbExperimental": "Experimental",
-    "smHintsTitle": "State machine hints",
-    "smHintsLoading": "Loading hints…",
-    "smHintsEmpty": "Enter a numeric document id to load hints.",
-    "smLogicalStateLabel": "Logical state",
-    "smProbableEmpty": "No ranked transitions returned for this record.",
+    "smHintsTitle": "Zustandsmaschine (Vorschau)",
+    "smHintsLoading": "Wird geladen…",
+    "smHintsEmpty": "Geben Sie eine numerische ID ein, um wahrscheinliche Übergänge zu laden.",
+    "smLogicalStateLabel": "Logischer Zustand",
+    "smProbableEmpty": "Für diese Aufnahme sind keine Übergänge klassifiziert.",
     "noteLabel": "Note",
-    "tabFields": "Fields",
-    "tabAdvanced": "Advanced",
-    "loadingSchema": "Loading schema…",
-    "linesHeading": "Lines ({count})",
-    "lineAdd": "Line",
-    "linesError": "Line schema unavailable — free-form editing only.",
-    "linesEmpty": "No lines yet. Use “Line” to add one.",
-    "lineNumber": "Line #{n}",
-    "lineRemove": "Remove",
-    "advancedJsonLabel": "Raw JSON (fields + lines)",
+    "tabFields": "Felder",
+    "tabAdvanced": "Erweitert",
+    "loadingSchema": "Das Diagramm wird geladen…",
+    "linesHeading": "Lignes ({count})",
+    "lineAdd": "Ligne",
+    "linesError": "Liniendiagramm nicht verfügbar, nur kostenlose Edition.",
+    "linesEmpty": "Keine Linien. Verwenden Sie zum Hinzufügen „Linie“.",
+    "lineNumber": "Ligne #{n}",
+    "lineRemove": "Löschen",
+    "advancedJsonLabel": "Rohes JSON (fields + lines)",
     "operations": {
-      "fetch": "Fetch",
-      "create": "Create",
-      "update": "Update",
-      "delete": "Delete",
-      "change_status": "Change status",
-      "add_note": "Add note",
-      "generate_pdf": "Generate PDF"
+      "fetch": "Abrufen",
+      "create": "Erstellen",
+      "update": "Aktualisieren",
+      "delete": "Löschen",
+      "change_status": "Changer Status",
+      "add_note": "Notiz hinzufügen",
+      "generate_pdf": "Erzeugen PDF"
     }
   },
   "compatibilityPage": {
-    "title": "Schema compatibility",
-    "subtitle": "Pilot snapshots, structural diffs, and workflow impact hints.",
-    "tabLive": "Live snapshot",
-    "tabCompare": "Compare",
-    "loadLive": "Capture pilots",
-    "loadSample": "Load bundled sample",
-    "baselineLabel": "Baseline snapshot JSON",
-    "targetLabel": "Target snapshot JSON",
-    "workflowsLabel": "Workflow exports (optional JSON array)",
-    "runDiff": "Compute diff",
-    "reportLabel": "Markdown report",
-    "resultLabel": "Structured result",
-    "loading": "Working…",
-    "parseError": "Invalid JSON in one of the text areas.",
-    "copyReport": "Copy report",
-    "copiedLabel": "Copied",
-    "bundledCatalogHint": "Mit dem Modul ausgelieferte Referenz-Snapshots (sample-* ausgeschlossen).",
-    "bundledSnapshotSelectLabel": "Gebündelter Snapshot",
-    "loadBundledBaseline": "Als Basis laden",
-    "loadBundledTarget": "Als Ziel laden"
+    "title": "Schemakompatibilität",
+    "subtitle": "Pilot-Schnappschüsse, strukturelle Unterschiede und Auswirkungen workflows.",
+    "tabLive": "Snapshot en direct",
+    "tabCompare": "Comparer",
+    "loadLive": "Piloten erfassen",
+    "loadSample": "Mitgeliefertes Beispiel laden",
+    "baselineLabel": "JSON Snapshot-Referenz",
+    "targetLabel": "JSON snapshot cible",
+    "workflowsLabel": "Workflow-Exporte (optionales JSON-Array)",
+    "runDiff": "Diff berechnen",
+    "reportLabel": "Bericht Markdown",
+    "resultLabel": "Strukturiertes Ergebnis",
+    "loading": "Traitement…",
+    "parseError": "JSON in einem der Felder ungültig.",
+    "copyReport": "Kopieren report",
+    "copiedLabel": "Kopiert",
+    "bundledCatalogHint": "Mit dem Modul mitgelieferte Referenz-Snapshots (sample-*-Dateien ausgenommen).",
+    "bundledSnapshotSelectLabel": "Onboard-Schnappschuss",
+    "loadBundledBaseline": "Als Referenz laden",
+    "loadBundledTarget": "Laden als cible"
   },
   "connectorsPage": {
-    "title": "Connector catalog",
-    "subtitle": "{count} connectors — configuration and constraints",
-    "tabCatalog": "Catalog",
-    "tabBuilder": "New connector",
-    "loading": "Loading catalog…",
-    "sourceFiltersLabel": "Herkunft",
+    "title": "Connector-Katalog",
+    "subtitle": "{count} Connectors — Einrichtung und Einschränkungen",
+    "tabCatalog": "Katalog",
+    "tabBuilder": "Neuer Connector",
+    "loading": "Katalog wird geladen…",
+    "sourceFiltersLabel": "Origine",
     "detail": {
-      "credentialsRequired": "Credentials required",
-      "credentialsHint": "This connector requires a credential of type {type}.",
-      "credentialsLink": "Credentials",
-      "createCredentialHint": "Create one from the {link} screen.",
-      "configFields": "Configuration fields",
-      "colField": "Field",
-      "colType": "Type",
-      "colRequired": "Required",
-      "colDescription": "Description",
-      "required": "required",
+      "credentialsRequired": "Anmeldedaten requis",
+      "credentialsHint": "Dieser Connector benötigt Anmeldedaten vom Typ {type}.",
+      "credentialsLink": "Anmeldedaten",
+      "createCredentialHint": "Erstellen Sie welche auf dem Bildschirm {link}.",
+      "configFields": "Felder de Einrichtung",
+      "colField": "Feld",
+      "colType": "Typ",
+      "colRequired": "Requis",
+      "colDescription": "Beschreibung",
+      "required": "obligatoire",
       "optional": "optional",
-      "inputs": "Inputs",
-      "outputs": "Outputs",
-      "noInputs": "No input handles.",
-      "noOutputs": "No output handles.",
-      "constraintsTitle": "Constraints & tips",
-      "activateAddon": "Activate this add-on",
-      "notAvailable": "Not available: {reason}. Renew the licence or reinstall the add-on from Dolistore.",
-      "manifestOutdated": "Das Erweiterungsmanifest ist veraltet oder nicht offiziell. Aktualisieren Sie die Erweiterung unter Einstellungen → Knot → Installierte Produkte, idealerweise zusammen mit Knot Core.",
-      "manifestOutdatedHint": "Ihre Lizenz kann weiterhin gültig sein; nur das Laden der Erweiterung ist blockiert (Anti-Fork).",
-      "licenceExpires": "Licence expires {date}.",
-      "tipHttpTls": "Outbound calls go through Knot's HttpClient which enforces TLS and timeouts (default 30 s).",
-      "tipOllama": "Local Ollama is allowed (UrlPolicy override). HTTP only, never expose this endpoint to the public internet.",
-      "tipSecretsMasked": "All secrets are masked in execution logs by SecretMasker.",
-      "tipCommunicationTemplates": "Templates support expressions like {example} resolved from upstream node output.",
-      "tipCodeSandbox": "User code runs in a hardened sandbox without filesystem or network access.",
-      "tipTriggerNoInputs": "Trigger nodes don't accept inputs; they kick off the workflow.",
-      "extensionProvidedBy": "Provided by extension",
-      "unknownReason": "unknown",
-      "deactivateAddon": "Deactivate on this instance"
+      "inputs": "Eingabes",
+      "outputs": "Ausgabes",
+      "noInputs": "Kein Einstiegsgriff.",
+      "noOutputs": "Kein Ausstiegsgriff.",
+      "constraintsTitle": "Contraintes et conseils",
+      "activateAddon": "Aktivieren diese Erweiterung",
+      "deactivateAddon": "Deaktivieren auf diese Instanz",
+      "notAvailable": "Nicht verfügbar: {reason}. Erneuern Sie die Lizenz oder installieren Sie die Erweiterung von Dolistore neu.",
+      "manifestOutdated": "Extension-Manifest veraltet oder nicht offiziell. Aktualisieren Sie das Add-on unter Einrichtung → Knot → Installierte Produkte, idealerweise zusammen mit Knot Core.",
+      "manifestOutdatedHint": "Ihre Lizenz bleibt möglicherweise gültig. Lediglich das Laden der Verlängerung wird blockiert (Anti-Fork).",
+      "licenceExpires": "Die Lizenz läuft am {date} ab.",
+      "tipHttpTls": "Ausgehende Anrufe laufen über den HttpKnot Client (TLS und Timeouts, standardmäßig 30 s).",
+      "tipOllama": "Autorisiertes lokales Ollama (UrlPolicy-Überschreibung). Nur HTTP: Setzen Sie diesen Hotspot nicht dem Internet aus.",
+      "tipSecretsMasked": "Alle Geheimnisse werden von SecretMasker in Ausführungsprotokollen verborgen.",
+      "tipCommunicationTemplates": "Vorlagen support expressions like {example} resolved from upstream Knoten output.",
+      "tipCodeSandbox": "Der Benutzercode wird in einer gehärteten Sandbox ohne Festplatten- oder Netzwerkzugriff ausgeführt.",
+      "tipTriggerNoInputs": "Triggerknoten akzeptieren keine Eingaben; Sie beginnen am workflow.",
+      "extensionProvidedBy": "Bereitgestellt durch Erweiterung",
+      "unknownReason": "inconnu"
     }
   },
+  "dynamicForm": {
+    "expressionModeTitle": "Mode expression",
+    "literalModeTitle": "Wörtlicher Wert",
+    "htmlAccepted": "HTML akzeptiert"
+  },
+  "licenseDeactivateModal": {
+    "hint": "Geben Sie den Aktivierungscode ein, um die Bindung an diese Instanz freizugeben. Die Erweiterung verschwindet aus der Seitenleiste, bis sie erneut aktiviert wird.",
+    "codeLabel": "Aktivierungscode",
+    "codePlaceholder": "KNOTPRO-XXXX-XXXX-XXXX-XXXX",
+    "rejectBackend": "Deaktivierung vom Lizenzserver abgelehnt.",
+    "rejectGeneric": "Deaktivierung vom Lizenzserver abgelehnt.",
+    "requestFailed": "Die Deaktivierungsanfrage ist fehlgeschlagen.",
+    "success": "Instanz deaktiviert.",
+    "submit": "Deaktivieren"
+  },
   "executionError": {
-    "showTechnical": "Technical details",
+    "showTechnical": "Siehe technische Details",
     "documentation": "Documentation",
     "codeLabel": "Code",
-    "activateLicense": "Activate extension license"
+    "activateLicense": "Aktivieren extension license"
   },
   "executionsPage": {
-    "title": "Executions",
-    "tabHistory": "History",
-    "tabQueue": "Queue & retries",
-    "historyIntro": "Paginated execution log from GET /api/executions.php. Click a KPI card or use ?status= to filter server-side. Text search applies only to the rows loaded on this page.",
-    "historyStatusActive": "Server-side filter active: {status}",
-    "kpiFilterAria": "Filter execution history by status: {label}. Opens history when used from queue. Press again on history to clear.",
-    "queueSubtitle": "Queue health and retry hotspots",
-    "queueIntro": "Operational view for the MySQL-native execution queue (cron worker). Data comes from GET /api/executions.php?action=queue_dashboard and POST purge_failures. Priorities and backoff require migration V2.6 — see docs/queue.",
-    "allWorkflows": "All workflows",
+    "title": "Ausführungen",
+    "tabHistory": "Historique",
+    "tabQueue": "Warteschlange und Wiederholungen",
+    "historyIntro": "Paginiertes Ausführungsprotokoll über GET /api/executions.php. Klicken Sie auf eine KPI-Karte oder nutzen Sie ?status= für serverseitige Filterung. Die Textsuche gilt nur für die auf dieser Seite geladenen Zeilen.",
+    "historyStatusActive": "Filtre Server actif : {status}",
+    "kpiFilterAria": "Ausführungsverlauf nach Status filtern: {label}. Öffnet den Verlauf bei Nutzung aus der Warteschlange. Erneut auf Verlauf drücken zum Zurücksetzen.",
+    "queueSubtitle": "Warteschlangenstatus und Erneut-versuchen-Hotspots",
+    "queueIntro": "Betriebsansicht für die MySQL-native Ausführungswarteschlange (Cron-Worker). Daten von GET /api/executions.php?action=queue_dashboard und POST purge_failures. Prioritäten und Backoff erfordern Migration V2.6 — siehe docs/queue.",
+    "allWorkflows": "Alle die Workflows",
     "filteredWorkflow": "Workflow #{id}",
-    "pageN": "page {n}",
-    "kpiFailed": "Failed",
-    "searchHistoryPlaceholder": "Filter this page (id, workflow name, trigger, status…)",
-    "searchHistoryPlaceholderFiltered": "Narrow within loaded rows (status filter is server-side)",
-    "searchQueuePlaceholder": "Filter tables (workflow, execution id, status…)",
+    "pageN": "Seite {n}",
+    "kpiFailed": "Fehlgeschlagen",
+    "searchHistoryPlaceholder": "Filtern diese page (id, nom Workflow, Trigger, Status…)",
+    "searchHistoryPlaceholderFiltered": "Unter geladenen Zeilen eingrenzen (Statusfilter serverseitig)",
+    "searchQueuePlaceholder": "Filtern tables (workflow, execution id, status…)",
     "colWorkflow": "Workflow",
-    "editWorkflow": "Edit workflow",
-    "openWorkflowEditor": "Open workflow in the editor",
+    "editWorkflow": "Workflow bearbeiten",
+    "openWorkflowEditor": "Workflow im Editor öffnen",
     "colTrigger": "Trigger",
-    "colStarted": "Started",
-    "colDuration": "Duration",
-    "colActions": "Actions",
-    "colRetries": "Retries",
-    "colNextRetry": "Next retry",
-    "colQueuedRuns": "Queued runs",
-    "noHistoryMatch": "No execution matches your search on this page.",
-    "queuedByWorkflowTitle": "Workflows with queued runs",
-    "queuedByWorkflowHint": "Counts of executions currently in status queued, grouped by workflow (sum matches the Queued KPI).",
-    "topRetriesTitle": "Top retries",
-    "topRetriesHint": "Rows with retry_count > 0, ordered by retry count (hotspots for investigation).",
-    "noQueuedWorkflows": "No queued executions — nothing waiting for the worker.",
-    "noRetries": "No retry-heavy executions.",
-    "runNow": "Run now",
-    "runNowHint": "Run now (synchronous worker)",
-    "retry": "Retry",
-    "retryHint": "Enqueue a new attempt from this execution's trigger data",
-    "prev": "Prev",
-    "next": "Next",
-    "purgeTitle": "Purge old failures",
-    "purgeHint": "Deletes executions in terminal error status whose ended_at is older than N days. This cannot be undone.",
-    "purgeDays": "Days",
-    "purgeAction": "Purge",
-    "purgeConfirm": "Delete terminal error executions older than {days} day(s)? This cannot be undone.",
-    "purgeDone": "Purge completed.",
-    "cancelFailed": "Cancel failed.",
-    "retryFailed": "Retry failed.",
-    "runNowFailed": "Run now failed.",
-    "loadExecutionsFailed": "Failed to load executions.",
-    "loadExecutionFailed": "Failed to load execution.",
-    "replayFailed": "Replay failed.",
-    "executionCancelled": "Execution #{id} cancelled.",
-    "retryQueued": "Retry queued: new execution #{id}.",
-    "executionStarted": "Execution #{id} started: {status}.",
-    "replayQueuedMsg": "Replay queued as execution #{id}.",
+    "colStarted": "Gestartet",
+    "colDuration": "Dauer",
+    "colActions": "Aktionen",
+    "colRetries": "Nouvelles tentatives",
+    "colNextRetry": "Prochain retry",
+    "colQueuedRuns": "In der Warteschlange",
+    "noHistoryMatch": "Keine Ausführung entspricht Ihrer Suche auf dieser Seite.",
+    "queuedByWorkflowTitle": "Workflows mit Ausführungen in der Warteschlange",
+    "queuedByWorkflowHint": "Anzahl Ausführungen mit Status „queued“, gruppiert nach Workflow (Summe entspricht der KPI In der Warteschlange).",
+    "topRetriesTitle": "Höchste Wiederholungsversuche",
+    "topRetriesHint": "Zeilen mit retry_count > 0, sortiert nach Anzahl Erneut versuchen (Hotspots für Untersuchungen).",
+    "noQueuedWorkflows": "Keine Ausführung in der Warteschlange – nichts wartet auf den Arbeiter.",
+    "noRetries": "Keine ausführungsintensiven Erneut-versuchen.",
+    "runNow": "Jetzt starten",
+    "runNowHint": "Sofort starten (synchroner Worker)",
+    "retry": "Erneut versuchen",
+    "retryHint": "Stellen Sie einen Wiederholungsversuch anhand der Triggerdaten erneut in die Warteschlange",
+    "prev": "Vorher.",
+    "next": "Suiv.",
+    "purgeTitle": "Alte Fehler bereinigen",
+    "purgeHint": "Löscht Ausführungen mit terminalem Fehlerstatus, deren ended_at älter als N Tage ist. Dies kann nicht rückgängig gemacht werden.",
+    "purgeDays": "Jours",
+    "purgeAction": "Purger",
+    "purgeConfirm": "Ausführungen mit terminalem Fehlerstatus älter als {days} Tag(e) löschen? Dies kann nicht rückgängig gemacht werden.",
+    "purgeDone": "Bereinigung abgeschlossene.",
+    "cancelFailed": "Abbrechen fehlgeschlagen.",
+    "retryFailed": "Erneut versuchen fehlgeschlagen.",
+    "runNowFailed": "Sofortstart fehlgeschlagen.",
+    "loadExecutionsFailed": "Ausführungen konnten nicht geladen werden.",
+    "loadExecutionFailed": "Ausführung konnte nicht geladen werden.",
+    "replayFailed": "Wiederholen fehlgeschlagen.",
+    "executionCancelled": "Ausführung #{id} Abgebrochene.",
+    "retryQueued": "Erneut versuchen queued: new execution #{id}.",
+    "executionStarted": "Ausführung #{id} gestartet: {status}.",
+    "replayQueuedMsg": "Wiederholen queued as execution #{id}.",
     "colId": "#",
-    "drawerKicker": "Execution",
-    "inlineTriggerPrefix": "trigger: ",
-    "inlineDurationPrefix": "duration: ",
-    "loadingLogs": "Loading logs…",
-    "ioSummary": "Input / output",
-    "clickablePathsSummary": "Clickable output paths",
-    "replayFromNode": "Replay from this node"
-  },
-  "canvasSm": {
-    "loadingAria": "Checking state transition hint",
-    "badgeAriaWarning": "State transition warning: transition may be a poor match for the current logical state",
-    "badgeAriaError": "State transition error: simulate reported an issue for this verb",
-    "warningTooltip": "Heuristic: this transition may be a poor match for the document logical state. Open the inspector for details.",
-    "viewDetails": "View details"
-  },
-  "connectorBuilder": {
-    "warningTitle": "Unofficial integration helper",
-    "warningBody": "Nothing here is validated as an official Knot connector: it is based on introspection discovery. Use it to build integrations (HTTP, JSON, dolibarr.object expert mode), not as a substitute for the supported catalog.",
-    "helpTitle": "Dolibarr schema preview (field_view full)",
-    "helpLead": "Load an expert JSON schema for an object and operation, then copy a node template or the schema JSON.",
-    "objectLabel": "Object",
-    "objectPlaceholder": "— choose —",
-    "operationLabel": "Operation",
-    "loadSchema": "Load schema",
-    "copySnippet": "Copy node template",
-    "copySchemaJson": "Copy schema JSON",
-    "copiedSnippet": "Template copied.",
-    "copiedSchema": "Schema copied.",
-    "copyFailed": "Could not copy (clipboard).",
-    "sampleNodeTitle": "dolibarr.object template",
-    "schemaPreviewTitle": "Schema (preview)"
-  },
-  "workflowImport": {
-    "compatTitle": "Import compatibility warnings",
-    "compatLead": "{count} warning(s):",
-    "compatConfirm": "Continue import?"
-  },
-  "editor": {
-    "save": "Speichern",
-    "saving": "Speichert…",
-    "saved": "Gespeichert",
-    "unsaved": "Nicht gespeichert",
-    "undo": "Rückgängig",
-    "redo": "Wiederholen",
-    "arrange": "Anordnen",
-    "versions": "Versionen",
-    "run": "Ausführen",
-    "simulate": "Simulieren",
-    "simulatePartialDryRunHint": "Simulieren nutzt Dry-Run, wo unterstützt. Logik- und Trigger-Knoten können dennoch Nebenwirkungen haben — Entwürfe und Testdaten bevorzugen.",
-    "starterHint": "Die Leinwand startet mit einem kleinen Beispiel-Workflow. Bearbeiten Sie ihn oder leeren Sie die Leinwand.",
-    "clearCanvas": "Leinwand leeren",
-    "starterHintDismiss": "Ausblenden",
-    "paletteSearchPlaceholder": "Search nodes…",
-    "sidebarBrandSubtitle": "Workflow editor",
-    "dragPaletteHint": "Drag nodes to the canvas",
-    "loadingWorkflow": "Loading workflow…",
-    "toolbarUndoTitle": "Undo (Cmd+Z)",
-    "toolbarRedoTitle": "Redo (Cmd+Shift+Z)",
-    "toolbarArrangeTitle": "Auto-layout (Arrange)",
-    "toolbarArrangeAria": "Auto-layout",
-    "toolbarVersionsTitle": "Versions history",
-    "toolbarRunTitle": "Run workflow",
-    "toolbarSaveTitle": "Save workflow",
-    "toastNodesCopied": "Node(s) copied.",
-    "toastScheduleSaved": "Schedule saved.",
-    "toastWorkflowSaved": "Workflow saved",
-    "toastExecutionQueued": "Execution #{id} queued",
-    "toastOutputPinned": "Output pinned on {nodeId}",
-    "saveFallback": "Save failed",
-    "simulateBeforeSave": "Save the workflow before simulating.",
-    "simulateFailedFallback": "Simulation failed.",
-    "runBeforeSave": "Save the workflow before running it.",
-    "runInactive": "Workflow must be active before it can be executed.",
-    "runFallback": "Run failed",
-    "versionsNeedSave": "Save the workflow before opening versions.",
-    "versionsFallback": "Failed to load versions",
-    "rollbackConfirmTitle": "Rollback workflow version",
-    "rollbackConfirmMessage": "Rollback to version #{id}? A new snapshot will be created first.",
-    "rollbackSuccess": "Rolled back to version #{id}",
-    "rollbackFallback": "Rollback failed",
-    "loadWorkflowFallback": "Failed to load workflow",
-    "loadWorkflowNotFound": "Workflow not found (id={id}). Check that you are connected to the correct Dolibarr entity.",
-    "backToWorkflows": "Workflows",
-    "inspectorTitle": "Inspector",
-    "inspectorSubtitleSelected": "Edit selected node",
-    "inspectorSubtitleEmpty": "Select a node to configure it",
-    "inspectorEmptyCanvas": "Click any node on the canvas to edit it.",
-    "metaWorkflowId": "Workflow ID",
-    "metaStatus": "Status",
-    "metaNodes": "Nodes",
-    "metaEdges": "Edges",
-    "commonEmDash": "—",
-    "fieldLabelCaption": "Label",
-    "fieldSubtitleCaption": "Subtitle",
-    "fieldTypeCaption": "Type",
-    "mappingTitle": "Input data mapping",
-    "mappingSubtitle": "Drag a pinned upstream field into a JSON string in the config above.",
-    "mappingUpstreamEmpty": "Connect a previous node and pin its output to expose draggable data paths.",
-    "continueOnFail": "Continue on fail",
-    "continueOnFailHint": "Show a red error output and route failures through edges connected to it.",
-    "cronScheduleVisual": "Visual schedule…",
-    "pinnedOutput": "Pinned output",
-    "pinnedOutputPlaceholder": "{'{'}{' '}{'}'}",
-    "pinnedOutputHint": "When set, the engine uses this JSON instead of executing the node. Keep it for test workflows only.",
-    "unpinOutput": "Unpin",
-    "deleteNode": "Delete node",
-    "simulationTraceTitle": "Simulation",
-    "versionsDrawerTitle": "Workflow versions",
-    "versionsDrawerLead": "Auto-snapshots are created on every save.",
-    "versionsLoading": "Loading versions…",
-    "versionsEmpty": "No snapshot yet. Save the workflow to create the first version.",
-    "snapshotLabel": "Snapshot #{id}",
-    "namedVersionBadge": "Named",
-    "rollback": "Rollback",
-    "compare": "Compare",
-    "scheduleModalTitle": "Visual schedule",
-    "schedulePresets": "Presets",
-    "scheduleCronExpression": "Cron expression",
-    "scheduleTimezone": "Timezone",
-    "scheduleActive": "Active",
-    "scheduleCancel": "Cancel",
-    "scheduleSave": "Save",
-    "schedulePresetHourly": "Every hour",
-    "schedulePresetDailyNine": "Daily 9:00",
-    "schedulePresetMondayEight": "Monday 8:00",
-    "schedulePresetFirstOfMonth": "1st of month 9:00",
-    "scheduleSaveFailed": "Saving schedule failed.",
-    "defaultWorkflowName": "Untitled workflow",
-    "starterManualLabel": "Run manually",
-    "starterManualSubtitle": "Triggered from editor",
-    "starterSetLabel": "Prepare payload",
-    "starterSetSubtitle": "message, recipient",
-    "starterEmailLabel": "Send email",
-    "starterEmailSubtitle": "SMTP via Dolibarr",
-    "runSlowProfileWarning": "This workflow uses HTTP, AI, or SaaS nodes: runs are queued (cron) and Simulate is capped at ~25 s."
-  },
-  "observability": {
-    "heroPill": "Aggregates · no payloads",
-    "heroTitle": "Observability",
-    "heroSubtitle": "Queue depth, execution failures heatmap, and per-node-type run counts from the Knot execution tables — authenticated session only.",
-    "openExecutions": "Executions",
-    "openFailedExecutions": "Failed executions",
-    "window": "Window",
-    "days": "days",
-    "queueWaiting": "Queued executions",
-    "queueRunning": "Running executions",
-    "nodesByType": "Node types (execution log)",
-    "nodesHint": "Counts and average duration per connector/node type. Input/output payloads are never exposed here.",
-    "colNodeType": "Node type",
-    "colRuns": "Runs",
-    "colErrors": "Errors",
-    "colErrorRate": "Error rate",
-    "colAvgDuration": "Avg duration",
-    "nodesEmpty": "No node-level logs in this window.",
-    "loadError": "Unable to load observability snapshot."
+    "drawerKicker": "Ausführung",
+    "inlineTriggerPrefix": "Trigger : ",
+    "inlineDurationPrefix": "Dauer : ",
+    "loadingLogs": "Protokolle werden geladen…",
+    "ioSummary": "Eingabe / Ausgabe",
+    "clickablePathsSummary": "Klickbare Ausgabepfade",
+    "replayFromNode": "Wiederholen Aus dieser Knoten"
   },
   "credentialsPage": {
-    "title": "Credentials",
-    "subtitle": "Encrypted secrets used by your connectors (AES-256-GCM at rest, masked in logs).",
-    "storageBanner": "Secrets stay encrypted in Knot's credential store on this Dolibarr instance. They are decrypted only at runtime for connectors that reference them and never appear in clear text in logs.",
-    "newCredential": "New credential",
-    "searchPlaceholder": "Search by label, reference, or connector…",
-    "loading": "Loading credentials…",
-    "loadError": "Failed to load credentials.",
-    "colLabel": "Label",
+    "title": "Anmeldedaten",
+    "subtitle": "Verschlüsselte Geheimnisse, die von Ihren Connectors verwendet werden (AES-256-GCM im Ruhezustand, in Protokollen versteckt).",
+    "storageBanner": "Die Geheimnisse bleiben im Knot-Anmeldeinformationsspeicher auf dieser Dolibarr-Instanz verschlüsselt. Sie werden nur zur Laufzeit für die Connectors entschlüsselt, die auf sie verweisen, und erscheinen niemals im Klartext in den Protokollen.",
+    "newCredential": "Neue Anmeldedaten",
+    "searchPlaceholder": "Suchen by label, reference, or connector…",
+    "loading": "Anmeldedaten werden geladen…",
+    "loadError": "Anmeldedaten konnten nicht geladen werden.",
+    "colLabel": "Bezeichnung",
     "colReference": "Reference",
     "colConnector": "Connector",
-    "colType": "Type",
-    "colExpires": "Expires",
-    "colUpdated": "Updated",
-    "colActions": "Actions",
-    "neverExpires": "never",
-    "editCredential": "Edit credential",
-    "modalSubtitle": "Secrets are encrypted server-side and never displayed again after save.",
-    "labelPlaceholder": "Production OpenAI key",
-    "colCredentialType": "Credential type",
-    "editAction": "Edit",
-    "deleteAction": "Delete",
-    "editTitle": "Edit {label}",
-    "deleteTitle": "Delete {label}",
-    "expirationOptional": "Expiration (optional)",
-    "oauthTitle": "Connect via OAuth",
-    "oauthHint": "Optional · opens a new tab",
-    "secretFieldsTitle": "Secret fields",
-    "secretFieldsHint": "Leave blank on edit to keep existing values.",
-    "noCredentialFields": "This connector does not expose credential fields.",
-    "testing": "Testing…",
-    "testAction": "Test",
-    "saving": "Saving…",
-    "saveCredential": "Save credential",
-    "deleteConfirmTitle": "Delete credential",
-    "testCredentialLabel": "Test credential",
-    "testPassed": "Credential test passed.",
-    "testFailed": "Credential test failed.",
-    "saveFailed": "Failed to save credential.",
-    "deleteFailed": "Failed to delete credential.",
-    "oauthStartFailed": "OAuth start failed.",
-    "filterAll": "All",
-    "credentialUpdated": "Credential \"{label}\" updated.",
-    "credentialCreated": "Credential \"{label}\" created.",
-    "credentialDeleted": "Credential \"{label}\" deleted.",
-    "deleteConfirmMessage": "Delete credential \"{label}\"? Workflows using it will fail.",
-    "oauthClientIdPrompt": "Client ID for {provider}:"
+    "colType": "Typ",
+    "colExpires": "Expiration",
+    "colUpdated": "Mis aktuell",
+    "colActions": "Aktionen",
+    "neverExpires": "jamais",
+    "editCredential": "Anmeldedaten bearbeiten",
+    "modalSubtitle": "Secrets are encrypted server-side and never displayed again after Speichern.",
+    "labelPlaceholder": "OpenAI-Produktionsschlüssel",
+    "colCredentialType": "Anmeldedatentyp",
+    "editAction": "Bearbeiten",
+    "deleteAction": "Löschen",
+    "editTitle": "Bearbeiten {label}",
+    "deleteTitle": "Löschen {label}",
+    "expirationOptional": "Ablauf (optional)",
+    "oauthTitle": "Connexion via OAuth",
+    "oauthHint": "Optional · öffnet einen neuen Tab",
+    "secretFieldsTitle": "Felder Secrets",
+    "secretFieldsHint": "Beim Bearbeiten leer lassen, um bestehende Werte beizubehalten.",
+    "noCredentialFields": "Dieser Connector stellt keine Anmeldedatenfelder bereit.",
+    "testing": "Test läuft...",
+    "testAction": "Testen",
+    "saving": "Wird gespeichert…",
+    "saveCredential": "Anmeldedaten speichern",
+    "deleteConfirmTitle": "Anmeldedaten löschen",
+    "testCredentialLabel": "Test-Anmeldedaten",
+    "testPassed": "Anmeldedaten-Test erfolgreich.",
+    "testFailed": "Anmeldedaten-Test fehlgeschlagen.",
+    "saveFailed": "Anmeldedaten konnten nicht gespeichert werden.",
+    "deleteFailed": "Anmeldedaten konnten nicht gelöscht werden.",
+    "oauthStartFailed": "OAuth konnte nicht gestartet werden.",
+    "filterAll": "Alle",
+    "credentialUpdated": "Anmeldedaten « {label} » mis aktuell.",
+    "credentialCreated": "Anmeldedaten \"{label}\" created.",
+    "credentialDeleted": "Anmeldedaten \"{label}\" deleted.",
+    "deleteConfirmMessage": "Löschen credential \"{label}\"? Workflows using it will fail.",
+    "oauthClientIdPrompt": "Kundennummer für {provider}:"
   },
   "inspector": {
-    "idempotencyLabel": "Idempotency key",
-    "idempotencyHintGeneric": "Prevents duplicate side effects when the same workflow retries. Build a stable expression per logical operation (for example invoice ref plus action).",
-    "idempotencyHintDolibarr": "For Dolibarr object nodes, combine a stable business key with the operation (for example third-party reference, document ID, and verb).",
-    "idempotencyHintHttp": "For outbound HTTP with side effects, combine method, URL, and a hash of the material parts of the body.",
+    "idempotencyLabel": "Idempotenzschlüssel",
+    "idempotencyHintGeneric": "Vermeidet doppelte Nebenwirkungen, wenn dasselbe workflow neu gestartet wird. Konstruieren Sie einen stabilen Ausdruck pro logischer Operation (z. B. Rechnungsreferenz + Aktion).",
+    "idempotencyHintDolibarr": "Kombinieren Sie für Dolibarr-Objektknoten einen stabilen Geschäftsschlüssel mit der Operation (z. B. Referenz eines Drittanbieters, Dokument-ID und Verb).",
+    "idempotencyHintHttp": "Für HTTP-Aufrufe mit Nebenwirkungen kombinieren Sie Methode, URL und einen Auszug der relevanten Körperteile.",
     "nodeBody": {
-      "tabForm": "Form",
-      "tabAdvanced": "Advanced",
-      "tabReliability": "Reliability",
-      "tabComment": "Comment",
-      "tabTest": "Test",
-      "loadingSchema": "Loading connector definitions…",
-      "invalidJson": "Invalid JSON",
-      "invalidTestJson": "Invalid input JSON",
-      "maxAttempts": "Max attempts",
-      "backoffMs": "Initial backoff (ms)",
-      "exponentialBackoff": "Exponential backoff",
-      "retryHintFixed": "The engine will retry up to {max} times on transient errors, with a fixed delay of {ms} ms.",
-      "retryHintExponential": "The engine will retry up to {max} times on transient errors, with exponential delay starting at {ms} ms.",
-      "noteLabel": "Note (free-form)",
-      "notePlaceholder": "Document why this node exists, who relies on it, edge cases observed in production, links to tickets…",
-      "noteHelp": "Persisted at the node level in the workflow JSON (`notes`). Visible to anyone who opens this node — keep credentials and customer data out.",
-      "testInputLabel": "Test input (JSON)",
-      "testNodeButton": "Test this node alone",
-      "testSimulatedNote": "Use main canvas Simulate for full execution."
+      "tabForm": "Formulaire",
+      "tabAdvanced": "Erweitert",
+      "tabReliability": "Zuverlässigkeit",
+      "tabComment": "Commentaire",
+      "tabTest": "Testen",
+      "loadingSchema": "Connector-Definitionen werden geladen…",
+      "invalidJson": "Ungültiges JSON",
+      "invalidTestJson": "Ungültiges Eingabe-JSON",
+      "maxAttempts": "Tentatives max",
+      "backoffMs": "Backoff initial (ms)",
+      "exponentialBackoff": "Backoff exponentiel",
+      "retryHintFixed": "Die Engine versucht bei vorübergehenden Fehlern bis zu {max}-mal erneut, mit fester Verzögerung von {ms} ms.",
+      "retryHintExponential": "Die Engine versucht bei vorübergehenden Fehlern bis zu {max}-mal erneut, mit exponentieller Verzögerung ab {ms} ms.",
+      "noteLabel": "Notiz (libre)",
+      "notePlaceholder": "Dokumentieren Sie, warum dieser Knoten existiert, wer darauf angewiesen ist, Randfälle in Produktion, Links zu Tickets…",
+      "noteHelp": "Auf Knotenebene im Workflow-JSON (`notes`) gespeichert. Sichtbar für alle, die diesen Knoten öffnen — keine Anmeldedaten oder Kundendaten eintragen.",
+      "testInputLabel": "Eingabe Test (JSON)",
+      "testNodeButton": "Testen dieser Knoten seul",
+      "testSimulatedNote": "Use main canvas Simulieren for full execution."
     }
   },
   "testDataModal": {
-    "title": "Test data",
-    "tabLast": "Last execution",
-    "tabManual": "Manual JSON",
-    "tabStub": "Auto stub",
-    "stubHint": "Not available in this build.",
-    "loadingLast": "Loading…",
-    "noPreviousExecution": "No previous execution. Use Manual JSON.",
-    "reuseHint": "Reuse trigger data from execution #{id}.",
-    "triggerJsonLabel": "Trigger data (JSON)",
-    "invalidJson": "Invalid JSON.",
-    "stubBody": "Auto-generated fixture data is not available yet.",
-    "submitSimulate": "Simulate",
-    "submitRun": "Run",
-    "submitReplay": "Replay"
+    "title": "Datumn de test",
+    "tabLast": "Letzte Hinrichtung",
+    "tabManual": "JSON Book",
+    "tabStub": "Jeu auto",
+    "stubHint": "In dieser Version nicht verfügbar.",
+    "loadingLast": "Wird geladen…",
+    "noPreviousExecution": "Keine früheren Hinrichtungen. Verwenden Sie die Registerkarte „Book“ JSON.",
+    "reuseHint": "Ausführungstriggerdaten #{id} wiederverwenden.",
+    "triggerJsonLabel": "Triggerdaten (JSON)",
+    "invalidJson": "Ungültiges JSON.",
+    "stubBody": "Automatisch generierte Fixture-Daten sind noch nicht verfügbar.",
+    "submitSimulate": "Simulieren",
+    "submitRun": "Ausführen",
+    "submitReplay": "Relecture"
   },
-  "activation": {
-    "titleCritical": "Dieser Workflow führt kritische Aktionen aus",
-    "titleCaution": "Dieser Workflow schreibt Daten",
-    "titleSafe": "Workflow aktivieren",
-    "subtitleCritical": "Lesen Sie die folgende Zusammenfassung sorgfältig. Bei Aktivierung läuft der Workflow real und kann Kosten oder Buchführungsdaten ändern.",
-    "subtitleCaution": "Die Aktivierung erlaubt es, Daten in Dolibarr zu erstellen oder zu aktualisieren oder Nachrichten zu senden.",
-    "subtitleSafe": "Dieser Workflow liest nur Daten. Aktivieren Sie ihn, damit er auf seinem Trigger läuft.",
-    "confirmCritical": "Verstanden — aktivieren",
-    "viewInEditor": "Im Editor anzeigen",
-    "scheduleActive": "Ein Zeitplan oder ein Cron-Trigger kann diesen Workflow automatisch ausführen.",
-    "effects": {
-      "db": "Datenbankänderungen",
-      "mail": "E-Mail versendet",
-      "http": "Externer HTTP-Aufruf",
-      "accounting": "Auswirkung auf Buchhaltung",
-      "external-paid": "Kostenpflichtige externe API",
-      "irreversible": "Einige Aktionen sind irreversibel."
-    }
+  "canvasSm": {
+    "loadingAria": "Statusübergangshinweis wird geprüft",
+    "badgeAriaWarning": "Statusübergangswarnung: Übergang passt möglicherweise nicht zum aktuellen logischen Status",
+    "badgeAriaError": "Zustandsübergangsfehler: Simulieren meldete ein Problem für dieses Verb",
+    "warningTooltip": "Heuristik: Dieser Übergang passt möglicherweise nicht zum logischen Dokumentstatus. Details im Inspektor.",
+    "viewDetails": "Siehe Details"
+  },
+  "connectorBuilder": {
+    "warningTitle": "Inoffizielle Integrationshilfe",
+    "warningBody": "Nichts hier ist als offizieller Knot-Connector validiert: basiert auf Introspection-Discovery. Nutzen Sie es für Integrationen (HTTP, JSON, dolibarr.object Expertenmodus), nicht als Ersatz für den unterstützten Katalog.",
+    "helpTitle": "Schemaansicht Dolibarr (field_view full)",
+    "helpLead": "Laden Sie ein Experten-JSON-Schema für ein Objekt und eine Operation, kopieren Sie dann eine Knotenvorlage oder das Schema-JSON.",
+    "objectLabel": "Objekt",
+    "objectPlaceholder": "— choisir —",
+    "operationLabel": "Operation",
+    "loadSchema": "Schema laden",
+    "copySnippet": "Kopieren gabarit Knoten",
+    "copySchemaJson": "Kopieren schema JSON",
+    "copiedSnippet": "Vorlage copied.",
+    "copiedSchema": "Diagramm kopiert.",
+    "copyFailed": "Copie Nicht möglich (presse-papiers).",
+    "sampleNodeTitle": "Gabarit dolibarr.object",
+    "schemaPreviewTitle": "Schema (extrait)"
   },
   "errors": {
     "engine": {
       "permission_denied": {
-        "message": "Unzureichende Berechtigung",
-        "suggestedFix": "Prüfen Sie die Dolibarr-Benutzerrechte und Knot-Modulrechte."
+        "message": "Permission insuffisante",
+        "suggestedFix": "Prüfen Sie die Dolibarr-Benutzerberechtigungen und Knot-Modulrechte."
       },
       "timeout": {
-        "message": "Service zu langsam oder nicht erreichbar",
-        "suggestedFix": "Erhöhen Sie den Knoten-Timeout oder prüfen Sie die Erreichbarkeit des externen Dienstes."
+        "message": "Der Dienst ist zu langsam oder nicht verfügbar",
+        "suggestedFix": "Erhöhen Sie das Knoten-Timeout oder prüfen Sie, ob der externe Dienst erreichbar ist."
       },
       "not_found": {
-        "message": "Element nicht gefunden",
-        "suggestedFix": "Prüfen Sie den konfigurierten Bezeichner und ob die Ressource existiert und aktiv ist."
+        "message": "Artikel nicht gefunden",
+        "suggestedFix": "Überprüfen Sie die konfigurierte Kennung und stellen Sie sicher, dass die Ressource aktiv ist."
       },
       "auth_failed": {
         "message": "Authentifizierung fehlgeschlagen",
-        "suggestedFix": "Testen Sie die Connector-Zugangsdaten und regenerieren Sie ggf. den API-Schlüssel."
+        "suggestedFix": "Testen Sie die Connector-Anmeldedaten und generieren Sie bei Bedarf den API-Schlüssel neu."
       },
       "expression_resolution_failed": {
         "message": "Ungültiger Ausdruck oder JSON",
-        "suggestedFix": "Prüfen Sie {'{'}{'$json…'}{'}'}-Ausdrücke und die JSON-Syntax in der Knotenkonfiguration."
+        "suggestedFix": "Prüfen Sie {'{'}{'$json…'}{'}'}-Ausdrücke und JSON-Syntax in der Knotenkonfiguration."
       },
       "unknown_error": {
-        "message": "Fehler während der Ausführung",
-        "suggestedFix": "Öffnen Sie die Knotendetails zu Ein-/Ausgabe und wiederholen Sie ab dort."
+        "message": "Fehler during execution",
+        "suggestedFix": "Öffnen Sie die Knotendetails, um Ein-/Ausgabe zu prüfen und von dort erneut abzuspielen."
       }
     },
     "execution": {
       "license": {
         "title": "Ungültige oder abgelaufene Lizenz",
-        "hint": "Prüfen Sie die Extension-Lizenz unter Admin → Knot → Erweiterungen.",
-        "hintActivate": "Activate or renew the extension license to run this node."
+        "hint": "Überprüfen Sie die Paketlizenz unter Admin → Knot → Erweiterungen.",
+        "hintActivate": "Aktivieren oder erneuern Sie die Lizenz der Erweiterung, um diesen Knoten auszuführen."
       },
       "auth": {
         "title": "Authentifizierung abgelehnt",
-        "hint": "Die Zugangsdaten sind abgelaufen oder ungültig. Bitte aktualisieren."
+        "hint": "Die Anmeldedaten sind abgelaufen oder ungültig. Aktualisieren Sie sie."
       },
       "rate_limit": {
-        "title": "Ratenbegrenzung erreicht",
-        "hint": "Der entfernte Dienst lehnt temporär Anfragen ab. Später wiederholen oder verlangsamen."
+        "title": "Ratenlimit erreicht",
+        "hint": "Der Remote-Dienst hat Anfragen vorübergehend abgelehnt. Versuchen Sie es später erneut oder verlangsamen Sie."
       },
       "not_found": {
         "title": "Ressource nicht gefunden",
-        "hint": "Prüfen Sie die ID oder die URL, die dieser Knoten nutzt."
+        "hint": "Prüfen Sie die Kennung oder URL, die dieser Knoten nutzt."
       },
       "connectivity": {
         "title": "Dienst nicht erreichbar",
-        "hint": "Netzwerk, DNS und Remote-URL des Dienstes prüfen."
+        "hint": "Überprüfen Sie die Netzwerkkonnektivität, DNS und Remote-Service-URL."
       },
       "timeout": {
-        "title": "Zeitlimit des Knotens überschritten",
-        "hint": "Timeout erhöhen oder Datenmenge prüfen."
+        "title": "Knoten exceeded its time limit",
+        "hint": "Erhöhen Sie die Verzögerung oder überprüfen Sie die verarbeitete Datenmenge."
       },
       "sql_constraint": {
-        "title": "SQL-Constraint verletzt",
-        "hint": "Daten können bereits existieren oder woanders referenziert sein."
+        "title": "SQL-Einschränkung verletzt",
+        "hint": "Die Daten sind bereits vorhanden oder werden an anderer Stelle referenziert."
       },
       "sql_syntax": {
-        "title": "SQL-Syntaxfehler",
-        "hint": "SQL-Anweisung oder Parameter des Knotens prüfen."
+        "title": "Fehler de syntaxe SQL",
+        "hint": "Prüfen Sie die SQL-Anweisung oder Parameter des Knotens."
       },
       "permission": {
-        "title": "Fehlende Dolibarr-Berechtigung",
-        "hint": "Berechtigungen des Workflow-Benutzers prüfen."
+        "title": "Permission Dolibarr manquante",
+        "hint": "Prüfen Sie die Berechtigungen des Benutzers, der den Workflow ausführt."
       },
       "expression": {
         "title": "Ungültiger Ausdruck",
-        "hint": "Eine referenzierte Knot-Variable fehlt im Kontext. Vorherige Ausgaben prüfen."
+        "hint": "Im Kontext fehlt eine Knot-Variable. Überprüfen Sie die vorgelagerten Verkaufsstellen."
       },
       "validation": {
         "title": "Ungültige Daten",
-        "hint": "Übergebene Werte prüfen (Pflichtfelder, Formate)."
+        "hint": "Prüfen Sie die an den Knoten übergebenen Werte (Pflichtfelder, Format)."
       },
       "unknown": {
-        "title": "Ausführungsfehler",
-        "hint": "Siehe technische Details unten."
+        "title": "Fehler Ausführung",
+        "hint": "Weitere Informationen finden Sie in den technischen Details unten."
       }
     },
     "api": {
-      "permission_denied": "You do not have permission for this action.",
-      "not_found": "The requested resource was not found.",
-      "validation_failed": "The request could not be validated.",
-      "method_not_allowed": "HTTP method is not allowed for this endpoint.",
-      "csrf_invalid": "Invalid or missing CSRF token. Refresh the page and try again.",
-      "invalid_payload": "Invalid JSON payload.",
-      "invalid_json": "Invalid JSON payload.",
-      "database_error": "A database error occurred. See server logs.",
-      "invalid_action": "Unknown or unsupported action.",
-      "snapshot_failed": "Could not build a schema snapshot.",
-      "sample_missing": "Bundled sample snapshot was not found.",
-      "snapshot_not_found": "Bundled snapshot file was not found.",
-      "unknown_action": "Unsupported action.",
-      "compatibility_failed": "Compatibility analysis failed. See server logs.",
-      "zip_failed": "Could not create the export archive.",
-      "release_signature_invalid": "Release-Signaturprüfung fehlgeschlagen. Der Download könnte manipuliert sein oder mit einem unbekannten Schlüssel signiert.",
-      "payload_too_large": "Request body is too large.",
-      "license_required": "This workflow uses connectors that require an active paid licence on this instance.",
-      "clone_failed": "Could not clone the workflow.",
-      "rollback_failed": "Could not roll back the workflow.",
-      "update_failed": "Could not update the resource.",
-      "create_failed": "Could not create the resource.",
-      "delete_failed": "Could not delete the resource.",
-      "workflow_activation_requires_acknowledgement": "Critical workflow activation requires explicit acknowledgement.",
-      "signature_invalid": "Webhook signature verification failed.",
-      "rate_limited": "Too many requests. Try again later.",
-      "ip_forbidden": "The caller IP is not allowed for this webhook.",
-      "queue_failed": "Could not queue workflow execution.",
-      "unhandled_exception": "An unexpected error occurred. See server logs.",
-      "fatal_error": "A fatal server error occurred. See server logs."
+      "permission_denied": "Sie haben nicht die Rechte für diese Aktion.",
+      "not_found": "Die angeforderte Ressource konnte nicht gefunden werden.",
+      "validation_failed": "Die Anfrage konnte nicht validiert werden.",
+      "method_not_allowed": "Methode HTTP ist für diesen Access Point nicht zulässig.",
+      "csrf_invalid": "Ungültiges oder fehlendes CSRF-Token. Seite aktualisieren und erneut versuchen.",
+      "invalid_payload": "Ungültiger JSON-Payload.",
+      "invalid_json": "Ungültiger JSON-Payload.",
+      "database_error": "Datenbankfehler. Siehe Server-Logs.",
+      "invalid_action": "Action inconnue ou non prise en charge.",
+      "snapshot_failed": "Es konnte kein Schema-Snapshot erstellt werden.",
+      "sample_missing": "Mitgeliefertes Beispiel-Snapshot nicht gefunden.",
+      "snapshot_not_found": "Mitgelieferte Snapshot-Datei nicht gefunden.",
+      "unknown_action": "Action non prise en charge.",
+      "compatibility_failed": "Die Kompatibilitätsanalyse ist fehlgeschlagen. Überprüfen Sie die Serverprotokolle.",
+      "zip_failed": "Export-Archiv konnte nicht erstellt werden.",
+      "release_signature_invalid": "Die Überprüfung der Release-Signatur ist fehlgeschlagen. Der Download kann verändert oder mit einem unbekannten Schlüssel signiert sein.",
+      "payload_too_large": "Anfragetext zu groß.",
+      "license_required": "Dieses workflow verwendet Connectors, für die eine kostenpflichtige Lizenz erforderlich ist, die auf dieser Instanz aktiv ist.",
+      "clone_failed": "Workflow konnte nicht geklont werden.",
+      "rollback_failed": "Workflow konnte nicht zurückgesetzt werden.",
+      "update_failed": "Die Ressource konnte nicht aktualisiert werden.",
+      "create_failed": "Die Ressource kann nicht erstellt werden.",
+      "delete_failed": "Ressource konnte nicht gelöscht werden.",
+      "workflow_activation_requires_acknowledgement": "Aktivierung eines kritischen Workflows erfordert ausdrückliche Bestätigung.",
+      "signature_invalid": "Die Signaturüberprüfung von webhook ist fehlgeschlagen.",
+      "rate_limited": "Zu viele Anfragen. Versuchen Sie es später noch einmal.",
+      "ip_forbidden": "Die aufrufende IP-Adresse ist für diesen webhook nicht zulässig.",
+      "queue_failed": "workflow konnte nicht in die Warteschlange gestellt werden.",
+      "unhandled_exception": "Unerwarteter Fehler. Siehe Server-Logs.",
+      "fatal_error": "Schwerwiegender Serverfehler. Siehe Server-Logs."
     },
     "validation": {
-      "schema_version": "Unsupported or missing workflow schemaVersion (expected 1.0).",
-      "nodes_not_array": "Workflow nodes must be an array.",
-      "edges_not_array": "Workflow edges must be an array.",
-      "node_missing_id": "A node is missing its id.",
-      "duplicate_node_id": "Duplicate node id: {nodeId}",
-      "node_missing_type": "Node has no type.",
-      "no_trigger": "Workflow has no trigger node — it cannot be activated.",
-      "edge_source_invalid": "Edge source does not reference an existing node.",
-      "edge_target_invalid": "Edge target does not reference an existing node.",
-      "unknown_connector": "Node type \"{connectorType}\" is not registered on this instance (extensions or tier may apply).",
-      "graph_cycle": "Workflow graph contains at least one directed cycle; ensure loops are intentional.",
-      "orphan_node": "Node {nodeId} is not reachable from any trigger following success edges."
+      "schema_version": "Nicht unterstützte oder fehlende Schemaversion workflow (erwartet 1.0).",
+      "nodes_not_array": "Die Knoten von workflow müssen ein Array sein.",
+      "edges_not_array": "Die Links in workflow müssen ein Array sein.",
+      "node_missing_id": "A Knoten is missing its id.",
+      "duplicate_node_id": "Duplicate Knoten id: {nodeId}",
+      "node_missing_type": "Knoten has no Typ.",
+      "no_trigger": "Workflow has no trigger Knoten — it cannot be activated.",
+      "edge_source_invalid": "Kante source does not reference an existing Knoten.",
+      "edge_target_invalid": "Kante target does not reference an existing Knoten.",
+      "unknown_connector": "Knotentyp „{connectorType}“ ist auf dieser Instanz nicht registriert (Erweiterungen oder Stufe können gelten).",
+      "graph_cycle": "Der Graph enthält mindestens einen gerichteten Zyklus – prüfen Sie, ob die Schleifen beabsichtigt sind.",
+      "orphan_node": "Knoten {nodeId} is not reachable from any trigger following success edges."
     },
     "import": {
-      "object_unknown": "Workflow \"{workflowLabel}\" uses dolibarr.object type \"{objectType}\" which is not in the supported object registry.",
-      "module_inactive": "Workflow \"{workflowLabel}\" targets \"{objectType}\" but Dolibarr module \"{module}\" is inactive.",
-      "state_machine_advisory": "Workflow \"{workflowLabel}\" uses status transitions without formal state-machine validation (expected until a future release)."
+      "object_unknown": "Workflow „{workflowLabel}“ nutzt dolibarr.object-Typ „{objectType}“, der nicht in der unterstützten Objektregistry steht.",
+      "module_inactive": "Workflow „{workflowLabel}“ zielt auf „{objectType}“, aber das Dolibarr-Modul „{module}“ ist inaktiv.",
+      "state_machine_advisory": "Der workflow „{workflowLabel}“ verwendet Statusänderungen ohne formale Zustandsmaschinenvalidierung (in einer zukünftigen Version geplant)."
     }
   },
   "risk": {
     "summary": {
-      "critical_single": "1 kritischer Knoten: {label}",
-      "critical_many": "{count} kritische Knoten",
-      "caution_writes": "Dieser Workflow kann bei der Ausführung Daten schreiben.",
-      "no_critical": "Keine kritischen Aktionen erkannt."
+      "critical_single": "1 Knoten critique : {label}",
+      "critical_many": "{count} Knoten critiques",
+      "caution_writes": "Dieser workflow kann Daten zur Laufzeit ändern.",
+      "no_critical": "Keine kritische Aktion erkannt."
     }
   },
   "validator": {
-    "no_nodes": "The workflow has no nodes.",
-    "multiple_triggers": "{count} triggers detected; the engine runs all of them.",
-    "http_url_missing": "The HTTP node requires a URL.",
-    "loop_items_missing": "The loop has no itemsPath; it will do nothing.",
-    "cron_expression_missing": "The cron trigger has no expression."
+    "no_nodes": "Der Workflow enthält keine Knoten.",
+    "multiple_triggers": "{count} triggers erkannt; Der Motor treibt sie alle an.",
+    "http_url_missing": "Der HTTP-Knoten benötigt eine URL.",
+    "loop_items_missing": "Die Schleife hat keinen itemsPath; sie führt nichts aus.",
+    "cron_expression_missing": "Der Cron-Trigger hat keinen Ausdruck."
   },
   "commandPalette": {
-    "placeholder": "Search workflows, navigate, run actions…",
+    "placeholder": "Workflows suchen, navigieren, Aktionen ausführen…",
     "sectionWorkflows": "Workflows",
-    "sectionNavigate": "Navigate",
-    "categoryExtensions": "Extensions",
-    "workflowSubtitle": "Workflow #{id} · {status}"
+    "sectionNavigate": "Navigation",
+    "categoryExtensions": "Erweiterungen",
+    "workflowSubtitle": "Workflow n° {id} · {status}"
   },
   "marketplace": {
     "title": "Marketplace",
-    "subtitle": "Add-ons, ready-made templates, and the Pro Pack migration assistant.",
-    "refreshTitle": "Clear local cache and re-fetch license.knot.tools (admin only)",
-    "refreshBusy": "Refreshing…",
-    "refreshIdle": "Refresh catalog",
-    "pricingCta": "Pricing on knot.tools",
+    "subtitle": "Add-ons, vorgefertigte Vorlagen und Pro Pack-Migrationsassistent.",
+    "refreshTitle": "Lokalen Cache leeren und license.knot.tools neu abrufen (nur Admin)",
+    "refreshBusy": "Aktualisierening…",
+    "refreshIdle": "Aktualisieren catalog",
+    "pricingCta": "Tarifs auf knot.tools",
     "tabPacks": "Packs",
-    "tabTemplates": "Templates",
-    "tabBundled": "Bundled",
-    "tabMigration": "Pro Pack migration",
-    "searchPack": "Search a pack…",
-    "searchTemplate": "Search a template…",
-    "searchBundled": "Search a bundled template…",
-    "allTiers": "All tiers",
-    "allCategories": "All categories",
-    "catalogStalePacks": "Catalog shown from local cache — license.knot.tools is temporarily unreachable.",
-    "catalogStaleTemplates": "Templates shown from local cache — license.knot.tools is temporarily unreachable.",
-    "loadingPacks": "Loading catalog…",
-    "loadingTemplates": "Loading templates…",
-    "loadingBundled": "Loading bundled templates…",
-    "noPacks": "No packs available for now.",
-    "noTemplatesMatch": "No template matches the filters.",
-    "noBundledMatch": "No bundled template matches the filters.",
-    "bundledIntro": "Templates shipped with the module (no call to license.knot.tools). Import creates a draft and uses the same server validation as the editor.",
-    "nodesEdges": "{nodes} nodes · {edges} links",
-    "lockedContent": "Protected content — a {tier} licence is required",
-    "useTemplate": "Use this template",
-    "importBundled": "Import as draft",
+    "tabTemplates": "Vorlagen",
+    "tabBundled": "Eingebettet",
+    "tabMigration": "Migration Pro Pack",
+    "searchPack": "Suchen a pack…",
+    "searchTemplate": "Suchen a template…",
+    "searchBundled": "Suchen a bundled template…",
+    "allTiers": "Alle Stufen",
+    "allCategories": "Alle Kategorien",
+    "catalogStalePacks": "Katalog wird aus dem lokalen Cache angezeigt – License.knot.tools ist vorübergehend nicht erreichbar.",
+    "catalogStaleTemplates": "Vorlagen shown from local cache — license.knot.tools is temporarily unreachable.",
+    "loadingPacks": "Katalog wird geladen…",
+    "loadingTemplates": "Modelle werden geladen…",
+    "loadingBundled": "Eingebettete Modelle werden geladen…",
+    "noPacks": "Im Moment sind keine Pakete verfügbar.",
+    "noTemplatesMatch": "Keine Vorlage ne correspond aux filtres.",
+    "noBundledMatch": "Kein eingebettetes Modell entspricht den Filtern.",
+    "bundledIntro": "Mit dem Modul mitgelieferte Vorlagen (kein Aufruf von license.knot.tools). Import erstellt einen Entwurf und nutzt dieselbe Servervalidierung wie der Editor.",
+    "nodesEdges": "{nodes} Knoten · {edges} Kanten",
+    "lockedContent": "Geschützter Inhalt – {tier}-Lizenz erforderlich",
+    "useTemplate": "Utiliser dieser Vorlage",
+    "importBundled": "Als Entwurf importieren",
     "demoLintBadge": "Demo lint",
-    "priceFree": "Free",
+    "priceFree": "Kostenlos",
     "priceDash": "—",
-    "priceMonthly": "{amount} €/mo",
-    "priceYearly": "{amount} €/yr",
+    "priceMonthly": "{amount} €/mois",
+    "priceYearly": "{amount} €/an",
     "priceJoin": " · ",
-    "packDefaultDescription": "Knot add-on.",
-    "lockedCtaRenew": "Renew licence",
-    "lockedCtaBuyEnterprise": "Buy Enterprise",
-    "lockedCtaBuyProPack": "Buy Pro Pack",
-    "lockedCtaActivate": "Activate licence",
-    "packStatusNotInstalled": "Not installed",
-    "packStatusLicenseActive": "Active (valid licence)",
-    "packStatusActive": "Active",
-    "packStatusExpired": "Licence expired",
-    "packStatusNeedsActivation": "Installed · needs activation",
-    "activateLicence": "Activate licence",
-    "reactivateLicence": "Re-activate",
-    "installHowTitle": "How to install",
-    "installStep1Buy": "Buy a licence on",
-    "installStep1OrBeta": "(or receive your beta build).",
-    "installStep2": "Place the",
-    "installStep2b": "module under",
-    "installStep3": "Enable it from Dolibarr Configuration → Modules.",
-    "installStep4": "Come back here to enter your activation code.",
-    "buyOnLicensePortal": "Buy on license.knot.tools",
-    "activateProPack": "Activate Pro Pack",
-    "reactivateProPack": "Re-activate Pro Pack",
-    "proPackStateLine": "State: {installed}, licence: {licence}{expires}",
-    "installedYes": "installed",
-    "installedNo": "not installed",
-    "licenceNotActivated": "not activated",
-    "loadFailed": "Failed to load marketplace.",
-    "bundledLoadFailed": "Failed to load bundled templates.",
-    "importFailed": "Import failed.",
-    "instantiateFailed": "Instantiation failed.",
-    "starterHelloWorldName": "Hello World",
-    "starterHelloWorldDesc": "Manual + set + notification",
-    "starterInvoiceReminderName": "Invoice reminder D+30",
-    "starterInvoiceReminderDesc": "Cron + SQL + email",
-    "starterWebhookTaskName": "Webhook → task",
-    "starterWebhookTaskDesc": "HTTP + actioncomm",
-    "starterProposalInvoiceName": "Proposal → invoice",
-    "starterProposalInvoiceDesc": "Event + specialized",
-    "starterBackupName": "Daily backup",
-    "starterBackupDesc": "Cron + SQL + email",
-    "startersImported": "{count} templates imported. Find them under Workflows as drafts.",
-    "importStartersCta": "Import the {count} templates",
-    "stepOptionalSuffix": " · optional",
-    "licenceExpires": " · expires {date}",
-    "migrationStatWorkflows": "Impacted workflows",
-    "migrationStatNodes": "Affected nodes",
-    "migrationStatConnectors": "Distinct connectors",
-    "migrationStatMigrated": "Migrated to Pro Pack",
-    "migrationWorkflowsTitle": "Workflows requiring Pro Pack",
-    "migrationAllClear": "No workflow on this instance references a migrated connector. Nothing to do.",
-    "migrationThWorkflow": "Workflow",
-    "migrationThState": "State",
-    "migrationThMigratedConnectors": "Migrated connectors used",
-    "migrationThNodes": "Nodes",
-    "migrationThUpdated": "Updated",
-    "migrationConnectorsTitle": "Connectors migrated to Pro Pack",
-    "migrationConnectorsLead": "Reference list. Pro Pack subclasses keep the same ids — existing workflows do not need to be edited; just activate the add-on.",
-    "deactivateLicence": "Deactivate on this instance",
+    "packDefaultDescription": "Add-on Knot.",
+    "lockedCtaRenew": "Lizenz erneuern",
+    "lockedCtaBuyEnterprise": "Kaufen Enterprise",
+    "lockedCtaBuyProPack": "Kaufen Pro Pack",
+    "lockedCtaActivate": "Aktivieren licence",
+    "packStatusNotInstalled": "Nicht installiert",
+    "packStatusLicenseActive": "Actif (Lizenz valide)",
+    "packStatusActive": "Actif",
+    "packStatusExpired": "Lizenz abgelaufene",
+    "packStatusNeedsActivation": "Installiert · zum Aktivieren",
+    "activateLicence": "Aktivieren licence",
+    "reactivateLicence": "Reaktivieren",
+    "deactivateLicence": "Deaktivieren auf diese Instanz",
     "proBadgeLabel": "Pro",
-    "enterpriseBadgeLabel": "Enterprise"
+    "enterpriseBadgeLabel": "Enterprise",
+    "installHowTitle": "Comment installer",
+    "installStep1Buy": "Kaufen Sie eine Lizenz auf",
+    "installStep1OrBeta": "(oder erhalten Sie Ihre Beta-Version).",
+    "installStep2": "Entfernen Sie das Modul",
+    "installStep2b": "in",
+    "installStep3": "Active-le Aus Einrichtung → Moduls de Dolibarr.",
+    "installStep4": "Kehren Sie hierher zurück; Ihr Aktivierungscode kann eingegeben werden.",
+    "buyOnLicensePortal": "Kaufen auf license.knot.tools",
+    "activateProPack": "Aktivieren Pro Pack",
+    "reactivateProPack": "Reaktivieren Pro Pack",
+    "proPackStateLine": "Status: {installed}, Lizenz: {licence}{expires}",
+    "installedYes": "installiert",
+    "installedNo": "nicht installiert",
+    "licenceNotActivated": "nicht aktiviert",
+    "licenceExpires": " · läuft ab am {date}",
+    "migrationStatWorkflows": "Workflows betroffen",
+    "migrationStatNodes": "Betroffene Knoten",
+    "migrationStatConnectors": "Connectors distincts",
+    "migrationStatMigrated": "Auf Pro Pack migriert",
+    "migrationWorkflowsTitle": "Workflows erfordern das Pro Pack",
+    "migrationAllClear": "Nein workflow verweist in diesem Fall auf einen migrierten Connector. Nichts zu tun.",
+    "migrationThWorkflow": "Workflow",
+    "migrationThState": "Zustand",
+    "migrationThMigratedConnectors": "Es werden migrierte Connectors verwendet",
+    "migrationThNodes": "Knoten",
+    "migrationThUpdated": "Aktualisierend",
+    "migrationConnectorsTitle": "Connectors wurden auf Pro Pack migriert",
+    "migrationConnectorsLead": "Referenzliste. Pro Pack-Unterklassen behalten die gleichen IDs – vorhandene workflows müssen nicht bearbeitet werden; Aktivieren Sie einfach das Add-on.",
+    "loadFailed": "Marketplace konnte nicht geladen werden.",
+    "bundledLoadFailed": "Mitgelieferte Vorlagen konnten nicht geladen werden.",
+    "importFailed": "Import Nicht möglich.",
+    "instantiateFailed": "Instanciation Nicht möglich.",
+    "starterHelloWorldName": "Hello World",
+    "starterHelloWorldDesc": "Book + set + notification",
+    "starterInvoiceReminderName": "Relance Rechnung J+30",
+    "starterInvoiceReminderDesc": "Cron + SQL + E-Mail",
+    "starterWebhookTaskName": "Webhook → Aufgabe",
+    "starterWebhookTaskDesc": "HTTP + actioncomm",
+    "starterProposalInvoiceName": "Devis → Rechnung",
+    "starterProposalInvoiceDesc": "Event + spezialisiert",
+    "starterBackupName": "Backup quotidien",
+    "starterBackupDesc": "Cron + SQL + E-Mail",
+    "startersImported": "{count} importierte Vorlagen. Finden Sie sie in Workflows im Entwurf.",
+    "importStartersCta": "Die {count} Vorlagen importieren",
+    "stepOptionalSuffix": " · optional"
   },
   "onboarding": {
-    "closeWizardAria": "Close wizard",
-    "loading": "Loading…",
-    "errorLoadFailed": "Failed to load onboarding state",
-    "errorLoadGeneric": "Onboarding state unavailable.",
-    "errorActionFailed": "Onboarding action failed",
-    "errorActionGeneric": "Action failed.",
-    "cronUrlAria": "Dolibarr cron URL",
-    "copyCronUrl": "Copy",
-    "skipNow": "Skip for now",
-    "previous": "Previous",
-    "next": "Next",
-    "finish": "Finish",
-    "stepBadge": "Step {n} / {total}",
+    "closeWizardAria": "Schließen wizard",
+    "loading": "Wird geladen…",
+    "errorLoadFailed": "Onboarding-Status konnte nicht geladen werden",
+    "errorLoadGeneric": "Assistentenstatus nicht verfügbar.",
+    "errorActionFailed": "Fehler bei l’action d’assistant",
+    "errorActionGeneric": "Action fehlgeschlagene.",
+    "cronUrlAria": "Dolibarr Cron URL",
+    "copyCronUrl": "Kopieren",
+    "skipNow": "Überspringen Sie es vorerst",
+    "previous": "Vorherige",
+    "next": "Suivant",
+    "finish": "Terminer",
+    "stepBadge": "Schritt {n} / {total}",
     "steps": {
-      "postsetup": "✨ Getting started",
-      "prereq": "📋 Prerequisites",
-      "knot_jobs": "⚙️ Knot jobs",
+      "postsetup": "✨ Mise en route",
+      "prereq": "📋 Voraussetzungen",
+      "knot_jobs": "⚙️ Knotenaufgaben",
       "cron": "🗓️ Cron",
-      "rights": "🛡️ Permissions",
-      "encryption": "🔐 Encryption",
-      "smtp": "📧 Email",
-      "starters": "🎁 Templates"
+      "rights": "🛡️ Berechtigungen",
+      "encryption": "🔐 Verschlüsselung",
+      "smtp": "📧 E-Mail",
+      "starters": "🎁 Vorlagen"
     },
     "step0": {
-      "heroTitle": "👋 Welcome to Knot.",
-      "heroAccent": "What remains after this assistant",
-      "lead": "Next we cover prerequisites (Dolibarr Cron module, PHP, security key), Knot jobs, the hosting URL, and the rest. When we finish, Knot Settings opens for the engine and deeper health checks.",
-      "serverHint": "On the server, Knot relies on PHP and the extensions verified in Prerequisites — nothing else is required for production.",
-      "ol1Title": "🔧 Dolibarr & PHP prerequisites",
-      "ol1Desc": "The Prerequisites step verifies Dolibarr’s Scheduled tasks (cron) module, PHP extensions, and (for admins) the CRON_KEY required for the public URL.",
-      "ol2Title": "⚙️ Enable the Knot engine",
-      "ol2Desc": "In Knot Settings finish the PHP wizard if needed and ensure the engine is enabled (Finish button / engine options).",
-      "ol3Title": "📅 Enable Knot scheduled tasks in Dolibarr",
-      "ol3Desc": "The Knot jobs step lets you enable everything with one click (same as Knot Settings). Also ensure CRON_DISABLE_JOBS does not block the global scheduler.",
-      "ol4Title": "🌐 Configure hosting cron",
-      "ol4Desc": "Dolibarr scheduled tasks run only when something hits the public cron URL roughly every five minutes — Plesk task, crontab, HTTP service, etc. The URL to copy is on the Cron step and also in Knot Settings."
+      "heroTitle": "👋 Willkommen bei Knot.",
+      "heroAccent": "Was bleibt nach diesem Assistenten übrig?",
+      "lead": "Wir fahren fort: zuerst die Voraussetzungen (Modul Cron Dolibarr, PHP, Sicherheitsschlüssel), dann die Knot-Aufgaben, die Host-URL und der Rest. Am Ende öffnen Sie die Knot-Einstellungen für den Motor und die detaillierte Gesundheit.",
+      "serverHint": "Auf der Serverseite verlässt sich Knot auf PHP und die im Schritt „Voraussetzungen“ überprüften Erweiterungen – es muss nichts weiter installiert werden, um das Modul in der Produktion auszuführen.",
+      "ol1Title": "🔧 Voraussetzungen Dolibarr & PHP",
+      "ol1Desc": "Der Schritt Voraussetzungen prüft Dolibarrs Modul Geplante Aufgaben (Cron), PHP-Erweiterungen und (für Admins) den CRON_KEY für die öffentliche URL.",
+      "ol2Title": "⚙️ Knot-Engine aktivieren",
+      "ol2Desc": "Schließen Sie in den Knot-Einstellungen bei Bedarf den PHP-Assistenten ab und stellen Sie sicher, dass die Engine aktiviert ist (Schaltfläche Fertig / Engine-Optionen).",
+      "ol3Title": "📅 Aktivieren Sie geplante Knot-Aufgaben in Dolibarr",
+      "ol3Desc": "Der Schritt „Knotenaufgaben“ bietet eine Schaltfläche, um alles mit einem Klick zu aktivieren (gleiche Aktion wie in den Knoteneinstellungen). Überprüfen Sie außerdem, dass CRON_DISABLE_JOBS den globalen Scheduler nicht blockiert.",
+      "ol4Title": "🌐 Configure hosting Cron",
+      "ol4Desc": "Dolibarr-Aufgaben laufen nur, wenn regelmäßig die öffentliche Cron-URL aufgerufen wird."
     },
     "step1": {
-      "title": "📋 Dolibarr & PHP prerequisites",
-      "intro": "These checks avoid dead ends later (missing jobs, impossible cron URL, missing extensions).",
-      "cronModuleTitle": "🧩 Dolibarr Scheduled tasks module (Cron)",
-      "cronModuleLead": "It must be enabled to register Knot jobs in the database.",
-      "cronModuleLink": "Modules / Apps",
-      "phpTitle": "🐘 Required PHP extensions",
-      "phpOk": "curl, dom, json, mbstring, openssl, simplexml are loaded.",
-      "phpMissingLead": "Missing:",
-      "phpMissingSuffix": "— enable these on your host (often php.ini or OS packages).",
-      "cronKeyTitle": "🔑 Cron security key (CRON_KEY)",
-      "cronKeyUnknown": "Only a Dolibarr administrator can verify this key; you may still continue. The public cron URL appears later when you have the rights.",
-      "cronKeyOk": "A key is configured — the Cron step can display the hosting URL.",
-      "cronKeyMissing": "Set the key under Home → Setup → Security (cron section); otherwise no signed URL is available.",
-      "fixHint": "Fix the failed items above before enabling Knot tasks — but you may still step forward if you plan to configure later."
+      "title": "📋 Voraussetzungen Dolibarr & PHP",
+      "intro": "Diese Prüfungen vermeiden spätere Sackgassen (Jobs nicht gefunden, Cron-URL nicht erreichbar, Erweiterungen nicht registriert).",
+      "cronModuleTitle": "🧩 Modul Dolibarr « Geplantaufgaben » (Cron)",
+      "cronModuleLead": "Es muss aktiviert sein, um Knot-Jobs in der Datenbank zu speichern.",
+      "cronModuleLink": "Moduls / Applications",
+      "phpTitle": "🐘 Erweiterungs PHP requises",
+      "phpOk": "curl, dom, json, mbstring, openssl, simplexml sind geladen.",
+      "phpMissingLead": "Manquantes :",
+      "phpMissingSuffix": "– zur Aktivierung auf der Hostseite (oft php.ini oder OS-Paket).",
+      "cronKeyTitle": "🔑 Cron-Sicherheitsschlüssel (CRON_KEY)",
+      "cronKeyUnknown": "Nur ein Dolibarr-Administrator kann diesen Schlüssel prüfen; Sie können dennoch fortfahren. Die öffentliche Cron-URL erscheint später, wenn Sie die Rechte haben.",
+      "cronKeyOk": "Ein Schlüssel ist definiert – Schritt Cron ermöglicht die Anzeige der URL zum Einfügen in den Host.",
+      "cronKeyMissing": "Setzen Sie den Schlüssel unter Start → Einrichtung → Sicherheit (Cron-Bereich); sonst ist keine signierte URL verfügbar.",
+      "fixHint": "Beheben Sie die oben genannten Fehler, bevor Sie Knot-Aufgaben aktivieren. Sie können jedoch mit dem nächsten Schritt fortfahren, wenn Sie die Konfiguration lieber später vornehmen möchten."
     },
     "step2": {
-      "title": "⚙️ Knot scheduled tasks in Dolibarr",
-      "intro": "Knot registers multiple jobs (worker, retention, health). They must be active in the Dolibarr scheduler for automatic workflows.",
-      "globalDisabledWarn": "The global scheduler looks disabled (CRON_DISABLE_JOBS). Fix Dolibarr configuration before enabling Knot rows.",
-      "noneRegisteredLead": "No Knot tasks are registered. Re-enable the module or open Knot Settings after installation.",
-      "openSetup": "Open Knot Settings",
-      "jobsCounts": "{active} / {registered} Knot jobs active",
-      "jobsEnabledHint": "All registered rows are Active. You can also verify them inside Dolibarr.",
-      "jobsDisabledHint": "Use the button below to enable inactive rows (same action as Enable in Knot Settings).",
-      "enableAll": "▶️ Enable all Knot jobs"
+      "title": "⚙️ Geplantaufgaben Knot in Dolibarr",
+      "intro": "Knot erfasst mehrere Jobs (Arbeiter, Bindung, Gesundheit). Sie müssen im Dolibarr-Planer aktiv sein, damit die automatischen workflows voranschreiten.",
+      "globalDisabledWarn": "Der globale Scheduler scheint deaktiviert zu sein (CRON_DISABLE_JOBS). Korrigieren Sie die Konfiguration in Dolibarr, bevor Sie Knotenlinien aktivieren.",
+      "noneRegisteredLead": "Es werden keine Knot-Aufgaben gespeichert. Aktivieren Sie das Modul erneut oder gehen Sie nach der Installation die Knot-Einstellungen durch.",
+      "openSetup": "Öffnen Sie die Knoteneinstellungen",
+      "jobsCounts": "{active} / {registered} Knot-Jobs aktiv",
+      "jobsEnabledHint": "Alle registrierten Zeilen sind aktiv. Sie können sie auch in Dolibarr prüfen.",
+      "jobsDisabledHint": "Klicken Sie auf die Schaltfläche unten, um alle inaktiven Linien zu aktivieren (entspricht der Schaltfläche „Aktivieren“ in den Knoteneinstellungen).",
+      "enableAll": "▶️ Aktivieren Sie alle Knot-Aufgaben"
     },
     "step3": {
-      "title": "🗓️ Scheduling & Dolibarr cron.",
-      "intro": "The Knot engine and other scheduled tasks only run while the Dolibarr scheduler executes when HTTP (or CLI) triggers cron regularly.",
-      "needCronKey": "Set CRON_KEY in Dolibarr security so the hosted URL appears below (see Prerequisites).",
-      "urlHeading": "URL to share with hosting (about every five minutes)",
-      "urlIntro": "Add this URL to a Scheduled task (Plesk, cPanel, OVH, …) or a service performing GET requests. The shown login matches Dolibarr’s parameter; share the URL only with trusted tools.",
-      "cronUserLead": "Dolibarr cron user:",
-      "crontabExample": "Linux crontab example, every five minutes:",
-      "curlEquivalent": "You can replace wget with curl -fsS if wget is unavailable.",
-      "urlMissingExplain": "The URL cannot be displayed here — often missing a cron security key under Dolibarr Configuration → Security or limited admin rights.",
-      "urlRecoverHint": "You can retrieve it via Home → Tools → Sysinfo or the cron section of Dolibarr, or Knot Settings after this assistant.",
-      "sshCliTitle": "SSH / CLI access (no public URL)",
-      "sshCliBody": "With shell access schedule Dolibarr’s PHP cron runner using your hosting PHP CLI binary (example /opt/plesk/php/8.2/bin/php) targeting …/htdocs/cron_run_jobs_by_url.php or cron_run_jobs.php per Dolibarr documentation.",
-      "cronHeartbeatOk": "Recent cron heartbeat detected",
-      "cronHeartbeatGlobalBlocked": "Global scheduler blocked",
-      "cronHeartbeatJobsIncomplete": "Knot tasks incomplete",
-      "cronHeartbeatPending": "Awaiting first run",
-      "cronExplainGlobalBlocked": "The global scheduler looks disabled (CRON_DISABLE_JOBS or equivalent). Fix Dolibarr configuration then ",
-      "refreshLink": "refresh",
-      "cronExplainNeedsJobs": "Return to Knot jobs and activate all rows, then refresh.",
-      "cronExplainPending": "Jobs are enabled in Dolibarr. Configure the URL above at your hosting; the green badge appears shortly after cron runs.",
-      "cronExplainOk": "The Dolibarr scheduler recently executed at least one Knot job.",
-      "scheduledTasksLink": "Scheduled tasks",
-      "refreshButton": "Refresh"
+      "title": "🗓️ Planung & Cron Dolibarr.",
+      "intro": "Die Knot-Engine und andere geplante Aufgaben laufen nur, wenn der Dolibarr-Scheduler aktiv ist und die Cron-URL erreichbar ist.",
+      "needCronKey": "Geben Sie CRON_KEY in Sicherheit Dolibarr ein, um die unten einzufügende URL zu erhalten (siehe auch den Schritt „Voraussetzungen“).",
+      "urlHeading": "URL, die dem Host bereitgestellt werden soll (ungefähr alle 5 Minuten)",
+      "urlIntro": "Fügen Sie diese URL einer geplanten Aufgabe hinzu (Plesk, cPanel, OVH, …) oder einem Dienst mit GET-Anfragen. Der angezeigte Login entspricht dem Dolibarr-Parameter; teilen Sie die URL nur mit vertrauenswürdigen Tools.",
+      "cronUserLead": "Dolibarr Cron user:",
+      "crontabExample": "Exemple crontab (Server Linux), Alle 5 minutes :",
+      "curlEquivalent": "Entspricht curl -fsS, wenn wget fehlt.",
+      "urlMissingExplain": "Die URL kann hier nicht angezeigt werden — oft fehlt ein Cron-Sicherheitsschlüssel unter Dolibarr Konfiguration → Sicherheit oder die Admin-Rechte sind begrenzt.",
+      "urlRecoverHint": "Sie finden sie unter Start → Tools → Sysinfo oder im Cron-Bereich von Dolibarr, oder in Knot-Einstellungen nach diesem Assistenten.",
+      "sshCliTitle": "SSH-/CLI-Zugriff (ohne öffentliche URL)",
+      "sshCliBody": "With shell access schedule Dolibarr's PHP Cron runner using your hosting PHP CLI binary (example /opt/plesk/php/8.2/bin/php) targeting …/htdocs/cron_run_jobs_by_url.php or cron_run_jobs.php per Dolibarr documentation.",
+      "cronHeartbeatOk": "Recent Cron heartbeat detected",
+      "cronHeartbeatGlobalBlocked": "Globaler Scheduler steckt fest",
+      "cronHeartbeatJobsIncomplete": "Unvollständige Knotenaufgaben",
+      "cronHeartbeatPending": "Warten auf ersten Lauf",
+      "cronExplainGlobalBlocked": "Der globale Scheduler scheint deaktiviert zu sein (CRON_DISABLE_JOBS oder gleichwertig). Korrigiert dann die Konfiguration Dolibarr",
+      "refreshLink": "actualise",
+      "cronExplainNeedsJobs": "Gehen Sie zurück zum Schritt „Knotenaufgaben“, aktivieren Sie alle Zeilen und aktualisieren Sie sie dann.",
+      "cronExplainPending": "Jobs sind in Dolibarr aktiviert. Konfigurieren Sie die URL oben bei Ihrem Hosting; das grüne Badge erscheint kurz nach Cron-Läufen.",
+      "cronExplainOk": "Der Planer Dolibarr hat kürzlich mindestens eine Knot-Aufgabe ausgeführt.",
+      "scheduledTasksLink": "Geplantaufgaben",
+      "refreshButton": "Actualiser"
     },
     "step4": {
-      "title": "🛡️ Dolibarr permissions.",
-      "intro": "Knot adds five granular rights you assign from Dolibarr. Nothing ships beyond admins by default.",
-      "rightWorkflowRead": "Read workflows",
-      "rightWorkflowWrite": "Modify workflows",
-      "rightWorkflowExecute": "Execute runs",
-      "rightCredentialsWrite": "Manage credentials",
-      "rightAdmin": "Administrate Knot",
-      "rightsCount": "{count} / {expected} permissions registered.",
-      "rightsRenewHint": "Disable and enable the Knot module to re-register them.",
-      "assignUsersLink": "Assign to users"
+      "title": "🛡️ Berechtigungen Dolibarr.",
+      "intro": "Knot fügt 5 granulare Rechte hinzu, die Sie Benutzern über die Standardschnittstelle Dolibarr zuweisen. Über den Admin hinaus werden standardmäßig keine Rechte vergeben.",
+      "rightWorkflowRead": "Lire die Workflows",
+      "rightWorkflowWrite": "Workflows bearbeiten",
+      "rightWorkflowExecute": "Starten Sie Hinrichtungen",
+      "rightCredentialsWrite": "Anmeldedaten verwalten",
+      "rightAdmin": "Administrer Knot",
+      "rightsCount": "{count} / {expected} Berechtigungen registriert.",
+      "rightsRenewHint": "Deaktiviert das Knot-Modul und aktiviert es dann wieder, um die Aufzeichnung neu zu starten.",
+      "assignUsersLink": "Attribuer aux Benutzers"
     },
     "step5": {
-      "title": "🔐 Credential encryption.",
-      "intro": "Knot encrypts all credentials with AES-256-GCM derived from Dolibarr’s unique instance fingerprint.",
-      "encryptionReady": "Encryption ready",
-      "encryptionMissingUid": "Dolibarr UID missing",
-      "fingerprintLead": "Key fingerprint:",
-      "backupExplain": "Keep regular SQL dumps of conf.php — losing the Dolibarr identifier makes ciphertext unreadable.",
-      "encryptionFix": "$dolibarr_main_instance_unique_id is empty in conf.php. Generate it via Dolibarr (Configuration → Security) before relying on encrypted credentials."
+      "title": "🔐 Anmeldedaten encryption.",
+      "intro": "Knot encrypts all credentials with AES-256-GCM derived from Dolibarr's unique instance fingerprint.",
+      "encryptionReady": "Betriebsverschlüsselung",
+      "encryptionMissingUid": "Anmeldedaten Dolibarr manquant",
+      "fingerprintLead": "Schlüsselaufdruck:",
+      "backupExplain": "Behält einen regelmäßigen SQL-Dump von conf.php bei – der Verlust der Dolibarr-Kennung macht die Anmeldedaten unlesbar.",
+      "encryptionFix": "$dolibarr_main_instance_unique_id ist in conf.php leer. Generieren Sie es über Dolibarr (Konfiguration -> Sicherheit), bevor Sie die verschlüsselten Anmeldedaten verwenden."
     },
     "step6": {
-      "badgeOptional": "Step {n} / {total} · optional",
-      "titleLead": "📧 SMTP email",
+      "badgeOptional": "Schritt {n} / {total} · optional",
+      "titleLead": "📧 Email SMTP",
       "titleOptionalSuffix": "(optional)",
-      "intro": "Starter templates sometimes send invoices. Knot reuses Dolibarr’s SMTP settings — nothing to duplicate.",
-      "smtpReady": "SMTP configured ({host})",
-      "smtpMissing": "No SMTP detected",
-      "smtpOkDetail": "You can already use connector action.email with a dedicated SMTP credential.",
-      "smtpMissingDetail": "Configure SMTP under Dolibarr Configuration → Email, then create a Knot SMTP credential. You can skip and return later."
+      "intro": "Starter-Vorlagen versenden manchmal Rechnungen. Knot nutzt Dolibarrs SMTP-Einstellungen — nichts zu duplizieren.",
+      "smtpReady": "SMTP Konfiguriert ({host})",
+      "smtpMissing": "Kein SMTP erkannt",
+      "smtpOkDetail": "Sie können den Connector action.email bereits mit dedizierten SMTP-Anmeldedaten nutzen.",
+      "smtpMissingDetail": "Konfigurieren Sie SMTP unter Konfiguration -> E-Mail von Dolibarr und erstellen Sie dann einen Anmeldeinformationsknoten vom Typ SMTP. Sie können diesen Schritt auch überspringen und später darauf zurückkommen."
     },
     "step7": {
-      "titleLine1": "🎁 Almost there",
-      "titleGradient": "— import a few templates?",
-      "intro": "Five pre-wired drafts covering frequent use cases — imported disabled with schedules off. Customize as needed.",
-      "importedBanner": "{count} templates imported. Find them under Workflows as drafts."
+      "titleLine1": "🎁 Tu y es presque",
+      "titleGradient": "— Importons quelques templates ?",
+      "intro": "5 vorverdrahtete „T0“s, die die am häufigsten nachgefragten Anwendungsfälle abdecken. Als Entwurf importiert, Zeitpläne deaktiviert. Es liegt an Ihnen, damit zu machen, was Sie wollen.",
+      "importedBanner": "{count} importierte Vorlagen. Finden Sie sie in Workflows im Entwurf."
     }
   },
   "doctorPage": {
-    "subtitle": "Full diagnostic of your Knot installation.",
-    "retest": "Re-run",
-    "loadFailed": "Failed to load health snapshot.",
-    "overallOk": "All good",
-    "overallWarning": "Degraded",
-    "overallError": "Blocked",
-    "overallUnknown": "Unknown",
-    "cronTitle": "Knot cron",
-    "cronRegistered": "Registered",
-    "cronEnabled": "Enabled",
-    "cronGlobalScheduler": "Global Dolibarr scheduler",
-    "lastRun": "Last run:",
-    "never": "never",
-    "goToSetup": "Go to setup",
-    "enableCronHint": "to enable the cron job.",
-    "introspectionTitle": "Dolibarr introspection",
-    "cacheFileReadable": "File readable:",
-    "yes": "yes",
-    "no": "no",
-    "descriptorRows": "Descriptors (file):",
-    "apiSlugsHint": "· API-exposed slugs (MAP + discovered):",
-    "refreshCacheHint": "Refresh the cache from",
-    "introspectionAnchor": "setup → introspection",
-    "groupSystem": "System & PHP",
-    "groupInstall": "Dolibarr installation",
-    "groupEngine": "Knot engine",
-    "missingTables": "Missing SQL tables:",
-    "missingTablesHint": "Go to setup and click Confirm to reinstall missing tables.",
-    "missingTablesHintBefore": "Go to",
-    "setupLinkLabel": "setup",
-    "missingTablesHintAfter": "and click Confirm to reinstall missing tables.",
+    "subtitle": "Vollständige Diagnose Ihrer Knot-Installation.",
+    "retest": "Re-Testen",
+    "loadFailed": "Gesundheits-Snapshot konnte nicht geladen werden.",
+    "overallOk": "Tout fonctionne",
+    "overallWarning": "Gradient",
+    "overallError": "Blockiert",
+    "overallUnknown": "Inconnu",
+    "cronTitle": "Cron Knot",
+    "cronRegistered": "Gespeichert",
+    "cronEnabled": "Aktiviert",
+    "cronGlobalScheduler": "Scheduler Dolibarr global",
+    "lastRun": "Dernier passage :",
+    "never": "jamais",
+    "goToSetup": "Aller au setup",
+    "enableCronHint": "um den Cron-Job zu aktivieren.",
+    "introspectionTitle": "Introspection Dolibarr",
+    "cacheFileReadable": "Datei lisible :",
+    "yes": "oui",
+    "no": "non",
+    "descriptorRows": "Descripteurs (Datei) :",
+    "apiSlugsHint": "· Schnecken freigelegt API (KARTE + entdeckt):",
+    "refreshCacheHint": "Cache aktualisieren von",
+    "introspectionAnchor": "Einrichtung → introspection",
+    "groupSystem": "System und PHP",
+    "groupInstall": "Installation Dolibarr",
+    "groupEngine": "Engine Knot",
+    "missingTables": "Tables SQL manquantes :",
+    "missingTablesHint": "Gehen Sie zur Einrichtung und klicken Sie auf Bestätigen, um fehlende Tabellen neu zu installieren.",
+    "missingTablesHintBefore": "Aller au",
+    "setupLinkLabel": "Einrichtung",
+    "missingTablesHintAfter": "und klicken Sie auf « Bestätigen », um fehlende Tabellen neu zu installieren.",
     "cardVersion": "Version",
     "cardWorkflows": "Workflows",
-    "cardExecutions30d": "Executions (30d)",
-    "wfCountActive": "{n} active",
-    "wfCountDisabled": "{n} disabled",
-    "wfCountDraft": "{n} draft",
-    "execQueued": "{n} queued",
-    "execSuccess": "{n} success",
-    "execError": "{n} errors",
-    "introspectionRefresh": "Refresh the cache from setup → introspection.",
+    "cardExecutions30d": "Ausführungen (30j)",
+    "wfCountActive": "{n} actifs",
+    "wfCountDisabled": "{n} deaktiviert",
+    "wfCountDraft": "{n} Entwurfs",
+    "execQueued": "{n} In der Warteschlange",
+    "execSuccess": "{n} Erfolg",
+    "execError": "{n} Fehlers",
+    "introspectionRefresh": "Cache aktualisieren unter Einrichtung → Introspection.",
     "check": {
       "dolibarr": "Dolibarr",
       "php": "PHP",
@@ -1039,941 +1111,992 @@
       "curl": "cURL",
       "json": "JSON",
       "mbstring": "mbstring",
-      "module": "Module enabled",
-      "tables": "SQL tables",
+      "module": "Modul aktiviert",
+      "tables": "Tables SQL",
       "rights": "Permissions",
-      "menus": "Dolibarr menus",
-      "cron_registered": "Cron job registered",
-      "cron_enabled": "Cron job active",
-      "cron_global": "Dolibarr scheduler",
-      "encryption": "Encryption key",
-      "documents_writable": "Documents folder",
-      "engine_enabled": "Execution engine",
-      "setup_completed": "Setup completed",
-      "introspection_cache": "Dolibarr introspection cache"
+      "menus": "Menus Dolibarr",
+      "cron_registered": "CronAuftrag gespeichert",
+      "cron_enabled": "Cronjob actif",
+      "cron_global": "Scheduler Dolibarr",
+      "encryption": "Verschlüsselungsschlüssel",
+      "documents_writable": "Dossier documents",
+      "engine_enabled": "Engine Ausführung",
+      "setup_completed": "Einrichtung completed",
+      "introspection_cache": "Cache introspection Dolibarr"
     }
   },
   "workflowsPage": {
-    "subtitleCounts": "{count} workflows — {active} active · {draft} draft",
-    "fromTemplate": "From a template",
-    "exportZip": "Export ZIP",
-    "newWorkflow": "New workflow",
-    "searchPlaceholder": "Search workflows…",
-    "allStatuses": "All statuses",
-    "importCompatTitle": "Import compatibility warnings",
-    "importCompatMessage": "{n} warning(s):\n\n{lines}\n\nContinue import?",
-    "importedBulk": "Imported {imported}, skipped {skipped}",
-    "importedWorkflowDefault": "Imported workflow",
-    "unknownJson": "Unknown JSON format.",
-    "importFailedPrefix": "Import failed:",
-    "clonePrompt": "Label of the clone:",
-    "cloneDefaultSuffix": "(copy)",
-    "cloneFailed": "Clone failed",
-    "createFailed": "Failed to create workflow.",
-    "riskCritical": "Contains critical actions",
-    "riskCaution": "Contains actions to review",
-    "riskSafe": "Read-only / safe actions",
-    "guideTitle": "Pre-loaded as a guide. Activate to use it.",
-    "guideBadge": "Guide",
-    "cloneTitle": "Clone this workflow",
-    "emptyTitle": "No workflow yet — create one together.",
-    "emptyBody": "Start from a typical Dolibarr template (invoice reminder, quote to invoice, daily backup…) or create a blank workflow in seconds.",
-    "blankWorkflow": "Blank workflow",
-    "thRef": "Ref",
-    "thLabel": "Label",
+    "subtitleCounts": "{count} Workflows — {active} actifs · {draft} Entwurfs",
+    "fromTemplate": "Aus Vorlage",
+    "exportZip": "ZIP exportieren",
+    "newWorkflow": "Neuer Workflow",
+    "searchPlaceholder": "Suchen workflows…",
+    "allStatuses": "Alle Status",
+    "importCompatTitle": "Warnungs de Kompatibilität Import",
+    "importCompatMessage": "{n} Warnung(en) :\n\n{lines}\n\nImport fortsetzen?",
+    "importedBulk": "Importierened {imported}, skipped {skipped}",
+    "unknownJson": "Format JSON inconnu.",
+    "importedWorkflowDefault": "Importierened workflow",
+    "importFailedPrefix": "Import fehlgeschlagen:",
+    "clonePrompt": "Bezeichnung des Klons:",
+    "cloneDefaultSuffix": "(copie)",
+    "cloneFailed": "Klonen fehlgeschlagen",
+    "createFailed": "Workflow konnte nicht erstellt werden.",
+    "riskCritical": "Enthält kritische Aktionen",
+    "riskCaution": "Enthält zu prüfende Aktionen",
+    "riskSafe": "Schreibgeschützt / sichere Aktionen",
+    "guideTitle": "Als Leitfaden vorgeladen. Aktivieren, um zu nutzen.",
+    "guideBadge": "Leitfaden",
+    "cloneTitle": "Cloner dieser Workflow",
+    "emptyTitle": "Noch kein workflow – lasst uns gemeinsam eines erstellen.",
+    "emptyBody": "Startet mit einer aktuellen Dolibarr-Vorlage (Rechnungserinnerung, Angebot → Rechnung, tägliche Sicherung usw.) oder erstellt in wenigen Sekunden ein leeres workflow.",
+    "blankWorkflow": "Workflow vierge",
+    "thRef": "Ref.",
+    "thLabel": "Bezeichnung",
     "thStatus": "Status",
-    "thUpdated": "Updated",
-    "thActions": "Actions",
-    "edit": "Edit",
-    "executions": "Executions",
-    "clone": "Clone",
-    "foldersTitle": "Folders",
-    "folderAll": "All workflows",
-    "folderUnfiled": "Unfiled",
-    "folderNewPlaceholder": "New folder…",
-    "folderCreate": "Create folder",
-    "folderAssign": "Folder",
-    "folderNone": "None"
+    "thUpdated": "Mis aktuell",
+    "thActions": "Aktionen",
+    "edit": "Bearbeiten",
+    "executions": "Ausführungen",
+    "clone": "Cloner",
+    "foldersTitle": "Dossiers",
+    "folderAll": "Alle die Workflows",
+    "folderUnfiled": "Ohne dossier",
+    "folderNewPlaceholder": "Nouveau dossier…",
+    "folderCreate": "Ordner erstellen",
+    "folderAssign": "Dossier",
+    "folderNone": "Keine"
   },
   "variablesPage": {
-    "subtitle": "Global or workflow-scoped. Use the $vars namespace in expressions.",
-    "newVariable": "New variable",
+    "subtitle": "Global oder mit einem workflow verknüpft. Verwenden Sie den Namespace $vars in Ausdrücken.",
+    "newVariable": "Neue Variable",
     "placeholderRef": "API_BASE",
-    "placeholderLabel": "Label",
-    "placeholderValue": "Value",
-    "markSecret": "Mark as secret (value never returned in API)",
-    "created": "Variable created.",
-    "updated": "Variable \"{ref}\" updated.",
-    "copied": "{'{'}{'$vars.'}{ref}{'}'} copied.",
-    "loadFailed": "Failed to load variables.",
-    "createFailed": "Create failed.",
-    "deleteFailed": "Delete failed.",
-    "updateFailed": "Update failed.",
-    "noneYet": "No variables yet. Create one to reference it in your workflows.",
-    "colRef": "Ref",
-    "colLabel": "Label",
-    "colValue": "Value",
-    "colScope": "Scope",
-    "colActions": "Actions",
-    "masked": "masked",
-    "copyExprTitle": "Copy expression",
-    "loading": "Loading…",
-    "addButton": "Add",
-    "deleteConfirmTitle": "Delete variable",
-    "deleteConfirmMessage": "Delete variable \"{ref}\"?",
+    "placeholderLabel": "Bezeichnung",
+    "placeholderValue": "Valeur",
+    "markSecret": "Als geheim markieren (Wert wird von API nie zurückgegeben)",
+    "created": "Variable erstellt.",
+    "updated": "Variable « {ref} » Update.",
+    "copied": "{'{'}{'$vars.'}{ref}{'}'} kopiert.",
+    "loadFailed": "Variablen konnten nicht geladen werden.",
+    "createFailed": "Erstellen fehlgeschlagen.",
+    "deleteFailed": "Löschen fehlgeschlagen.",
+    "updateFailed": "Aktualisieren fehlgeschlagen.",
+    "noneYet": "Noch keine Variablen. Erstellen Sie eine, um sie in Workflows zu referenzieren.",
+    "colRef": "Ref.",
+    "colLabel": "Bezeichnung",
+    "colValue": "Valeur",
+    "colScope": "Bereich",
+    "colActions": "Aktionen",
+    "masked": "Maske",
+    "copyExprTitle": "Ausdruck kopieren",
+    "loading": "Wird geladen…",
+    "addButton": "Hinzufügen",
+    "deleteConfirmTitle": "Löschen variable",
+    "deleteConfirmMessage": "Löschen variable “{ref}”?",
     "scopeGlobal": "global",
     "scopeWorkflow": "workflow",
     "scopeEnv": "env"
   },
   "auditPage": {
-    "title": "Audit log",
-    "subtitle": "All sensitive operations (create, run, update, delete).",
-    "exportCsvTitle": "Export current filters as CSV",
-    "exportCsv": "Export CSV",
-    "placeholderActionType": "action type",
-    "placeholderEntityType": "entity type",
-    "placeholderSearch": "full-text search…",
-    "apply": "Apply",
-    "loading": "Loading…",
-    "empty": "No audit entries.",
-    "loadFailed": "Failed to load audit log.",
-    "thWhen": "When",
-    "thAction": "Action",
-    "thEntity": "Entity",
-    "thUser": "User",
+    "title": "Audit-Protokoll",
+    "subtitle": "Alle sensiblen Vorgänge (Erstellen, Ausführen, Aktualisieren, Löschen).",
+    "exportCsvTitle": "Exportieren current filters as CSV",
+    "exportCsv": "CSV Exportieren",
+    "placeholderActionType": "Aktionstyp",
+    "placeholderEntityType": "entity Typ",
+    "placeholderSearch": "Volltextsuche…",
+    "apply": "Anwenden",
+    "loading": "Wird geladen…",
+    "empty": "Keine Eingabe Audit.",
+    "loadFailed": "Audit-Protokoll konnte nicht geladen werden.",
+    "thWhen": "Wann",
+    "thAction": "Aktion",
+    "thEntity": "Mandant",
+    "thUser": "Benutzer",
     "thIp": "IP",
     "thPayload": "Payload"
   },
   "executionDetail": {
-    "noExecutionId": "No execution id provided.",
-    "loadFailed": "Failed to load.",
-    "back": "Back",
-    "refresh": "Refresh",
-    "loading": "Loading…",
-    "title": "Execution #{id}",
+    "noExecutionId": "Keine Ausführungs-ID angegeben.",
+    "loadFailed": "Laden fehlgeschlagen.",
+    "back": "Zurück",
+    "refresh": "Aktualisieren",
+    "loading": "Wird geladen…",
+    "title": "Ausführung #{id}",
     "labelStatus": "Status",
     "labelWorkflow": "Workflow",
-    "labelDuration": "Duration",
+    "labelDuration": "Dauer",
     "labelTrigger": "Trigger",
-    "labelStarted": "Started",
-    "labelEnded": "Ended",
-    "labelAttempts": "Attempts",
-    "cancel": "Cancel",
-    "retry": "Retry",
-    "errorPrefix": "Error:",
-    "nodeDetailTitle": "Node detail",
-    "eventsCount": "{n} events",
-    "noLogs": "No logs available."
+    "labelStarted": "Gestartet",
+    "labelEnded": "Abgeschlossen",
+    "labelAttempts": "Tentatives",
+    "cancel": "Abbrechen",
+    "retry": "Re-essayer",
+    "errorPrefix": "Fehler :",
+    "nodeDetailTitle": "Knoten detail",
+    "eventsCount": "{n} Ereignisse",
+    "noLogs": "Keine Protokolle verfügbar."
   },
   "executionWaterfall": {
-    "title": "Node timeline",
-    "summary": "{nodes} node | {nodes} nodes · total duration {total}",
-    "lineSummary": "{count} nodes · total time {total}",
-    "truncated": "Display limited to the first 500 nodes. Use the runtime JSON log for the full trace.",
-    "empty": "No node executed — workflow stopped before the first node (validation failed or upstream error).",
+    "title": "Knoten timeline",
+    "summary": "{nodes} Knoten · Dauer totale {total}",
+    "lineSummary": "{count} Knoten · Gesamtzeit {total}",
+    "truncated": "Anzeige auf die ersten 500 Knoten beschränkt. Verwenden Sie das Laufzeitprotokoll JSON für die vollständige Ablaufverfolgung.",
+    "empty": "Kein Knoten ausgeführt — Workflow stoppte vor dem ersten Knoten (Validierung fehlgeschlagen oder vorgelagerter Fehler).",
     "ok": "OK",
     "err": "Error",
-    "skipped": "Skipped",
-    "running": "Running"
+    "skipped": "Übersprungen",
+    "running": "Läuft"
   },
   "simulationPanel": {
     "simulation": "Simulation",
-    "run": "Run",
-    "nodeCount": "{ms} ms · {n} nodes",
-    "fullscreen": "Fullscreen",
-    "close": "Close",
-    "input": "Input",
-    "output": "Output",
-    "pinOutput": "Pin output",
-    "unknownType": "unknown",
-    "resultSuccess": "Success",
-    "resultError": "Error",
+    "run": "Ausführung",
+    "nodeCount": "{ms} ms · {n} Knoten",
+    "fullscreen": "Vollbild",
+    "close": "Schließen",
+    "input": "Eingabe",
+    "output": "Ausgabe",
+    "pinOutput": "Ausgabe anheften",
+    "unknownType": "inconnu",
+    "resultSuccess": "Erfolg",
+    "resultError": "Fehler",
     "nodeTiming": "{type} · {ms} ms"
   },
   "bookPage": {
-    "title": "Workflow book",
-    "refresh": "Refresh",
-    "subtitle": "Everything that can run in Dolibarr — active workflows, triggers, potential conflicts at a glance.",
-    "exportMd": "Export Markdown",
-    "loadFailed": "Failed to load book.",
-    "kpiActive": "Active",
-    "kpiTotal": "/ {n} total",
-    "kpiTriggerConflicts": "Trigger conflicts",
-    "kpiTriggerConflictsHint": "workflows sharing a trigger",
-    "kpiNativeOverlaps": "Native overlaps",
-    "kpiNativeOverlapsHint": "overlaps with Dolibarr automations",
-    "kpiNativeTriggers": "Native triggers",
-    "kpiNativeTriggersHint": "detected in Dolibarr",
-    "anomaliesTitle": "Issues detected",
-    "sharedTrigger": "Shared trigger:",
-    "tabList": "List",
+    "title": "Workflow-Book",
+    "refresh": "Aktualisieren",
+    "subtitle": "Alles, was in Dolibarr ausgeführt wird — aktive Workflows, Trigger, potenzielle Konflikte, auf einen Blick.",
+    "exportMd": "Markdown exportieren",
+    "loadFailed": "Book konnte nicht geladen werden.",
+    "kpiActive": "Actifs",
+    "kpiTotal": "/ {n} au total",
+    "kpiTriggerConflicts": "Trigger-Konflikte",
+    "kpiTriggerConflictsHint": "workflows teilt einen Auslöser",
+    "kpiNativeOverlaps": "Recouvrements natifs",
+    "kpiNativeOverlapsHint": "recouvrements mit Automatisierungs Dolibarr",
+    "kpiNativeTriggers": "Triggers natifs",
+    "kpiNativeTriggersHint": "erkannt in Dolibarr",
+    "anomaliesTitle": "Anomalien festgestellt",
+    "sharedTrigger": "Trigger geteilt:",
+    "tabList": "Liste",
     "tabMatrix": "Matrix",
-    "tabTimeline": "Timeline",
-    "activeWorkflowsTitle": "Active workflows",
-    "triggersCovered": "Triggers covered:",
-    "runsTotalTitle": "{n} runs total",
-    "successTitle": "Successful runs",
-    "errorTitle": "Failed runs",
-    "waitingTitle": "Waiting",
-    "openEditor": "Open in editor →",
+    "tabTimeline": "Zeitachse",
+    "activeWorkflowsTitle": "Workflows actifs",
+    "triggersCovered": "Triggers couverts :",
+    "runsTotalTitle": "{n} Gesamtausführungen",
+    "successTitle": "Erfolgful runs",
+    "errorTitle": "Fehlgeschlagen runs",
+    "waitingTitle": "En attente",
+    "openEditor": "Öffnen in Editor →",
     "nativeConflictHeading": "#{id} {label} ↔ Dolibarr",
-    "listRunsLine": "⚡ {n} runs",
-    "emptyActive": "No active workflow yet. Create one from the dashboard or editor.",
-    "matrixTitle": "Coverage matrix (trigger × Dolibarr actions)",
+    "listRunsLine": "⚡ {n} Hinrichtungen",
+    "emptyActive": "Noch kein aktiver Workflow. Erstellen Sie einen über Dashboard oder Editor.",
+    "matrixTitle": "Abdeckungsmatrix (trigger × Aktionen Dolibarr)",
     "matrixColTrigger": "Trigger",
-    "matrixEmpty": "No active workflow. Activate at least one workflow to see coverage.",
-    "matrixHint": "A colored cell means at least one workflow combines this trigger with this Dolibarr action. Yellow cells group multiple workflows on the same surface — check for side effects.",
-    "timelineTitle": "Recent executions timeline",
-    "timelineEmpty": "No recent execution.",
-    "lastRefresh": "Last refresh:",
-    "noDolibarrAction": "(no Dolibarr action)",
-    "mdTitle": "# Knot — Workflow book",
-    "mdGenerated": "_Generated: {date}_",
-    "mdActiveCount": "- Active workflows: **{n}**",
-    "mdTotalCount": "- Total workflows: **{n}**",
-    "mdNativeCount": "- Native Dolibarr automations detected: **{n}**",
-    "mdTriggerConflictsCount": "- Trigger conflicts: **{n}**",
-    "mdNativeConflictsCount": "- Native conflicts: **{n}**",
-    "mdSectionActive": "## Active workflows",
-    "mdSectionTriggerConflicts": "## Trigger conflicts",
-    "mdSectionNativeOverlaps": "## Native Dolibarr overlaps"
+    "matrixEmpty": "Kein aktiver Workflow. Aktivieren Sie mindestens einen Workflow, um die Abdeckung zu sehen.",
+    "matrixHint": "Eine farbige Zelle zeigt an, dass mindestens ein workflow dieses trigger und diese Aktion Dolibarr kombiniert. Gelbe Zellen gruppieren mehrere workflows auf derselben Oberfläche – prüfen Sie, ob Kanteneffekte vorliegen.",
+    "timelineTitle": "Zeitleiste der letzten Hinrichtungen",
+    "timelineEmpty": "Keine aktuellen Hinrichtungen.",
+    "lastRefresh": "Neueste actualisation :",
+    "noDolibarrAction": "(Keine Aktion Dolibarr)",
+    "mdTitle": "# Knot — Workflow-Book",
+    "mdGenerated": "_Erstellt: {date}_",
+    "mdActiveCount": "- Aktive Workflows: **{n}**",
+    "mdTotalCount": "- Workflows gesamt: **{n}**",
+    "mdNativeCount": "- Erkannte native Dolibarr-Automatisierungen: **{n}**",
+    "mdTriggerConflictsCount": "- Trigger-Konflikte: **{n}**",
+    "mdNativeConflictsCount": "- Native Konflikte: **{n}**",
+    "mdSectionActive": "## Aktive Workflows",
+    "mdSectionTriggerConflicts": "## Trigger-Konflikte",
+    "mdSectionNativeOverlaps": "## Native Dolibarr-Überschneidungen"
   },
   "assistantPage": {
-    "title": "Workflow Assistant",
-    "subtitle": "Describe what you want, generate a tailored prompt, paste it into any chatbot, then import the JSON.",
-    "step0Title": "0. Describe your need",
-    "step0Optional": "Optional — inlined into the prompt",
-    "step0Placeholder": "Example: When a Dolibarr invoice is validated and its total exceeds 1000 EUR, send the customer a WhatsApp message with the Stripe payment link and create a follow-up task for sales.",
-    "step1Title": "1. Prompt to copy",
-    "generate": "Generate",
-    "copy": "Copy",
-    "promptPlaceholder": "Click Generate to build a tailored prompt with your request and the full Knot connector catalog.",
-    "step2Title": "2. Paste generated JSON",
-    "paste": "Paste",
-    "jsonPlaceholder": "Paste the JSON returned by the chatbot. Markdown code fences (```json … ```) are stripped automatically.",
-    "import": "Import this response",
-    "msgTailoredEmpty": "Prompt generated. Add your request above for a tailored prompt.",
-    "msgTailored": "Prompt generated with your request inlined.",
-    "msgGenFailed": "Failed to generate prompt.",
-    "msgCopied": "Prompt copied to clipboard.",
-    "msgPasteOk": "Clipboard content pasted.",
-    "msgPasteDenied": "Could not read the clipboard (permissions).",
-    "msgImporting": "Workflow #{id} imported. Redirecting to the editor…",
-    "msgImportFailed": "Failed to import workflow.",
-    "msgImportNoWorkflow": "The server did not return a created workflow. Check the JSON format."
+    "title": "Workflow-Assistent",
+    "subtitle": "Beschreiben Sie Ihren Bedarf, generieren Sie einen maßgeschneiderten Prompt, fügen Sie ihn in einen Chatbot ein und importieren Sie das JSON.",
+    "step0Title": "0. Beschreiben Sie Ihren Bedarf",
+    "step0Optional": "Optional – wird in die Eingabeaufforderung integriert",
+    "step0Placeholder": "Beispiel: Wenn eine Rechnung Dolibarr validiert wird und ihr Gesamtbetrag 1000 EUR übersteigt, senden Sie dem Kunden eine WhatsApp-Nachricht mit dem Stripe-Zahlungslink und erstellen Sie eine Folgeaufgabe für den Verkäufer.",
+    "step1Title": "1. Prompt zum Kopieren",
+    "generate": "Erzeugen",
+    "copy": "Kopieren",
+    "promptPlaceholder": "Klicken Sie auf „Generieren“, um eine Eingabeaufforderung mit Ihrer Anfrage und dem vollständigen Katalog der Knotenverbinder zu erstellen.",
+    "step2Title": "2. Generiertes JSON einfügen",
+    "paste": "Einfügen",
+    "jsonPlaceholder": "Fügen Sie das vom Chatbot zurückgegebene JSON ein. Markdown-Blöcke (```JSON … ```) werden automatisch entfernt.",
+    "import": "Diese Antwort Importieren",
+    "msgTailoredEmpty": "Eingabeaufforderung generiert. Fügen Sie oben Ihre Anfrage hinzu, um eine personalisierte Aufforderung zu erhalten.",
+    "msgTailored": "Mit Ihrer eingebetteten Anfrage generierte Eingabeaufforderung.",
+    "msgGenFailed": "Prompt konnte nicht generiert werden.",
+    "msgCopied": "Eingabeaufforderung in press-papiers kopiert.",
+    "msgPasteOk": "Inhalt der papiers presser eingefügt.",
+    "msgPasteDenied": "Zwischenablage konnte nicht gelesen werden (Berechtigungen).",
+    "msgImporting": "Workflow #{id} importiert. Weiterleitung zum Herausgeber…",
+    "msgImportFailed": "Workflow konnte nicht importiert werden.",
+    "msgImportNoWorkflow": "Der Server hat kein erstelltes workflow zurückgegeben. Überprüfen Sie das JSON-Format."
   },
   "webhookPanel": {
     "title": "Webhook",
-    "active": "active",
-    "inactive": "inactive",
-    "rotateSecret": "rotate secret",
-    "provisioned": "Webhook provisioned.",
-    "secretRotated": "HMAC secret regenerated.",
-    "copied": "{label} copied.",
-    "loadFailed": "Failed to load webhook.",
-    "provisionFailed": "Failed to provision webhook.",
-    "rotateFailed": "Failed to rotate secret.",
-    "none": "No webhook provisioned for this workflow.",
-    "provision": "Provision webhook",
-    "publicUrl": "Public URL",
-    "copyUrlTitle": "Copy URL",
-    "openTitle": "Open",
-    "metaLine": "Method: {method} · Hits: {hits} · Limit: {limit}/min",
-    "secretHmac": "HMAC secret",
-    "show": "show",
-    "hide": "hide",
-    "copySecretTitle": "Copy secret",
-    "secretHint": "Configure this secret at the source (Stripe, Shopify, Meta…) for HMAC verification.",
-    "curlTitle": "Test with curl",
-    "copyCurlTitle": "Copy curl command",
+    "active": "actif",
+    "inactive": "inactif",
+    "rotateSecret": "Secret neu erzeugen",
+    "provisioned": "Webhook bereitgestellt.",
+    "secretRotated": "HMAC-Geheimnis regeneriert.",
+    "copied": "{label} kopiert.",
+    "loadFailed": "Webhook konnte nicht geladen werden.",
+    "provisionFailed": "Webhook konnte nicht bereitgestellt werden.",
+    "rotateFailed": "Secret konnte nicht rotiert werden.",
+    "none": "Für diesen workflow ist kein webhook vorgesehen.",
+    "provision": "Webhook bereitstellen",
+    "publicUrl": "Öffentliche URL",
+    "copyUrlTitle": "URL kopieren",
+    "openTitle": "Öffnen",
+    "metaLine": "Methode : {method} · Appels : {hits} · Limit : {limit}/min",
+    "secretHmac": "HMAC-Secret",
+    "show": "Anzeigen",
+    "hide": "cacher",
+    "copySecretTitle": "Kopieren secret",
+    "secretHint": "Konfigurieren Sie dieses Geheimnis in der Quelle (Stripe, Shopify, Meta…) für die HMAC-Verifizierung.",
+    "curlTitle": "Mit curl testen",
+    "copyCurlTitle": "Kopieren curl command",
     "copyLabelUrl": "URL",
     "copyLabelSecret": "Secret",
-    "copyLabelCurl": "curl",
-    "securityTitle": "Security.",
-    "securityBody": "Never share the token publicly. If you suspect a leak, regenerate the HMAC secret — all existing integrations must be updated."
+    "copyLabelCurl": "Kopieren cURL",
+    "securityTitle": "Sicherheit.",
+    "securityBody": "Teilen Sie den Token niemals öffentlich. Wenn Sie ein Leck vermuten, generieren Sie das HMAC-Geheimnis neu – alle vorhandenen Integrationen müssen aktualisiert werden."
   },
   "dolibarrEventPanel": {
-    "title": "Dolibarr events",
-    "hint": "These codes match Dolibarr workflow module events (<code>BILL_*</code>, …). The <code>dolibarr.object</code> connector exposes fetch / create / update / delete separately (see object inspector)."
+    "title": "Dolibarr-Ereignisse",
+    "hint": "Diese Codes entsprechen den Ereignissen des Dolibarr-Workflow-Moduls (<code>BILL_*</code>, …). Der Connector <code>dolibarr.object</code> stellt fetch / create / update / delete separat bereit (siehe Objekt-Inspektor)."
   },
   "dolibarrPicker": {
-    "searchIn": "Search in {slug}…",
-    "failed": "Picker failed",
-    "noResults": "No results. Try another term or a numeric id."
+    "searchIn": "Suchen in {slug}…",
+    "failed": "Selektorfehler",
+    "noResults": "Keine Ergebnisse. Try another term or a numeric id."
   },
   "theme": {
-    "lightAria": "Switch to light theme",
-    "darkAria": "Switch to dark theme"
+    "lightAria": "Aktivieren Sie das Light-Design",
+    "darkAria": "Aktivieren Sie das dunkle Thema"
   },
   "test": {
-    "dryRun": "Dry-run test",
-    "dryRunDesc": "Simulates without real calls or writes.",
-    "realSmall": "Real test — small sample",
-    "realSmallDesc": "A single real iteration. Confirmation required.",
-    "realFull": "Real test — full run",
-    "realFullDesc": "Typed confirmation required.",
-    "confirmRealSmallTitle": "Real test run",
-    "confirmRealSmall": "Run a real test on one iteration?",
-    "confirmRealFull": "Type the workflow ref ({ref}) to confirm a full real test."
+    "dryRun": "Dry-run",
+    "dryRunDesc": "Simulierens without real calls or writes.",
+    "realSmall": "Tatsächliche Tests – kleine Stichprobe",
+    "realSmallDesc": "Nur eine echte Iteration. Bestätigung erforderlich.",
+    "realFull": "Echter Test — vollständige Ausführung",
+    "realFullDesc": "Confirmation textuelle obligatoire.",
+    "confirmRealSmallTitle": "Echter Test",
+    "confirmRealSmall": "Echten Test mit einer Iteration starten?",
+    "confirmRealFull": "Geben Sie die Workflow-Ref ({ref}) ein, um einen vollständigen Echttest zu bestätigen."
   },
   "connectors": {
     "action": {
       "email": {
-        "label": "Send Email",
-        "description": "Send a transactional email via Dolibarr",
+        "label": "E-Mail senden",
+        "description": "E-Mail senden transAktionnel via Dolibarr",
         "fields": {
           "to": {
-            "title": "To",
-            "description": "Recipient addresses (comma-separated)."
+            "title": "HAT",
+            "description": "Empfängeradressen (durch Kommas getrennt)."
           },
           "cc": {
             "title": "Cc"
           },
           "bcc": {
-            "title": "Bcc"
+            "title": "Cci"
           },
           "subject": {
-            "title": "Subject"
+            "title": "Objekt"
           },
           "body": {
-            "title": "Body",
-            "description": "HTML body; expressions supported."
+            "title": "Corps",
+            "description": "Corps HTML ; expressions prises en charge."
           },
           "replyTo": {
-            "title": "Reply-To"
+            "title": "Beantworten"
           },
           "fromOverride": {
-            "title": "From override",
-            "description": "Optional sender when allowed by server policy."
+            "title": "Absender (override)",
+            "description": "Optionaler Absender, sofern durch Serverrichtlinie erlaubt."
           }
         }
+      },
+      "slack": {
+        "label": "Slack",
+        "description": "Nachricht an einen Slack-Webhook senden"
+      },
+      "discord": {
+        "label": "Discord",
+        "description": "Nachricht an einen Discord-Webhook senden"
+      },
+      "telegram": {
+        "label": "Telegram",
+        "description": "Nachricht über Telegram-Bot senden"
+      },
+      "twilio_sms": {
+        "label": "Twilio SMS",
+        "description": "SMS über Twilio Programmable SMS senden"
+      },
+      "ovh_sms": {
+        "label": "OVH SMS",
+        "description": "SMS über die OVHcloud-SMS-API senden"
+      },
+      "whatsapp_cloud": {
+        "label": "WhatsApp Cloud",
+        "description": "WhatsApp-Nachricht über Meta Cloud API (Business) senden"
+      },
+      "whatsapp_twilio": {
+        "label": "WhatsApp (Twilio)",
+        "description": "WhatsApp-Nachricht über Twilio-Absender senden"
+      },
+      "stripe": {
+        "label": "Stripe",
+        "description": "Kunden, Zahlungen, Rechnungen und Abos in Stripe"
+      },
+      "woocommerce": {
+        "label": "WooCommerce",
+        "description": "WooCommerce-Bestellungen, Produkte und Kunden lesen und schreiben"
+      },
+      "sftp": {
+        "label": "SFTP",
+        "description": "Dateien auf einem SFTP-Server hochladen, herunterladen oder auflisten"
+      },
+      "shopify": {
+        "label": "Shopify",
+        "description": "Shopify-Bestellungen, Produkte und Kunden lesen und schreiben"
+      },
+      "prestashop": {
+        "label": "PrestaShop",
+        "description": "PrestaShop-Webservice (Bestellungen, Produkte, Kunden, …)"
+      },
+      "notion": {
+        "label": "Notion",
+        "description": "Seiten, Datenbanken, Blöcke und Suche über Notion-API"
+      },
+      "airtable": {
+        "label": "Airtable",
+        "description": "Airtable-Datensätze auflisten, erstellen oder aktualisieren"
+      },
+      "github": {
+        "label": "GitHub",
+        "description": "Issues, Pull Requests, Releases und Actions-Dispatches"
+      },
+      "gitlab": {
+        "label": "GitLab",
+        "description": "Issues, MRs, Pipelines und Releases (Cloud oder self-hosted)"
+      },
+      "google_sheets": {
+        "label": "Google Sheets",
+        "description": "Tabellenbereiche lesen, anhängen oder aktualisieren"
+      },
+      "google_drive": {
+        "label": "Google Drive",
+        "description": "Drive-Dateien auflisten, hochladen, kopieren, teilen oder löschen"
+      },
+      "gmail": {
+        "label": "Gmail",
+        "description": "Nachrichten senden und Postfach über Gmail-API lesen"
+      },
+      "google_calendar": {
+        "label": "Google Calendar",
+        "description": "Kalenderereignisse und Verfügbarkeit erstellen, aktualisieren oder abfragen"
+      },
+      "ai_openai": {
+        "label": "OpenAI Chat",
+        "description": "OpenAI- / OpenAI-kompatible LLMs aufrufen"
+      },
+      "ai_anthropic": {
+        "label": "Anthropic Chat",
+        "description": "Anthropic Messages API aufrufen"
+      },
+      "ai_ollama": {
+        "label": "Ollama (lokal)",
+        "description": "Lokales LLM über Ollama (ohne Cloud)"
+      },
+      "ai_mistral": {
+        "label": "Mistral Chat",
+        "description": "Mistral-Chat-Completions aufrufen"
+      },
+      "ai_gemini": {
+        "label": "Gemini Chat",
+        "description": "Google Gemini generateContent aufrufen"
+      },
+      "http": {
+        "label": "HTTP-Anfrage",
+        "description": "Beliebigen REST/JSON-Endpunkt aufrufen"
       }
     },
     "trigger": {
       "webhook": {
         "label": "Webhook",
-        "description": "Listen to incoming HTTP events",
+        "description": "Achten Sie auf eingehende HTTP-Ereignisse",
         "fields": {
           "method": {
-            "title": "HTTP method",
-            "description": "HTTP verb webhook callers should use."
+            "title": "Methode HTTP",
+            "description": "HTTP-Verb, das Webhook-Aufrufer verwenden sollten."
           },
           "hmacRequired": {
-            "title": "Require HMAC signature",
-            "description": "Reject requests without a valid HMAC when enabled."
+            "title": "HMAC-Signatur erforderlich",
+            "description": "Anfragen ohne gültigen HMAC ablehnen, wenn diese Option aktiviert ist."
           }
         }
       },
       "manual": {
-        "label": "Manual Trigger",
-        "description": "Start this workflow manually from the Dolibarr UI."
+        "label": "Trigger Book",
+        "description": "Starten Sie dieses workflow manuell über die Dolibarr-Schnittstelle."
       },
       "cron": {
-        "label": "Cron Trigger",
-        "description": "Run this workflow on a cron schedule in Dolibarr.",
+        "label": "Trigger Cron",
+        "description": "Diesen Workflow nach einem Cron-Zeitplan in Dolibarr ausführen.",
         "fields": {
           "cronExpression": {
-            "title": "Cron expression",
-            "description": "Five-field cron (minute hour day-of-month month weekday)."
+            "title": "Cron-Ausdruck",
+            "description": "Five-field Cron (minute hour day-of-month month weekday)."
           },
           "timezone": {
-            "title": "Timezone",
-            "description": "PHP timezone identifier (e.g. Europe/Paris, UTC)."
+            "title": "Zeitzone",
+            "description": "PHP-Zeitzonenkennung (z. B. Europe/Paris, UTC)."
           }
         }
       },
       "dolibarr_event": {
-        "label": "Dolibarr Event",
-        "description": "Run when selected Dolibarr events fire.",
+        "label": "Ereignis Dolibarr",
+        "description": "Ausführen, wenn die ausgewählten Dolibarr-Ereignisse eintreten.",
         "fields": {
           "events": {
-            "title": "Event names",
-            "description": "Hook or workflow event identifiers to subscribe to."
+            "title": "Ereignisnamen",
+            "description": "Hook- oder Workflow-Ereignis-IDs, für die abonniert werden soll."
           },
           "objectTypes": {
-            "title": "Object types",
-            "description": "Optional filter: Dolibarr element types (e.g. invoice, societe)."
+            "title": "Types von Objekten",
+            "description": "Optionaler Filter: Elementtypen Dolibarr (z. B. Rechnung, Firma)."
           }
         }
+      },
+      "stripe_webhook": {
+        "label": "Stripe-Webhook",
+        "description": "Stripe-Ereignisse mit HMAC-Prüfung empfangen"
+      },
+      "shopify_webhook": {
+        "label": "Shopify-Webhook",
+        "description": "Shopify-Topics mit X-Shopify-Hmac-Sha256-Prüfung empfangen"
       }
     },
     "logic": {
       "loop": {
-        "label": "Loop",
-        "description": "Iterate over item batches",
+        "label": "Boucle",
+        "description": "Über Element-Stapel iterieren",
         "fields": {
           "itemsPath": {
-            "title": "Items path",
-            "description": "JSON path or expression resolving to an array (e.g. {'{'}{'$json.items'}{'}'})."
+            "title": "Elementpfad",
+            "description": "JSON-Pfad oder Ausdruck, der auf ein Array verweist (z. B. {'{'}{'$json.items'}{'}'})."
           },
           "realIteration": {
-            "title": "Real iteration",
-            "description": "When true, the engine fans-out: the body runs once per item."
+            "title": "Echte Iteration",
+            "description": "Wenn diese Option aktiviert ist, führt die Engine den Körper einmal pro Element aus."
           },
           "continueOnItemError": {
-            "title": "Continue on item error",
-            "description": "When true (default), a failing item is logged but the loop continues."
+            "title": "Continue on item Fehler",
+            "description": "Wenn aktiviert (Standard), wird ein fehlgeschlagenes Element protokolliert und die Schleife setzt fort."
           }
         }
       },
       "switch": {
-        "label": "Switch",
-        "description": "Pick a branch from N cases",
+        "label": "Aiguillage (switch)",
+        "description": "Wählen Sie einen Zweig aus N Fällen",
         "fields": {
           "expression": {
-            "title": "Switch value",
-            "description": "Expression or literal matched against each case value."
+            "title": "Schaltwert",
+            "description": "Ausdruck oder Literal, verglichen mit jedem Fall."
           },
           "cases": {
-            "title": "Cases",
-            "description": "First matching case wins; output must match an existing outbound handle id."
+            "title": "Cas",
+            "description": "Der erste entsprechende Fall gewinnt; Die Ausgabe muss mit einem vorhandenen Zweighandle übereinstimmen."
           }
         },
         "caseRow": {
           "value": {
-            "title": "Case value",
-            "description": "Compared to the switch expression after string coercion."
+            "title": "Fallwert",
+            "description": "Im Vergleich zum Ausdruck nach Kettenzwang."
           },
           "output": {
-            "title": "Output handle",
-            "description": "Branch handle id when this case matches."
+            "title": "Ausgangshandle",
+            "description": "Zweig-Handle-ID, wenn dieser Fall zutrifft."
           }
         }
       },
       "set": {
-        "label": "Set",
-        "description": "Merge key/value pairs onto the workflow JSON payload.",
+        "label": "Definieren",
+        "description": "Schlüssel/Wert-Paare in den Workflow-JSON-Payload zusammenführen.",
         "fields": {
           "values": {
-            "title": "Fields",
-            "description": "Key/value pairs merged onto the workflow JSON payload."
+            "title": "Felder",
+            "description": "In den Workflow-JSON-Payload zusammengeführte Schlüssel/Wert-Paare."
           }
         }
       },
       "merge": {
-        "label": "Merge",
-        "description": "Combine JSON payloads from multiple branches.",
+        "label": "Fusionner",
+        "description": "JSON-Payloads aus mehreren Zweigen kombinieren.",
         "fields": {
           "strategy": {
-            "title": "Merge strategy",
-            "description": "Shallow replaces keys; deep merges nested objects recursively."
+            "title": "Strategie de fusion",
+            "description": "Oberflächlich ersetzt Schlüssel; Deep führt verschachtelte Objekte rekursiv zusammen."
           }
         },
         "enum": {
-          "shallow": "Shallow",
-          "deep": "Deep"
+          "shallow": "Superficiel",
+          "deep": "Profond"
         }
       },
       "wait": {
-        "label": "Wait",
-        "description": "Pause execution for a short delay (capped at 60 seconds).",
+        "label": "Attendre",
+        "description": "Unterbrechen Sie die Ausführung für kurze Zeit (maximal 60 Sekunden).",
         "fields": {
           "seconds": {
-            "title": "Seconds",
-            "description": "Delay before continuing (max 60 to protect PHP workers)."
+            "title": "Secondes",
+            "description": "Warten Sie, bevor Sie fortfahren (maximal 60, um PHP-Worker zu schützen)."
           }
         }
       },
       "filter": {
-        "label": "Filter",
-        "description": "Continue or stop the branch using one comparable condition.",
+        "label": "Filtern",
+        "description": "Zweig mit einer vergleichbaren Bedingung fortsetzen oder stoppen.",
         "fields": {
           "left": {
-            "title": "Left operand",
-            "description": "Value or expression to evaluate."
+            "title": "Linker Operand",
+            "description": "Wert oder Ausdruck, der ausgewertet werden soll."
           },
           "operator": {
             "title": "Operator"
           },
           "right": {
-            "title": "Right operand"
+            "title": "Rechter Operand"
           }
         }
       },
       "if": {
-        "label": "If / Else",
-        "description": "Route to true or false output based on one or more conditions.",
+        "label": "Si / Sinon",
+        "description": "Je nach einer oder mehreren Bedingungen zur wahren oder falschen Ausgabe leiten.",
         "fields": {
           "mode": {
-            "title": "Match mode",
-            "description": "Require every condition (AND) or any single condition (OR)."
+            "title": "Abgleichmodus",
+            "description": "Alle Bedingungen erforderlich (UND) oder eine einzelne Bedingung (ODER)."
           },
           "conditions": {
             "title": "Conditions",
-            "description": "Rows are evaluated top to bottom; expressions may use {'{'}{' '}{'}'} on operands."
+            "description": "Zeilen werden von oben nach unten ausgewertet; Ausdrücke können {'{'}{' '}{'}'} für Operanden verwenden."
           }
         },
         "mode": {
-          "all": "All (AND)",
-          "any": "Any (OR)"
+          "all": "Toutes (ET)",
+          "any": "Eine (ODER)"
         },
         "condition": {
           "left": {
-            "title": "Left operand",
-            "description": "Value or expression (`is_empty` / `is_not_empty` ignore the right operand)."
+            "title": "Linker Operand",
+            "description": "Wert oder Ausdruck (`is_empty` / `is_not_empty` ignorieren den rechten Operanden)."
           },
           "operator": {
             "title": "Operator"
           },
           "right": {
-            "title": "Right operand",
-            "description": "Compared to the left operand unless the operator ignores it."
+            "title": "Rechter Operand",
+            "description": "Verglichen mit dem linken Operanden, sofern der Operator ihn nicht ignoriert."
           }
         }
       },
       "stop_error": {
-        "label": "Stop & Error",
-        "description": "Stop the current execution with a clear custom error.",
+        "label": "Stop & Fehler",
+        "description": "Aktuelle Ausführung mit klarer benutzerdefinierter Fehlermeldung stoppen.",
         "fields": {
           "message": {
-            "title": "Error message",
-            "description": "Shown in execution logs and trace."
+            "title": "Nachricht Fehler",
+            "description": "Wird in Ausführungsprotokollen und Trace angezeigt."
           }
         }
       },
       "execute_workflow": {
-        "label": "Execute Workflow",
-        "description": "Run an active workflow as a reusable sub-workflow.",
+        "label": "Workflow ausführen",
+        "description": "Einen aktiven Workflow als wiederverwendbaren Sub-Workflow ausführen.",
         "fields": {
           "workflowId": {
-            "title": "Child workflow ID",
-            "description": "Target workflow must be active."
+            "title": "Untergeordnete Workflow-ID",
+            "description": "Der Ziel-Workflow muss aktiv sein."
           },
           "input": {
-            "title": "Input payload",
-            "description": "Merged into the child workflow trigger payload."
+            "title": "Eingabe-Payload",
+            "description": "In den Trigger-Payload des untergeordneten Workflows zusammengeführt."
           }
         }
       },
       "respond_webhook": {
-        "label": "Respond to Webhook",
-        "description": "Defines the HTTP response payload for webhook workflows.",
+        "label": "Antwort auf webhook",
+        "description": "Legt die Antwort HTTP für workflows webhook fest.",
         "fields": {
           "statusCode": {
-            "title": "HTTP status",
-            "description": "Response status returned to the webhook caller."
+            "title": "Status HTTP",
+            "description": "Von webhook an den Anrufer zurückgegebener Statuscode."
           },
           "headers": {
-            "title": "Headers",
-            "description": "Extra HTTP headers (object map string → string)."
+            "title": "Header",
+            "description": "Zusätzliche HTTP-Header (String-Objekt → String)."
           },
           "body": {
-            "title": "Body",
-            "description": "JSON-serializable body or raw string."
+            "title": "Corps",
+            "description": "Serialisierbarer Hauptteil JSON oder Rohzeichenfolge."
           }
         }
       },
       "approval_wait": {
-        "label": "Approval",
-        "description": "Pause until a human approves in Dolibarr.",
+        "label": "Approbation",
+        "description": "Bis zur menschlichen Genehmigung in Dolibarr aussetzen.",
         "fields": {
           "message": {
-            "title": "Approval message",
-            "description": "Shown to approvers in notifications."
+            "title": "Genehmigungsnachricht",
+            "description": "Wird den Genehmigern in Benachrichtigungen angezeigt."
           },
           "approverRole": {
-            "title": "Approver role",
-            "description": "Optional Dolibarr role code restricting who may approve."
+            "title": "Genehmigerrolle",
+            "description": "Optionaler Rollencode Dolibarr, der einschränkt, wer genehmigen kann."
           }
         }
       },
       "while": {
-        "label": "While",
-        "description": "Guarded loop marker with a maximum iteration cap.",
+        "label": "Tant que",
+        "description": "Geschützter Schleifenmarker mit Iterationskappe.",
         "fields": {
           "maxIterations": {
-            "title": "Max iterations",
-            "description": "Safety cap for guarded loop markers (1–1000 at runtime)."
+            "title": "Maximale Iterationen",
+            "description": "Sicherheitskappe für Loop-Marker (1–1000 im Betrieb)."
           }
         }
       },
       "split": {
-        "label": "Split",
-        "description": "Split an array into chunks for downstream processing.",
+        "label": "Ausgeschnitten",
+        "description": "Schneiden Sie eine Tabelle für die Weiterverarbeitung in Segmente.",
         "fields": {
           "chunkSize": {
-            "title": "Chunk size",
-            "description": "Maximum items per chunk when splitting `$json.items`."
+            "title": "Taille de segment",
+            "description": "Maximale Anzahl Elemente pro Segment beim Schneiden `$json.items`."
           }
         }
       },
       "array": {
         "label": "Array",
-        "description": "Simple array utilities on list payloads.",
+        "description": "Einfache Array-Hilfsfunktionen für Listen-Payloads.",
         "fields": {
           "operation": {
             "title": "Operation",
-            "description": "Default counts items when unrecognized."
+            "description": "Zählt standardmäßig Elemente, wenn sie nicht erkannt werden."
           },
           "path": {
-            "title": "Path",
-            "description": "Reserved for future nested-array paths."
+            "title": "Pfad",
+            "description": "Reserviert für zukünftige verschachtelte Tabellenpfade."
           }
         }
       },
       "html": {
         "label": "HTML",
-        "description": "Parse HTML and extract text with XPath.",
+        "description": "HTML parsen und Text mit XPath extrahieren.",
         "fields": {
           "html": {
             "title": "HTML",
-            "description": "HTML fragment or expression; defaults to `$json.body`."
+            "description": "HTML-Fragment oder -Ausdruck; Standard `$json.body`."
           },
           "xpath": {
             "title": "XPath",
-            "description": "XPath query against the parsed DOM."
+            "description": "XPath-Abfrage für das analysierte DOM."
           }
         }
       },
       "xml": {
         "label": "XML",
-        "description": "Parse XML and extract nodes with XPath.",
+        "description": "Analysieren Sie XML und extrahieren Sie Knoten mit XPath.",
         "fields": {
           "xml": {
             "title": "XML",
-            "description": "XML document or expression; defaults to `$json.body`."
+            "description": "XML-Dokument oder -Ausdruck; Standard `$json.body`."
           },
           "xpath": {
             "title": "XPath",
-            "description": "XPath expression selecting nodes."
+            "description": "XPath-Ausdruck zur Auswahl von Knoten."
           }
         }
       },
       "crypto": {
-        "label": "Crypto",
-        "description": "Hashes, HMAC, Base64 and similar primitives.",
+        "label": "Verschlüsselung",
+        "description": "Hashes, HMAC, Base64 und zugehörige Grundelemente.",
         "fields": {
           "operation": {
             "title": "Operation"
           },
           "value": {
-            "title": "Value",
-            "description": "Input string or expression; defaults to JSON context."
+            "title": "Valeur",
+            "description": "Eingabezeichenfolge oder Ausdruck; standardmäßig der Kontext JSON."
           },
           "secret": {
             "title": "Secret",
-            "description": "HMAC secret when operation is hmac_sha256."
+            "description": "HMAC-Secret, wenn Operation hmac_sha256 ist."
           }
         }
       },
       "json": {
         "label": "JSON",
-        "description": "Parse, stringify or extract values from JSON.",
+        "description": "Analysieren, serialisieren oder extrahieren Sie JSON-Werte.",
         "fields": {
           "operation": {
             "title": "Operation"
           },
           "input": {
-            "title": "Input",
-            "description": "For parse/stringify; expressions supported."
+            "title": "Eingabe",
+            "description": "Für parse/stringify; Ausdrücke werden unterstützt."
           },
           "path": {
-            "title": "JSON path",
-            "description": "Dot path used when operation is extract."
+            "title": "JSON-Pfad",
+            "description": "Punktpfad, wenn Operation extract ist."
           },
           "pretty": {
-            "title": "Pretty print",
-            "description": "Pretty-print output when stringifying."
+            "title": "Formatierter Druck",
+            "description": "Pretty-Print zur Serialisierung."
           }
         },
         "operation": {
-          "parse": "Parse JSON",
-          "stringify": "Stringify JSON",
-          "extract": "Extract path"
+          "parse": "Analyser JSON",
+          "stringify": "JSON serialisieren",
+          "extract": "Pfad extrahieren"
         }
       },
       "string": {
         "label": "String",
-        "description": "Common string transforms.",
+        "description": "Gängige String-Transformationen.",
         "fields": {
           "operation": {
             "title": "Operation"
           },
           "input": {
-            "title": "Input",
-            "description": "Source string or expression (e.g. {'{'}{'$json.name'}{'}'})."
+            "title": "Eingabe",
+            "description": "String source oder expression (ex. {'{'}{'$json.name'}{'}'})."
           },
           "find": {
-            "title": "Find",
-            "description": "Substring to search (replace operation)."
+            "title": "Chercher",
+            "description": "Teilstring gesucht (Ersetzungsvorgang)."
           },
           "replace": {
-            "title": "Replace with"
+            "title": "Remplacer par"
           },
           "separator": {
-            "title": "Separator",
-            "description": "Delimiter for split operation."
+            "title": "Trennzeichen",
+            "description": "Abgrenzung für den Split-Vorgang."
           },
           "start": {
-            "title": "Start index"
+            "title": "Index starten"
           },
           "length": {
-            "title": "Length",
-            "description": "Substring length (omit for remainder)."
+            "title": "Longueur",
+            "description": "Teilstringlänge (andernfalls weglassen)."
           }
         }
       },
       "number": {
-        "label": "Number",
-        "description": "Arithmetic and numeric formatting.",
+        "label": "Nombre",
+        "description": "Arithmetische und numerische Formatierung.",
         "fields": {
           "operation": {
             "title": "Operation"
           },
           "a": {
             "title": "A",
-            "description": "First operand (expression resolving to a number)."
+            "description": "Erster Operand (in Zahl aufgelöster Ausdruck)."
           },
           "b": {
             "title": "B",
-            "description": "Second operand for binary operations."
+            "description": "Zweiter Operand für binäre Operationen."
           },
           "decimals": {
-            "title": "Decimals",
-            "description": "Decimal places for round/format."
+            "title": "Dezimalstellen",
+            "description": "Dezimalstellen für round/format."
           },
           "thousands": {
-            "title": "Thousands separator"
+            "title": "Tausendertrennzeichen"
           },
           "decimal": {
-            "title": "Decimal separator"
+            "title": "Dezimaltrennzeichen"
           }
         }
       },
       "date": {
         "label": "Date",
-        "description": "Parse, format and shift datetime values.",
+        "description": "Daten analysieren, formatieren und verschieben.",
         "fields": {
           "operation": {
             "title": "Operation"
           },
           "input": {
-            "title": "Input datetime",
-            "description": "Parseable datetime or expression (format/add/subtract/diff)."
+            "title": "Eingabe-Datum/Uhrzeit",
+            "description": "Date/heure analysable ou expression (format/add/subtract/diff)."
           },
           "other": {
-            "title": "Other datetime",
-            "description": "Second operand for diff."
+            "title": "Autre date/heure",
+            "description": "Zweiter Operand für diff."
           },
           "format": {
-            "title": "Output format",
-            "description": "PHP date() format string."
+            "title": "Format de Ausgabe",
+            "description": "String de format PHP date()."
           },
           "interval": {
-            "title": "Interval",
-            "description": "PHP DateInterval spec (add/subtract)."
+            "title": "Intervalle",
+            "description": "PHP-DateInterval-Spezifikation (add/subtract)."
           },
           "timezone": {
-            "title": "Timezone"
+            "title": "Zeitzone"
           }
         }
       }
     },
     "dolibarr": {
       "object": {
-        "label": "Dolibarr Object",
-        "description": "Create, fetch, update or manage Dolibarr objects",
+        "label": "Objekt Dolibarr",
+        "description": "Erstellen, fetch, update or manage Dolibarr objects",
         "fields": {
           "operation": {
             "title": "Operation"
           },
           "objectType": {
-            "title": "Object type",
-            "description": "Slug mapped by Dolibarr ObjectFactory (e.g. invoice, thirdparty)."
+            "title": "Objekttyp",
+            "description": "Von ObjectFactory zugeordneter Slug (z. B. Rechnung, Drittanbieter)."
           },
           "id": {
-            "title": "Record ID",
-            "description": "Primary key when fetching, updating or deleting."
+            "title": "ID enregistrement",
+            "description": "Primärschlüssel beim Abrufen, Aktualisieren oder Löschen."
           },
           "fields": {
-            "title": "Fields",
-            "description": "Payload map for create/update (advanced JSON still supported)."
+            "title": "Felder",
+            "description": "Feldsatz für Erstellen/Aktualisieren (erweitertes JSON weiterhin unterstützt)."
           },
           "statusMethod": {
-            "title": "Status method",
-            "description": "Verb name for change_status when applicable."
+            "title": "Statusmethode",
+            "description": "Verbname für change_status, sofern zutreffend."
           },
           "note": {
             "title": "Note",
-            "description": "Note body for add_note."
+            "description": "Notiz body for add_note."
           },
           "objectRegistryMode": {
-            "title": "Registry filter",
-            "description": "Inspector registry filter (persisted on the node)."
+            "title": "Registry-Filter",
+            "description": "Inspektor-Registry-Filter (am Knoten gespeichert)."
           },
           "statusMethodCustom": {
-            "title": "Custom status method",
-            "description": "Optional free-text status method when not in the verb list (expert)."
+            "title": "Benutzerdefinierte Statusmethode",
+            "description": "Optionale Freitext-Statusmethode, wenn nicht in der Verb-Liste (Experte)."
           }
         },
         "operation": {
-          "fetch": "Fetch",
-          "create": "Create",
-          "update": "Update",
-          "delete": "Delete",
-          "change_status": "Change status",
-          "add_note": "Add note",
-          "generate_pdf": "Generate PDF"
+          "fetch": "Lecture",
+          "create": "Erstellen",
+          "update": "Aktualisieren",
+          "delete": "Suppression",
+          "change_status": "Status ändern",
+          "add_note": "Add Notiz",
+          "generate_pdf": "PDF erzeugen"
         },
         "registryMode": {
-          "all_except_unverified": "Curated + verified",
-          "all": "All objects",
-          "curated": "Curated only",
-          "discovery": "Discovered",
-          "discovery_unverified": "Discovered (expert)"
+          "all_except_unverified": "Kuratiert + verifiziert",
+          "all": "Alle Objekte",
+          "curated": "Cartographie uniquement",
+          "discovery": "Entdeckungen",
+          "discovery_unverified": "Entdeckungen (Experte)"
         }
       },
       "read_object": {
-        "label": "Read Dolibarr Object",
-        "description": "Load a supported Dolibarr record by type and id.",
+        "label": "Dolibarr-Objekt lesen",
+        "description": "Load a supported Dolibarr record by Typ and id.",
         "fields": {
           "objectType": {
-            "title": "Object type"
+            "title": "Objekttyp"
           },
           "objectId": {
-            "title": "Object ID",
-            "description": "Numeric primary key in Dolibarr."
+            "title": "Objekt-ID",
+            "description": "Numerischer Primärschlüssel in Dolibarr."
           }
         },
         "objectType": {
-          "thirdparty": "Third party",
+          "thirdparty": "Dritte Seite",
           "contact": "Contact",
-          "product": "Product",
-          "project": "Project",
-          "propal": "Proposal",
-          "order": "Order",
-          "invoice": "Invoice"
+          "product": "Produit",
+          "project": "Projet",
+          "propal": "Angebot commerciale",
+          "order": "Bestellung",
+          "invoice": "Rechnung"
         }
       },
       "sql_query": {
-        "label": "Dolibarr SQL Query",
-        "description": "Run a sandboxed SELECT scoped to the current entity.",
+        "label": "SQL-Abfrage Dolibarr",
+        "description": "Isoliertes SELECT ausführen, auf den aktuellen Mandanten beschränkt.",
         "fields": {
           "query": {
-            "title": "SQL query",
-            "description": "Sandboxed SELECT only; entity-scoped."
+            "title": "SQL-Abfrage",
+            "description": "SELECT nur Sandbox; Entitätsumfang."
           },
           "limit": {
-            "title": "Row limit"
+            "title": "Limite de lignes"
           }
         }
       },
       "specialized": {
-        "label": "Dolibarr Specialized",
-        "description": "High-level Dolibarr business operations.",
+        "label": "Dolibarr spezialisiert",
+        "description": "Hochrangiger Dolibarr-Geschäftsbetrieb.",
         "fields": {
           "operation": {
             "title": "Operation"
           },
           "id": {
-            "title": "Record ID",
-            "description": "Primary key of the target Dolibarr object."
+            "title": "Datensatz-ID",
+            "description": "Primärschlüssel des Ziel-Dolibarr-Objekts."
           }
         },
         "operation": {
-          "validate_invoice": "Validate invoice",
-          "record_payment": "Record payment",
-          "ship_order": "Ship order",
-          "convert_propal_to_order": "Convert proposal to order",
-          "convert_order_to_invoice": "Convert order to invoice",
-          "create_relance": "Create dunning",
-          "stock_adjust": "Stock adjustment"
+          "validate_invoice": "Rechnung validieren",
+          "record_payment": "Zahlung erfassen",
+          "ship_order": "Versenden Sie die Bestellung",
+          "convert_propal_to_order": "Convertir Angebot en Bestellung",
+          "convert_order_to_invoice": "Convertir Bestellung en Rechnung",
+          "create_relance": "Mahnung erstellen",
+          "stock_adjust": "Ajustement de stock"
         }
       }
     },
     "notification": {
       "alert": {
-        "label": "Send Alert (audit)",
-        "description": "Writes an audit log entry. Use Pro Pack “Send Alert (fan-out)” for Slack, Discord, email, or webhooks.",
+        "label": "Alert senden",
+        "description": "Alert über Slack, Discord, E-Mail, Webhook und Audit-Log verteilen.",
         "fields": {
           "title": {
-            "title": "Alert title",
-            "description": "Short headline (one line)."
+            "title": "Alert-Titel",
+            "description": "Titre court (une ligne)."
           },
           "message": {
             "title": "Message",
-            "description": "Markdown-friendly body."
+            "description": "Corps compatible Markdown."
           },
           "severity": {
-            "title": "Severity"
+            "title": "Schwere"
           },
           "tag": {
-            "title": "Tag",
-            "description": "Optional grouping tag (e.g. workflow id)."
+            "title": "Etikett",
+            "description": "Optionale Gruppierungsbezeichnung (z. B. ID von workflow)."
           },
           "channels": {
             "title": "Audit",
-            "description": "Audit log channel (always enabled)."
+            "description": "Überwachungsprotokollkanal (immer aktiviert)."
           }
         },
         "severity": {
-          "info": "INFO",
-          "warn": "WARN",
-          "error": "ERROR",
-          "critical": "CRITICAL"
+          "info": "Info",
+          "warn": "AVERT.",
+          "error": "ERREUR",
+          "critical": "CRITIQUE"
         }
       }
     }
-  },
-  "dynamicForm": {
-    "expressionModeTitle": "Expression mode",
-    "literalModeTitle": "Literal value",
-    "htmlAccepted": "HTML allowed"
-  },
-  "updatesBadge": {
-    "upToDate": "All installed products are up to date.",
-    "oneUpdate": "Update available: {slug}",
-    "manyUpdates": "{count} product updates available",
-    "refresh": "Refresh",
-    "loadError": "Unable to check for updates.",
-    "openUpdates": "Open updates"
-  },
-  "updatesFloatingBanner": {
-    "oneUpdate": "Update available for {slug} ({version})",
-    "manyUpdates": "{count} product updates available",
-    "viewUpdates": "View updates",
-    "snooze": "Later (7 days)",
-    "ignoreVersion": "Ignore this version",
-    "dismissAria": "Remind me in 7 days"
-  },
-  "updatesPage": {
-    "heroTitle": "Installed products",
-    "heroSubtitle": "Check release metadata from knot.tools — applying an update replaces module files under custom/knot (Core) or registered extension directories.",
-    "productNames": {
-      "knot": "Knot Core",
-      "knotProPack": "Knot Pro Pack",
-      "knotMigration": "Knot Migration"
-    },
-    "refresh": "Refresh",
-    "checkNow": "Check for updates now",
-    "colProduct": "Product",
-    "colInstalled": "Installed",
-    "colLatest": "Latest",
-    "colChannel": "Channel",
-    "colStatus": "Status",
-    "noUpdates": "No pending updates detected.",
-    "apply": "Apply update",
-    "buy": "Purchase / renew",
-    "marketplaceUnavailable": "Open marketplace for purchase links.",
-    "confirmTitle": "Apply this update?",
-    "confirmBody": "{slug} files will be replaced on this server.",
-    "applySuccess": "Update applied ({slug}).",
-    "migrationsApplied": "{count} database migration(s) applied.",
-    "applyError": "Apply failed.",
-    "migrationFailedRestored": "Database migration failed — previous files were restored.",
-    "migrationFailedCritical": "Database migration failed — file rollback also failed.",
-    "signatureInvalidTitle": "Release-Signatur ungültig",
-    "signatureInvalidBody": "Das Update-Paket hat die Ed25519-Prüfung nicht bestanden. Wiederholen Sie den Vorgang erst, wenn ein signiertes Artefakt von Knot Tools verfügbar ist.",
-    "loadMarketplaceHint": "Could not resolve purchase URL — browse the marketplace manually."
-  },
-  "licenseDeactivateModal": {
-    "hint": "Enter the activation code to release this instance binding. The extension will disappear from the sidebar until re-activated.",
-    "codeLabel": "Activation code",
-    "codePlaceholder": "KNOTPRO-XXXX-XXXX-XXXX-XXXX",
-    "rejectBackend": "Deactivation rejected by license backend.",
-    "rejectGeneric": "Deactivation rejected by license backend.",
-    "requestFailed": "Deactivation request failed.",
-    "success": "Instance deactivated.",
-    "submit": "Deactivate"
   }
 }

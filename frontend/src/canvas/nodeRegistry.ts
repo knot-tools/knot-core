@@ -383,13 +383,13 @@ export function resolveNodeMeta(type?: string): NodeMeta {
   return NODE_REGISTRY[type] ?? { ...FALLBACK, id: type, label: type };
 }
 
-export const PALETTE_SECTIONS: { title: string; category: NodeCategory; ids: string[] }[] = [
+export const PALETTE_SECTIONS: { titleKey: string; category: NodeCategory; ids: string[] }[] = [
   {
-    title: 'Triggers', category: 'trigger',
+    titleKey: 'editor.paletteSections.trigger', category: 'trigger',
     ids: ['trigger.manual', 'trigger.webhook', 'trigger.cron', 'trigger.dolibarr_event', 'trigger.stripe_webhook', 'trigger.shopify_webhook'],
   },
   {
-    title: 'Logic', category: 'logic',
+    titleKey: 'editor.paletteSections.logic', category: 'logic',
     ids: [
       'logic.set', 'logic.filter', 'logic.if', 'logic.switch', 'logic.merge', 'logic.wait',
       'logic.execute_workflow', 'logic.stop_error', 'logic.respond_webhook', 'logic.approval_wait',
@@ -398,15 +398,15 @@ export const PALETTE_SECTIONS: { title: string; category: NodeCategory; ids: str
     ],
   },
   {
-    title: 'Communication', category: 'communication',
+    titleKey: 'editor.paletteSections.communication', category: 'communication',
     ids: ['action.email', 'action.slack', 'action.discord', 'action.telegram', 'action.twilio_sms', 'action.ovh_sms', 'action.whatsapp_cloud', 'action.whatsapp_twilio'],
   },
   {
-    title: 'Alerts', category: 'notification',
+    titleKey: 'editor.paletteSections.notification', category: 'notification',
     ids: ['notification.alert'],
   },
   {
-    title: 'SaaS', category: 'saas',
+    titleKey: 'editor.paletteSections.saas', category: 'saas',
     ids: [
       'action.stripe', 'action.woocommerce', 'action.shopify', 'action.prestashop', 'action.sftp',
       'action.notion', 'action.airtable', 'action.github', 'action.gitlab',
@@ -414,15 +414,15 @@ export const PALETTE_SECTIONS: { title: string; category: NodeCategory; ids: str
     ],
   },
   {
-    title: 'AI', category: 'ai',
+    titleKey: 'editor.paletteSections.ai', category: 'ai',
     ids: ['action.ai_openai', 'action.ai_anthropic', 'action.ai_mistral', 'action.ai_gemini', 'action.ai_ollama'],
   },
   {
-    title: 'Dolibarr', category: 'dolibarr',
+    titleKey: 'editor.paletteSections.dolibarr', category: 'dolibarr',
     ids: ['dolibarr.object', 'dolibarr.specialized', 'dolibarr.read_object', 'dolibarr.sql_query'],
   },
   {
-    title: 'Universal', category: 'universal',
+    titleKey: 'editor.paletteSections.universal', category: 'universal',
     ids: ['action.http'],
   },
 ];
