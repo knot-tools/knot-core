@@ -5,7 +5,25 @@
 Source, tags, and GitHub Releases:
 **[github.com/knot-tools/knot-core](https://github.com/knot-tools/knot-core)**.
 
-## [Unreleased]
+## [2.13.6] - 2026-05-25
+
+### Fixes — licensing
+
+- **Official manifest transition pins:** restore `0.21.4` / `0.1.4` digests as deprecated pins so
+  sites on those builds are not marked `tampered` after Core `2.13.5` (fixes blocked extension Apply
+  with HTTP `422` / `license_invalid`).
+- **`sync_extension_manifest_signature.py`:** auto-deprecate the former primary pin when
+  `--deprecate-previous` is omitted (prevents wrong transition hex on manifest bumps).
+
+### Tooling
+
+- **`scripts/demo_knot_vm_common.sh`:** prefer SSH key over `sshpass` when
+  `~/.ssh/demo_knot_tools` is present (wrong password in `ssh_operator.env` no longer blocks deploy).
+
+### Documentation
+
+- **`docs/runbooks/extension-manifest-release.md`:** transition pin semantics, sequence diagram,
+  and 2026-05-25 demo incident post-mortem.
 
 ## [2.13.5] - 2026-05-24
 
