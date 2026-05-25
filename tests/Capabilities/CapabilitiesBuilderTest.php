@@ -31,7 +31,7 @@ final class CapabilitiesBuilderTest extends TestCase
 
         $manifest = $builder->build();
 
-        self::assertSame('2.13.5', $manifest['knot']['version']);
+        self::assertSame('2.13.6', $manifest['knot']['version']);
         self::assertArrayHasKey('objects', $manifest);
         self::assertGreaterThan(0, $manifest['objects']['supported_count']);
         self::assertArrayHasKey('connectors', $manifest);
