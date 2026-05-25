@@ -1958,7 +1958,10 @@
     "confirmTitle": "Apply this update?",
     "confirmBody": "{slug} files will be replaced on this server.",
     "applySuccess": "Update applied ({slug}).",
+    "migrationsApplied": "{count} database migration(s) applied.",
     "applyError": "Apply failed.",
+    "migrationFailedRestored": "Database migration failed — previous files were restored.",
+    "migrationFailedCritical": "Database migration failed — file rollback also failed.",
     "signatureInvalidTitle": "Firma release non valida",
     "signatureInvalidBody": "Il pacchetto di aggiornamento non ha superato la verifica Ed25519. Non riprovare finché non è disponibile un artefatto firmato da Knot Tools.",
     "loadMarketplaceHint": "Could not resolve purchase URL — browse the marketplace manually."
