@@ -17,6 +17,7 @@ require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 dol_include_once('/knot/class/autoload.php');
 
 use Knot\Marketplace\KnotMarketplacePresentation;
+use Knot\Marketplace\MarketplaceStatsReader;
 use Knot\Module\ModuleExpectations;
 
 if (!$user->hasRight('knot', 'admin', 'configure')) {
@@ -1401,6 +1402,13 @@ include __DIR__ . '/../tpl/knot-leftnav.tpl.php';
     <?php
     $marketplacePreviewLocked = getDolGlobalString('KNOT_MARKETPLACE_PREVIEW_LOCKED', '1') !== '0';
     $marketplaceUiEnabledSetup = getDolGlobalString('KNOT_MARKETPLACE_UI_ENABLED', '1') !== '0';
+    /** @var list<array{key: string, count: int}> $marketplaceCtaTop */
+    $marketplaceCtaTop = [];
+    try {
+        $marketplaceCtaTop = (new MarketplaceStatsReader($db))->topCtaClickKeys((int) $conf->entity, 30, 8);
+    } catch (\Throwable) {
+        $marketplaceCtaTop = [];
+    }
     ?>
     <section class="knot-card knot-card--engine">
         <div class="knot-engine__head">
@@ -1453,6 +1461,28 @@ include __DIR__ . '/../tpl/knot-leftnav.tpl.php';
             <span class="knot-engine__hint">
                 <?php print dol_escape_htmltag($langs->trans('KnotMarketplaceUiChromeHint')); ?>
             </span>
+            <?php if ($marketplaceCtaTop !== []) : ?>
+                <div class="knot-engine__row knot-engine__stack" style="margin-top:14px;">
+                    <span class="knot-engine__label"><?php print dol_escape_htmltag($langs->trans('KnotMarketplaceCtaAnalyticsTitle')); ?></span>
+                    <ul class="knot-bullet-list knot-engine__audit-list" style="margin:8px 0 0;padding-left:18px;font-size:12px;line-height:1.5;color:#52606d;">
+                        <?php foreach ($marketplaceCtaTop as $row) :
+                            /** @var array{key: string, count: int} $row */
+                            $label = (string) $row['key'];
+                            ?>
+                            <li>
+                                <code><?php print dol_escape_htmltag($label); ?></code>
+                                —
+                                <?php print (int) $row['count']; ?>
+                                <?php print dol_escape_htmltag($langs->trans('KnotMarketplaceCtaAnalyticsClicks')); ?>
+                            </li>
+                            <?php
+                        endforeach; ?>
+                    </ul>
+                    <span class="knot-engine__hint">
+                        <?php print dol_escape_htmltag($langs->trans('KnotMarketplaceCtaAnalyticsHint')); ?>
+                    </span>
+                </div>
+            <?php endif; ?>
         </div>
     </section>
 

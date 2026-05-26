@@ -13,9 +13,11 @@ use Knot\Api\JsonResponse;
 use Knot\Dolibarr\DescriptorCache;
 use Knot\Dolibarr\ObjectFactory;
 use Knot\Licensing\Bootstrap;
+use Knot\Marketplace\CatalogCache;
 use Knot\Observability\RuntimeLogger;
 use Knot\Reporting\MetricsCollector;
 use Knot\Repository\ExecutionRepository;
+use Knot\Repository\KnotConfigRepository;
 use Knot\Repository\WorkflowRepository;
 use Knot\Module\ModuleExpectations;
 use Knot\Version;
@@ -381,6 +383,25 @@ if ($releaseChannel !== 'beta' && $releaseChannel !== 'stable') {
     $releaseChannel = 'beta';
 }
 
+$marketplaceDoctor = ['catalogCached' => false, 'catalogLang' => 'en', 'catalogStale' => false];
+try {
+    $mpLang = CatalogCache::normalizeCatalogLang((string) ($langs->defaultlang ?? 'en_US'));
+    $mpRaw = (new KnotConfigRepository($db))->get(CatalogCache::configKeyForLang($mpLang));
+    if ($mpRaw !== null && $mpRaw !== '') {
+        $mpDecoded = json_decode($mpRaw, true);
+        if (is_array($mpDecoded)) {
+            $marketplaceDoctor['catalogCached'] = true;
+            $marketplaceDoctor['catalogLang'] = $mpLang;
+            $fetchedAt = (int) ($mpDecoded['fetchedAt'] ?? 0);
+            $ttl = (int) ($mpDecoded['ttlSeconds'] ?? CatalogCache::TTL_SECONDS);
+            $marketplaceDoctor['catalogStale'] = $fetchedAt > 0 && (time() - $fetchedAt) >= $ttl;
+            $marketplaceDoctor['catalogFetchedAt'] = $fetchedAt > 0 ? gmdate('c', $fetchedAt) : null;
+        }
+    }
+} catch (\Throwable) {
+    // best-effort — doctor must not fail
+}
+
 JsonResponse::success([
     'module' => 'knot',
     'version' => $version,
@@ -401,6 +422,7 @@ JsonResponse::success([
             'descriptorCount' => $descriptorCount,
             'supportedSlugCount' => $supportedSlugCount,
         ],
+        'marketplace' => $marketplaceDoctor,
     ],
     'workflows' => $workflowsRepo->countByStatus($entity),
     'executions' => $executionStatusCounts,

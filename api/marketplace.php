@@ -22,7 +22,11 @@ use Knot\Licensing\LicenseCache;
 use Knot\Marketplace\CatalogCache;
 use Knot\Marketplace\CatalogClientFactory;
 use Knot\Marketplace\ConnectorPresentationCache;
+use Knot\Marketplace\EditorialMerger;
+use Knot\Marketplace\EditorialValidator;
 use Knot\Marketplace\KnotMarketplacePresentation;
+use Knot\Marketplace\MarketplaceStatsReader;
+use Knot\Marketplace\SidebarBadge;
 use Knot\Marketplace\TemplateClient;
 use Knot\Marketplace\TierGate;
 use Knot\Migration\ConnectorMigration;
@@ -78,6 +82,26 @@ $entity = (int) $conf->entity;
 $configRepo = new KnotConfigRepository($db);
 $catalogClient = CatalogClientFactory::create(null, $db);
 $catalogCache = new CatalogCache($configRepo);
+$catalogLang = CatalogCache::normalizeCatalogLang(
+    trim((string) GETPOST('lang', 'alphanohtml')) !== ''
+        ? (string) GETPOST('lang', 'alphanohtml')
+        : ((is_object($langs) && isset($langs->defaultlang)) ? (string) $langs->defaultlang : 'en')
+);
+
+$fallbackPath = __DIR__ . '/../data/marketplace/editorial-fallback.json';
+$fallbackBundle = [];
+if (is_readable($fallbackPath)) {
+    /** @var mixed $decodedFallback */
+    $decodedFallback = json_decode((string) file_get_contents($fallbackPath), true);
+    if (is_array($decodedFallback)) {
+        $fallbackBundle = $decodedFallback;
+    }
+}
+/** @var array<string, mixed> $fallbackLangPayload */
+$fallbackLangPayload = (isset($fallbackBundle[$catalogLang]) && is_array($fallbackBundle[$catalogLang]))
+    ? $fallbackBundle[$catalogLang]
+    : ((isset($fallbackBundle['en']) && is_array($fallbackBundle['en'])) ? $fallbackBundle['en'] : []);
+
 $templateClient = new TemplateClient(
     new TemplateRepository($db),
     $configRepo,
@@ -103,7 +127,27 @@ if ($action === 'refresh') {
 // filter to "extension" so the Pro Pack and friends are returned but
 // not the workflow templates — those are served separately below
 // because they live in their own table (entity-aware cache).
-$catalogResult = $catalogCache->get($catalogClient);
+$catalogResult = $catalogCache->get($catalogClient, $catalogLang);
+
+$remoteEditorial = $catalogResult['editorial'];
+if (EditorialMerger::remoteBlockedByKillSwitch(is_array($remoteEditorial) ? $remoteEditorial : null)) {
+    $remoteEditorial = null;
+}
+
+$mergedEditorial = EditorialMerger::merge($fallbackLangPayload, is_array($remoteEditorial) ? $remoteEditorial : null);
+$editorialValidated = EditorialValidator::validate($mergedEditorial);
+$editorialForClient = $editorialValidated->isValid()
+    ? $mergedEditorial
+    : $fallbackLangPayload;
+if (!$editorialValidated->isValid()) {
+    $fallbackOnly = EditorialValidator::validate($fallbackLangPayload);
+    if (!$fallbackOnly->isValid()) {
+        $editorialForClient = [];
+    }
+}
+$sidebarBadge = SidebarBadge::fromEditorial(
+    $editorialForClient === [] ? null : $editorialForClient,
+);
 $catalog = array_values(array_filter(
     $catalogResult['products'],
     static fn (array $p): bool => ($p['kind'] ?? 'extension') === 'extension'
@@ -225,6 +269,26 @@ foreach ($rawTemplates as $tpl) {
 }
 $templatesResult['templates'] = $templates;
 
+$statsReader = new MarketplaceStatsReader($db);
+$engagementCounts = $statsReader->installCountsBySlug($entity);
+$popularSlugs = array_flip($statsReader->popularSlugs($entity, 30, 12));
+
+foreach ($packs as $idx => $packRow) {
+    $slugKey = (string) ($packRow['slug'] ?? '');
+    $count = $slugKey !== '' && isset($engagementCounts[$slugKey]) ? (int) $engagementCounts[$slugKey] : 0;
+    $packs[$idx]['installCount'] = $count;
+    $packs[$idx]['popular'] = $slugKey !== '' && isset($popularSlugs[$slugKey]);
+    $packs[$idx]['featured'] = false;
+}
+
+foreach ($templatesResult['templates'] as $idx => $tplRow) {
+    $slugKey = (string) ($tplRow['slug'] ?? '');
+    $count = $slugKey !== '' && isset($engagementCounts[$slugKey]) ? (int) $engagementCounts[$slugKey] : 0;
+    $templatesResult['templates'][$idx]['installCount'] = $count;
+    $templatesResult['templates'][$idx]['popular'] = $slugKey !== '' && isset($popularSlugs[$slugKey]);
+    $templatesResult['templates'][$idx]['featured'] = false;
+}
+
 $workflowsRepo = new WorkflowRepository($db);
 $migration = new ConnectorMigration($workflowsRepo);
 $availableConnectorIds = array_keys(
@@ -246,6 +310,7 @@ JsonResponse::success([
         'fromCache' => (bool) $catalogResult['fromCache'],
         'stale' => (bool) $catalogResult['stale'],
         'error' => $catalogResult['error'],
+        'lang' => $catalogLang,
     ],
     'templates' => $templatesResult['templates'],
     'templatesMeta' => $templatesResult['meta'],
@@ -260,4 +325,6 @@ JsonResponse::success([
         'proPackProductSlug' => KnownSkus::PRO_PACK,
     ],
     'backendUrl' => CatalogClientFactory::resolveBaseUrl(),
+    'editorial' => $editorialForClient,
+    'sidebarBadge' => $sidebarBadge,
 ]);

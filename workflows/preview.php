@@ -219,6 +219,28 @@ $knotHead = '<link rel="icon" type="image/svg+xml" href="' . dol_escape_htmltag(
     . '<link rel="icon" type="image/png" sizes="64x64" href="' . dol_escape_htmltag($knotIconBase . '/favicon-64.png') . '">'
     . '<link rel="shortcut icon" href="' . dol_escape_htmltag($knotIconBase . '/favicon.ico') . '">'
     . '<link rel="apple-touch-icon" href="' . dol_escape_htmltag($knotIconBase . '/knot-logo-256.png') . '">';
+if ($mode === 'marketplace') {
+    $csp = implode(
+        '; ',
+        [
+            "default-src 'self'",
+            "base-uri 'self'",
+            "form-action 'self'",
+            "font-src 'self' data: https:",
+            "img-src 'self' data: https:",
+            "style-src 'self' 'unsafe-inline'",
+            "script-src 'self' 'unsafe-inline'",
+            "connect-src 'self' https://license.knot.tools https://cdn.knot.tools https://knot.tools https://www.knot.tools",
+            'upgrade-insecure-requests',
+        ],
+    );
+    $knotHead .= '<meta http-equiv="Content-Security-Policy" content="' . dol_escape_htmltag($csp) . '">';
+}
+
+// Cache buster for CSS: mtime of dist/knot-app.css so a redeploy invalidates
+// any prior CSS even when the semver version did not change.
+$knotCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/dist/knot-app.css';
+$knotCssVer = file_exists($knotCssPath) ? (string) filemtime($knotCssPath) : '0';
 
 llxHeader(
     $knotHead,
@@ -231,7 +253,7 @@ llxHeader(
     [
         '/knot/css/knot-tokens.css',
         '/knot/css/knot-host.css',
-        '/knot/dist/knot-app.css',
+        '/knot/dist/knot-app.css?v=' . $knotCssVer,
     ]
 );
 
@@ -329,8 +351,18 @@ $appStyle .= sprintf(' --knot-dolibarr-chrome-top: %dpx;', $chromeTopPx);
     <?php if ($executionTabAttr !== ''): ?>data-execution-tab="<?php print dol_escape_htmltag($executionTabAttr); ?>"<?php endif; ?>
 ></div>
 
-<script src="<?php print DOL_URL_ROOT; ?>/custom/knot/js/knot-app.js" defer></script>
-<script src="<?php print DOL_URL_ROOT; ?>/custom/knot/dist/knot-app.js" defer></script>
+<?php
+// Use file mtime as cache buster so every redeploy invalidates browser cache,
+// even when the semver module version did not change. Falls back to the module
+// version when the file is missing on disk (defensive — should not happen).
+$knotDistPath = DOL_DOCUMENT_ROOT . '/custom/knot/dist/knot-app.js';
+$knotAssetVersion = file_exists($knotDistPath)
+    ? (string) filemtime($knotDistPath)
+    : (class_exists('Knot\\Version') ? \Knot\Version::current() : '2.0.0');
+$knotAssetVersion = rawurlencode($knotAssetVersion);
+?>
+<script src="<?php print DOL_URL_ROOT; ?>/custom/knot/js/knot-app.js?v=<?php print $knotAssetVersion; ?>" defer></script>
+<script src="<?php print DOL_URL_ROOT; ?>/custom/knot/dist/knot-app.js?v=<?php print $knotAssetVersion; ?>" defer></script>
 <?php foreach ($knotExtensionAssets as $knotExtAsset): ?>
 <script src="<?php print dol_escape_htmltag((string) $knotExtAsset['js']); ?>" defer></script>
 <?php endforeach; ?>

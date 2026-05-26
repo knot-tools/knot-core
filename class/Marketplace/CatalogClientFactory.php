@@ -29,11 +29,32 @@ final class CatalogClientFactory
         return $raw !== '' ? $raw : CatalogClient::DEFAULT_BASE_URL;
     }
 
+    /**
+     * Optional Dolibarr global {@code KNOT_MARKETPLACE_PREVIEW_TOKEN}: when non-empty,
+     * {@see CatalogClient} requests {@code /api/catalog-preview.json} with {@code token=}.
+     */
+    public static function resolveCatalogPreviewToken(): ?string
+    {
+        if (!function_exists('getDolGlobalString')) {
+            return null;
+        }
+        $raw = trim((string) getDolGlobalString('KNOT_MARKETPLACE_PREVIEW_TOKEN', ''));
+
+        return $raw !== '' ? $raw : null;
+    }
+
     public static function create(?string $baseUrl = null, ?\DoliDB $db = null): CatalogClient
     {
         $base = $baseUrl ?? self::resolveBaseUrl();
+        $preview = self::resolveCatalogPreviewToken();
         if ($db === null) {
-            return new CatalogClient($base);
+            return new CatalogClient(
+                $base,
+                CatalogClient::DEFAULT_TIMEOUT_S,
+                null,
+                null,
+                $preview,
+            );
         }
 
         $identity = new \Knot\Licensing\InstallationIdentity(new KnotConfigRepository($db), $db);
@@ -43,6 +64,7 @@ final class CatalogClientFactory
             CatalogClient::DEFAULT_TIMEOUT_S,
             $identity->deploymentToken(),
             $identity->deploymentNonce(),
+            $preview,
         );
     }
 }

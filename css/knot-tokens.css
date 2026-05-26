@@ -59,12 +59,15 @@
   /* ----- Status ----- */
   --knot-color-success: #10b981;
   --knot-color-success-soft: #ecfdf5;
+  --knot-color-success-strong: #047857;
   --knot-color-warning: #f59e0b;
   --knot-color-warning-soft: #fff7ed;
+  --knot-color-warning-strong: #b45309;
   --knot-color-danger: #ef4444;
   --knot-color-danger-soft: #fef2f2;
   --knot-color-info: #0ea5e9;
   --knot-color-info-soft: #f0f9ff;
+  --knot-color-info-strong: #0369a1;
 
   /* ----- Gradients ----- */
   --knot-gradient-hero: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
@@ -172,6 +175,29 @@
   --knot-mc-card-radius: var(--knot-radius-md);
   --knot-mc-section-gap: var(--knot-space-8);
 
+  /* Marketplace / premium surfaces — abbreviated k-* aliases consumed by Tailwind-heavy blocks */
+  --k-shadow-knot-premium: var(--knot-shadow-premium);
+  --k-radius-knot-lg: var(--knot-radius-lg);
+
+  /* ----- Marketplace shell (km-*) ----- */
+  --km-shell-max: 1280px;
+  --km-shell-pad-x: var(--knot-space-6);
+  --km-shell-pad-y: var(--knot-space-6);
+  --km-shell-gap: var(--knot-space-6);
+  --km-topbar-h: 52px;
+  --km-topbar-bg: var(--knot-glass-bg-strong);
+  --km-topbar-border: var(--knot-glass-border);
+  --km-card-radius: var(--knot-radius-md);
+  --km-card-pad: var(--knot-space-5);
+  --km-card-shadow: var(--knot-shadow-sm);
+  --km-drawer-w: 320px;
+  --km-drawer-bg: var(--knot-color-surface);
+  --km-hero-mesh: var(--knot-mesh-bg);
+  --km-curated-gap: var(--knot-space-4);
+  --km-chip-radius: var(--knot-radius-pill);
+  --km-emblem-size: 40px;
+  --km-signal-radius: var(--knot-radius-sm);
+
   /* ----- Refresh 2026 — Toast surfaces ----- */
   /* Slightly tinted-and-bordered so each level reads at a glance even
    * for users who can't easily distinguish hue. */
@@ -201,12 +227,15 @@ html[data-knot-theme="dark"] {
   --knot-color-accent-soft: rgba(167, 139, 250, 0.18);
   --knot-color-success: #34d399;
   --knot-color-success-soft: rgba(52, 211, 153, 0.18);
+  --knot-color-success-strong: #6ee7b7;
   --knot-color-warning: #fbbf24;
   --knot-color-warning-soft: rgba(251, 191, 36, 0.18);
+  --knot-color-warning-strong: #fcd34d;
   --knot-color-danger: #fca5a5;
   --knot-color-danger-soft: rgba(248, 113, 113, 0.18);
   --knot-color-info: #7dd3fc;
   --knot-color-info-soft: rgba(125, 211, 252, 0.18);
+  --knot-color-info-strong: #bae6fd;
   --knot-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.35);
   --knot-shadow-md: 0 16px 36px rgba(0, 0, 0, 0.45);
   --knot-shadow-lg: 0 28px 60px rgba(0, 0, 0, 0.55);
@@ -232,6 +261,9 @@ html[data-knot-theme="dark"] {
   --knot-toast-danger-border: rgba(248, 113, 113, 0.42);
   --knot-toast-info-bg: rgba(125, 211, 252, 0.16);
   --knot-toast-info-border: rgba(125, 211, 252, 0.42);
+
+  --km-topbar-bg: rgba(17, 23, 43, 0.92);
+  --km-drawer-bg: var(--knot-color-surface);
 }
 
 /* ----- Refresh 2026 — Reduced motion ----- */
@@ -262,6 +294,23 @@ html[data-knot-density="dense"] {
   --knot-density-card-pad: var(--knot-space-4);
   --knot-density-card-gap: var(--knot-space-3);
   --knot-density-font: var(--knot-font-size-sm);
+}
+
+/* Marketplace typography utilities (distinct from numbered font-size tokens) */
+#knot-app .k-display-1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--knot-color-text);
+}
+
+#knot-app .k-display-2 {
+  font-size: clamp(1.5rem, 3vw, 2.125rem);
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--knot-color-text);
 }
 
 /*

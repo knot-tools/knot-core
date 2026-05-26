@@ -149,15 +149,17 @@ final class CatalogClientTest extends TestCase
                     'pricing' => ['monthly_eur_cents' => 1900],
                 ],
             ],
+            'editorial' => ['version' => 1],
         ], JSON_THROW_ON_ERROR);
 
         $server = $this->startServer($body);
         $client = new CatalogClient($server->baseUrl());
 
-        $products = $client->fetch();
-
-        self::assertCount(1, $products);
-        self::assertSame('knot-pro-pack', $products[0]['slug']);
+        $bag = $client->fetchCatalog();
+        self::assertCount(1, $bag['products']);
+        self::assertSame('knot-pro-pack', $bag['products'][0]['slug']);
+        self::assertSame(['version' => 1], $bag['editorial']);
+        self::assertSame($bag['products'], $client->fetch());
         self::assertNull($client->lastError());
     }
 
@@ -203,6 +205,36 @@ final class CatalogClientTest extends TestCase
 
         self::assertSame([], $client->fetch());
         self::assertNull($client->lastError());
+    }
+
+    public function testCatalogFetchUrlForDiagnosticsUsesPreviewPathWhenPreviewTokenSet(): void
+    {
+        $client = new CatalogClient(
+            'https://license.example.test',
+            CatalogClient::DEFAULT_TIMEOUT_S,
+            null,
+            null,
+            'signed.jwt.token',
+        );
+
+        $baseUrl = $client->catalogFetchUrlForDiagnostics();
+        self::assertStringStartsWith(
+            'https://license.example.test/api/catalog-preview.json?',
+            $baseUrl,
+        );
+        self::assertStringContainsString('token=', $baseUrl);
+
+        $withKind = $client->catalogFetchUrlForDiagnostics('template', null);
+        self::assertStringContainsString('kind=template', $withKind);
+
+        $withLang = $client->catalogFetchUrlForDiagnostics(null, 'fr');
+        self::assertStringContainsString('lang=fr', $withLang);
+
+        $plain = new CatalogClient('https://license.example.test');
+        self::assertSame(
+            'https://license.example.test/api/catalog.json',
+            $plain->catalogFetchUrlForDiagnostics(),
+        );
     }
 
     private function startServer(string $body, int $status = 200): LocalJsonHttpHarness

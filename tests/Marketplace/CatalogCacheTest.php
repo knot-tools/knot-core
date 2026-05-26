@@ -18,29 +18,28 @@ final class CatalogCacheTest extends TestCase
 {
     public function testFreshFetchPopulatesCache(): void
     {
-        $repo = new InMemoryConfigRepo();
+        $repo = new MarketplaceInMemoryConfigRepo();
         $cache = new CatalogCache($repo);
-        $client = new FakeClient([['slug' => 'pack-a', 'label' => 'A']]);
+        $client = new FakeCatalogClient([['slug' => 'pack-a', 'label' => 'A']]);
 
-        $first = $cache->get($client);
+        $first = $cache->get($client, 'en');
 
         self::assertSame('pack-a', $first['products'][0]['slug']);
         self::assertFalse($first['fromCache']);
         self::assertFalse($first['stale']);
         self::assertNull($first['error']);
         self::assertTrue($first['live_catalog_fetched']);
-        self::assertNotNull($repo->get(CatalogCache::CONFIG_KEY));
+        self::assertNotNull($repo->get(CatalogCache::configKeyForLang('en')));
     }
 
     public function testWarmCacheBypassesNetworkCall(): void
     {
-        $repo = new InMemoryConfigRepo();
+        $repo = new MarketplaceInMemoryConfigRepo();
         $cache = new CatalogCache($repo);
-        // Seed with fresh data
-        $cache->get(new FakeClient([['slug' => 'pack-a', 'label' => 'A']]));
+        $cache->get(new FakeCatalogClient([['slug' => 'pack-a', 'label' => 'A']]), 'en');
 
-        $offlineClient = new FakeClient([], 'simulated_failure');
-        $second = $cache->get($offlineClient);
+        $offlineClient = new FakeCatalogClient([], null, 'simulated_failure');
+        $second = $cache->get($offlineClient, 'en');
 
         self::assertSame('pack-a', $second['products'][0]['slug']);
         self::assertTrue($second['fromCache']);
@@ -52,17 +51,18 @@ final class CatalogCacheTest extends TestCase
 
     public function testStaleCacheIsServedWhenLiveFetchFails(): void
     {
-        $repo = new InMemoryConfigRepo();
-        // Manually inject an old cache entry (older than TTL)
-        $repo->set(CatalogCache::CONFIG_KEY, json_encode([
+        $repo = new MarketplaceInMemoryConfigRepo();
+        $repo->set(CatalogCache::configKeyForLang('en'), json_encode([
             'products' => [['slug' => 'old-pack', 'label' => 'Old']],
-            'fetchedAt' => time() - (CatalogCache::TTL_SECONDS + 100),
+            'editorial' => null,
+            'fetchedAt' => time() - (int) (CatalogCache::TTL_SECONDS * 1.2) - 3600,
+            'ttlSeconds' => CatalogCache::TTL_SECONDS,
         ], JSON_UNESCAPED_SLASHES));
 
         $cache = new CatalogCache($repo);
-        $offline = new FakeClient([], 'http_502');
+        $offline = new FakeCatalogClient([], null, 'http_502');
 
-        $result = $cache->get($offline);
+        $result = $cache->get($offline, 'en');
 
         self::assertTrue($result['stale']);
         self::assertTrue($result['fromCache']);
@@ -73,31 +73,80 @@ final class CatalogCacheTest extends TestCase
 
     public function testEmptyResponseWithoutCacheReturnsEmptyAndError(): void
     {
-        $repo = new InMemoryConfigRepo();
+        $repo = new MarketplaceInMemoryConfigRepo();
         $cache = new CatalogCache($repo);
-        $offline = new FakeClient([], 'unreachable');
+        $offline = new FakeCatalogClient([], null, 'unreachable');
 
-        $result = $cache->get($offline);
+        $result = $cache->get($offline, 'en');
 
         self::assertSame([], $result['products']);
         self::assertFalse($result['fromCache']);
         self::assertSame('unreachable', $result['error']);
         self::assertFalse($result['live_catalog_fetched']);
     }
+
+    public function testCachesEditorialAlongsideProducts(): void
+    {
+        $repo = new MarketplaceInMemoryConfigRepo();
+        $cache = new CatalogCache($repo);
+        $editorial = ['version' => 1, 'home' => ['layout' => [['id' => 'x', 'type' => 'banner']]]];
+        $client = new FakeCatalogClient(
+            [['slug' => 'alpha', 'label' => 'A']],
+            $editorial,
+        );
+
+        $first = $cache->get($client, 'fr');
+        self::assertSame($editorial, $first['editorial']);
+
+        $raw = $repo->get(CatalogCache::configKeyForLang('fr'));
+        self::assertIsString($raw);
+        $decoded = json_decode($raw, true);
+        self::assertIsArray($decoded);
+        self::assertSame($editorial, $decoded['editorial']);
+    }
+
+    public function testPersistsJitterAwareTtl(): void
+    {
+        $repo = new MarketplaceInMemoryConfigRepo();
+        $cache = new CatalogCache($repo);
+        $cache->get(new FakeCatalogClient([['slug' => 'solo', 'label' => 'S']]), 'en');
+
+        $raw = $repo->get(CatalogCache::configKeyForLang('en'));
+        self::assertIsString($raw);
+        $decoded = json_decode($raw, true);
+        self::assertIsArray($decoded);
+        $storedTtl = (int) ($decoded['ttlSeconds'] ?? 0);
+        $span = (int) floor(CatalogCache::TTL_SECONDS * (CatalogCache::TTL_JITTER_PERCENT / 100));
+        self::assertGreaterThanOrEqual(CatalogCache::TTL_SECONDS - $span, $storedTtl);
+        self::assertLessThanOrEqual(CatalogCache::TTL_SECONDS + $span, $storedTtl);
+    }
+
+    public function testFrenchCacheUsesDistinctKey(): void
+    {
+        $repo = new MarketplaceInMemoryConfigRepo();
+        $cache = new CatalogCache($repo);
+        $cache->get(new FakeCatalogClient([['slug' => 'p1', 'label' => 'P1']]), 'en');
+        $cache->get(new FakeCatalogClient([['slug' => 'p2', 'label' => 'P2']]), 'fr');
+
+        self::assertTrue($repo->get(CatalogCache::configKeyForLang('en')) !== null);
+        self::assertTrue($repo->get(CatalogCache::configKeyForLang('fr')) !== null);
+    }
+
+    public function testNormalizeCatalogLang(): void
+    {
+        self::assertSame('fr', CatalogCache::normalizeCatalogLang('fr_FR'));
+        self::assertSame('de', CatalogCache::normalizeCatalogLang('de'));
+        self::assertSame('en', CatalogCache::normalizeCatalogLang(''));
+    }
 }
 
-/**
- * Minimal in-memory replacement for KnotConfigRepository — bypasses the
- * Dolibarr DB layer that is unavailable in the unit test environment.
- */
-final class InMemoryConfigRepo extends KnotConfigRepository
+final class MarketplaceInMemoryConfigRepo extends KnotConfigRepository
 {
     /** @var array<string, string> */
     private array $store = [];
 
     public function __construct()
     {
-        // Deliberately skip the parent constructor (no DoliDB needed).
     }
 
     public function get(string $key, ?string $default = null): ?string
@@ -116,29 +165,35 @@ final class InMemoryConfigRepo extends KnotConfigRepository
     }
 }
 
-/**
- * Fake CatalogClient: returns canned data without touching the network.
- */
-final class FakeClient extends CatalogClient
+final class FakeCatalogClient extends CatalogClient
 {
     public int $fetchCount = 0;
 
+    /**
+     * @param array<int, array<string, mixed>> $payload
+     * @param array<string, mixed>|null $editorial
+     */
     public function __construct(
-        /** @var array<int, array<string, mixed>> */
         private readonly array $payload,
+        private readonly ?array $editorial = null,
         private readonly ?string $error = null,
     ) {
         parent::__construct();
     }
 
-    public function fetch(?string $kind = null): array
+    public function fetchCatalog(?string $kind = null, ?string $lang = null): array
     {
         $this->fetchCount++;
         if ($this->payload === []) {
             $ref = new \ReflectionProperty(CatalogClient::class, 'lastError');
             $ref->setValue($this, $this->error);
-            return [];
+
+            return ['products' => [], 'editorial' => null];
         }
-        return $this->normalise($this->payload);
+
+        return [
+            'products' => $this->normalise($this->payload),
+            'editorial' => $this->editorial,
+        ];
     }
 }

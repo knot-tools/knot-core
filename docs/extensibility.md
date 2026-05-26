@@ -223,6 +223,38 @@ Core installe le singleton via `installKnotCore()` dans [`frontend/src/main.ts`]
 - PHPUnit : `tests/Extension/ManifestSchemaTest.php`, `tests/Extension/SidebarPresentationTest.php`, `tests/Extension/ExtensionRegistryTest.php`, `tests/Extension/LicenseValidatorTest.php`.
 - Vitest : `frontend/src/lib/__tests__/knotCore.test.ts` (registration, mount, persistedState, license modal), `frontend/src/components/__tests__/KnotExtensionMount.test.ts`.
 
+## Marketplace block-driven storefront (Core + license)
+
+Les onglets **Extensions / Modèles** du shell `?mode=marketplace` consomment un **document éditorial** versionné (**`editorial`**) exposé publiquement par **`GET /api/catalog.json`** sur `license.knot.tools`.
+
+- **Fallback local** — `data/marketplace/editorial-fallback.json` (par langue) garantit une vitrine fonctionnelle si le portail licence est hors-ligne ou si l’agrégateur refuse le fuseau distant.
+- **Fusion** — `EditorialMerger` superpose les blocs distants sur le fallback (**clé stable `block.id`**, fusion type `array_merge` champ par champ).
+- **Validation** — `EditorialValidator` impose des quotas, URLs HTTPS sur domaines Knot autorisés, et une liste fermée de `type` de blocs (**`frontend/src/views/marketplace`** `BlockRenderer.vue` / `blocks/registry.ts`).
+- **Kill-switch** — `meta.killSwitch: true` côté licence (`EditorialLoader`) peut retourner `editorial: null`; côté instance, `EditorialMerger::remoteBlockedByKillSwitch` ignore encore les caches contenant cette balise (**défense en profondeur**).
+- **Télémétrie légère** — `POST /api/marketplace_track.php` (session + CSRF, **60 req/min/utilisateur**) n’accepte que des évènements whitelistés ; insert `marketplace.track` dans `llx_knot_audit_log`.
+- **Politique CSP** — `workflows/preview.php` ajoute une balise CSP dédiée lorsque **`mode=marketplace`**.
+
+Références : **`docs/marketplace-editorial-schema.md`** + **`docs/marketplace-editorial-schema.json`** (Draft‑07) ; guide opé **`docs/admin-guide/marketplace.md`** ; runbook opérateur licence **`docs/runbooks/marketplace-editorial.md`**.
+
+### Ajouter un bloc éditorial (**p4‑dc‑2**)
+
+1. Choisir un `type` supporté par le **registre frontend** : `frontend/src/views/marketplace/blocks/registry.ts` + `BlockRenderer.vue`.
+2. Dans `config/marketplace-editorial/*.json` (dépôt **license**), ajouter un objet `{ "id": "<stable>", "type": "<type>", "props": { … } }` dans `home.layout`, `productPages[slug].layout`, etc.
+3. `id` doit rester **stable** entre versions : `EditorialMerger` fusionne distants + fallback Core sur cette clé.
+4. Exécuter `php bin/validate_editorial.php` (license) ; optionnel `bin/marketplace_assets_audit.php` si le bloc référence des médias.
+5. Recharger une instance Core (`?mode=marketplace`) ou invalider le cache admin (`/api/marketplace.php?action=refresh`).
+
+### Ajouter ou mettre en avant un produit catalogue (**p4‑dc‑3**)
+
+1. **Source produit** : base **license** (`kl_products`) — champs `slug`, `kind`, `status='published'`, pricing, `definition_json` pour les modèles, `weight`, `is_featured`, `benefit_summary`.
+2. Vérifier l’exposition JSON : `GET /api/catalog.json` (ou `?kind=template`) — tri `weight` / `featured` géré côté licence.
+3. **Surface marketing** : enrichir `productPages[<slug>].layout` dans l’éditorial (hero, `product_card` detail, FAQ, etc.).
+4. Côté Core, liens publics utilisateur final passent par **`marketplaceLinks`** / `sanitizeMarketplaceHref()` (domaine **knot.tools**, pas `license.knot.tools`).
+
+### Santé cache côté instance (Doctor)
+
+La payload **`GET /api/health.php`** expose `doctor.marketplace` (`catalogCached`, `catalogLang`, `catalogStale`, `catalogFetchedAt`) dérivée de `marketplace.catalog_cache.<lang>` — utile pour vérifier qu’un snapshot TTL existe après incident réseau.
+
 ## Synchronisation liste migrée / Pro Pack
 
 Toute modification de **`ConnectorMigration::MIGRATED_TO_PRO_PACK`** doit rester **strictement alignée** avec :

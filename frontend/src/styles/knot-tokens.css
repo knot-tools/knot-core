@@ -1,0 +1,7 @@
+/**
+ * Knot design tokens imported into the Vite bundle.
+ * Canonical definitions live under {@see ../../../../css/knot-tokens.css} at repo root.
+ * Copyright (C) 2026 Knot — GPL-3.0-or-later
+ */
+
+@import url('../../../css/knot-tokens.css');

@@ -22,7 +22,7 @@ final class TemplateClientTest extends TestCase
     public function testFreshRefreshPopulatesCacheAndStoresTimestamp(): void
     {
         $repo = new InMemoryTemplateRepo();
-        $config = new InMemoryConfigRepo();
+        $config = new MarketplaceInMemoryConfigRepo();
         $client = new TemplateClient($repo, $config, $this->fakeClient([
             ['slug' => 'tpl-1', 'label' => 'T1'],
         ]));
@@ -40,7 +40,7 @@ final class TemplateClientTest extends TestCase
     public function testReuseFullCatalogSkipsSeparateTemplateFetch(): void
     {
         $repo = new InMemoryTemplateRepo();
-        $config = new InMemoryConfigRepo();
+        $config = new MarketplaceInMemoryConfigRepo();
         $config->set(
             TemplateClient::CONFIG_KEY_REFRESHED,
             (string) (time() - TemplateClient::TTL_SECONDS - 3600),
@@ -51,12 +51,12 @@ final class TemplateClientTest extends TestCase
             ['slug' => 'tpl-from-cat', 'label' => 'T', 'kind' => 'template'],
         ]);
 
-        /** @see CatalogCacheTest\FakeClient */
-        if (!class_exists(FakeClient::class, false)) {
+        /** @see CatalogCacheTest\FakeCatalogClient */
+        if (!class_exists(FakeCatalogClient::class, false)) {
             require_once __DIR__ . '/CatalogCacheTest.php';
         }
 
-        $net = new FakeClient([], 'should_not_hit_network');
+        $net = new FakeCatalogClient([], null, 'should_not_hit_network');
         $client = new TemplateClient($repo, $config, $net);
 
         $result = $client->all(1, $normalized);
@@ -70,7 +70,7 @@ final class TemplateClientTest extends TestCase
     public function testWarmCacheBypassesNetworkCall(): void
     {
         $repo = new InMemoryTemplateRepo();
-        $config = new InMemoryConfigRepo();
+        $config = new MarketplaceInMemoryConfigRepo();
         $client = new TemplateClient($repo, $config, $this->fakeClient([
             ['slug' => 'tpl-1', 'label' => 'T1'],
         ]));
@@ -89,7 +89,7 @@ final class TemplateClientTest extends TestCase
     public function testStaleCacheStillServedWhenLiveFetchFails(): void
     {
         $repo = new InMemoryTemplateRepo();
-        $config = new InMemoryConfigRepo();
+        $config = new MarketplaceInMemoryConfigRepo();
         $repo->cacheFromLicense([['slug' => 'old-tpl', 'label' => 'Old']], 1);
         // Simulate an old timestamp older than TTL.
         $config->set(TemplateClient::CONFIG_KEY_REFRESHED, (string) (time() - (TemplateClient::TTL_SECONDS + 100)));
@@ -108,7 +108,7 @@ final class TemplateClientTest extends TestCase
     public function testForceRefreshUpdatesCacheRegardlessOfTTL(): void
     {
         $repo = new InMemoryTemplateRepo();
-        $config = new InMemoryConfigRepo();
+        $config = new MarketplaceInMemoryConfigRepo();
         $config->set(TemplateClient::CONFIG_KEY_REFRESHED, (string) time());
 
         $client = new TemplateClient($repo, $config, $this->fakeClient([
@@ -126,7 +126,7 @@ final class TemplateClientTest extends TestCase
     public function testForceRefreshReportsErrorWhenUpstreamFails(): void
     {
         $repo = new InMemoryTemplateRepo();
-        $config = new InMemoryConfigRepo();
+        $config = new MarketplaceInMemoryConfigRepo();
 
         $client = new TemplateClient($repo, $config, $this->fakeClient([], 'unreachable'));
 
@@ -136,16 +136,13 @@ final class TemplateClientTest extends TestCase
         self::assertSame('unreachable', $result['error']);
     }
 
-    private function fakeClient(array $payload, ?string $error = null): FakeClient
+    private function fakeClient(array $payload, ?string $error = null): FakeCatalogClient
     {
-        // FakeClient + InMemoryConfigRepo are shared with CatalogCacheTest
-        // — they live in CatalogCacheTest.php under the same namespace.
-        // Forcing the autoload here keeps PHPUnit happy when this test
-        // happens to run in isolation.
-        if (!class_exists(FakeClient::class, false)) {
+        if (!class_exists(FakeCatalogClient::class, false)) {
             require_once __DIR__ . '/CatalogCacheTest.php';
         }
-        return new FakeClient($payload, $error);
+
+        return new FakeCatalogClient($payload, null, $error);
     }
 }
 

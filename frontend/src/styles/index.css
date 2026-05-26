@@ -6,6 +6,8 @@
  * (prefixed `k-`) and component-specific styles.
  */
 
+@import './knot-tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -75,6 +77,175 @@
 }
 
 @layer utilities {
+  #knot-app .k-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  #knot-app .marketplace-host {
+    background: linear-gradient(
+      180deg,
+      var(--knot-color-premium-gold-soft, #fdf6e3) 0%,
+      var(--knot-color-bg, #fff) 220px
+    );
+    border-radius: var(--knot-radius-md, 0.5rem);
+  }
+
+  @keyframes k-marketplace-cascade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* First-paint stagger for marketplace blocks (BlockRenderer children). */
+  @media (prefers-reduced-motion: no-preference) {
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > * {
+      animation: k-marketplace-cascade-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(1) { animation-delay: 0ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(2) { animation-delay: 50ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(3) { animation-delay: 100ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(4) { animation-delay: 150ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(5) { animation-delay: 200ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(6) { animation-delay: 250ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(7) { animation-delay: 300ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(8) { animation-delay: 350ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(9) { animation-delay: 400ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(10) { animation-delay: 450ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(11) { animation-delay: 500ms; }
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > *:nth-child(12) { animation-delay: 550ms; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #knot-app .marketplace-host .knot-marketplace-block-renderer > * {
+      animation: none;
+    }
+  }
+
+  /* Marketplace foundation shell (km-*) */
+  #knot-app .km-shell {
+    max-width: var(--km-shell-max);
+    margin-inline: auto;
+    padding: var(--km-shell-pad-y) var(--km-shell-pad-x);
+    display: flex;
+    flex-direction: column;
+    gap: var(--km-shell-gap);
+  }
+
+  #knot-app .km-topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--knot-space-3);
+    min-height: var(--km-topbar-h);
+    padding: var(--knot-space-2) var(--knot-space-4);
+    border-radius: var(--km-card-radius);
+    border: 1px solid var(--km-topbar-border);
+    background: var(--km-topbar-bg);
+    backdrop-filter: blur(var(--knot-glass-blur));
+    -webkit-backdrop-filter: blur(var(--knot-glass-blur));
+  }
+
+  #knot-app .km-card {
+    border-radius: var(--km-card-radius);
+    border: 1px solid var(--knot-color-border);
+    background: var(--knot-color-surface);
+    box-shadow: var(--km-card-shadow);
+    padding: var(--km-card-pad);
+  }
+
+  #knot-app .km-drawer {
+    width: min(var(--km-drawer-w), 100%);
+    border-radius: var(--km-card-radius);
+    border: 1px solid var(--knot-color-border);
+    background: var(--km-drawer-bg);
+    box-shadow: var(--knot-shadow-md);
+    padding: var(--knot-space-4);
+  }
+
+  #knot-app .km-hero-mesh {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--knot-radius-lg);
+    background: var(--km-hero-mesh);
+    background-image: var(--km-hero-mesh), var(--knot-noise);
+    background-blend-mode: normal, soft-light;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    #knot-app .km-hero-mesh::after {
+      content: '';
+      position: absolute;
+      inset: -20%;
+      background: radial-gradient(circle at 30% 20%, rgba(99, 102, 241, 0.12), transparent 55%);
+      animation: km-hero-drift 18s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    #knot-app .km-curated-row {
+      scroll-behavior: smooth;
+    }
+  }
+
+  @keyframes km-hero-drift {
+    from {
+      transform: translate3d(-2%, 0, 0);
+    }
+
+    to {
+      transform: translate3d(2%, 1%, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #knot-app .km-hero-mesh::after {
+      animation: none;
+    }
+
+    #knot-app .km-curated-row {
+      scroll-behavior: auto;
+    }
+  }
+
+  #knot-app .km-curated-row {
+    display: flex;
+    gap: var(--km-curated-gap);
+    overflow-x: auto;
+    padding-bottom: var(--knot-space-2);
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #knot-app .km-curated-row > * {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  #knot-app .knot-hero-watermark {
+    position: absolute;
+    inset: 0;
+    opacity: 0.065;
+  }
+
+  #knot-app .knot-hero-watermark__svg {
+    width: 130%;
+    height: 130%;
+    margin: -12% 0 0 -8%;
+  }
+
   @media (max-width: 900px) {
     #knot-app table {
       display: block;
@@ -110,5 +281,28 @@
     #knot-app .k-fixed.k-inset-y-0.k-right-0 {
       width: 100% !important;
     }
+
+    /* Sticky CTA + safe area on mobile marketplace journeys */
+    #knot-app .marketplace-host {
+      padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    #knot-app .marketplace-host [data-editorial-type='sticky_cta'] {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    #knot-app .marketplace-host [data-editorial-type='gallery'] .k-grid {
+      scroll-snap-type: x mandatory;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  #knot-app .km-card {
+    border-radius: var(--k-radius-knot-md, 0.5rem);
+  }
+
+  #knot-app .km-shell__main {
+    width: 100%;
   }
 }

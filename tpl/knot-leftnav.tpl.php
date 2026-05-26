@@ -33,7 +33,8 @@ $items = [
         'icon' => 'fa-store',
         'label' => $langs->trans('KnotMarketplaceTitle'),
         'url' => $preview . '?mode=marketplace',
-        '_isPremium' => true,
+        // Gold sidebar surface like premium extensions; badge remains editorial-driven.
+        '_premiumStyle' => true,
     ],
     [
         'key' => 'observability',
@@ -220,6 +221,26 @@ if (class_exists(\Knot\Extension\ExtensionRegistry::class) && class_exists(\Knot
     }
 }
 
+$knotMarketplaceSidebarBadge = null;
+if (class_exists(\Knot\Marketplace\SidebarBadge::class) && class_exists(\Knot\Repository\KnotConfigRepository::class)) {
+    try {
+        $knotNavLang = is_object($langs ?? null) && isset($langs->defaultlang)
+            ? (string) $langs->defaultlang
+            : 'en_US';
+        $knotNavConfig = isset($db) && $db instanceof \DoliDB
+            ? new \Knot\Repository\KnotConfigRepository($db)
+            : null;
+        if ($knotNavConfig instanceof \Knot\Repository\KnotConfigRepository) {
+            $knotMarketplaceSidebarBadge = \Knot\Marketplace\SidebarBadge::fromConfig(
+                $knotNavConfig,
+                $knotNavLang,
+            );
+        }
+    } catch (\Throwable $e) {
+        error_log('[knot leftnav] marketplace sidebar badge failed: ' . $e->getMessage());
+    }
+}
+
 ?>
 <aside class="knot-nav" aria-label="Knot navigation">
     <div class="knot-nav__brand">
@@ -247,7 +268,7 @@ if (class_exists(\Knot\Extension\ExtensionRegistry::class) && class_exists(\Knot
                 if (!empty($item['_isCtaAdmin'])) {
                     $extraClass .= ' knot-nav__item--ext-cta';
                 }
-                if (!empty($item['_isPremium'])) {
+                if (!empty($item['_isPremium']) || !empty($item['_premiumStyle'])) {
                     $extraClass .= ' knot-nav__item--ext-premium';
                 }
                 $extAttr = $isExtension ? ' data-knot-ext-id="' . dol_escape_htmltag((string) $item['_extId']) . '"' : '';
@@ -271,7 +292,23 @@ if (class_exists(\Knot\Extension\ExtensionRegistry::class) && class_exists(\Knot
             >
                 <span class="knot-nav__icon"><i class="fas <?php print dol_escape_htmltag($item['icon']); ?>"></i></span>
                 <span class="knot-nav__label"><?php print dol_escape_htmltag($item['label']); ?></span>
-                <?php if (!empty($item['_isPremium'])): ?>
+                <?php if (($item['key'] ?? '') === 'marketplace' && is_array($knotMarketplaceSidebarBadge ?? null)): ?>
+                    <?php
+                        $mpBadgeVariant = preg_replace('/[^a-z]/', '', (string) ($knotMarketplaceSidebarBadge['variant'] ?? 'primary'));
+                        if ($mpBadgeVariant === '') {
+                            $mpBadgeVariant = 'primary';
+                        }
+                        $mpBadgeLabel = (string) ($knotMarketplaceSidebarBadge['label'] ?? '');
+                        $mpBadgeAria = (string) ($knotMarketplaceSidebarBadge['ariaLabel'] ?? $mpBadgeLabel);
+                    ?>
+                    <span
+                        class="knot-nav__pro-badge knot-nav__pro-badge--<?php print dol_escape_htmltag($mpBadgeVariant); ?>"
+                        aria-label="<?php print dol_escape_htmltag($mpBadgeAria); ?>"
+                    ><?php print dol_escape_htmltag($mpBadgeLabel); ?></span>
+                    <?php if (!empty($knotMarketplaceSidebarBadge['hasUnread'])): ?>
+                        <span class="knot-nav__unread-dot" aria-hidden="true"></span>
+                    <?php endif; ?>
+                <?php elseif (!empty($item['_isPremium'])): ?>
                     <span class="knot-nav__pro-badge" aria-label="<?php print dol_escape_htmltag($langs->trans('KnotExtensionPremiumBadge') !== 'KnotExtensionPremiumBadge' ? $langs->trans('KnotExtensionPremiumBadge') : 'Premium add-on'); ?>">Pro</span>
                 <?php endif; ?>
                 <?php if ($isActive): ?>

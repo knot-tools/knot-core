@@ -45,11 +45,14 @@ class CatalogClient
 
     private ?string $lastError = null;
 
+    private const PREVIEW_TOKEN_MAX_LEN = 512;
+
     public function __construct(
         private readonly string $baseUrl = self::DEFAULT_BASE_URL,
         private readonly int $timeoutSeconds = self::DEFAULT_TIMEOUT_S,
         private readonly ?string $deploymentToken = null,
         private readonly ?string $deploymentNonce = null,
+        private readonly ?string $catalogPreviewToken = null,
     ) {
     }
 
@@ -67,20 +70,34 @@ class CatalogClient
      *                          the public endpoint. Accepts `extension`
      *                          or `template`; any other value is ignored
      *                          server-side so it is safe to pass through.
+     * @param string|null $lang ISO language forwarded as `lang=` (`en`,
+     *                            `fr`, …); empty values are omitted.
      * @return array<int, array<string, mixed>>
      */
-    public function fetch(?string $kind = null): array
+    public function fetch(?string $kind = null, ?string $lang = null): array
+    {
+        return $this->fetchCatalog($kind, $lang)['products'];
+    }
+
+    /**
+     * Same transport as {@see fetch()} but also surfaces optional `editorial`
+     * JSON returned by licence.knot.tools for the requested language.
+     *
+     * @return array{
+     *   products: array<int, array<string, mixed>>,
+     *   editorial: array<string, mixed>|null
+     * }
+     */
+    public function fetchCatalog(?string $kind = null, ?string $lang = null): array
     {
         $this->lastError = null;
-        $url = rtrim($this->baseUrl, '/') . '/api/catalog.json';
-        if ($kind !== null && $kind !== '') {
-            $url .= '?kind=' . rawurlencode($kind);
-        }
+        $url = $this->buildCatalogFetchUrl($kind, $lang);
 
         $ch = curl_init($url);
         if ($ch === false) {
             $this->lastError = 'curl_init_failed';
-            return [];
+
+            return ['products' => [], 'editorial' => null];
         }
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
@@ -101,20 +118,65 @@ class CatalogClient
 
         if ($body === false || $errno !== 0) {
             $this->lastError = 'curl_error:' . $errno . ':' . $errstr;
-            return [];
+
+            return ['products' => [], 'editorial' => null];
         }
         if ($status < 200 || $status >= 300) {
             $this->lastError = 'http_' . $status;
-            return [];
+
+            return ['products' => [], 'editorial' => null];
         }
 
         $decoded = json_decode((string) $body, true);
         if (!is_array($decoded) || !isset($decoded['products']) || !is_array($decoded['products'])) {
             $this->lastError = 'invalid_payload';
-            return [];
+
+            return ['products' => [], 'editorial' => null];
         }
 
-        return $this->normalise($decoded['products']);
+        $editorial = null;
+        if (isset($decoded['editorial']) && is_array($decoded['editorial'])) {
+            /** @var array<string, mixed> $editorial */
+            $editorial = $decoded['editorial'];
+        }
+
+        return [
+            'products' => $this->normalise($decoded['products']),
+            'editorial' => $editorial,
+        ];
+    }
+
+    /**
+     * Build the remote catalog URL (public JSON or short-lived JWT preview).
+     *
+     * @internal Exposed for PHPUnit — do not rely on this in application code.
+     */
+    public function catalogFetchUrlForDiagnostics(?string $kind = null, ?string $lang = null): string
+    {
+        return $this->buildCatalogFetchUrl($kind, $lang);
+    }
+
+    private function buildCatalogFetchUrl(?string $kind, ?string $lang): string
+    {
+        $token = $this->normalisedPreviewToken();
+        $path = $token !== null ? '/api/catalog-preview.json' : '/api/catalog.json';
+        $qs = [];
+        if ($token !== null) {
+            $qs['token'] = $token;
+        }
+        if ($kind !== null && $kind !== '') {
+            $qs['kind'] = $kind;
+        }
+        $langTrim = $lang !== null ? trim($lang) : '';
+        if ($langTrim !== '') {
+            $qs['lang'] = substr($langTrim, 0, 16);
+        }
+        $url = rtrim($this->baseUrl, '/') . $path;
+        if ($qs !== []) {
+            $url .= '?' . http_build_query($qs, '', '&', PHP_QUERY_RFC3986);
+        }
+
+        return $url;
     }
 
     /**
@@ -133,6 +195,20 @@ class CatalogClient
         }
 
         return [];
+    }
+
+    /** Non-empty JWT / opaque preview token clipped to {@see PREVIEW_TOKEN_MAX_LEN}. When set, {@see buildCatalogFetchUrl} targets {@code /api/catalog-preview.json?token=…}. */
+    private function normalisedPreviewToken(): ?string
+    {
+        if ($this->catalogPreviewToken === null) {
+            return null;
+        }
+        $t = trim($this->catalogPreviewToken);
+        if ($t === '') {
+            return null;
+        }
+
+        return substr($t, 0, self::PREVIEW_TOKEN_MAX_LEN);
     }
 
     /**
