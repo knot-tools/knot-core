@@ -28,7 +28,10 @@ const embedUrl = computed(() => {
   // YouTube watch → embed
   try {
     const url = new URL(u);
-    if (url.hostname.includes('youtube.com') && url.pathname === '/watch') {
+    if (
+      (url.hostname === 'youtube.com' || url.hostname === 'www.youtube.com') &&
+      url.pathname === '/watch'
+    ) {
       const id = url.searchParams.get('v');
       return id ? `https://www.youtube.com/embed/${encodeURIComponent(id)}` : null;
     }
@@ -36,7 +39,7 @@ const embedUrl = computed(() => {
       const id = url.pathname.replace(/^\//, '');
       return id ? `https://www.youtube.com/embed/${encodeURIComponent(id)}` : null;
     }
-    if (url.hostname.includes('vimeo.com')) {
+    if (url.hostname === 'vimeo.com' || url.hostname === 'www.vimeo.com') {
       const parts = url.pathname.split('/').filter(Boolean);
       const id = parts[0];
       return id ? `https://player.vimeo.com/video/${encodeURIComponent(id)}` : null;
