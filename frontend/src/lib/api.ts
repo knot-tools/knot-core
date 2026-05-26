@@ -725,6 +725,16 @@ export const knotApi = {
     return request<MarketplaceResponse>(`/marketplace.php${qs}`);
   },
 
+  marketplaceTrack(
+    event: string,
+    context: Record<string, string | number | boolean> = {},
+  ) {
+    return request<{ ok: boolean }>(`/marketplace_track.php`, {
+      method: 'POST',
+      body: JSON.stringify({ event, context }),
+    });
+  },
+
   listCredentials(connectorType?: string) {
     const qs = connectorType ? `?connector_type=${encodeURIComponent(connectorType)}` : '';
     return request<{ credentials: CredentialSummary[]; counts: Record<string, number> }>(
@@ -1316,6 +1326,94 @@ export interface MigrationScanResponse {
 }
 
 /**
+ * Editorial host payload (optional `/api/marketplace.php` P1a).
+ */
+export interface KnotMarketplaceBlockSpecDTO {
+  type: string;
+  id?: string;
+  props?: Record<string, unknown>;
+}
+
+export interface MarketplaceProductTabSpec {
+  id: string;
+  kind: 'richtext' | 'features' | 'templates' | 'changelog' | 'list' | 'screenshots' | string;
+  label: string;
+  visible?: boolean;
+  body?: string;
+  items?: Array<{ title?: string; description?: string; version?: string; date?: string; notes?: string }>;
+  /** Populated for `kind: screenshots` tabs (editorial v2). */
+  images?: Array<{ src: string; alt?: string }>;
+}
+
+export interface MarketplaceProductPageSpec {
+  layout?: KnotMarketplaceBlockSpecDTO[];
+  hero?: {
+    tagline?: string;
+    version?: string;
+    author?: string;
+    tier?: string;
+  };
+  pricing?: {
+    highlight?: string;
+    plans?: Array<{
+      name: string;
+      price?: string;
+      href?: string;
+      highlighted?: boolean;
+      features?: string[];
+    }>;
+  };
+  tabs?: MarketplaceProductTabSpec[];
+  screenshots?: Array<{ src: string; alt?: string }>;
+  related?: string[];
+}
+
+export interface MarketplaceTemplatePageSpec {
+  layout?: KnotMarketplaceBlockSpecDTO[];
+  hero?: { tagline?: string };
+  tabs?: MarketplaceProductTabSpec[];
+  related?: string[];
+}
+
+export interface KnotMarketplaceEditorialDTO {
+  version?: string;
+  meta?: {
+    updatedAt?: string;
+    schemaVersion?: number;
+    killSwitch?: boolean;
+  };
+  redirects?: Record<string, string> | Array<{ from: string; to: string; view?: string }>;
+  sidebar?: { badge?: { label?: string; variant?: string; ariaLabel?: string } };
+  home?:
+    | KnotMarketplaceBlockSpecDTO[]
+    | {
+        layout?: KnotMarketplaceBlockSpecDTO[];
+        spotlight?: {
+          title?: string;
+          items?: Array<{
+            kind?: 'pack' | 'template' | string;
+            slug?: string;
+            tagline?: string;
+            accent?: string;
+            ctas?: Array<{ label?: string; href?: string; kind?: string }>;
+          }>;
+        };
+        collections?: Array<{
+          slug?: string;
+          label?: string;
+          query?: { sort?: string; limit?: number; kind?: string };
+          slugs?: string[];
+        }>;
+      };
+  product?: KnotMarketplaceBlockSpecDTO[];
+  productPages?: Record<string, MarketplaceProductPageSpec>;
+  template?: KnotMarketplaceBlockSpecDTO[];
+  templatePages?: Record<string, MarketplaceTemplatePageSpec>;
+  news?: KnotMarketplaceBlockSpecDTO[];
+  newsPages?: Record<string, { layout?: KnotMarketplaceBlockSpecDTO[] }>;
+}
+
+/**
  * Reply shape for /api/marketplace.php — the unified marketplace endpoint
  * powering MarketplaceView (Packs / Templates / Migration tabs).
  */
@@ -1354,6 +1452,10 @@ export interface MarketplacePack {
     expiresAt: string | null;
     lastSuccessfulRefresh: string | null;
   } | null;
+  /** Aggregated install/visit signals from audit telemetry (optional). */
+  installCount?: number;
+  popular?: boolean;
+  featured?: boolean;
 }
 
 export interface MarketplaceTemplate {
@@ -1386,6 +1488,9 @@ export interface MarketplaceTemplate {
    * relevant CTA (e.g. "Pro Pack expired" vs "Pro Pack not installed").
    */
   lockedReason?: { status: string; expiresAt: string | null } | null;
+  installCount?: number;
+  popular?: boolean;
+  featured?: boolean;
 }
 
 export interface MarketplaceResponse {
@@ -1413,6 +1518,11 @@ export interface MarketplaceResponse {
     proPackProductSlug: string;
   };
   backendUrl: string;
+  /**
+   * Optional editorial layout from the license backend (ignored when absent).
+   * Mirrors `frontend/src/views/marketplace/` block registry keys (`hero`, …).
+   */
+  editorial?: KnotMarketplaceEditorialDTO | null;
 }
 
 export interface CredentialSchemaProperty {

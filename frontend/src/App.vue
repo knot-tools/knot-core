@@ -33,6 +33,7 @@ import UpdatesFloatingBanner from './components/shell/UpdatesFloatingBanner.vue'
 import KDemoBanner from './components/shell/KDemoBanner.vue';
 import KBetaBadge from './components/shell/KBetaBadge.vue';
 import KConfirmDialog from './components/ui/KConfirmDialog.vue';
+import { syncMarketplaceUnreadFromLocalCache } from './lib/marketplaceEditorialUnread';
 import { provideToast } from './composables/useToast';
 import { provideConfirm } from './composables/useConfirm';
 import { KNOT_Z_TOAST } from './lib/overlayStacking';
@@ -104,6 +105,7 @@ function handleGlobalLicenseActivated(payload: LicenseActivationResponse) {
 }
 
 onMounted(() => {
+  syncMarketplaceUnreadFromLocalCache();
   window.addEventListener('knot:open-license-activation', handleOpenLicenseActivation);
 });
 onUnmounted(() => {

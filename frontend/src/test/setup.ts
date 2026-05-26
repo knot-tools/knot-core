@@ -6,7 +6,10 @@
  * (matchMedia, ResizeObserver, IntersectionObserver, fetch).
  */
 
-import { vi } from 'vitest';
+import * as matchers from 'vitest-axe/matchers';
+import { expect, vi } from 'vitest';
+
+expect.extend(matchers);
 
 if (typeof window !== 'undefined') {
   if (!window.matchMedia) {

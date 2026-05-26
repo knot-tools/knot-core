@@ -9,6 +9,7 @@ Ce guide couvre l'installation, la configuration, la securite, la performance et
 - **Mises à jour in-module (Core / extensions payantes)** : voir
   [`docs/runbooks/updates-apply.md`](../runbooks/updates-apply.md) (flux
   `updates_apply.php`, rollback, prérequis TLS / checksums).
+- **Marketplace intégré (extensions + éditorial blocs)** : voir [`marketplace.md`](marketplace.md).
 
 ## Marqueurs UI (bêta publique)
 

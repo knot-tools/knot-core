@@ -11,48 +11,78 @@ use Knot\Repository\KnotConfigRepository;
 /**
  * V2.5.0a — Marketplace catalog cache.
  *
- * Persists the last successful response from {@see CatalogClient::fetch()}
- * in `llx_knot_config` (key `marketplace.catalog_cache`) so that the
- * marketplace UI keeps rendering even when `license.knot.tools` is briefly
- * unreachable. Refreshed on every read older than {@see TTL_SECONDS}.
+ * Persists the last successful response from {@see CatalogClient::fetchCatalog()}
+ * under {@see configKeyForLang()} so storefront chrome can stay bilingual while
+ * the extensions list keeps loading when `license.knot.tools` flakes.
  *
- * The cached entry shape is intentionally tiny — slug + label +
- * description + pricing — to stay well below the LONGTEXT cap and to
- * make the UI render snappy even on the first cold load.
+ * Each row stores products plus optional licence {@code editorial} blobs. TTL uses
+ * {@see TTL_SECONDS} plus pseudo-random jitter of ±10% (stored per snapshot) so fleet-wide
+ * refetch waves stay smeared without long one-sided tails.
  */
 final class CatalogCache
 {
+    /** @deprecated Use {@see configKeyForLang()} — kept only for invalidate sweeps */
     public const CONFIG_KEY = 'marketplace.catalog_cache';
+
     public const TTL_SECONDS = 21600; // 6h
+
+    /** Jitter amplitude as a percentage of {@see TTL_SECONDS} (±basis). */
+    public const TTL_JITTER_PERCENT = 10;
 
     public function __construct(private readonly KnotConfigRepository $config)
     {
     }
 
     /**
-     * Get the catalog using cache-aside semantics:
-     *   - return cached copy when fresh
-     *   - on cache miss / staleness, fetch via $client and persist
-     *   - on fetch failure when stale, return the stale copy with
-     *     {@see fromCache: true, stale: true} markers so the UI can
-     *     surface a soft warning
-     *
+     * Normalises a Dolibarr / browser locale string (`fr_FR`, …) down to ISO639-1.
+     */
+    public static function normalizeCatalogLang(string $raw): string
+    {
+        $lower = strtolower(trim($raw));
+        if ($lower === '') {
+            return 'en';
+        }
+        if (preg_match('/^[a-z]{2}/', $lower, $matches)) {
+            return $matches[0];
+        }
+
+        return 'en';
+    }
+
+    /**
+     * Config row key persisted in `llx_knot_config`.
+     */
+    public static function configKeyForLang(string $iso639): string
+    {
+        $norm = strtolower(preg_replace('/[^a-z0-9_-]+/', '', $iso639) ?? '');
+        if ($norm === '') {
+            $norm = 'en';
+        }
+
+        return 'marketplace.catalog_cache.' . substr($norm, 0, 8);
+    }
+
+    /**
      * @return array{
      *     products: array<int, array<string, mixed>>,
+     *     editorial: array<string, mixed>|null,
      *     fromCache: bool,
      *     stale: bool,
      *     error: ?string,
      *     live_catalog_fetched: bool
      * }
      */
-    public function get(CatalogClient $client): array
+    public function get(CatalogClient $client, string $lang = 'en'): array
     {
+        $langNorm = self::normalizeCatalogLang($lang);
         $now = time();
-        $cached = $this->readCached();
+        $cached = $this->readCached($langNorm);
 
-        if ($cached !== null && ($now - $cached['fetchedAt']) < self::TTL_SECONDS) {
+        $effectiveTtl = $cached['ttlSeconds'] ?? self::TTL_SECONDS;
+        if ($cached !== null && ($now - $cached['fetchedAt']) < $effectiveTtl) {
             return [
                 'products' => $cached['products'],
+                'editorial' => $cached['editorial'],
                 'fromCache' => true,
                 'stale' => false,
                 'error' => null,
@@ -60,11 +90,22 @@ final class CatalogCache
             ];
         }
 
-        $live = $client->fetch();
-        if ($live !== []) {
-            $this->writeCached($live, $now);
+        $live = $client->fetchCatalog(null, $langNorm);
+        if ($live['products'] !== []) {
+            $span = (int) floor(self::TTL_SECONDS * (self::TTL_JITTER_PERCENT / 100));
+            $span = max(1, $span);
+            $ttlWithJitter = self::TTL_SECONDS + random_int(-$span, $span);
+            $this->writeCached(
+                $langNorm,
+                $live['products'],
+                $live['editorial'],
+                $now,
+                $ttlWithJitter,
+            );
+
             return [
-                'products' => $live,
+                'products' => $live['products'],
+                'editorial' => $live['editorial'],
                 'fromCache' => false,
                 'stale' => false,
                 'error' => null,
@@ -75,6 +116,7 @@ final class CatalogCache
         if ($cached !== null) {
             return [
                 'products' => $cached['products'],
+                'editorial' => $cached['editorial'],
                 'fromCache' => true,
                 'stale' => true,
                 'error' => $client->lastError(),
@@ -84,6 +126,7 @@ final class CatalogCache
 
         return [
             'products' => [],
+            'editorial' => null,
             'fromCache' => false,
             'stale' => false,
             'error' => $client->lastError(),
@@ -92,21 +135,27 @@ final class CatalogCache
     }
 
     /**
-     * Drop the cached entry so the next {@see get()} call goes
-     * straight to the network. Used by the admin "refresh catalog"
-     * action exposed through `api/marketplace.php?action=refresh`.
+     * Drop cached rows so the next {@see get()} round-trip hits the network.
      */
     public function invalidate(): void
     {
         $this->config->delete(self::CONFIG_KEY);
+        foreach (['en', 'fr', 'de', 'es', 'it', 'nl', 'pt', 'pl'] as $iso) {
+            $this->config->delete(self::configKeyForLang($iso));
+        }
     }
 
     /**
-     * @return array{products: array<int, array<string, mixed>>, fetchedAt: int}|null
+     * @return array{
+     *   products: array<int, array<string, mixed>>,
+     *   editorial: array<string, mixed>|null,
+     *   fetchedAt: int,
+     *   ttlSeconds: int
+     * }|null
      */
-    private function readCached(): ?array
+    private function readCached(string $langNorm): ?array
     {
-        $raw = $this->config->get(self::CONFIG_KEY);
+        $raw = $this->config->get(self::configKeyForLang($langNorm));
         if ($raw === null || $raw === '') {
             return null;
         }
@@ -117,24 +166,39 @@ final class CatalogCache
         if (!is_array($decoded['products'])) {
             return null;
         }
+        $editorial = null;
+        if (array_key_exists('editorial', $decoded)) {
+            $editorial = is_array($decoded['editorial']) ? $decoded['editorial'] : null;
+        }
+
         return [
             'products' => $decoded['products'],
+            'editorial' => $editorial,
             'fetchedAt' => (int) $decoded['fetchedAt'],
+            'ttlSeconds' => isset($decoded['ttlSeconds']) ? (int) $decoded['ttlSeconds'] : self::TTL_SECONDS,
         ];
     }
 
     /**
      * @param array<int, array<string, mixed>> $products
+     * @param array<string, mixed>|null $editorial
      */
-    private function writeCached(array $products, int $now): void
-    {
+    private function writeCached(
+        string $langNorm,
+        array $products,
+        ?array $editorial,
+        int $now,
+        int $ttlSeconds,
+    ): void {
         $payload = json_encode([
             'products' => $products,
+            'editorial' => $editorial,
             'fetchedAt' => $now,
+            'ttlSeconds' => $ttlSeconds,
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         if ($payload === false) {
             return;
         }
-        $this->config->set(self::CONFIG_KEY, $payload);
+        $this->config->set(self::configKeyForLang($langNorm), $payload);
     }
 }

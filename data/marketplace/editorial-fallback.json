@@ -1,0 +1,1622 @@
+{
+    "fr": {
+        "version": 2,
+        "meta": {
+            "killSwitch": false,
+            "updatedAt": "2026-05-25T10:00:00Z"
+        },
+        "taxonomy": {
+            "categories": [
+                {
+                    "slug": "packs",
+                    "label": "Packs",
+                    "icon": "package",
+                    "color": "#6366f1"
+                },
+                {
+                    "slug": "templates",
+                    "label": "Modèles",
+                    "icon": "workflow",
+                    "color": "#0ea5e9"
+                },
+                {
+                    "slug": "migration",
+                    "label": "Migration",
+                    "icon": "refresh-cw",
+                    "color": "#f59e0b"
+                }
+            ]
+        },
+        "home": {
+            "spotlight": {
+                "title": "À la une",
+                "items": [
+                    {
+                        "kind": "pack",
+                        "slug": "knot-pro-pack",
+                        "tagline": "Connecteurs avancés, quotas étendus et mises à jour signées pour Dolibarr.",
+                        "accent": "pro",
+                        "ctas": [
+                            {
+                                "label": "Pro Pack",
+                                "href": "https://knot.tools/pro-pack/"
+                            },
+                            {
+                                "label": "Pricing",
+                                "href": "https://knot.tools/pricing"
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "pack",
+                        "slug": "knot-migration",
+                        "tagline": "Analyses read-only avant montée de version Dolibarr — zéro écriture sur la base.",
+                        "accent": "migration",
+                        "ctas": [
+                            {
+                                "label": "Migration",
+                                "href": "https://knot.tools/migration/"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "collections": [
+                {
+                    "slug": "recent-templates",
+                    "label": "Modèles récents",
+                    "query": {
+                        "sort": "recent"
+                    },
+                    "limit": 12
+                },
+                {
+                    "slug": "popular-templates",
+                    "label": "Populaires cette semaine",
+                    "query": {
+                        "sort": "popular"
+                    },
+                    "limit": 8
+                },
+                {
+                    "slug": "pro-picks",
+                    "label": "Pack Pro",
+                    "query": {
+                        "sort": "popular",
+                        "category": "packs"
+                    },
+                    "limit": 6
+                }
+            ]
+        },
+        "productPages": {
+            "knot-pro-pack": {
+                "hero": {
+                    "tagline": "Connecteurs avancés, quotas étendus et mises à jour signées pour Dolibarr.",
+                    "version": "2.13.7",
+                    "author": "Knot Tools",
+                    "tier": "pro"
+                },
+                "pricing": {
+                    "label": "Pro Pack",
+                    "amount": "19.90 EUR",
+                    "period": "month",
+                    "href": "https://license.knot.tools/",
+                    "features": [
+                        "Advanced SaaS connectors",
+                        "Signed ZIP updates",
+                        "Priority support"
+                    ]
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Vue d ensemble",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Connecteurs avancés, quotas étendus et mises à jour signées pour Dolibarr."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Fonctionnalités",
+                        "kind": "features",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "title": "Connectors",
+                                    "description": "Slack, HTTP, AI and more.",
+                                    "icon": "slack"
+                                },
+                                {
+                                    "title": "Signed updates",
+                                    "description": "Ed25519 verified releases.",
+                                    "icon": "shield"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "changelog",
+                        "label": "Journal",
+                        "kind": "changelog",
+                        "visible": true,
+                        "props": {
+                            "entries": [
+                                {
+                                    "version": "2.13.7",
+                                    "date": "2026-05",
+                                    "notes": "Marketplace editorial schema v2."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "knot-migration": {
+                "hero": {
+                    "tagline": "Analyses read-only avant montée de version Dolibarr — zéro écriture sur la base.",
+                    "version": "0.21.0",
+                    "author": "Knot Tools",
+                    "tier": "migration"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Présentation",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Analyses read-only avant montée de version Dolibarr — zéro écriture sur la base."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Analyses",
+                        "kind": "list",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "label": "Read-only scans",
+                                    "value": "No database writes during analysis."
+                                },
+                                {
+                                    "label": "32 Dolibarr versions",
+                                    "value": "Supported from 18 to 23 at launch."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "screenshots",
+                        "label": "Screenshots",
+                        "kind": "screenshots",
+                        "visible": false,
+                        "props": {
+                            "images": [
+                                {
+                                    "src": "https://cdn.knot.tools/marketplace/migration-mission-control.png",
+                                    "alt": "Mission Control"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "templatePages": {
+            "invoice-reminder": {
+                "hero": {
+                    "tagline": "Automated invoice reminder workflow.",
+                    "version": "1.0.0",
+                    "author": "Knot Tools",
+                    "tier": "core"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Vue d ensemble",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Send polite payment reminders from Dolibarr invoices."
+                        }
+                    },
+                    {
+                        "id": "templates",
+                        "label": "Modèles",
+                        "kind": "templates",
+                        "visible": true,
+                        "props": {
+                            "slugs": [
+                                "invoice-reminder"
+                            ],
+                            "query": {
+                                "sort": "recent"
+                            }
+                        }
+                    }
+                ],
+                "prerequisites": {
+                    "items": [
+                        {
+                            "title": "Knot Core 2.13+",
+                            "description": "Workflow engine with email connector.",
+                            "icon": "check-circle-2"
+                        }
+                    ]
+                },
+                "useCases": {
+                    "items": [
+                        {
+                            "title": "Accounts receivable",
+                            "description": "Reduce overdue invoices with timed nudges.",
+                            "icon": "mail"
+                        }
+                    ]
+                }
+            }
+        },
+        "sidebar": {
+            "badge": {
+                "label": "Nouveau",
+                "variant": "info",
+                "ariaLabel": "Contenus marketplace récents",
+                "hasUnread": false
+            }
+        }
+    },
+    "en": {
+        "version": 2,
+        "meta": {
+            "killSwitch": false,
+            "updatedAt": "2026-05-25T10:00:00Z"
+        },
+        "taxonomy": {
+            "categories": [
+                {
+                    "slug": "packs",
+                    "label": "Packs",
+                    "icon": "package",
+                    "color": "#6366f1"
+                },
+                {
+                    "slug": "templates",
+                    "label": "Templates",
+                    "icon": "workflow",
+                    "color": "#0ea5e9"
+                },
+                {
+                    "slug": "migration",
+                    "label": "Migration",
+                    "icon": "refresh-cw",
+                    "color": "#f59e0b"
+                }
+            ]
+        },
+        "home": {
+            "spotlight": {
+                "title": "Spotlight",
+                "items": [
+                    {
+                        "kind": "pack",
+                        "slug": "knot-pro-pack",
+                        "tagline": "Advanced connectors, extended quotas, and signed updates for Dolibarr.",
+                        "accent": "pro",
+                        "ctas": [
+                            {
+                                "label": "Pro Pack",
+                                "href": "https://knot.tools/pro-pack/"
+                            },
+                            {
+                                "label": "Pricing",
+                                "href": "https://knot.tools/pricing"
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "pack",
+                        "slug": "knot-migration",
+                        "tagline": "Read-only analysis before Dolibarr upgrades — zero writes to your database.",
+                        "accent": "migration",
+                        "ctas": [
+                            {
+                                "label": "Migration",
+                                "href": "https://knot.tools/migration/"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "collections": [
+                {
+                    "slug": "recent-templates",
+                    "label": "Recent templates",
+                    "query": {
+                        "sort": "recent"
+                    },
+                    "limit": 12
+                },
+                {
+                    "slug": "popular-templates",
+                    "label": "Popular this week",
+                    "query": {
+                        "sort": "popular"
+                    },
+                    "limit": 8
+                },
+                {
+                    "slug": "pro-picks",
+                    "label": "Pro picks",
+                    "query": {
+                        "sort": "popular",
+                        "category": "packs"
+                    },
+                    "limit": 6
+                }
+            ]
+        },
+        "productPages": {
+            "knot-pro-pack": {
+                "hero": {
+                    "tagline": "Advanced connectors, extended quotas, and signed updates for Dolibarr.",
+                    "version": "2.13.7",
+                    "author": "Knot Tools",
+                    "tier": "pro"
+                },
+                "pricing": {
+                    "label": "Pro Pack",
+                    "amount": "19.90 EUR",
+                    "period": "month",
+                    "href": "https://license.knot.tools/",
+                    "features": [
+                        "Advanced SaaS connectors",
+                        "Signed ZIP updates",
+                        "Priority support"
+                    ]
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Overview",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Advanced connectors, extended quotas, and signed updates for Dolibarr."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Features",
+                        "kind": "features",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "title": "Connectors",
+                                    "description": "Slack, HTTP, AI and more.",
+                                    "icon": "slack"
+                                },
+                                {
+                                    "title": "Signed updates",
+                                    "description": "Ed25519 verified releases.",
+                                    "icon": "shield"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "changelog",
+                        "label": "Changelog",
+                        "kind": "changelog",
+                        "visible": true,
+                        "props": {
+                            "entries": [
+                                {
+                                    "version": "2.13.7",
+                                    "date": "2026-05",
+                                    "notes": "Marketplace editorial schema v2."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "knot-migration": {
+                "hero": {
+                    "tagline": "Read-only analysis before Dolibarr upgrades — zero writes to your database.",
+                    "version": "0.21.0",
+                    "author": "Knot Tools",
+                    "tier": "migration"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Overview",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Read-only analysis before Dolibarr upgrades — zero writes to your database."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Analysis",
+                        "kind": "list",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "label": "Read-only scans",
+                                    "value": "No database writes during analysis."
+                                },
+                                {
+                                    "label": "32 Dolibarr versions",
+                                    "value": "Supported from 18 to 23 at launch."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "screenshots",
+                        "label": "Screenshots",
+                        "kind": "screenshots",
+                        "visible": false,
+                        "props": {
+                            "images": [
+                                {
+                                    "src": "https://cdn.knot.tools/marketplace/migration-mission-control.png",
+                                    "alt": "Mission Control"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "templatePages": {
+            "invoice-reminder": {
+                "hero": {
+                    "tagline": "Automated invoice reminder workflow.",
+                    "version": "1.0.0",
+                    "author": "Knot Tools",
+                    "tier": "core"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Overview",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Send polite payment reminders from Dolibarr invoices."
+                        }
+                    },
+                    {
+                        "id": "templates",
+                        "label": "Templates",
+                        "kind": "templates",
+                        "visible": true,
+                        "props": {
+                            "slugs": [
+                                "invoice-reminder"
+                            ],
+                            "query": {
+                                "sort": "recent"
+                            }
+                        }
+                    }
+                ],
+                "prerequisites": {
+                    "items": [
+                        {
+                            "title": "Knot Core 2.13+",
+                            "description": "Workflow engine with email connector.",
+                            "icon": "check-circle-2"
+                        }
+                    ]
+                },
+                "useCases": {
+                    "items": [
+                        {
+                            "title": "Accounts receivable",
+                            "description": "Reduce overdue invoices with timed nudges.",
+                            "icon": "mail"
+                        }
+                    ]
+                }
+            }
+        },
+        "sidebar": {
+            "badge": {
+                "label": "New",
+                "variant": "info",
+                "ariaLabel": "Recent marketplace content",
+                "hasUnread": false
+            }
+        }
+    },
+    "es": {
+        "version": 2,
+        "meta": {
+            "killSwitch": false,
+            "updatedAt": "2026-05-25T10:00:00Z"
+        },
+        "taxonomy": {
+            "categories": [
+                {
+                    "slug": "packs",
+                    "label": "Packs",
+                    "icon": "package",
+                    "color": "#6366f1"
+                },
+                {
+                    "slug": "templates",
+                    "label": "Plantillas",
+                    "icon": "workflow",
+                    "color": "#0ea5e9"
+                },
+                {
+                    "slug": "migration",
+                    "label": "Migración",
+                    "icon": "refresh-cw",
+                    "color": "#f59e0b"
+                }
+            ]
+        },
+        "home": {
+            "spotlight": {
+                "title": "Destacados",
+                "items": [
+                    {
+                        "kind": "pack",
+                        "slug": "knot-pro-pack",
+                        "tagline": "Conectores avanzados, cuotas ampliadas y actualizaciones firmadas para Dolibarr.",
+                        "accent": "pro",
+                        "ctas": [
+                            {
+                                "label": "Pro Pack",
+                                "href": "https://knot.tools/pro-pack/"
+                            },
+                            {
+                                "label": "Pricing",
+                                "href": "https://knot.tools/pricing"
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "pack",
+                        "slug": "knot-migration",
+                        "tagline": "Análisis de solo lectura antes de actualizar Dolibarr — sin escrituras en la base.",
+                        "accent": "migration",
+                        "ctas": [
+                            {
+                                "label": "Migration",
+                                "href": "https://knot.tools/migration/"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "collections": [
+                {
+                    "slug": "recent-templates",
+                    "label": "Plantillas recientes",
+                    "query": {
+                        "sort": "recent"
+                    },
+                    "limit": 12
+                },
+                {
+                    "slug": "popular-templates",
+                    "label": "Populares esta semana",
+                    "query": {
+                        "sort": "popular"
+                    },
+                    "limit": 8
+                },
+                {
+                    "slug": "pro-picks",
+                    "label": "Selección Pro",
+                    "query": {
+                        "sort": "popular",
+                        "category": "packs"
+                    },
+                    "limit": 6
+                }
+            ]
+        },
+        "productPages": {
+            "knot-pro-pack": {
+                "hero": {
+                    "tagline": "Conectores avanzados, cuotas ampliadas y actualizaciones firmadas para Dolibarr.",
+                    "version": "2.13.7",
+                    "author": "Knot Tools",
+                    "tier": "pro"
+                },
+                "pricing": {
+                    "label": "Pro Pack",
+                    "amount": "19.90 EUR",
+                    "period": "month",
+                    "href": "https://license.knot.tools/",
+                    "features": [
+                        "Advanced SaaS connectors",
+                        "Signed ZIP updates",
+                        "Priority support"
+                    ]
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Resumen",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Conectores avanzados, cuotas ampliadas y actualizaciones firmadas para Dolibarr."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Funciones",
+                        "kind": "features",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "title": "Connectors",
+                                    "description": "Slack, HTTP, AI and more.",
+                                    "icon": "slack"
+                                },
+                                {
+                                    "title": "Signed updates",
+                                    "description": "Ed25519 verified releases.",
+                                    "icon": "shield"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "changelog",
+                        "label": "Registro",
+                        "kind": "changelog",
+                        "visible": true,
+                        "props": {
+                            "entries": [
+                                {
+                                    "version": "2.13.7",
+                                    "date": "2026-05",
+                                    "notes": "Marketplace editorial schema v2."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "knot-migration": {
+                "hero": {
+                    "tagline": "Análisis de solo lectura antes de actualizar Dolibarr — sin escrituras en la base.",
+                    "version": "0.21.0",
+                    "author": "Knot Tools",
+                    "tier": "migration"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Presentación",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Análisis de solo lectura antes de actualizar Dolibarr — sin escrituras en la base."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Análisis",
+                        "kind": "list",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "label": "Read-only scans",
+                                    "value": "No database writes during analysis."
+                                },
+                                {
+                                    "label": "32 Dolibarr versions",
+                                    "value": "Supported from 18 to 23 at launch."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "screenshots",
+                        "label": "Screenshots",
+                        "kind": "screenshots",
+                        "visible": false,
+                        "props": {
+                            "images": [
+                                {
+                                    "src": "https://cdn.knot.tools/marketplace/migration-mission-control.png",
+                                    "alt": "Mission Control"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "templatePages": {
+            "invoice-reminder": {
+                "hero": {
+                    "tagline": "Automated invoice reminder workflow.",
+                    "version": "1.0.0",
+                    "author": "Knot Tools",
+                    "tier": "core"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Resumen",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Send polite payment reminders from Dolibarr invoices."
+                        }
+                    },
+                    {
+                        "id": "templates",
+                        "label": "Plantillas",
+                        "kind": "templates",
+                        "visible": true,
+                        "props": {
+                            "slugs": [
+                                "invoice-reminder"
+                            ],
+                            "query": {
+                                "sort": "recent"
+                            }
+                        }
+                    }
+                ],
+                "prerequisites": {
+                    "items": [
+                        {
+                            "title": "Knot Core 2.13+",
+                            "description": "Workflow engine with email connector.",
+                            "icon": "check-circle-2"
+                        }
+                    ]
+                },
+                "useCases": {
+                    "items": [
+                        {
+                            "title": "Accounts receivable",
+                            "description": "Reduce overdue invoices with timed nudges.",
+                            "icon": "mail"
+                        }
+                    ]
+                }
+            }
+        },
+        "sidebar": {
+            "badge": {
+                "label": "Nuevo",
+                "variant": "info",
+                "ariaLabel": "Contenido reciente del marketplace",
+                "hasUnread": false
+            }
+        }
+    },
+    "it": {
+        "version": 2,
+        "meta": {
+            "killSwitch": false,
+            "updatedAt": "2026-05-25T10:00:00Z"
+        },
+        "taxonomy": {
+            "categories": [
+                {
+                    "slug": "packs",
+                    "label": "Pack",
+                    "icon": "package",
+                    "color": "#6366f1"
+                },
+                {
+                    "slug": "templates",
+                    "label": "Modelli",
+                    "icon": "workflow",
+                    "color": "#0ea5e9"
+                },
+                {
+                    "slug": "migration",
+                    "label": "Migrazione",
+                    "icon": "refresh-cw",
+                    "color": "#f59e0b"
+                }
+            ]
+        },
+        "home": {
+            "spotlight": {
+                "title": "In evidenza",
+                "items": [
+                    {
+                        "kind": "pack",
+                        "slug": "knot-pro-pack",
+                        "tagline": "Connettori avanzati, quote estese e aggiornamenti firmati per Dolibarr.",
+                        "accent": "pro",
+                        "ctas": [
+                            {
+                                "label": "Pro Pack",
+                                "href": "https://knot.tools/pro-pack/"
+                            },
+                            {
+                                "label": "Pricing",
+                                "href": "https://knot.tools/pricing"
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "pack",
+                        "slug": "knot-migration",
+                        "tagline": "Analisi read-only prima degli upgrade Dolibarr — zero scritture sul database.",
+                        "accent": "migration",
+                        "ctas": [
+                            {
+                                "label": "Migration",
+                                "href": "https://knot.tools/migration/"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "collections": [
+                {
+                    "slug": "recent-templates",
+                    "label": "Modelli recenti",
+                    "query": {
+                        "sort": "recent"
+                    },
+                    "limit": 12
+                },
+                {
+                    "slug": "popular-templates",
+                    "label": "Popolari questa settimana",
+                    "query": {
+                        "sort": "popular"
+                    },
+                    "limit": 8
+                },
+                {
+                    "slug": "pro-picks",
+                    "label": "Scelti Pro",
+                    "query": {
+                        "sort": "popular",
+                        "category": "packs"
+                    },
+                    "limit": 6
+                }
+            ]
+        },
+        "productPages": {
+            "knot-pro-pack": {
+                "hero": {
+                    "tagline": "Connettori avanzati, quote estese e aggiornamenti firmati per Dolibarr.",
+                    "version": "2.13.7",
+                    "author": "Knot Tools",
+                    "tier": "pro"
+                },
+                "pricing": {
+                    "label": "Pro Pack",
+                    "amount": "19.90 EUR",
+                    "period": "month",
+                    "href": "https://license.knot.tools/",
+                    "features": [
+                        "Advanced SaaS connectors",
+                        "Signed ZIP updates",
+                        "Priority support"
+                    ]
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Panoramica",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Connettori avanzati, quote estese e aggiornamenti firmati per Dolibarr."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Funzionalità",
+                        "kind": "features",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "title": "Connectors",
+                                    "description": "Slack, HTTP, AI and more.",
+                                    "icon": "slack"
+                                },
+                                {
+                                    "title": "Signed updates",
+                                    "description": "Ed25519 verified releases.",
+                                    "icon": "shield"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "changelog",
+                        "label": "Changelog",
+                        "kind": "changelog",
+                        "visible": true,
+                        "props": {
+                            "entries": [
+                                {
+                                    "version": "2.13.7",
+                                    "date": "2026-05",
+                                    "notes": "Marketplace editorial schema v2."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "knot-migration": {
+                "hero": {
+                    "tagline": "Analisi read-only prima degli upgrade Dolibarr — zero scritture sul database.",
+                    "version": "0.21.0",
+                    "author": "Knot Tools",
+                    "tier": "migration"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Panoramica",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Analisi read-only prima degli upgrade Dolibarr — zero scritture sul database."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Analisi",
+                        "kind": "list",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "label": "Read-only scans",
+                                    "value": "No database writes during analysis."
+                                },
+                                {
+                                    "label": "32 Dolibarr versions",
+                                    "value": "Supported from 18 to 23 at launch."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "screenshots",
+                        "label": "Screenshots",
+                        "kind": "screenshots",
+                        "visible": false,
+                        "props": {
+                            "images": [
+                                {
+                                    "src": "https://cdn.knot.tools/marketplace/migration-mission-control.png",
+                                    "alt": "Mission Control"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "templatePages": {
+            "invoice-reminder": {
+                "hero": {
+                    "tagline": "Automated invoice reminder workflow.",
+                    "version": "1.0.0",
+                    "author": "Knot Tools",
+                    "tier": "core"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Panoramica",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Send polite payment reminders from Dolibarr invoices."
+                        }
+                    },
+                    {
+                        "id": "templates",
+                        "label": "Modelli",
+                        "kind": "templates",
+                        "visible": true,
+                        "props": {
+                            "slugs": [
+                                "invoice-reminder"
+                            ],
+                            "query": {
+                                "sort": "recent"
+                            }
+                        }
+                    }
+                ],
+                "prerequisites": {
+                    "items": [
+                        {
+                            "title": "Knot Core 2.13+",
+                            "description": "Workflow engine with email connector.",
+                            "icon": "check-circle-2"
+                        }
+                    ]
+                },
+                "useCases": {
+                    "items": [
+                        {
+                            "title": "Accounts receivable",
+                            "description": "Reduce overdue invoices with timed nudges.",
+                            "icon": "mail"
+                        }
+                    ]
+                }
+            }
+        },
+        "sidebar": {
+            "badge": {
+                "label": "Nuovo",
+                "variant": "info",
+                "ariaLabel": "Contenuti marketplace recenti",
+                "hasUnread": false
+            }
+        }
+    },
+    "de": {
+        "version": 2,
+        "meta": {
+            "killSwitch": false,
+            "updatedAt": "2026-05-25T10:00:00Z"
+        },
+        "taxonomy": {
+            "categories": [
+                {
+                    "slug": "packs",
+                    "label": "Pakete",
+                    "icon": "package",
+                    "color": "#6366f1"
+                },
+                {
+                    "slug": "templates",
+                    "label": "Vorlagen",
+                    "icon": "workflow",
+                    "color": "#0ea5e9"
+                },
+                {
+                    "slug": "migration",
+                    "label": "Migration",
+                    "icon": "refresh-cw",
+                    "color": "#f59e0b"
+                }
+            ]
+        },
+        "home": {
+            "spotlight": {
+                "title": "Im Fokus",
+                "items": [
+                    {
+                        "kind": "pack",
+                        "slug": "knot-pro-pack",
+                        "tagline": "Erweiterte Connectors, höhere Kontingente und signierte Updates für Dolibarr.",
+                        "accent": "pro",
+                        "ctas": [
+                            {
+                                "label": "Pro Pack",
+                                "href": "https://knot.tools/pro-pack/"
+                            },
+                            {
+                                "label": "Pricing",
+                                "href": "https://knot.tools/pricing"
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "pack",
+                        "slug": "knot-migration",
+                        "tagline": "Read-only-Analyse vor Dolibarr-Upgrades — keine Schreibzugriffe auf die Datenbank.",
+                        "accent": "migration",
+                        "ctas": [
+                            {
+                                "label": "Migration",
+                                "href": "https://knot.tools/migration/"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "collections": [
+                {
+                    "slug": "recent-templates",
+                    "label": "Neue Vorlagen",
+                    "query": {
+                        "sort": "recent"
+                    },
+                    "limit": 12
+                },
+                {
+                    "slug": "popular-templates",
+                    "label": "Beliebt diese Woche",
+                    "query": {
+                        "sort": "popular"
+                    },
+                    "limit": 8
+                },
+                {
+                    "slug": "pro-picks",
+                    "label": "Pro-Auswahl",
+                    "query": {
+                        "sort": "popular",
+                        "category": "packs"
+                    },
+                    "limit": 6
+                }
+            ]
+        },
+        "productPages": {
+            "knot-pro-pack": {
+                "hero": {
+                    "tagline": "Erweiterte Connectors, höhere Kontingente und signierte Updates für Dolibarr.",
+                    "version": "2.13.7",
+                    "author": "Knot Tools",
+                    "tier": "pro"
+                },
+                "pricing": {
+                    "label": "Pro Pack",
+                    "amount": "19.90 EUR",
+                    "period": "month",
+                    "href": "https://license.knot.tools/",
+                    "features": [
+                        "Advanced SaaS connectors",
+                        "Signed ZIP updates",
+                        "Priority support"
+                    ]
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Überblick",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Erweiterte Connectors, höhere Kontingente und signierte Updates für Dolibarr."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Funktionen",
+                        "kind": "features",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "title": "Connectors",
+                                    "description": "Slack, HTTP, AI and more.",
+                                    "icon": "slack"
+                                },
+                                {
+                                    "title": "Signed updates",
+                                    "description": "Ed25519 verified releases.",
+                                    "icon": "shield"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "changelog",
+                        "label": "Changelog",
+                        "kind": "changelog",
+                        "visible": true,
+                        "props": {
+                            "entries": [
+                                {
+                                    "version": "2.13.7",
+                                    "date": "2026-05",
+                                    "notes": "Marketplace editorial schema v2."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "knot-migration": {
+                "hero": {
+                    "tagline": "Read-only-Analyse vor Dolibarr-Upgrades — keine Schreibzugriffe auf die Datenbank.",
+                    "version": "0.21.0",
+                    "author": "Knot Tools",
+                    "tier": "migration"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Überblick",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Read-only-Analyse vor Dolibarr-Upgrades — keine Schreibzugriffe auf die Datenbank."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Analyse",
+                        "kind": "list",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "label": "Read-only scans",
+                                    "value": "No database writes during analysis."
+                                },
+                                {
+                                    "label": "32 Dolibarr versions",
+                                    "value": "Supported from 18 to 23 at launch."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "screenshots",
+                        "label": "Screenshots",
+                        "kind": "screenshots",
+                        "visible": false,
+                        "props": {
+                            "images": [
+                                {
+                                    "src": "https://cdn.knot.tools/marketplace/migration-mission-control.png",
+                                    "alt": "Mission Control"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "templatePages": {
+            "invoice-reminder": {
+                "hero": {
+                    "tagline": "Automated invoice reminder workflow.",
+                    "version": "1.0.0",
+                    "author": "Knot Tools",
+                    "tier": "core"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Überblick",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Send polite payment reminders from Dolibarr invoices."
+                        }
+                    },
+                    {
+                        "id": "templates",
+                        "label": "Vorlagen",
+                        "kind": "templates",
+                        "visible": true,
+                        "props": {
+                            "slugs": [
+                                "invoice-reminder"
+                            ],
+                            "query": {
+                                "sort": "recent"
+                            }
+                        }
+                    }
+                ],
+                "prerequisites": {
+                    "items": [
+                        {
+                            "title": "Knot Core 2.13+",
+                            "description": "Workflow engine with email connector.",
+                            "icon": "check-circle-2"
+                        }
+                    ]
+                },
+                "useCases": {
+                    "items": [
+                        {
+                            "title": "Accounts receivable",
+                            "description": "Reduce overdue invoices with timed nudges.",
+                            "icon": "mail"
+                        }
+                    ]
+                }
+            }
+        },
+        "sidebar": {
+            "badge": {
+                "label": "Neu",
+                "variant": "info",
+                "ariaLabel": "Neue Marketplace-Inhalte",
+                "hasUnread": false
+            }
+        }
+    },
+    "pt": {
+        "version": 2,
+        "meta": {
+            "killSwitch": false,
+            "updatedAt": "2026-05-25T10:00:00Z"
+        },
+        "taxonomy": {
+            "categories": [
+                {
+                    "slug": "packs",
+                    "label": "Packs",
+                    "icon": "package",
+                    "color": "#6366f1"
+                },
+                {
+                    "slug": "templates",
+                    "label": "Modelos",
+                    "icon": "workflow",
+                    "color": "#0ea5e9"
+                },
+                {
+                    "slug": "migration",
+                    "label": "Migração",
+                    "icon": "refresh-cw",
+                    "color": "#f59e0b"
+                }
+            ]
+        },
+        "home": {
+            "spotlight": {
+                "title": "Destaques",
+                "items": [
+                    {
+                        "kind": "pack",
+                        "slug": "knot-pro-pack",
+                        "tagline": "Conectores avançados, quotas alargadas e atualizações assinadas para Dolibarr.",
+                        "accent": "pro",
+                        "ctas": [
+                            {
+                                "label": "Pro Pack",
+                                "href": "https://knot.tools/pro-pack/"
+                            },
+                            {
+                                "label": "Pricing",
+                                "href": "https://knot.tools/pricing"
+                            }
+                        ]
+                    },
+                    {
+                        "kind": "pack",
+                        "slug": "knot-migration",
+                        "tagline": "Análise read-only antes de upgrades Dolibarr — zero escrita na base de dados.",
+                        "accent": "migration",
+                        "ctas": [
+                            {
+                                "label": "Migration",
+                                "href": "https://knot.tools/migration/"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "collections": [
+                {
+                    "slug": "recent-templates",
+                    "label": "Modelos recentes",
+                    "query": {
+                        "sort": "recent"
+                    },
+                    "limit": 12
+                },
+                {
+                    "slug": "popular-templates",
+                    "label": "Populares esta semana",
+                    "query": {
+                        "sort": "popular"
+                    },
+                    "limit": 8
+                },
+                {
+                    "slug": "pro-picks",
+                    "label": "Escolhas Pro",
+                    "query": {
+                        "sort": "popular",
+                        "category": "packs"
+                    },
+                    "limit": 6
+                }
+            ]
+        },
+        "productPages": {
+            "knot-pro-pack": {
+                "hero": {
+                    "tagline": "Conectores avançados, quotas alargadas e atualizações assinadas para Dolibarr.",
+                    "version": "2.13.7",
+                    "author": "Knot Tools",
+                    "tier": "pro"
+                },
+                "pricing": {
+                    "label": "Pro Pack",
+                    "amount": "19.90 EUR",
+                    "period": "month",
+                    "href": "https://license.knot.tools/",
+                    "features": [
+                        "Advanced SaaS connectors",
+                        "Signed ZIP updates",
+                        "Priority support"
+                    ]
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Visão geral",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Conectores avançados, quotas alargadas e atualizações assinadas para Dolibarr."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Funcionalidades",
+                        "kind": "features",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "title": "Connectors",
+                                    "description": "Slack, HTTP, AI and more.",
+                                    "icon": "slack"
+                                },
+                                {
+                                    "title": "Signed updates",
+                                    "description": "Ed25519 verified releases.",
+                                    "icon": "shield"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "changelog",
+                        "label": "Registo",
+                        "kind": "changelog",
+                        "visible": true,
+                        "props": {
+                            "entries": [
+                                {
+                                    "version": "2.13.7",
+                                    "date": "2026-05",
+                                    "notes": "Marketplace editorial schema v2."
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "knot-migration": {
+                "hero": {
+                    "tagline": "Análise read-only antes de upgrades Dolibarr — zero escrita na base de dados.",
+                    "version": "0.21.0",
+                    "author": "Knot Tools",
+                    "tier": "migration"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Apresentação",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Análise read-only antes de upgrades Dolibarr — zero escrita na base de dados."
+                        }
+                    },
+                    {
+                        "id": "features",
+                        "label": "Análise",
+                        "kind": "list",
+                        "visible": true,
+                        "props": {
+                            "items": [
+                                {
+                                    "label": "Read-only scans",
+                                    "value": "No database writes during analysis."
+                                },
+                                {
+                                    "label": "32 Dolibarr versions",
+                                    "value": "Supported from 18 to 23 at launch."
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "screenshots",
+                        "label": "Screenshots",
+                        "kind": "screenshots",
+                        "visible": false,
+                        "props": {
+                            "images": [
+                                {
+                                    "src": "https://cdn.knot.tools/marketplace/migration-mission-control.png",
+                                    "alt": "Mission Control"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "templatePages": {
+            "invoice-reminder": {
+                "hero": {
+                    "tagline": "Automated invoice reminder workflow.",
+                    "version": "1.0.0",
+                    "author": "Knot Tools",
+                    "tier": "core"
+                },
+                "tabs": [
+                    {
+                        "id": "overview",
+                        "label": "Visão geral",
+                        "kind": "richtext",
+                        "visible": true,
+                        "props": {
+                            "body": "Send polite payment reminders from Dolibarr invoices."
+                        }
+                    },
+                    {
+                        "id": "templates",
+                        "label": "Modelos",
+                        "kind": "templates",
+                        "visible": true,
+                        "props": {
+                            "slugs": [
+                                "invoice-reminder"
+                            ],
+                            "query": {
+                                "sort": "recent"
+                            }
+                        }
+                    }
+                ],
+                "prerequisites": {
+                    "items": [
+                        {
+                            "title": "Knot Core 2.13+",
+                            "description": "Workflow engine with email connector.",
+                            "icon": "check-circle-2"
+                        }
+                    ]
+                },
+                "useCases": {
+                    "items": [
+                        {
+                            "title": "Accounts receivable",
+                            "description": "Reduce overdue invoices with timed nudges.",
+                            "icon": "mail"
+                        }
+                    ]
+                }
+            }
+        },
+        "sidebar": {
+            "badge": {
+                "label": "Novo",
+                "variant": "info",
+                "ariaLabel": "Conteúdo recente do marketplace",
+                "hasUnread": false
+            }
+        }
+    }
+}

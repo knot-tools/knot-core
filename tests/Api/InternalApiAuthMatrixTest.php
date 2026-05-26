@@ -57,6 +57,8 @@ final class InternalApiAuthMatrixTest extends TestCase
         'license_download_token.php' => ['expect_csrf_verify' => true],
         'license_status.php' => [],
         'marketplace.php' => [],
+        'marketplace_stats.php' => [],
+        'marketplace_track.php' => ['expect_csrf_verify' => true],
         'metrics.php' => ['allows_nologin' => true],
         'migration_scan.php' => [],
         'oauth.php' => ['note' => 'OAuth start/callback uses state secret and GETPOST; CSRF guard differs from Knot JSON POST mutators.'],

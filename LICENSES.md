@@ -52,6 +52,10 @@ Avant d'ajouter toute dependance npm ou composer :
 | globals (npm) | Version lockee dans `frontend/package-lock.json` | MIT | Dev frontend | https://github.com/sindresorhus/globals | Globals navigateur pour ESLint |
 | phpstan/phpstan | ^2.1 (composer.lock) | MIT | Dev PHP | https://github.com/phpstan/phpstan | Analyse statique L6 (CI non bloquante tant que dette > 0) |
 | @axe-core/playwright | Version lockee dans `tests/e2e/package-lock.json` | MPL-2.0 | Dev E2E | https://github.com/dequelabs/axe-core-npm | Audits a11y Playwright (specs `a11y-critical-screens`) |
+| vitest-axe | Version lockee dans `frontend/package-lock.json` | MIT | Dev frontend | https://github.com/chaance/vitest-axe | Matchers axe pour Vitest (specs Marketplace a11y) |
+| rollup-plugin-visualizer | Version lockee dans `frontend/package-lock.json` | MIT | Dev frontend | https://github.com/btd/rollup-plugin-visualizer | Graphe bundle Rollup lorsque `ANALYZE=1` |
+
+`vitest-axe` tire **`axe-core` (MPL-2.0)** en transitive — même famille que **`@axe-core/playwright`** (déjà tracée) ; réservé aux tests développeurs, pas livré comme runtime Dolibarr.
 
 ## Notes
 

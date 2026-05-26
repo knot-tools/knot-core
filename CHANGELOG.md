@@ -7,7 +7,144 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
-## [2.13.7] - 2026-05-25
+## [2.13.8] — 2026-05-26
+
+### Fixed — Marketplace UX polish
+
+- **Pricing hidden when no price defined.** `ProductDetailLayout.vue` previously rendered a
+  fallback pricing card showing **"—"** for any pack without `priceMonthlyCents` /
+  `priceYearlyCents`. Knot Pro Pack and Knot Migration pages now render no pricing column at
+  all when the editorial JSON omits the `pricing` block, instead of a placeholder. Triggered
+  by the editorial `pricing` removal on `license.knot.tools` (Knot Pro Pack / Migration).
+- **Tier badge contrast WCAG 2.2 AA.** `MarketplaceSpotlight.vue` was passing
+  `tone="info"` to `SignalBadge` regardless of tier (giving `#0ea5e9` on `#f0f9ff` =
+  **2.60:1**, failing AA). New `tierTone` mapping (`pro/enterprise → premium`,
+  `migration → success`, `core/free → info`, `beta/new → warning`) and three new tokens
+  (`--knot-color-{info,success,warning}-strong`) bring every badge to **≥ 4.68:1 in light**
+  and **≥ 7.19:1 in dark**. Full ratio table in `docs/design-system.md`.
+
+### Added — Audits
+
+- **Bundle composition tracked** (top 25 buckets, `vite-bundle-visualizer` treemap in
+  `dist/bundle-stats.html`): `src/views` 25.8%, `src/i18n` 21.2%, `@vue-flow/core` 11.7%,
+  `src/components` 10.3%, `@vue/runtime-core` 6.1%. No lodash/moment/dayjs accidentally
+  bundled — total 2.59 MB pre-gzip, 474 kB gzipped.
+- **WCAG measurement table** in `docs/design-system.md` for the 5 SignalBadge tones × 2 modes.
+
+### Added — Marketplace UX refoundation (schema v2)
+
+- **Editorial schema v2:** structured home (`spotlight`, `collections`), product/template pages
+  (`hero`, `pricing`, `tabs[]`), taxonomy — canonical docs
+  **`docs/marketplace-editorial-schema.md`** + JSON Schema; **`version: 2`** enforced by
+  **`EditorialValidator`** (Core + license).
+- **Block-driven Vue shell:** `MarketplaceShell`, `BlockRenderer`, extended hash routes
+  (`#/product/`, `#/template/`, `#/news/`, `#/category/`, `#/collection/`, `#/search`) via
+  **`useMarketplaceRoute`**; detail layouts + drawer; **`home_discovery`** for v2 home.
+- **Operator runbooks:** **`docs/runbooks/marketplace-monitoring.md`** (editorial-meta probe every
+  5 min, stale > 7d, payload > 200 KB, **`license/bin/monitor_editorial.sh`**),
+  **`marketplace-incident.md`**, **`marketplace-rollback.md`**.
+- **Docs:** Marketplace UX patterns in **`docs/design-system.md`**; shell + routes in
+  **`docs/frontend-architecture.md`**; full smoke journey in **`docs/marketplace-manual-qa.md`**.
+
+### Changed — Marketplace (P1a)
+
+- **Home routing v2 priority:** `editorialLayoutForRoute` and `EditorialMerger` prefer
+  `spotlight` / `collections` over legacy `home.layout` (fixes stale-cache teaser-only home).
+- **Shell wired:** `MarketplaceTopBar`, `MarketplaceSearchBar` (autocomplete + recent queries),
+  `MarketplaceBreadcrumb`, `MarketplaceFilterChips` mounted in `MarketplaceShell`.
+- **Collections query resolver:** `resolveCollectionCards()` drives `MarketplaceCuratedRow` from
+  editorial `query.sort` / `category` / `limit` (license v2 JSON).
+- **Asset cache bust:** `preview.php` appends `?v={Knot version}` on `knot-app.js` bundles.
+
+- **Public UI links:** `frontend/src/lib/marketplaceLinks.ts` centralises knot.tools URLs
+  (product pages `/pro-pack/`, `/migration/`, beta `/beta/?products=…`, Core download
+  `/downloads/knot-core/latest`). Editorial and catalog CTAs pass through
+  `sanitizeMarketplaceHref()` — no clickable Marketplace link targets `license.knot.tools`.
+- **`editorial-fallback.json`** and marketplace i18n strings updated to match knot.tools
+  product pages and beta programme wording.
+- **`CatalogCache`:** catalog snapshot TTL uses **±10% symmetric jitter** around the 6h base
+  TTL (still persisted per row as `ttlSeconds`) to spread refetch waves.
+
+### Added — Marketplace (P1a)
+
+- Block-driven storefront: **`storefront_tabs`** block (Packs / Templates / Bundled tabs)
+  replaces removed **`legacy_catalog`**; enriched **`editorial-fallback.json`** home layout
+  (ecosystem cards, compare plans, FAQ) and product pages (Pro Pack, Migration).
+- **`MarketplacePromoArt.vue`** — bundled SVG illustration when CDN images are unavailable;
+  editorial fallback no longer references unresolved `cdn.knot.tools` assets.
+- **`HighlightBlock.vue`** registered in block registry; Hero, Banner, and Ecosystem blocks
+  honour editorial props (CTA, items[], promo strip).
+- Editorial pipeline for Knot Marketplace: bundled `data/marketplace/editorial-fallback.json`,
+  (`marketplace.catalog_cache.{lang}`) with jittered TTL, `EditorialMerger` / `EditorialValidator`,
+  `SidebarBadge` helper, unified `api/marketplace.php` response fields `editorial` and `sidebarBadge`.
+- **`EditorialMerger::remoteBlockedByKillSwitch`** + guard in **`api/marketplace.php`** so cached
+  overlays carrying **`meta.killSwitch: true`** never replace bundled fallback client-side (defense
+  in depth with license `EditorialLoader`).
+- **`POST /api/marketplace_track.php`** — whitelist-only Marketplace telemetry (`cta_click`,
+  `template_instantiated`, `product_page_visit`, `news_visit`, `banner_dismissed`) persisted to
+  `llx_knot_audit_log` as `marketplace.track`, gated by **`ApiAuth`** + CSRF +
+  **`RateLimiter` 60 req/min/user**.
+- **`workflows/preview.php`** emits a tightened **Content-Security-Policy** meta tag when
+  **`mode=marketplace`**.
+- **`frontend/scripts/i18n-check.mjs`** + **`npm run i18n-check`** — `marketplace.*` key parity vs
+  **`en_US.json`** for `fr_FR`, `es_ES`, `de_DE`, `it_IT`, `pt_PT`.
+- **`KNOT_MARKETPLACE_PREVIEW_TOKEN`**: **`CatalogClientFactory`** forwards Dolibarr global into
+  **`CatalogClient`** so fetches hit **`/api/catalog-preview.json?token=…`** instead of **`catalog.json`**.
+- **`MarketplaceUnavailable`** emits **`retry`** + external pricing link; **`MarketplaceEmptyState`**
+  for storefront/tab empty views; **`ComparePlansBlock`** accordion layout below **`md`**.
+- **`EditorialMerger`**: **`templatePages`** / **`newsPages`** slug merge (same rules as **`productPages`**).
+- **`EditorialValidator`**: **`LUCIDE_ICON_WHITELIST`** gates optional **`icon`** on editorial blocks.
+- **`docs/marketplace-manual-qa.md`**; **`docs/marketplace-release-checklist.md`** (automated gate +
+  operator sign-off); schema doc (**`useMarketplaceRoute` ↔ `BlockRenderer`**,
+  **versioning procedure**, **`icon`** notes); **`docs/design-system.md`** Marketplace emoji convention.
+- **`docs/marketplace-editorial-schema.md`** + **`docs/marketplace-editorial-schema.json`**
+  (Draft-07 narrative schema), **`docs/admin-guide/marketplace.md`** operator checklist, &
+  **`docs/extensibility.md`** Marketplace block-driven subsection.
+- **Design tokens**: `--k-shadow-knot-premium`, `--k-radius-knot-lg`, typography helpers
+  **`.k-display-1`** / **`.k-display-2`**, **`frontend/src/styles/knot-tokens.css`** re-export.
+
+### Changed — Marketplace (P2)
+
+- Editorial root allow-list: stray top-level keys now fail **`root_unknown_key`**; schema **`version`**
+  must stay **`≤ 2`** (`3+` rejected until a coordinated bump).
+- **`EditorialMerger`**: overlays that introduce blocks with unknown **`type`** are ignored; patches that
+  would rewrite an existing **`id`** to an unsupported **`type`** fall back to the bundled fragment for
+  that slot (no partial merge poisoning).
+- Rich-text validation covers **`rich_text` / `richText`** bodies plus nested **`html`**, **`content`**,
+  **`excerpt`**, **`props`** string fields alongside legacy **`body`**.
+
+### Added — Marketplace (P4 prefetch + telemetry UX)
+
+- **`useMarketplacePrefetch`** composable wired from **`MarketplaceView`** plus hover targets on
+  **`EcosystemBlock`** and **`ProductCardBlock`** to warm heavyweight route bundles before navigation.
+- Admin-only **`api/marketplace_stats.php`** + **`MarketplaceStatsReader`** summarise Marketplace CTA /
+  storefront interactions (30 day aggregate) surfaced in **`admin/setup.php`** with new
+  **`KnotMarketplaceCtaAnalytics*`** strings across locales.
+- Bundled **`editorial-fallback.json`** carries **`rich_text`** bodies for multilingual news stubs
+  (`pro-pack-updates`, `core-security-practice`) in addition to the refresh article.
+
+### Added — Marketplace operator UX
+
+- **`CatalogClient::catalogFetchUrlForDiagnostics()`:** returns the effective GET URL used for
+  catalog fetches (public JSON vs **`/api/catalog-preview.json`** when
+  **`KNOT_MARKETPLACE_PREVIEW_TOKEN`** is set).
+- **i18n — Marketplace error chrome:** `marketplace.unavailableRetry` and
+  `marketplace.unavailableExternal` (six Core locales) for the unavailable / retry actions.
+
+### Added — Marketplace (P4 closure)
+
+- **`docs/marketplace-release-checklist.md`** — automated CI/local gate + operator sign-off before
+  Marketplace-heavy tags; manual matrix cross-linked from **`docs/marketplace-manual-qa.md`**.
+- **Playwright (`test-playwright/tests/marketplace.spec.ts`):** hash scroll-restore smoke and CSP
+  console silence on home → product journey.
+- **Mobile polish:** marketplace host bottom padding (sticky CTA safe area) and horizontal gallery
+  scroll-snap under **`640px`** in **`frontend/src/styles/index.css`**.
+
+### Deferred — Phase 5 (out of P1–P4 scope)
+
+- Auto-suggest template search heuristics and Twig admin form editor for editorial JSON on
+  `license.knot.tools` — tracked separately; edit JSON in git + **`validate_editorial.php`** for now.
+
 
 ### Added — i18n
 

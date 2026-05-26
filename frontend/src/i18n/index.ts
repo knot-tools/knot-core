@@ -13,6 +13,7 @@ import deDE from './de_DE.json';
 import esES from './es_ES.json';
 import itIT from './it_IT.json';
 import ptPT from './pt_PT.json';
+import { cspSafeMessageCompiler } from './cspSafeMessageCompiler';
 
 export type LocaleCode =
   | 'fr_FR'
@@ -64,6 +65,7 @@ function detectLocale(): LocaleCode {
 export const i18n = createI18n({
   legacy: false,
   globalInjection: true,
+  messageCompiler: cspSafeMessageCompiler,
   locale: detectLocale(),
   fallbackLocale: ['fr_FR', 'en_US'],
   messages: {

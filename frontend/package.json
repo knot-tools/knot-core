@@ -1,7 +1,7 @@
 {
   "name": "knot-frontend",
   "private": true,
-  "version": "2.13.7",
+  "version": "2.13.8",
   "description": "Knot frontend bundle — visual workflow editor for Dolibarr",
   "license": "GPL-3.0-or-later",
   "type": "module",
@@ -14,6 +14,7 @@
     "lint:i18n": "node scripts/lint-i18n.mjs",
     "lint:i18n:compile": "node scripts/lint-i18n-compile.mjs",
     "lint:i18n:loanwords": "node scripts/lint-i18n-loanwords.mjs",
+    "i18n-check": "node scripts/i18n-check.mjs",
     "audit:i18n:core": "node ../scripts/audit-i18n-fr-en.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -49,12 +50,14 @@
     "globals": "^17.6.0",
     "jsdom": "^29.1.0",
     "postcss": "^8.4.49",
+    "rollup-plugin-visualizer": "^7.0.1",
     "tailwindcss": "^3.4.15",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.59.1",
     "vite": "^8.0.13",
     "vitest": "^4.1.5",
+    "vitest-axe": "^0.1.0",
     "vue-eslint-parser": "^10.4.0",
     "vue-tsc": "^2.1.10"
   },

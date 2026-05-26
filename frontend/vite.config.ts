@@ -7,9 +7,25 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'node:path';
+import { visualizer } from 'rollup-plugin-visualizer';
+
+const analyze = process.env.ANALYZE === '1';
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    ...(analyze
+      ? [
+          visualizer({
+            filename: path.resolve(__dirname, '../dist/stats.html'),
+            gzipSize: true,
+            brotliSize: true,
+            open: false,
+            template: 'treemap',
+          }),
+        ]
+      : []),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

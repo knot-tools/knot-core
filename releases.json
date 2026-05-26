@@ -1,21 +1,19 @@
 {
-    "schema_version": "knot-core-releases@v1",
-    "latest": {
-        "version": "2.13.7",
-        "channel": "beta",
-        "published_at": "2026-05-25T18:23:20+00:00",
-        "zip_url": "https://knot.tools/downloads/knot-core/latest",
-        "zip_sha256": "71dfcb1d866b0eb9e67cbe2eb3bb98f32a55818378746fb3231ae579e822e000",
-        "signature_hex": "82f33d00faf44987d152533337c6f577c0a8c8f50d88bef3f412dc7f7bc5af9491afd8d30979c907e3f8549e9f5e9a356edf4339022006d8f2cd22b912d3a407",
-        "signature_payload": {
-            "channel": "beta",
-            "version": "2.13.7",
-            "zip_sha256": "71dfcb1d866b0eb9e67cbe2eb3bb98f32a55818378746fb3231ae579e822e000",
-            "zip_url": "https://knot.tools/downloads/knot-core/latest"
-        },
-        "zip_size_bytes": 1954671,
-        "signature_kid": "rel-2026-04"
-    },
-    "_comment": "Synced from knot-tools/core/releases.json on each Core release.",
-    "_docs": "https://github.com/knot-tools/knot-core/blob/main/docs/RELEASE.md"
+  "schema_version": "knot-core-releases@v1",
+  "latest": {
+    "version": "2.13.8",
+    "channel": "beta",
+    "published_at": "2026-05-26T05:50:13+00:00",
+    "zip_url": "https://knot.tools/downloads/knot-core/latest",
+    "zip_sha256": "7b6c7329a3b09f313ebcec33769d72507220fe1887eefff86327fda8e19f0290",
+    "signature_hex": "82f33d00faf44987d152533337c6f577c0a8c8f50d88bef3f412dc7f7bc5af9491afd8d30979c907e3f8549e9f5e9a356edf4339022006d8f2cd22b912d3a407",
+    "signature_payload": {
+      "channel": "beta",
+      "version": "2.13.7",
+      "zip_sha256": "71dfcb1d866b0eb9e67cbe2eb3bb98f32a55818378746fb3231ae579e822e000",
+      "zip_url": "https://knot.tools/downloads/knot-core/latest"
+    }
+  },
+  "_comment": "Synced from knot-tools/core/releases.json on each Core release.",
+  "_docs": "https://github.com/knot-tools/knot-core/blob/main/docs/RELEASE.md"
 }
