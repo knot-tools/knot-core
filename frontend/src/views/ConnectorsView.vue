@@ -283,7 +283,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="k-p-6 k-max-w-[1400px] k-mx-auto k-space-y-5">
+  <div class="knot-view-shell k-p-6 k-w-full k-max-w-[1400px] k-mx-auto k-space-y-5 k-min-w-0 k-overflow-x-clip">
     <header class="k-flex k-items-center k-justify-between k-gap-4">
       <div class="k-flex k-items-center k-gap-3">
         <div class="k-h-10 k-w-10 k-rounded-knot-sm k-bg-knot-accent-soft k-text-knot-accent k-flex k-items-center k-justify-center">
@@ -335,9 +335,9 @@ onMounted(() => {
 
     <template v-else>
       <ConnectorBuilderView v-show="mainTab === 'builder'" />
-      <div v-show="mainTab === 'catalog'" class="k-grid k-grid-cols-[320px_1fr] k-gap-5 k-min-h-[500px]">
+      <div v-show="mainTab === 'catalog'" class="knot-connectors-layout k-gap-5 k-min-h-[500px]" data-knot-test="knot-connectors-layout">
       <!-- Left list -->
-      <aside class="k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-md k-shadow-knot-sm k-flex k-flex-col k-min-h-0">
+      <aside class="knot-connectors-layout__pane k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-md k-shadow-knot-sm k-flex k-flex-col k-min-h-0 k-min-w-0">
         <div class="k-p-3 k-border-b k-border-knot-border k-space-y-2">
           <div class="k-relative">
             <Search :size="14" class="k-absolute k-left-3 k-top-1/2 k--translate-y-1/2 k-text-knot-text-soft" />
@@ -441,7 +441,7 @@ onMounted(() => {
         @close="deactivationTarget = null"
         @deactivated="onDeactivated"
       />
-      <section v-if="selected" class="k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-md k-shadow-knot-sm k-flex k-flex-col k-overflow-hidden">
+      <section v-if="selected" class="knot-connectors-layout__pane k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-md k-shadow-knot-sm k-flex k-flex-col k-overflow-hidden k-min-w-0">
         <header class="k-px-6 k-py-4 k-border-b k-border-knot-border k-flex k-items-center k-gap-4">
           <div
             class="k-h-12 k-w-12 k-rounded-knot-md k-flex k-items-center k-justify-center k-text-white k-shadow-knot-sm"

@@ -12,7 +12,9 @@ dol_include_once('/knot/class/autoload.php');
 use Knot\Api\CsrfGuard;
 use Knot\Api\JsonResponse;
 use Knot\Connectors\ConnectorRegistry;
+use Knot\Connectors\CredentialSchemaNormalizer;
 use Knot\Credentials\CredentialCipher;
+use Knot\Licensing\Bootstrap;
 use Knot\Repository\AuditLogRepository;
 use Knot\Repository\CredentialRepository;
 
@@ -201,12 +203,15 @@ function instanceSecret(): string
  */
 function credentialSchemaFor(string $connectorType, string $type): array
 {
+    global $db;
+
     $registry = new ConnectorRegistry();
-    $connectors = $registry->all();
+    $extensions = Bootstrap::buildExtensionRegistry($db);
+    $connectors = $registry->allWithExtensions($extensions);
     if (isset($connectors[$connectorType]) && is_callable([$connectors[$connectorType], 'getCredentialSchema'])) {
         $schema = $connectors[$connectorType]->{'getCredentialSchema'}();
         if (is_array($schema)) {
-            return $schema;
+            return CredentialSchemaNormalizer::normalize($schema) ?? defaultCredentialSchema($type);
         }
     }
 

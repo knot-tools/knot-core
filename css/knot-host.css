@@ -47,13 +47,64 @@ body.classlogin,
  * regardless of the surrounding shell.
  */
 
-body .knot-shell,
-body #knot-app,
-body .knot-engine-banner {
+/*
+ * Dolibarr eldy keeps #id-right as a narrow table-cell even when #id-left is
+ * hidden. margin-left alone on #knot-app inside .fiche then collapses the Vue
+ * host to 0px width (especially with container-type on #knot-app). Expand the
+ * host shell and assign explicit width beside the fixed Knot rail.
+ */
+body:has(.knot-nav) #id-container,
+body:has(.knot-nav) #id-right,
+body:has(.knot-nav) .fiche,
+body:has(.knot-nav) #id-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+}
+
+body:has(.knot-nav) #id-container,
+body.knot-host-page #id-container {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+body:has(.knot-nav) #id-right,
+body.knot-host-page #id-right {
+    display: block !important;
+    float: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    box-sizing: border-box;
+}
+
+body:has(.knot-nav) .fiche,
+body.knot-host-page .fiche {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/*
+ * Fixed rail is viewport-anchored (left: 0). Offset the Vue host with
+ * margin-left + explicit width — more reliable than #id-right padding when
+ * Dolibarr still reserves a few pixels for the hidden vmenu column.
+ */
+body:has(.knot-nav) .knot-shell,
+body:has(.knot-nav) #knot-app,
+body:has(.knot-nav) .knot-engine-banner,
+body.knot-host-page .knot-shell,
+body.knot-host-page #knot-app,
+body.knot-host-page .knot-engine-banner {
     margin-left: var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px)) !important;
     margin-right: 0 !important;
+    width: calc(100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px))) !important;
+    max-width: calc(100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px))) !important;
     min-width: 0;
-    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: clip;
 }
 
 body.knot-nav-collapsed {
@@ -62,7 +113,7 @@ body.knot-nav-collapsed {
 
 .knot-nav {
     position: fixed;
-    top: 60px; /* below Dolibarr top bar */
+    top: var(--knot-dolibarr-topbar-h, 50px);
     left: 0;
     bottom: 0;
     width: var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px));
@@ -430,8 +481,6 @@ html[data-marketplace-unread="true"]
 }
 
 .knot-nav__collapse {
-    margin: 8px 0 0;
-    align-self: flex-end;
     width: 28px;
     height: 28px;
     border-radius: 8px;
@@ -443,7 +492,8 @@ html[data-marketplace-unread="true"]
     align-items: center;
     justify-content: center;
     font-size: 12px;
-    flex-shrink: 0;
+    flex: 0 0 auto;
+    margin-left: auto;
 }
 
 .knot-nav__collapse:hover {
@@ -452,12 +502,59 @@ html[data-marketplace-unread="true"]
     border-color: var(--knot-color-primary);
 }
 
+.knot-nav__footer {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.knot-nav__exit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    min-width: 0;
+    flex: 0 0 auto;
+    width: auto;
+    max-width: calc(100% - 40px);
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 8px;
+    border: 1px solid var(--knot-color-border);
+    background: var(--knot-color-surface-soft);
+    color: var(--knot-color-text-muted) !important;
+    text-decoration: none !important;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background var(--knot-duration-fast) var(--knot-ease),
+                color var(--knot-duration-fast) var(--knot-ease),
+                border-color var(--knot-duration-fast) var(--knot-ease);
+}
+
+.knot-nav__exit:hover {
+    background: var(--knot-color-primary-soft);
+    color: var(--knot-color-primary-strong) !important;
+    border-color: var(--knot-color-primary);
+}
+
+.knot-nav__exit-label {
+    max-width: 9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .knot-nav.is-collapsed .knot-nav__brand-text,
 .knot-nav.is-collapsed .knot-nav__label,
 .knot-nav.is-collapsed .knot-nav__status-label,
 .knot-nav.is-collapsed .knot-nav__pro-badge,
 .knot-nav.is-collapsed .knot-nav__active-dot,
-.knot-nav.is-collapsed .knot-nav__badge {
+.knot-nav.is-collapsed .knot-nav__badge,
+.knot-nav.is-collapsed .knot-nav__exit-label {
     display: none !important;
 }
 
@@ -502,8 +599,7 @@ html[data-knot-density="dense"] .knot-nav__icon {
     50%      { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
 }
 
-/* ---------- Responsive: collapse the side rail on small screens ---------- */
-
+/* Side rail stacks horizontally at --knot-layout-breakpoint (880px), matching Vue @container rules. */
 @media (max-width: 880px) {
     .knot-nav {
         position: relative;
@@ -534,11 +630,26 @@ html[data-knot-density="dense"] .knot-nav__icon {
     .knot-nav__status {
         margin: 0;
     }
-    body .knot-shell,
-    body #knot-app,
-    body .knot-engine-banner {
+    .knot-nav__footer {
+        margin: 0 0 0 auto;
+        flex: 0 0 auto;
+    }
+    body:has(.knot-nav) #id-right,
+    body.knot-host-page #id-right {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    body:has(.knot-nav) .knot-shell,
+    body:has(.knot-nav) #knot-app,
+    body:has(.knot-nav) .knot-engine-banner,
+    body.knot-host-page .knot-shell,
+    body.knot-host-page #knot-app,
+    body.knot-host-page .knot-engine-banner {
         margin-left: 0 !important;
         margin-right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 }
 

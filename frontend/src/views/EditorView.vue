@@ -1135,10 +1135,10 @@ watch(workflowName, () => {
 </script>
 
 <template>
-  <div class="knot-editor-layout k-grid k-grid-cols-[260px_1fr_320px] k-h-full k-min-w-0 k-overflow-hidden" data-knot-test="knot-editor-layout">
+  <div class="knot-editor-layout k-h-full k-min-w-0 k-overflow-hidden" data-knot-test="knot-editor-layout">
     <!-- Sidebar -->
     <aside
-      class="k-bg-knot-surface k-border-r k-border-knot-border k-flex k-flex-col k-min-h-0"
+      class="knot-editor-layout__pane k-bg-knot-surface k-border-r k-border-knot-border k-flex k-flex-col k-min-h-0 k-min-w-0"
       data-knot-test="knot-editor-palette"
     >
       <div class="k-flex k-items-center k-gap-3 k-px-5 k-py-4 k-border-b k-border-knot-border">
@@ -1213,7 +1213,7 @@ watch(workflowName, () => {
     </aside>
 
     <!-- Canvas + toolbar -->
-    <main class="k-relative k-bg-knot-bg k-flex k-flex-col k-min-h-0 k-min-w-0">
+    <main class="knot-editor-layout__pane k-relative k-bg-knot-bg k-flex k-flex-col k-min-h-0 k-min-w-0">
       <!-- Top toolbar -->
       <div class="k-min-h-[3rem] k-px-3 lg:k-px-4 k-py-1.5 k-flex k-flex-wrap k-items-center k-justify-between k-gap-y-1 k-gap-x-2 k-bg-knot-surface k-border-b k-border-knot-border k-shadow-knot-xs k-z-10">
         <div class="k-flex k-items-center k-gap-1.5 k-min-w-0 k-flex-1">
@@ -1465,7 +1465,7 @@ watch(workflowName, () => {
     <aside
       v-if="!simResult"
       data-knot-test="knot-inspector-aside"
-      class="k-bg-knot-surface k-border-l k-border-knot-border k-flex k-flex-col k-min-h-0"
+      class="knot-editor-layout__pane k-bg-knot-surface k-border-l k-border-knot-border k-flex k-flex-col k-min-h-0 k-min-w-0"
     >
       <div class="k-px-5 k-py-4 k-border-b k-border-knot-border k-flex k-items-center k-gap-2">
         <Settings2 :size="16" class="k-text-knot-text-muted" />
@@ -1664,7 +1664,7 @@ watch(workflowName, () => {
 
     <aside
       v-else
-      class="k-bg-knot-surface k-border-l k-border-knot-border k-flex k-flex-col k-min-h-0"
+      class="knot-editor-layout__pane k-bg-knot-surface k-border-l k-border-knot-border k-flex k-flex-col k-min-h-0 k-min-w-0"
       data-knot-test="knot-simulation-aside"
     >
       <SimulationSidePanel

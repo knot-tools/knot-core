@@ -11,6 +11,7 @@ use Knot\Licensing\ForkDetector;
 use Knot\Licensing\InstanceBinder;
 use Knot\Licensing\LicenseCache;
 use Knot\Licensing\LicenseStatus;
+use Knot\Licensing\ManifestSignatureVerifier;
 use Knot\Licensing\OfflineGracePolicy;
 use Knot\Licensing\OfficialManifestSignatures;
 use Knot\Licensing\SignatureVerifier;
@@ -505,6 +506,34 @@ final class DolistoreValidatorTest extends TestCase
         self::assertCount(1, $client->calls);
     }
 
+    public function testCryptographicManifestSignatureAcceptsVersionNotInPinList(): void
+    {
+        $manifest = [
+            'id' => 'knot-pro-pack',
+            'version' => '9.9.9-not-pinned',
+            'license' => [
+                'type' => 'commercial',
+                'validation' => 'dolistore',
+                'productId' => '12345',
+            ],
+        ];
+        $manifest['license']['manifestSignature'] = $this->harness->signManifest($manifest);
+
+        $this->seedStaleActivationCache();
+        $client = new FakeDolistoreClient();
+        $client->setResponder(fn (array $params) => $this->signedResponse(
+            (string) ($params['instanceFingerprint'] ?? ''),
+            true,
+            '2027-04-29T00:00:00+00:00',
+        ));
+        $fork = new ForkDetector(['knot-pro-pack' => str_repeat('f', 128)]);
+        $validator = $this->makeValidator($client, null, $fork);
+
+        $status = $validator->inspect($manifest);
+
+        self::assertSame(LicenseStatus::VALID, $status->status);
+    }
+
     public function testPinnedExtensionRejectsMalformedManifestSignature(): void
     {
         $client = new FakeDolistoreClient();
@@ -556,6 +585,7 @@ final class DolistoreValidatorTest extends TestCase
             $deploymentToken,
             $deploymentNonce,
             null,
+            new ManifestSignatureVerifier(new SignatureVerifier([$this->harness->publicKeyHex()])),
         );
     }
 

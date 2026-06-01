@@ -101,6 +101,9 @@ export function validateWorkflow(
         nodeId: n.id,
       });
     }
+    if (type === 'dolibarr.sql_query') {
+      issues.push(...sqlQueryLintIssues(n.id, String(config.query ?? '')));
+    }
   }
 
   return issues;
@@ -108,4 +111,39 @@ export function validateWorkflow(
 
 export function hasCriticalErrors(issues: ValidationIssue[]): boolean {
   return issues.some((i) => i.severity === 'error');
+}
+
+const SQL_TYPO_TABLES: Record<string, string> = {
+  llx_propale: 'llx_propal',
+  llx_propales: 'llx_propal',
+  llx_thirdparty: 'llx_societe',
+  llx_proposal: 'llx_propal',
+};
+
+function sqlQueryLintIssues(nodeId: string, query: string): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  const trimmed = query.trim();
+  if (trimmed === '') {
+    return issues;
+  }
+  const matches = trimmed.matchAll(/\b(llx_[a-z0-9_]+)\b/gi);
+  const seen = new Set<string>();
+  for (const match of matches) {
+    const table = String(match[1] ?? '').toLowerCase();
+    if (seen.has(table)) {
+      continue;
+    }
+    seen.add(table);
+    const hint = SQL_TYPO_TABLES[table];
+    if (hint) {
+      issues.push({
+        severity: 'warning',
+        code: 'sql_unknown_table_hint',
+        messageKey: 'sql_unknown_table_hint',
+        messageParams: { table, hint },
+        nodeId,
+      });
+    }
+  }
+  return issues;
 }

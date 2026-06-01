@@ -43,6 +43,7 @@ final class DolistoreValidator
         private readonly ?string $deploymentToken = null,
         private readonly ?string $deploymentNonce = null,
         private readonly ?LicenseAuditWriter $auditWriter = null,
+        private readonly ?ManifestSignatureVerifier $manifestSignatureVerifier = null,
     ) {
     }
 
@@ -72,44 +73,9 @@ final class DolistoreValidator
             ? strtolower(trim((string) $license['manifestSignature']))
             : '';
 
-        if ($this->forkDetector->expectsPinnedManifestSignature($extensionId)) {
-            $match = $this->forkDetector->classify($extensionId, $manifestSignature);
-            if ($match === ManifestSignatureMatch::MISSING) {
-                $this->audit(LicenseAuditEvent::LICENSE_FORK_DETECTED, $extensionId, [
-                    'reason' => 'manifest_signature_missing',
-                ]);
-                return new LicenseStatus(
-                    LicenseStatus::TAMPERED,
-                    $extensionId,
-                    null,
-                    null,
-                    null,
-                    null,
-                    'Official Knot extension requires a valid manifest signature. '
-                    . 'Reinstall or update the extension from Setup → Knot → Installed products.'
-                );
-            }
-        }
-
-        if ($manifestSignature !== '') {
-            $match = $this->forkDetector->classify($extensionId, $manifestSignature);
-            if ($match === ManifestSignatureMatch::REJECTED) {
-                $this->audit(LicenseAuditEvent::LICENSE_FORK_DETECTED, $extensionId, [
-                    'manifestSignature' => $manifestSignature,
-                    'reason' => 'manifest_signature_rejected',
-                ]);
-                return new LicenseStatus(
-                    LicenseStatus::TAMPERED,
-                    $extensionId,
-                    null,
-                    null,
-                    null,
-                    null,
-                    'The installed extension manifest does not match an official Knot release. '
-                    . 'Update the extension from Setup → Knot → Installed products '
-                    . '(apply Knot Core and the extension together after a manifest change).'
-                );
-            }
+        $manifestGate = $this->validateOfficialManifestSignature($manifest, $extensionId, $manifestSignature);
+        if ($manifestGate !== null) {
+            return $manifestGate;
         }
 
         $cached = $this->cache->read($extensionId);
@@ -261,6 +227,101 @@ final class DolistoreValidator
             $response['plan'],
             $response['issuedTo'],
             null
+        );
+    }
+
+    /**
+     * Validate manifest integrity for official Knot extensions.
+     *
+     * Primary gate: Ed25519 release-key signature on the canonical manifest
+     * (accepts any editor-signed release, including versions not yet pinned
+     * in {@see OfficialManifestSignatures}). Fallback: digest pin list for
+     * transition windows when crypto verify is unavailable.
+     *
+     * @param array<string, mixed> $manifest
+     */
+    private function validateOfficialManifestSignature(
+        array $manifest,
+        string $extensionId,
+        string $manifestSignature,
+    ): ?LicenseStatus {
+        if (!$this->forkDetector->expectsPinnedManifestSignature($extensionId)) {
+            if ($manifestSignature === '') {
+                return null;
+            }
+
+            $match = $this->forkDetector->classify($extensionId, $manifestSignature);
+            if ($match === ManifestSignatureMatch::REJECTED) {
+                return $this->tamperedManifestStatus(
+                    $extensionId,
+                    $manifestSignature,
+                    'manifest_signature_rejected',
+                );
+            }
+
+            return null;
+        }
+
+        if ($manifestSignature === '' || !preg_match('/^[a-f0-9]{128}$/', $manifestSignature)) {
+            $this->audit(LicenseAuditEvent::LICENSE_FORK_DETECTED, $extensionId, [
+                'reason' => 'manifest_signature_missing',
+            ]);
+
+            return new LicenseStatus(
+                LicenseStatus::TAMPERED,
+                $extensionId,
+                null,
+                null,
+                null,
+                null,
+                'Official Knot extension requires a valid manifest signature. '
+                . 'Reinstall or update the extension from Setup → Knot → Installed products.'
+            );
+        }
+
+        if (
+            $this->manifestSignatureVerifier !== null
+            && $this->manifestSignatureVerifier->verify($manifest)
+        ) {
+            return null;
+        }
+
+        $match = $this->forkDetector->classify($extensionId, $manifestSignature);
+        if (
+            $match === ManifestSignatureMatch::PRIMARY
+            || $match === ManifestSignatureMatch::DEPRECATED
+        ) {
+            return null;
+        }
+
+        return $this->tamperedManifestStatus(
+            $extensionId,
+            $manifestSignature,
+            $match === ManifestSignatureMatch::MISSING
+                ? 'manifest_signature_missing'
+                : 'manifest_signature_rejected',
+        );
+    }
+
+    private function tamperedManifestStatus(
+        string $extensionId,
+        string $manifestSignature,
+        string $reason,
+    ): LicenseStatus {
+        $this->audit(LicenseAuditEvent::LICENSE_FORK_DETECTED, $extensionId, [
+            'manifestSignature' => $manifestSignature,
+            'reason' => $reason,
+        ]);
+
+        return new LicenseStatus(
+            LicenseStatus::TAMPERED,
+            $extensionId,
+            null,
+            null,
+            null,
+            null,
+            'The installed extension manifest does not match an official Knot release. '
+            . 'Update the extension from Setup → Knot → Installed products.'
         );
     }
 

@@ -240,7 +240,17 @@ if ($mode === 'marketplace') {
 // Cache buster for CSS: mtime of dist/knot-app.css so a redeploy invalidates
 // any prior CSS even when the semver version did not change.
 $knotCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/dist/knot-app.css';
-$knotCssVer = file_exists($knotCssPath) ? (string) filemtime($knotCssPath) : '0';
+$knotCssVer = file_exists($knotCssPath) ? rawurlencode((string) filemtime($knotCssPath)) : '0';
+$knotHostCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot-host.css';
+$knotHostCssVer = file_exists($knotHostCssPath) ? rawurlencode((string) filemtime($knotHostCssPath)) : '0';
+$knotTokensCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot-tokens.css';
+$knotTokensCssVer = file_exists($knotTokensCssPath) ? rawurlencode((string) filemtime($knotTokensCssPath)) : '0';
+$knotCssBase = DOL_URL_ROOT . '/custom/knot';
+// Inject Knot styles in $knotHead: Dolibarr's llxHeader CSS array appends ?lang=…
+// after URLs that already use ?v=…, producing an invalid query string and stale cache keys.
+$knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot-tokens.css?v=' . $knotTokensCssVer) . '">';
+$knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot-host.css?v=' . $knotHostCssVer) . '">';
+$knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/dist/knot-app.css?v=' . $knotCssVer) . '">';
 
 llxHeader(
     $knotHead,
@@ -250,11 +260,7 @@ llxHeader(
     0,
     0,
     [],
-    [
-        '/knot/css/knot-tokens.css',
-        '/knot/css/knot-host.css',
-        '/knot/dist/knot-app.css?v=' . $knotCssVer,
-    ]
+    []
 );
 
 $knotActive = ($mode === 'queue') ? 'executions' : $mode;
@@ -267,6 +273,42 @@ if ($mode === 'editor' && $workflowId > 0) {
 include __DIR__ . '/../tpl/knot-leftnav.tpl.php';
 
 ?>
+<style id="knot-host-layout-guard">
+body.knot-host-page #id-container,
+body:has(.knot-nav) #id-container {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+body.knot-host-page #id-right,
+body:has(.knot-nav) #id-right {
+    display: block !important;
+    float: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    box-sizing: border-box;
+}
+body.knot-host-page .fiche,
+body:has(.knot-nav) .fiche {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+body.knot-host-page #knot-app,
+body.knot-host-page .knot-engine-banner,
+body.knot-host-page .knot-shell,
+body:has(.knot-nav) #knot-app,
+body:has(.knot-nav) .knot-engine-banner,
+body:has(.knot-nav) .knot-shell {
+    margin-left: var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px)) !important;
+    width: calc(100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px))) !important;
+    max-width: calc(100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px))) !important;
+    box-sizing: border-box;
+}
+</style>
+<script>document.body.classList.add('knot-host-page');</script>
 <script>
 (function () {
     try {

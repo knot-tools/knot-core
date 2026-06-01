@@ -18,6 +18,7 @@ KnotNavUpdates=Atualizações
 KnotNavDoctor=Diagnóstico
 KnotNavProPackMigration=Knot Pro Pack
 KnotNavCollapse=Recolher menu
+KnotNavExitDolibarr=Sair para o Dolibarr
 KnotCapabilities=Capacidades
 KnotCompatibility=Compatibilidade de esquema
 KnotQueue=Fila

@@ -7,6 +7,57 @@
 
   var NAV_COLLAPSE_KEY = 'knot.nav.collapsed';
 
+  /**
+   * Dolibarr eldy can reserve a few pixels beside the hidden vmenu column; CSS
+   * margin-left on #knot-app is not always enough. Pin the Vue host to the
+   * measured rail width so the editor never sits under the fixed sidebar.
+   */
+  function syncHostLayoutOffset() {
+    var nav = document.querySelector('.knot-nav');
+    var app = document.getElementById('knot-app');
+    if (!nav || !app) {
+      return;
+    }
+
+    if (window.matchMedia('(max-width: 880px)').matches) {
+      app.style.removeProperty('margin-left');
+      app.style.removeProperty('width');
+      app.style.removeProperty('max-width');
+      return;
+    }
+
+    var width = Math.ceil(nav.getBoundingClientRect().width);
+    if (width <= 0) {
+      return;
+    }
+
+    var px = width + 'px';
+    app.style.marginLeft = px;
+    app.style.width = 'calc(100% - ' + px + ')';
+    app.style.maxWidth = 'calc(100% - ' + px + ')';
+
+    var banner = document.querySelector('.knot-engine-banner');
+    if (banner) {
+      banner.style.marginLeft = px;
+      banner.style.width = 'calc(100% - ' + px + ')';
+      banner.style.maxWidth = 'calc(100% - ' + px + ')';
+    }
+  }
+
+  function initHostLayoutSync() {
+    syncHostLayoutOffset();
+
+    var nav = document.querySelector('.knot-nav');
+    if (nav && typeof ResizeObserver !== 'undefined') {
+      var observer = new ResizeObserver(function () {
+        syncHostLayoutOffset();
+      });
+      observer.observe(nav);
+    }
+
+    window.addEventListener('resize', syncHostLayoutOffset);
+  }
+
   function initNavCollapse() {
     var nav = document.querySelector('.knot-nav');
     if (!nav) {
@@ -46,8 +97,11 @@
           // private mode — still toggle for the session
         }
         apply(collapsed);
+        syncHostLayoutOffset();
       });
     }
+
+    syncHostLayoutOffset();
   }
 
   function refreshInboxBadge() {
@@ -79,6 +133,7 @@
   }
 
   function onReady() {
+    initHostLayoutSync();
     initNavCollapse();
     refreshInboxBadge();
   }

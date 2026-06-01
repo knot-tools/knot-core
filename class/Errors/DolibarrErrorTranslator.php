@@ -142,6 +142,11 @@ final class DolibarrErrorTranslator
             );
         }
 
+        $sqlError = $this->translateSqlFailure($msg, $lower, $baseContext, $throwable);
+        if ($sqlError !== null) {
+            return $sqlError;
+        }
+
         return new DolibarrInternalError(
             'KNOT_DOLIBARR_UNEXPECTED',
             'Dolibarr returned an error while processing this step.',
@@ -149,6 +154,69 @@ final class DolibarrErrorTranslator
             $this->docLink('KNOT_DOLIBARR_UNEXPECTED'),
             $baseContext,
             'Inspect execution logs and Dolibarr logs for more detail.',
+            'error',
+            $throwable
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    private function translateSqlFailure(
+        string $msg,
+        string $lower,
+        array $context,
+        Throwable $throwable
+    ): ?KnotError {
+        $isSqlContext = str_contains($lower, 'sql')
+            || str_contains($lower, 'query failed')
+            || str_contains($lower, 'unknown column')
+            || str_contains($lower, 'doesn\'t exist')
+            || str_contains($lower, 'does not exist')
+            || str_contains($lower, 'table ')
+            || str_contains($lower, '42s02')
+            || str_contains($lower, '42s22')
+            || str_contains($lower, '1146')
+            || str_contains($lower, '1054');
+
+        if (!$isSqlContext) {
+            return null;
+        }
+
+        $suggestion = 'Check table and column names against Dolibarr schema (propal → llx_propal, not llx_propale).';
+        if (
+            preg_match("/table ['`]?([a-z0-9_.]+)['`]? doesn't exist/i", $msg, $m) === 1
+            || preg_match('/unknown table [\'`]?([a-z0-9_.]+)[\'`]?/i', $msg, $m) === 1
+        ) {
+            $table = strtolower($m[1]);
+            if (str_contains($table, '.')) {
+                $parts = explode('.', $table);
+                $table = (string) end($parts);
+            }
+            $catalog = new \Knot\Dolibarr\DolibarrTableCatalog();
+            $hint = $catalog->hintForTable($table);
+            if ($hint === null && !str_starts_with($table, 'llx_')) {
+                $hint = $catalog->hintForTable('llx_' . $table);
+            }
+            if ($hint !== null) {
+                $suggestion = 'Did you mean `' . $hint . '` instead of `' . $table . '`?';
+            }
+        } elseif (preg_match('/unknown column [\'`]?([^\'`]+)[\'`]?/i', $msg, $m) === 1) {
+            $column = $m[1];
+            if (strtolower($column) === 'statut') {
+                $suggestion = 'On commercial documents use `fk_statut` (e.g. llx_propal), not `statut` alone.';
+            } else {
+                $suggestion = 'Verify column `' . $column . '` exists on the target table (see dolibarr_schemas or Dolibarr dictionary).';
+            }
+        }
+
+        return new DolibarrSqlError(
+            'KNOT_DOLIBARR_SQL',
+            'The SQL step failed against Dolibarr.',
+            $msg,
+            $this->docLink('KNOT_DOLIBARR_SQL'),
+            $context,
+            $suggestion,
             'error',
             $throwable
         );

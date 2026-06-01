@@ -139,6 +139,10 @@ if ($mode === 'sync') {
         if ($status === 'error') {
             $payload['errorMessage'] = $engine->firstNodeErrorMessage()
                 ?? 'One or more workflow nodes failed.';
+            $knotPayload = $engine->firstNodeKnotError();
+            if ($knotPayload !== null) {
+                $payload['errorPayload'] = $knotPayload;
+            }
         }
         JsonResponse::success($payload);
         exit;

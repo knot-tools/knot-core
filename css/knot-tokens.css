@@ -167,7 +167,14 @@
    * inside another (e.g. preview.php?mode=migration). */
   --knot-mc-sidebar-w: 240px;
   --knot-mc-sidebar-w-collapsed: 64px;
+  --knot-nav-width: var(--knot-mc-sidebar-w);
+  --knot-layout-breakpoint: 880px;
+  --knot-editor-palette-w: 260px;
+  --knot-editor-inspector-w: 320px;
+  --knot-connectors-list-w: 320px;
   --knot-mc-topbar-h: 56px;
+  /* Dolibarr eldy top menu row (Knot fixed rail starts flush below it). */
+  --knot-dolibarr-topbar-h: 50px;
   /* Viewport-fixed toasts/alerts: sit below Dolibarr menu + bookmarks (override on #knot-app if needed). */
   --knot-dolibarr-chrome-top: 4.5rem;
   --knot-mc-drawer-w: 360px;

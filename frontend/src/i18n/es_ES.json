@@ -808,7 +808,9 @@
       "edge_target_invalid": "El destino del enlace no referencia un nodo existente.",
       "unknown_connector": "El tipo de nodo \"{connectorType}\" no está registrado en esta instancia (pueden aplicarse extensiones o nivel).",
       "graph_cycle": "El grafo del workflow contiene al menos un ciclo dirigido; asegúrese de que los bucles sean deliberados.",
-      "orphan_node": "El nodo {nodeId} no es alcanzable desde ningún disparador siguiendo enlaces de éxito."
+      "orphan_node": "El nodo {nodeId} no es alcanzable desde ningún disparador siguiendo enlaces de éxito.",
+      "sql_unknown_table": "El SQL referencia la tabla desconocida `{table}`.",
+      "sql_unknown_table_hint": "El SQL referencia `{table}` — ¿quiso decir `{hint}`?"
     },
     "import": {
       "object_unknown": "El workflow «{workflowLabel}» usa el tipo dolibarr.object «{objectType}», que no está en el registro de objetos soportados.",
@@ -2155,7 +2157,7 @@
         "fields": {
           "query": {
             "title": "Consulta SQL",
-            "description": "Solo SELECT restringido; ámbito de entidad."
+            "description": "Solo SELECT restringido. En multiempresa, filtre con entity IN (0, entidad actual) en tablas con columna entity."
           },
           "limit": {
             "title": "Límite de filas"
@@ -2187,8 +2189,8 @@
     },
     "notification": {
       "alert": {
-        "label": "Enviar alerta",
-        "description": "Difundir alertas por Slack, Discord, correo, webhook y registro de auditoría.",
+        "label": "Enviar alerta (auditoría)",
+        "description": "Escribe una entrada en el registro de auditoría. Para Slack, Discord, correo o webhook, use el conector Pro Pack « Alerta (fan-out) ».",
         "fields": {
           "title": {
             "title": "Título de alerta",

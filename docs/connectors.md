@@ -3,7 +3,7 @@
 ## Source de vérité
 
 - **Core** : classes enregistrées dans [`class/Connectors/ConnectorRegistry.php`](../class/Connectors/ConnectorRegistry.php) (`all()`). **31** connecteurs builtin depuis **V2.8.1** (palette « slim » : Dolibarr + logique + email + `notification.alert` audit-only + triggers génériques). Détail : [`docs/connectors-inventory.md`](connectors-inventory.md).
-- **Extensions** : déclarés dans `knot-extension.json` de chaque module add-on (ex. **knot-pro-pack**). Les **27** ids listés dans [`ConnectorMigration::MIGRATED_TO_PRO_PACK`](../class/Migration/ConnectorMigration.php) nécessitent le Pro Pack : mêmes ids dans les workflows une fois le pack installé et licencié.
+- **Extensions** : déclarés dans `knot-extension.json` de chaque module add-on (ex. **knot-pro-pack**). Les **29** ids listés dans [`ConnectorMigration::MIGRATED_TO_PRO_PACK`](../class/Migration/ConnectorMigration.php) nécessitent le Pro Pack : mêmes ids dans les workflows une fois le pack installé et licencié.
 
 Voir aussi : [`docs/extensibility.md`](extensibility.md), [`docs/connector-authoring-guide.md`](connector-authoring-guide.md), `docs/introspection.md` pour `dolibarr.object`.
 
@@ -65,9 +65,12 @@ Les `id` ci-dessous sont ceux retournés par `getMetadata()['id']`. Table détai
 
 ## Connecteurs Pro Pack (référence)
 
-HTTP sortant générique (`action.http`), SFTP, Telegram, IA (dont Ollama), SaaS premium, webhooks nommés Stripe/Shopify, fan-out **`notification.alert_fanout`**, etc. : extension **knot-pro-pack**. Les **27** ids couverts par la migration depuis le Core sont exactement `ConnectorMigration::MIGRATED_TO_PRO_PACK`. D’autres connecteurs peuvent être **Pro-only** dès le manifest sans avoir été « migrés » depuis le Core.
+HTTP sortant générique (`action.http`), SFTP, Telegram, Slack, Discord, IA (dont Ollama), SaaS premium, webhooks nommés Stripe/Shopify, fan-out **`notification.alert_fanout`**, etc. : extension **knot-pro-pack**. Les **29** ids couverts par la migration depuis le Core sont exactement `ConnectorMigration::MIGRATED_TO_PRO_PACK`. D’autres connecteurs peuvent être **Pro-only** dès le manifest sans avoir été « migrés » depuis le Core.
 
 Sans Pro Pack installé : la palette et l’exécution signalent l’extension manquante pour ces ids.
+
+Guide d’utilisation WhatsApp (credentials, E.164, templates) :
+[`docs/connectors/whatsapp.md`](connectors/whatsapp.md).
 
 ## DolibarrTrigger (objets)
 

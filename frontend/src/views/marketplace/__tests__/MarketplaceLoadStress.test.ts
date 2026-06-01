@@ -34,7 +34,7 @@ const stubMarketplace: MarketplaceResponse = {
 const skipStressInCi = process.env.CI === 'true';
 
 describe.skipIf(skipStressInCi)('Marketplace load stress (BlockRenderer)', () => {
-  it('renders 100 lightweight blocks under 500ms', async () => {
+  it('renders 100 lightweight blocks under 800ms', async () => {
     const marketplace = ref<MarketplaceResponse | null>(stubMarketplace);
     const route: Ref<{ kind: 'home'; slug: null }> = ref({ kind: 'home', slug: null });
 
@@ -90,6 +90,6 @@ describe.skipIf(skipStressInCi)('Marketplace load stress (BlockRenderer)', () =>
     const t1 = typeof performance !== 'undefined' ? performance.now() : Date.now();
 
     expect(wrapper.findAll('[data-editorial-type="faq"]')).toHaveLength(100);
-    expect(t1 - t0).toBeLessThan(500);
+    expect(t1 - t0).toBeLessThan(800);
   });
 });

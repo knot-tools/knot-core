@@ -6,6 +6,7 @@ namespace Knot\Tests\Errors;
 
 use Knot\Errors\DolibarrPermissionError;
 use Knot\Errors\DolibarrErrorTranslator;
+use Knot\Errors\DolibarrSqlError;
 use Knot\Errors\InvalidValueError;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -91,5 +92,24 @@ final class DolibarrErrorTranslatorTest extends TestCase
     {
         $out = (new DolibarrErrorTranslator())->translate(new RuntimeException('Something obscure happened'), []);
         $this->assertSame('KNOT_DOLIBARR_UNEXPECTED', $out->knotCode);
+    }
+
+    public function testMapsUnknownTableWithPropaleHint(): void
+    {
+        $msg = "SQL query failed: Table 'dolibarr.llx_propale' doesn't exist";
+        $out = (new DolibarrErrorTranslator())->translate(new RuntimeException($msg), []);
+        $this->assertSame('KNOT_DOLIBARR_SQL', $out->knotCode);
+        $this->assertInstanceOf(DolibarrSqlError::class, $out);
+        $this->assertStringContainsString('llx_propal', (string) $out->suggestion);
+    }
+
+    public function testMapsUnknownColumnStatutHint(): void
+    {
+        $out = (new DolibarrErrorTranslator())->translate(
+            new RuntimeException('SQL query failed: Unknown column \'statut\' in \'field list\''),
+            []
+        );
+        $this->assertSame('KNOT_DOLIBARR_SQL', $out->knotCode);
+        $this->assertStringContainsString('fk_statut', (string) $out->suggestion);
     }
 }

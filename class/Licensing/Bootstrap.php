@@ -103,6 +103,8 @@ final class Bootstrap
 
         $installation = new InstallationIdentity(new KnotConfigRepository($db), $db);
 
+        $releaseKeys = PinnedPublicKeys::releaseSigningKeysHex();
+
         return new DolistoreValidator(
             new DolistoreClient($baseUrl, 10, $insecure),
             new SignatureVerifier($pinnedKeys),
@@ -115,6 +117,9 @@ final class Bootstrap
             $installation->deploymentToken(),
             $installation->deploymentNonce(),
             self::buildAuditWriter($db),
+            $releaseKeys !== []
+                ? new ManifestSignatureVerifier(new SignatureVerifier($releaseKeys))
+                : null,
         );
     }
 

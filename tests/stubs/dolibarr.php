@@ -102,7 +102,7 @@ if (!function_exists('dol_mkdir')) {
 if (!class_exists('modKnot', false)) {
     class modKnot
     {
-        public string $version = '2.13.8';
+        public string $version = \Knot\Version::FALLBACK;
     }
 }
 

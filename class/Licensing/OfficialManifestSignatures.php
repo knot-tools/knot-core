@@ -56,6 +56,8 @@ final class OfficialManifestSignatures
     {
         return [
             KnownSkus::PRO_PACK => [
+                '2779b2d82df05e37171ce7782a7691517f51c1ada9802cd002cd059c49275995bb17af25cd40df331145c113d4ef1002aa70a77430e8fcca7eb642cfde34620c',
+                // 0.1.5 official manifest — transition pin (2026-06-01).
                 '1d9680af068768471e965434e53096c1dcd263aca6b1e1e5037eaffa8add54d588a43d6b150c9e4e032d9f5fcce28c1fa29f358a0c8a891666be9b34b00a740c',
                 // 0.1.4 official manifest — keep through transition window.
                 '1e6f32da1704926175928048d68dfdea768a1005ae3f140ad45aeff0461509d12c66c5b4404e2bd3990adb439ab5e6b98d0185629a4cc4e390e5ed2deafae904',
@@ -63,6 +65,8 @@ final class OfficialManifestSignatures
                 '8b6f6a43b3b25a1a19f7ec923680d1c363500d07073fe995d2d85c9fde5e011d53ba943cdbadace16d67f25ef91855f59b0884bb73167ce4f4bdeae21b4db60a',
             ],
             KnownSkus::MIGRATION => [
+                '8e20dfac66511436a9a1d0128d9af3fb7f559d4069e72745e24a72cd613911d9a8ea0c89ba79d48521355ef515f990ed72e6b28bd11a75da596e07a4de1cb007',
+                // 0.21.5 official manifest — transition pin (2026-06-01).
                 'c2e45f8fa59834c1c88f18b6f52df63f1a643f02bdaa32afcc143893b8e9cbd50275f6e60760af973f306b8d02707d8c6338389b0814893e6a57fd09a5c1d30b',
                 // 0.21.4 official manifest — keep through transition window.
                 '8f2e6cb7d1531425c67069189a1a604b5eea883eb5621d74e0de24f08179b255a0ee0e54185c09c732fa0948fe50764075822eea0d685f124632b42ff4d93604',

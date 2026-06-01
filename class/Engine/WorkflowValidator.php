@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Knot\Engine;
 
 use Knot\Connectors\ConnectorRegistry;
+use Knot\Security\SqlTableReferenceValidator;
 
 /**
  * Validates Knot workflow definitions (structure + incremental semantic lint).
@@ -164,8 +165,46 @@ final class WorkflowValidator
         }
 
         $this->appendCycleAndOrphanIssues($typesById, $edges, $issues);
+        $this->appendSqlQueryTableIssues($nodes, $issues);
 
         return $issues;
+    }
+
+    /**
+     * @param array<int, mixed> $nodes
+     * @param array<int, array<string, mixed>> $issues
+     */
+    private function appendSqlQueryTableIssues(array $nodes, array &$issues): void
+    {
+        global $db;
+
+        $validator = new SqlTableReferenceValidator();
+        $doliDb = isset($db) && $db instanceof \DoliDB ? $db : null;
+
+        foreach ($nodes as $node) {
+            if (!is_array($node)) {
+                continue;
+            }
+            $type = is_string($node['type'] ?? null) ? $node['type'] : '';
+            if ($type !== 'dolibarr.sql_query') {
+                continue;
+            }
+            $nodeId = is_string($node['id'] ?? null) ? $node['id'] : null;
+            $config = is_array($node['config'] ?? null) ? $node['config'] : [];
+            $query = trim((string) ($config['query'] ?? ''));
+            if ($query === '') {
+                continue;
+            }
+            foreach ($validator->lintIssues($query, $doliDb) as $lint) {
+                $issues[] = $this->issue(
+                    'warning',
+                    'KNOT_SQL_UNKNOWN_TABLE',
+                    $lint['messageKey'],
+                    $lint['messageParams'],
+                    $nodeId,
+                );
+            }
+        }
     }
 
     /**

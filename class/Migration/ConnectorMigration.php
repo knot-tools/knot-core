@@ -66,6 +66,8 @@ final class ConnectorMigration
         'action.gmail',
 
         // Premium SaaS messaging (per-call)
+        'action.slack',
+        'action.discord',
         'action.whatsapp_cloud',
         'action.whatsapp_twilio',
         'action.twilio_sms',

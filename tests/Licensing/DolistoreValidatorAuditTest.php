@@ -12,6 +12,7 @@ use Knot\Licensing\LicenseAuditThrottlePolicy;
 use Knot\Licensing\ForkDetector;
 use Knot\Licensing\InstanceBinder;
 use Knot\Licensing\LicenseCache;
+use Knot\Licensing\ManifestSignatureVerifier;
 use Knot\Licensing\OfflineGracePolicy;
 use Knot\Licensing\SignatureVerifier;
 use Knot\Repository\AuditLogRepository;
@@ -367,6 +368,7 @@ final class DolistoreValidatorAuditTest extends TestCase
             null,
             null,
             $writer,
+            new ManifestSignatureVerifier(new SignatureVerifier([$this->harness->publicKeyHex()])),
         );
     }
 

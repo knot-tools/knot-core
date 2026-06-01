@@ -719,6 +719,14 @@ $knotHead = '<link rel="icon" type="image/svg+xml" href="' . dol_escape_htmltag(
     . '<link rel="icon" type="image/png" sizes="32x32" href="' . dol_escape_htmltag($knotIconBase . '/favicon-32.png') . '">'
     . '<link rel="shortcut icon" href="' . dol_escape_htmltag($knotIconBase . '/favicon.ico') . '">';
 
+$knotHostCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot-host.css';
+$knotHostCssVer = file_exists($knotHostCssPath) ? rawurlencode((string) filemtime($knotHostCssPath)) : '0';
+$knotModuleCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot.css';
+$knotModuleCssVer = file_exists($knotModuleCssPath) ? rawurlencode((string) filemtime($knotModuleCssPath)) : '0';
+$knotCssBase = DOL_URL_ROOT . '/custom/knot';
+$knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot-host.css?v=' . $knotHostCssVer) . '">';
+$knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot.css?v=' . $knotModuleCssVer) . '">';
+
 llxHeader(
     $knotHead,
     $langs->trans('KnotSetupTitle'),
@@ -727,7 +735,7 @@ llxHeader(
     0,
     0,
     ['/knot/js/knot-app.js'],
-    ['/knot/css/knot-host.css', '/knot/css/knot.css']
+    []
 );
 
 // Anti-flash: align this server-rendered page with the Vue DarkModeToggle.
@@ -774,6 +782,40 @@ $knotSetupOnclickCronCopyCta = htmlspecialchars(
 include __DIR__ . '/../tpl/knot-leftnav.tpl.php';
 
 ?>
+<style id="knot-host-layout-guard">
+body.knot-host-page #id-container,
+body:has(.knot-nav) #id-container {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+body.knot-host-page #id-right,
+body:has(.knot-nav) #id-right {
+    display: block !important;
+    float: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    box-sizing: border-box;
+}
+body.knot-host-page .fiche,
+body:has(.knot-nav) .fiche {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+body.knot-host-page .knot-shell,
+body.knot-host-page #knot-app,
+body:has(.knot-nav) .knot-shell,
+body:has(.knot-nav) #knot-app {
+    margin-left: var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px)) !important;
+    width: calc(100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px))) !important;
+    max-width: calc(100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px))) !important;
+    box-sizing: border-box;
+}
+</style>
+<script>document.body.classList.add('knot-host-page');</script>
 <div class="knot-shell">
     <header class="knot-hero">
         <div class="knot-hero__bg" aria-hidden="true"></div>

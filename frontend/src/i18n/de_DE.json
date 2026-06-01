@@ -808,7 +808,9 @@
       "edge_target_invalid": "Kante target does not reference an existing Knoten.",
       "unknown_connector": "Knotentyp „{connectorType}“ ist auf dieser Instanz nicht registriert (Erweiterungen oder Stufe können gelten).",
       "graph_cycle": "Der Graph enthält mindestens einen gerichteten Zyklus – prüfen Sie, ob die Schleifen beabsichtigt sind.",
-      "orphan_node": "Knoten {nodeId} is not reachable from any trigger following success edges."
+      "orphan_node": "Knoten {nodeId} is not reachable from any trigger following success edges.",
+      "sql_unknown_table": "SQL verweist auf unbekannte Tabelle `{table}`.",
+      "sql_unknown_table_hint": "SQL verweist auf `{table}` — meinten Sie `{hint}`?"
     },
     "import": {
       "object_unknown": "Workflow „{workflowLabel}“ nutzt dolibarr.object-Typ „{objectType}“, der nicht in der unterstützten Objektregistry steht.",
@@ -2155,7 +2157,7 @@
         "fields": {
           "query": {
             "title": "SQL-Abfrage",
-            "description": "SELECT nur Sandbox; Entitätsumfang."
+            "description": "Nur SELECT in der Sandbox. Bei Multi-Mandant: entity IN (0, aktuelle Entität) filtern, wenn die Tabelle eine entity-Spalte hat."
           },
           "limit": {
             "title": "Limite de lignes"
@@ -2187,8 +2189,8 @@
     },
     "notification": {
       "alert": {
-        "label": "Alert senden",
-        "description": "Alert über Slack, Discord, E-Mail, Webhook und Audit-Log verteilen.",
+        "label": "Alert senden (Audit)",
+        "description": "Schreibt einen Eintrag ins Knot-Audit-Log. Für Slack, Discord, E-Mail oder Webhook den Pro-Pack-Connector « Alert (Fan-out) » verwenden.",
         "fields": {
           "title": {
             "title": "Alert-Titel",

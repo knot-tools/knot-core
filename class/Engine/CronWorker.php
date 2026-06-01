@@ -495,7 +495,8 @@ final class CronWorker
         }
 
         $message = $engine->firstNodeErrorMessage() ?? 'One or more workflow nodes failed.';
-        $executions->markStatus($executionId, 'error', $entity, $message);
+        $knotPayload = $engine->firstNodeKnotError();
+        $executions->markStatus($executionId, 'error', $entity, $message, $knotPayload);
         $this->enqueueGlobalErrorWorkflow(
             $workflow,
             $execution,
