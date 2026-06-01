@@ -363,7 +363,10 @@ try {
     }
 
     $validator = Bootstrap::buildLicenseValidator($doliDbGlobal);
-    $lic = $validator->inspect($manifestForInspect);
+    $manifestPath = isset($entry['path']) && is_string($entry['path'])
+        ? rtrim($entry['path'], '/\\') . '/knot-extension.json'
+        : null;
+    $lic = $validator->inspect($manifestForInspect, $manifestPath);
     if ($lic['status'] !== LicenseValidator::STATUS_VALID) {
         JsonResponse::error(
             'license_invalid',

@@ -51,8 +51,10 @@ final class DolistoreValidator
      * Inspect the licence for a given normalised manifest.
      *
      * @param array{id: string, license: array<string, mixed>, ...} $manifest
+     * @param string|null $manifestPath Absolute path to on-disk `knot-extension.json`
+     *                                  (used for Ed25519 manifest verify; optional).
      */
-    public function inspect(array $manifest): LicenseStatus
+    public function inspect(array $manifest, ?string $manifestPath = null): LicenseStatus
     {
         $extensionId = (string) $manifest['id'];
         $license = $manifest['license'];
@@ -73,7 +75,12 @@ final class DolistoreValidator
             ? strtolower(trim((string) $license['manifestSignature']))
             : '';
 
-        $manifestGate = $this->validateOfficialManifestSignature($manifest, $extensionId, $manifestSignature);
+        $manifestGate = $this->validateOfficialManifestSignature(
+            $manifest,
+            $extensionId,
+            $manifestSignature,
+            $manifestPath,
+        );
         if ($manifestGate !== null) {
             return $manifestGate;
         }
@@ -244,6 +251,7 @@ final class DolistoreValidator
         array $manifest,
         string $extensionId,
         string $manifestSignature,
+        ?string $manifestPath = null,
     ): ?LicenseStatus {
         if (!$this->forkDetector->expectsPinnedManifestSignature($extensionId)) {
             if ($manifestSignature === '') {
@@ -279,10 +287,7 @@ final class DolistoreValidator
             );
         }
 
-        if (
-            $this->manifestSignatureVerifier !== null
-            && $this->manifestSignatureVerifier->verify($manifest)
-        ) {
+        if ($this->manifestSignatureVerifier !== null && $this->manifestCryptoVerify($manifest, $manifestPath)) {
             return null;
         }
 
@@ -301,6 +306,22 @@ final class DolistoreValidator
                 ? 'manifest_signature_missing'
                 : 'manifest_signature_rejected',
         );
+    }
+
+    /**
+     * @param array<string, mixed> $manifest
+     */
+    private function manifestCryptoVerify(array $manifest, ?string $manifestPath): bool
+    {
+        if ($this->manifestSignatureVerifier === null) {
+            return false;
+        }
+
+        if ($manifestPath !== null && is_readable($manifestPath)) {
+            return $this->manifestSignatureVerifier->verifyFromPath($manifestPath);
+        }
+
+        return $this->manifestSignatureVerifier->verify($manifest);
     }
 
     private function tamperedManifestStatus(

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Knot\Tests\Licensing;
 
+use Knot\Extension\ManifestSchema;
 use Knot\KnownSkus;
 use Knot\Licensing\ActivationCodeProtector;
 use Knot\Licensing\DolistoreValidator;
@@ -14,6 +15,7 @@ use Knot\Licensing\LicenseStatus;
 use Knot\Licensing\ManifestSignatureVerifier;
 use Knot\Licensing\OfflineGracePolicy;
 use Knot\Licensing\OfficialManifestSignatures;
+use Knot\Licensing\PinnedPublicKeys;
 use Knot\Licensing\SignatureVerifier;
 use Knot\Tests\Licensing\Support\Ed25519TestHarness;
 use Knot\Tests\Licensing\Support\FakeDolistoreClient;
@@ -530,6 +532,55 @@ final class DolistoreValidatorTest extends TestCase
         $validator = $this->makeValidator($client, null, $fork);
 
         $status = $validator->inspect($manifest);
+
+        self::assertSame(LicenseStatus::VALID, $status->status);
+    }
+
+    public function testNormalisedManifestAcceptsWhenOnDiskFileIsOfficiallySigned(): void
+    {
+        $path = __DIR__ . '/../../../pro-pack/knot-extension.json';
+        if (!is_readable($path)) {
+            self::markTestSkipped('pro-pack checkout not present beside core.');
+        }
+
+        $raw = json_decode((string) file_get_contents($path), true);
+        if (!is_array($raw)) {
+            self::fail('pro-pack knot-extension.json must be valid JSON.');
+        }
+
+        $normalised = ManifestSchema::validate($raw)['normalised'];
+        if (!is_array($normalised)) {
+            self::fail('pro-pack manifest must validate.');
+        }
+
+        $this->seedStaleActivationCache();
+        $client = new FakeDolistoreClient();
+        $client->setResponder(fn (array $params) => $this->signedResponse(
+            (string) ($params['instanceFingerprint'] ?? ''),
+            true,
+            '2027-04-29T00:00:00+00:00',
+        ));
+        $releaseKeys = PinnedPublicKeys::releaseSigningKeysHex();
+        if ($releaseKeys === []) {
+            self::markTestSkipped('No pinned release signing keys in this checkout.');
+        }
+        $fork = new ForkDetector(['knot-pro-pack' => str_repeat('f', 128)]);
+        $validator = new DolistoreValidator(
+            $client,
+            new SignatureVerifier([$this->harness->publicKeyHex()]),
+            $this->binder,
+            $fork,
+            new LicenseCache($this->tmpDir),
+            new OfflineGracePolicy(14),
+            24,
+            'erp.acme.com',
+            null,
+            null,
+            null,
+            new ManifestSignatureVerifier(new SignatureVerifier($releaseKeys)),
+        );
+
+        $status = $validator->inspect($normalised, $path);
 
         self::assertSame(LicenseStatus::VALID, $status->status);
     }

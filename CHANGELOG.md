@@ -7,6 +7,16 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.10] - 2026-06-01
+
+### Fixed
+
+- **Extension manifest verify:** `ManifestSignatureVerifier` now validates the on-disk
+  `knot-extension.json` (signed payload) instead of the `ManifestSchema` normalised
+  copy, which added defaults and broke Ed25519 checks (`LICENSE_INVALID` / `TAMPERED`
+  on Pro Pack / Migration after Apply). `ExtensionRegistry`, `updates_apply.php`, and
+  `DolistoreValidator` pass the manifest file path through the licence inspect chain.
+
 ## [2.13.9] - 2026-06-01
 
 ### Added

@@ -115,7 +115,7 @@ class ExtensionRegistry
             $entry['path'] = $candidatePath;
             $entry['connectorIds'] = $manifest['connectors'];
             $entry['connectors'] = [];
-            $entry['licenseInfo'] = $this->licenseValidator->inspect($manifest);
+            $entry['licenseInfo'] = $this->licenseValidator->inspect($manifest, $manifestPath);
 
             if (in_array($manifest['id'], $disabled, true)) {
                 $entry['status'] = self::STATUS_DISABLED;
