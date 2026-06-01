@@ -11,6 +11,8 @@ use Knot\Connectors\DryRunAware;
 use Knot\Connectors\Logic\BranchAware;
 use Knot\Connectors\Logic\LoopNode;
 use Knot\Credentials\CredentialResolverInterface;
+use Knot\Errors\DolibarrErrorTranslator;
+use Knot\Errors\KnotError;
 use Knot\Observability\RuntimeLogger;
 use Knot\Security\SecretMasker;
 use Throwable;
@@ -411,12 +413,13 @@ final class WorkflowEngine
                 $startedAt
             );
         } catch (Throwable $e) {
-            $context['nodes'][$nodeId] = ['json' => [], 'error' => $e->getMessage()];
-            $translatedError = (new ErrorTranslator())->translate($e);
+            $failure = $this->normalizeConnectorFailure($e, $nodeId, $type);
+            $context['nodes'][$nodeId] = ['json' => [], 'error' => $failure['message']];
             $errorOutput = [
                 'error' => true,
-                'message' => $e->getMessage(),
-                'translated' => $translatedError,
+                'message' => $failure['message'],
+                'translated' => $failure['translated'],
+                'knot' => $failure['knot'],
                 'nodeId' => $nodeId,
                 'nodeType' => $type,
             ];
@@ -426,7 +429,7 @@ final class WorkflowEngine
                 'error',
                 $masker->maskArray($input),
                 $errorOutput,
-                $e->getMessage(),
+                $failure['message'],
                 $loopMeta,
                 $startedAt
             );
@@ -441,13 +444,14 @@ final class WorkflowEngine
                 }
             }
             if ($hasErrorRoute) {
-                $context['nodes'][$nodeId] = ['json' => $errorOutput, 'error' => $e->getMessage()];
+                $context['nodes'][$nodeId] = ['json' => $errorOutput, 'error' => $failure['message']];
                 $context['json'] = $errorOutput;
                 $context['error'] = [
-                    'message' => $e->getMessage(),
+                    'message' => $failure['message'],
                     'nodeId' => $nodeId,
                     'nodeType' => $type,
-                    'translated' => $translatedError,
+                    'translated' => $failure['translated'],
+                    'knot' => $failure['knot'],
                 ];
                 foreach ($edges as $edge) {
                     if (
@@ -460,7 +464,7 @@ final class WorkflowEngine
                 return;
             }
             if (!empty($config['continueOnFail'])) {
-                $context['nodes'][$nodeId] = ['json' => $errorOutput, 'error' => $e->getMessage()];
+                $context['nodes'][$nodeId] = ['json' => $errorOutput, 'error' => $failure['message']];
                 $context['json'] = $errorOutput;
                 foreach ($edges as $edge) {
                     if (
@@ -524,6 +528,64 @@ final class WorkflowEngine
         }
 
         return null;
+    }
+
+    /**
+     * First structured Knot error from node logs (for API error_payload / sync simulate).
+     *
+     * @return array<string, mixed>|null
+     */
+    public function firstNodeKnotError(): ?array
+    {
+        foreach ($this->nodeLogs as $log) {
+            if (($log['status'] ?? '') !== 'error') {
+                continue;
+            }
+            $output = $log['output'] ?? null;
+            if (!is_array($output)) {
+                continue;
+            }
+            $knot = $output['knot'] ?? null;
+            if (is_array($knot) && isset($knot['code'])) {
+                return $knot;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array{message: string, translated: array<string, mixed>, knot: array<string, mixed>}
+     */
+    private function normalizeConnectorFailure(Throwable $e, string $nodeId, string $nodeType): array
+    {
+        if ($e instanceof KnotError) {
+            $knot = $e->toArray();
+
+            return [
+                'message' => $e->getMessage() !== '' ? $e->getMessage() : $e->userMessage,
+                'translated' => [
+                    'code' => $e->knotCode,
+                    'technicalMessage' => $e->getMessage(),
+                    'messageKey' => 'errors.execution.unknown.message',
+                    'suggestedFixKey' => 'errors.execution.unknown.hint',
+                    'docLink' => $e->docLink ?? '',
+                ],
+                'knot' => $knot,
+            ];
+        }
+
+        $knotError = (new DolibarrErrorTranslator())->translate($e, [
+            'nodeId' => $nodeId,
+            'nodeType' => $nodeType,
+        ]);
+        $legacy = (new ErrorTranslator())->translate($e);
+
+        return [
+            'message' => $knotError->getMessage() !== '' ? $knotError->getMessage() : $knotError->userMessage,
+            'translated' => array_merge($legacy, ['code' => $knotError->knotCode]),
+            'knot' => $knotError->toArray(),
+        ];
     }
 
     /**

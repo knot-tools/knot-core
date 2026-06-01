@@ -7,6 +7,7 @@ namespace Knot\Tests\Capabilities;
 use Conf;
 use Knot\Capabilities\CapabilitiesBuilder;
 use Knot\Tests\Support\CapabilitiesProbeDb;
+use Knot\Version;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -31,7 +32,7 @@ final class CapabilitiesBuilderTest extends TestCase
 
         $manifest = $builder->build();
 
-        self::assertSame('2.13.8', $manifest['knot']['version']);
+        self::assertSame(Version::FALLBACK, $manifest['knot']['version']);
         self::assertArrayHasKey('objects', $manifest);
         self::assertGreaterThan(0, $manifest['objects']['supported_count']);
         self::assertArrayHasKey('connectors', $manifest);

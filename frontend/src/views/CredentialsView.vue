@@ -112,14 +112,40 @@ const selectedConnectorDescriptor = computed(() =>
 const activeSchema = computed<CredentialSchema | null>(() => selectedConnectorDescriptor.value?.credentialSchema ?? null);
 
 const activeFields = computed(() => {
-  const properties = activeSchema.value?.properties ?? {};
-  return Object.entries(properties).map(([name, property]) => ({
-    name,
-    title: property.title || name,
-    secret: property.secret === true,
-    type: property.type || 'string',
-    required: activeSchema.value?.required?.includes(name) ?? false,
-    description: property.description || '',
+  const schema = activeSchema.value;
+  if (!schema) {
+    return [];
+  }
+
+  const properties = schema.properties ?? {};
+  if (Object.keys(properties).length > 0) {
+    return Object.entries(properties).map(([name, property]) => ({
+      name,
+      title: property.title || name,
+      secret: property.secret === true,
+      type: property.type || 'string',
+      required: schema.required?.includes(name) ?? false,
+      description: property.description || '',
+    }));
+  }
+
+  const legacyFields = (schema as CredentialSchema & { fields?: Array<{
+    name: string;
+    label?: string;
+    title?: string;
+    type?: string;
+    secret?: boolean;
+    required?: boolean;
+    description?: string;
+  }> }).fields ?? [];
+
+  return legacyFields.map((field) => ({
+    name: field.name,
+    title: field.label || field.title || field.name,
+    secret: field.secret === true,
+    type: field.type || 'string',
+    required: field.required === true,
+    description: field.description || '',
   }));
 });
 
@@ -274,7 +300,7 @@ onMounted(load);
 </script>
 
 <template>
-  <div class="k-p-6 k-max-w-[1400px] k-mx-auto k-space-y-5">
+  <div class="knot-view-shell k-p-6 k-max-w-[1400px] k-mx-auto k-space-y-5 k-w-full">
     <header class="k-flex k-items-center k-justify-between k-gap-4 k-flex-wrap">
       <div class="k-flex k-items-center k-gap-3">
         <div class="k-h-10 k-w-10 k-rounded-knot-sm k-bg-knot-success-soft k-text-knot-success k-flex k-items-center k-justify-center">

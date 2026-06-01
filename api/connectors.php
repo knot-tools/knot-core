@@ -12,6 +12,7 @@ dol_include_once('/knot/class/autoload.php');
 use Knot\Api\ApiAuth;
 use Knot\Api\JsonResponse;
 use Knot\Connectors\ConnectorRegistry;
+use Knot\Connectors\CredentialSchemaNormalizer;
 use Knot\Extension\ExtensionRegistry;
 use Knot\Licensing\Bootstrap;
 use Knot\Marketplace\ConnectorPresentationMerger;
@@ -59,9 +60,11 @@ foreach ($registry->allWithExtensions($extensions) as $id => $connector) {
         'metadata' => $metadata,
         'configSchema' => $connector->getConfigSchema(),
         'credentialType' => $credentialType,
-        'credentialSchema' => is_callable([$connector, 'getCredentialSchema'])
-            ? $connector->{'getCredentialSchema'}()
-            : defaultCredentialSchema($credentialType),
+        'credentialSchema' => CredentialSchemaNormalizer::normalize(
+            is_callable([$connector, 'getCredentialSchema'])
+                ? $connector->{'getCredentialSchema'}()
+                : defaultCredentialSchema($credentialType),
+        ),
         'inputs' => $connector->getInputs(),
         'outputs' => $connector->getOutputs(),
         'source' => $source,

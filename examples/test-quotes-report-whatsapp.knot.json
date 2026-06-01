@@ -1,0 +1,85 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-06-01T08:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "ref": "WF_DEMO_QUOTES_WHATSAPP",
+    "label": "Demo — Rapport devis → WhatsApp (cron)",
+    "description": "Exemple Pro Pack : agrège les 10 derniers devis (llx_propal) puis envoie un résumé WhatsApp. Nécessite Knot Pro Pack, une credential whatsapp.cloud (Meta) ou twilio.api (Twilio), et un numéro destinataire E.164. Voir docs/connectors/whatsapp.md.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "WF_DEMO_QUOTES_WHATSAPP",
+        "label": "Demo — Rapport devis → WhatsApp (cron)",
+        "tags": ["demo", "report", "whatsapp", "quotes", "cron", "pro-pack"],
+        "settings": {
+          "timeoutSeconds": 60,
+          "errorPolicy": "stop",
+          "logPayloads": false
+        },
+        "schedules": [
+          {
+            "cronExpression": "0 8 * * 1",
+            "timezone": "Europe/Paris",
+            "isActive": false
+          }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "trigger_cron",
+          "type": "trigger.cron",
+          "label": "Chaque lundi 8h",
+          "subtitle": "Planification hebdomadaire (désactivée par défaut)",
+          "position": { "x": 80, "y": 220 },
+          "config": {
+            "cronExpression": "0 8 * * 1",
+            "timezone": "Europe/Paris"
+          }
+        },
+        {
+          "id": "fetch_quotes_summary",
+          "type": "dolibarr.sql_query",
+          "label": "Synthèse devis",
+          "subtitle": "Compte et liste les 10 derniers devis llx_propal",
+          "position": { "x": 380, "y": 220 },
+          "config": {
+            "query": "SELECT COUNT(*) AS total_devis, IFNULL(GROUP_CONCAT(line ORDER BY datep_iso DESC SEPARATOR '\\n'), 'Aucun devis') AS lines FROM ( SELECT p.datep AS datep_iso, CONCAT( IFNULL(p.ref,'-'), ' · ', IFNULL(s.nom,'-'), ' · ', FORMAT(IFNULL(p.total_ttc,0), 2), ' EUR' ) AS line FROM llx_propal p LEFT JOIN llx_societe s ON s.rowid = p.fk_soc ORDER BY p.datep DESC, p.rowid DESC LIMIT 10 ) AS last10",
+            "limit": 1
+          }
+        },
+        {
+          "id": "send_whatsapp",
+          "type": "action.whatsapp_cloud",
+          "label": "WhatsApp rapport",
+          "subtitle": "Texte libre (fenêtre 24 h) ou template HSM",
+          "position": { "x": 700, "y": 220 },
+          "config": {
+            "credentialId": "{{vars.whatsapp_credential_id}}",
+            "to": "+33601020304",
+            "mode": "text",
+            "body": "Rapport devis Knot\n\nTotal en base : {{$nodes.fetch_quotes_summary.json.rows.0.total_devis}}\n\nDerniers devis :\n{{$nodes.fetch_quotes_summary.json.rows.0.lines}}"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "source": "trigger_cron",
+          "target": "fetch_quotes_summary",
+          "sourceHandle": "main",
+          "targetHandle": "main",
+          "type": "knot"
+        },
+        {
+          "id": "e2",
+          "source": "fetch_quotes_summary",
+          "target": "send_whatsapp",
+          "sourceHandle": "main",
+          "targetHandle": "main",
+          "type": "knot"
+        }
+      ]
+    }
+  }
+}

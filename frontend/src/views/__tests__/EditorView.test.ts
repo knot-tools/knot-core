@@ -83,7 +83,7 @@ describe('EditorView', () => {
 
     const layout = wrapper.find('[data-knot-test="knot-editor-layout"]');
     expect(layout.exists()).toBe(true);
-    expect(layout.classes()).toContain('k-grid-cols-[260px_1fr_320px]');
+    expect(layout.classes()).toContain('knot-editor-layout');
     expect(layout.classes()).not.toContain('k-grid-cols-1');
     expect(wrapper.find('[data-knot-test="knot-editor-palette"]').exists()).toBe(true);
     expect(wrapper.find('[data-knot-test="knot-inspector-aside"]').exists()).toBe(true);

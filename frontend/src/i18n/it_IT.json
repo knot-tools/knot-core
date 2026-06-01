@@ -808,7 +808,9 @@
       "edge_target_invalid": "La cible del collegamento ne riferimento non un nodo existant.",
       "unknown_connector": "Le type di nodo « {connectorType} » n’e non enregistre su questa istanza (estensiones o palier).",
       "graph_cycle": "Le graphe contient au moins un cycle oriente — verifica que i boucles sono voulues.",
-      "orphan_node": "Le nodo {nodeId} n’e non atteignable depuis un trigger via i collegamentos di successo."
+      "orphan_node": "Le nodo {nodeId} n’e non atteignable depuis un trigger via i collegamentos di successo.",
+      "sql_unknown_table": "Il SQL fa riferimento alla tabella sconosciuta `{table}`.",
+      "sql_unknown_table_hint": "Il SQL fa riferimento a `{table}` — intendevi `{hint}`?"
     },
     "import": {
       "object_unknown": "Le workflow « {workflowLabel} » usa il type dolibarr.object « {objectType} » absent del registre d’objets pris en charge.",
@@ -2155,7 +2157,7 @@
         "fields": {
           "query": {
             "title": "Richiesta SQL",
-            "description": "SELECT uniquement bac a sable ; perimetre entite."
+            "description": "Solo SELECT in sandbox. In multi-società, filtrare con entity IN (0, entità corrente) sulle tabelle con colonna entity."
           },
           "limit": {
             "title": "Limite di lignes"
@@ -2187,8 +2189,8 @@
     },
     "notification": {
       "alert": {
-        "label": "Invia alert",
-        "description": "Diffondi alert su Slack, Discord, e-mail, webhook e registro di audit.",
+        "label": "Invia alert (audit)",
+        "description": "Scrive una voce nel registro di audit Knot. Per Slack, Discord, e-mail o webhook usare il connettore Pro Pack « Alert (fan-out) ».",
         "fields": {
           "title": {
             "title": "Titre di l’alerte",

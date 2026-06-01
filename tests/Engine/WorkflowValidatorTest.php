@@ -76,4 +76,23 @@ final class WorkflowValidatorTest extends TestCase
             'edges' => [['source' => 't1', 'target' => 'ghost']],
         ]);
     }
+
+    public function testWarnsOnSqlQueryWithUnknownTableTypo(): void
+    {
+        $issues = $this->validator->validateAll([
+            'schemaVersion' => '1.0',
+            'nodes' => [
+                ['id' => 't1', 'type' => 'trigger.manual'],
+                [
+                    'id' => 'sql1',
+                    'type' => 'dolibarr.sql_query',
+                    'config' => ['query' => 'SELECT ref FROM llx_propale'],
+                ],
+            ],
+            'edges' => [['source' => 't1', 'target' => 'sql1']],
+        ]);
+
+        $keys = array_map(static fn (array $i): string => (string) ($i['messageKey'] ?? ''), $issues);
+        self::assertContains('sql_unknown_table_hint', $keys);
+    }
 }

@@ -808,7 +808,9 @@
       "edge_target_invalid": "La cible du lien ne référence pas un nœud existant.",
       "unknown_connector": "Le type de nœud « {connectorType} » n’est pas enregistré sur cette instance (extensions ou palier).",
       "graph_cycle": "Le graphe contient au moins un cycle orienté — vérifiez que les boucles sont voulues.",
-      "orphan_node": "Le nœud {nodeId} n’est pas atteignable depuis un déclencheur via les liens de succès."
+      "orphan_node": "Le nœud {nodeId} n’est pas atteignable depuis un déclencheur via les liens de succès.",
+      "sql_unknown_table": "Le SQL référence une table inconnue `{table}`.",
+      "sql_unknown_table_hint": "Le SQL référence la table `{table}` — vouliez-vous dire `{hint}` ?"
     },
     "import": {
       "object_unknown": "Le workflow « {workflowLabel} » utilise le type dolibarr.object « {objectType} » absent du registre d’objets pris en charge.",
@@ -2155,7 +2157,7 @@
         "fields": {
           "query": {
             "title": "Requête SQL",
-            "description": "SELECT uniquement bac à sable ; périmètre entité."
+            "description": "SELECT uniquement. En multi-société, filtrer avec entity IN (0, entité courante) sur les tables qui ont une colonne entity."
           },
           "limit": {
             "title": "Limite de lignes"
@@ -2187,8 +2189,8 @@
     },
     "notification": {
       "alert": {
-        "label": "Envoyer une alerte",
-        "description": "Diffuser une alerte via Slack, Discord, e-mail, webhook et journal d’audit.",
+        "label": "Envoyer une alerte (audit)",
+        "description": "Écrit une entrée dans le journal d’audit Knot. Pour Slack, Discord, e-mail ou webhook, utilisez le connecteur Pro Pack « Alerte (fan-out) ».",
         "fields": {
           "title": {
             "title": "Titre de l’alerte",

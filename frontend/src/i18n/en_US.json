@@ -808,7 +808,9 @@
       "edge_target_invalid": "Edge target does not reference an existing node.",
       "unknown_connector": "Node type \"{connectorType}\" is not registered on this instance (extensions or tier may apply).",
       "graph_cycle": "Workflow graph contains at least one directed cycle; ensure loops are intentional.",
-      "orphan_node": "Node {nodeId} is not reachable from any trigger following success edges."
+      "orphan_node": "Node {nodeId} is not reachable from any trigger following success edges.",
+      "sql_unknown_table": "SQL references unknown table `{table}`.",
+      "sql_unknown_table_hint": "SQL references unknown table `{table}` — did you mean `{hint}`?"
     },
     "import": {
       "object_unknown": "Workflow \"{workflowLabel}\" uses dolibarr.object type \"{objectType}\" which is not in the supported object registry.",
@@ -2155,7 +2157,7 @@
         "fields": {
           "query": {
             "title": "SQL query",
-            "description": "Sandboxed SELECT only; entity-scoped."
+            "description": "Sandboxed SELECT only. Filter multi-company data with entity IN (0, current entity) when the table has an entity column."
           },
           "limit": {
             "title": "Row limit"

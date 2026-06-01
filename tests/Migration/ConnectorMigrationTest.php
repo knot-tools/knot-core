@@ -45,6 +45,8 @@ final class ConnectorMigrationTest extends TestCase
             'action.prestashop',
             'action.shopify',
             'action.sftp',
+            'action.slack',
+            'action.discord',
             'action.stripe',
             'action.telegram',
             'action.twilio_sms',
@@ -61,10 +63,10 @@ final class ConnectorMigrationTest extends TestCase
         self::assertSame($expected, $actual, 'Migration list drifted from the Pro Pack contract.');
     }
 
-    public function testMigratedListHasExactlyTwentySevenUniqueIds(): void
+    public function testMigratedListHasExactlyTwentyNineUniqueIds(): void
     {
         $ids = ConnectorMigration::migratedConnectorIds();
-        self::assertCount(27, $ids, 'Exactly 27 connectors are covered by the Pro Pack migration contract.');
+        self::assertCount(29, $ids, 'Exactly 29 connectors are covered by the Pro Pack migration contract.');
         self::assertSame(count($ids), count(array_unique($ids)), 'Migrated connector ids must be unique.');
     }
 

@@ -327,13 +327,25 @@ if (class_exists(\Knot\Marketplace\SidebarBadge::class) && class_exists(\Knot\Re
             <i class="fas fa-bolt"></i>
         </a>
     </div>
-    <button
-        type="button"
-        class="knot-nav__collapse"
-        data-knot-nav-collapse
-        aria-expanded="true"
-        title="<?php print dol_escape_htmltag($langs->trans('KnotNavCollapse')); ?>"
-    >
-        <i class="fas fa-chevron-left" aria-hidden="true"></i>
-    </button>
+    <div class="knot-nav__footer">
+        <a
+            class="knot-nav__exit"
+            href="<?php print dol_escape_htmltag(DOL_URL_ROOT . '/index.php?mainmenu=home'); ?>"
+            title="<?php print dol_escape_htmltag($langs->trans('KnotNavExitDolibarr')); ?>"
+            aria-label="<?php print dol_escape_htmltag($langs->trans('KnotNavExitDolibarr')); ?>"
+            data-knot-test="knot-nav-exit"
+        >
+            <i class="fas fa-home" aria-hidden="true"></i>
+            <span class="knot-nav__exit-label"><?php print dol_escape_htmltag($langs->trans('KnotNavExitDolibarr')); ?></span>
+        </a>
+        <button
+            type="button"
+            class="knot-nav__collapse"
+            data-knot-nav-collapse
+            aria-expanded="true"
+            title="<?php print dol_escape_htmltag($langs->trans('KnotNavCollapse')); ?>"
+        >
+            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+        </button>
+    </div>
 </aside>

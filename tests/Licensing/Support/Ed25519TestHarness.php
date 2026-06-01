@@ -39,6 +39,17 @@ final class Ed25519TestHarness
     /**
      * @param array<string, mixed> $payload
      */
+    public function signManifest(array $manifest): string
+    {
+        $message = \Knot\Licensing\ManifestSignatureVerifier::canonicalMessage($manifest, stripSignature: true);
+        $sig = sodium_crypto_sign_detached($message, $this->secretKey);
+
+        return sodium_bin2hex($sig);
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     */
     public function sign(array $payload): string
     {
         $canonical = SignatureVerifier::canonicalize($payload);

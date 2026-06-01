@@ -8,6 +8,7 @@ use Knot\Connectors\Connector;
 use Knot\Connectors\ConnectorInterface;
 use Knot\Connectors\DryRunAware;
 use Knot\Engine\ExpressionResolver;
+use Knot\Errors\DolibarrErrorTranslator;
 use Knot\Repository\AuditLogRepository;
 use Knot\Security\SqlSafetyAnalyzer;
 use RuntimeException;
@@ -114,7 +115,7 @@ final class SqlQuery implements ConnectorInterface, DryRunAware
 
         $res = $db->query($query);
         if (!$res) {
-            throw new RuntimeException('SQL query failed: ' . (string) $db->lasterror());
+            $this->throwSqlFailure((string) $db->lasterror(), $node);
         }
 
         $rows = [];
@@ -147,5 +148,22 @@ final class SqlQuery implements ConnectorInterface, DryRunAware
             'safetyReason' => $analysis['valid'] ? null : ($analysis['reason'] ?? 'invalid query'),
             'note' => '[DRY-RUN] Query NOT executed. Safety analysis ran but no row was read or written.',
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $node
+     */
+    private function throwSqlFailure(string $dbMessage, array $node): void
+    {
+        $technical = $dbMessage !== ''
+            ? 'SQL query failed: ' . $dbMessage
+            : 'SQL query failed.';
+        throw (new DolibarrErrorTranslator())->translate(
+            new RuntimeException($technical),
+            [
+                'connector' => 'dolibarr.sql_query',
+                'nodeId' => (string) ($node['id'] ?? ''),
+            ]
+        );
     }
 }

@@ -72,6 +72,24 @@ describe('validateWorkflow', () => {
     expect(issues.some((i) => i.code === 'loop_items_missing')).toBe(true);
   });
 
+  it('warns on sql_query with common propale table typo', () => {
+    const issues = validateWorkflow(
+      [
+        trigger,
+        {
+          id: 'sql1',
+          data: {
+            type: 'dolibarr.sql_query',
+            label: 'SQL',
+            config: { query: 'SELECT ref FROM llx_propale' },
+          },
+        },
+      ],
+      [{ source: 'trig', target: 'sql1' }],
+    );
+    expect(issues.some((i) => i.code === 'sql_unknown_table_hint')).toBe(true);
+  });
+
   it('returns no issues for a happy-path workflow', () => {
     const issues = validateWorkflow(
       [

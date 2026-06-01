@@ -1,4 +1,4 @@
-generated_at=2026-05-26T06:07:16Z
+generated_at=2026-06-01T07:14:53Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/ISSUE_TEMPLATE/bug_report.yml
@@ -82,6 +82,7 @@ class/Api/Doc/Schemas/Workflow.json
 class/Api/Doc/Schemas/WorkflowList.json
 class/Api/JsonResponse.php
 class/Api/WorkflowCreateGuard.php
+class/Assistant/WorkflowAssistantPromptBuilder.php
 class/Capabilities/CapabilitiesBuilder.php
 class/Capabilities/WorkflowImportAnalyzer.php
 class/Compatibility/DolibarrCatalogGenerator.php
@@ -98,6 +99,7 @@ class/Connectors/Connector.php
 class/Connectors/ConnectorInterface.php
 class/Connectors/ConnectorRegistry.php
 class/Connectors/CredentialAware.php
+class/Connectors/CredentialSchemaNormalizer.php
 class/Connectors/Dolibarr/ObjectAction.php
 class/Connectors/Dolibarr/SpecializedAction.php
 class/Connectors/Dolibarr/SqlQuery.php
@@ -137,6 +139,7 @@ class/Credentials/CredentialResolver.php
 class/Credentials/CredentialResolverInterface.php
 class/Cron/CronEvaluator.php
 class/Dolibarr/DescriptorCache.php
+class/Dolibarr/DolibarrTableCatalog.php
 class/Dolibarr/ExtrafieldsSchema.php
 class/Dolibarr/NativeWorkflowScanner.php
 class/Dolibarr/ObjectFactory.php
@@ -170,6 +173,7 @@ class/Errors/DolibarrIntegrityError.php
 class/Errors/DolibarrInternalError.php
 class/Errors/DolibarrPermissionError.php
 class/Errors/DolibarrRecordNotFoundError.php
+class/Errors/DolibarrSqlError.php
 class/Errors/ErrorCodes.php
 class/Errors/ExecutionError.php
 class/Errors/ExecutionErrorPayloadCodec.php
@@ -214,6 +218,7 @@ class/Licensing/LicenseAuditThrottlePolicy.php
 class/Licensing/LicenseCache.php
 class/Licensing/LicenseStatus.php
 class/Licensing/ManifestSignatureMatch.php
+class/Licensing/ManifestSignatureVerifier.php
 class/Licensing/OfficialManifestSignatures.php
 class/Licensing/OfflineGracePolicy.php
 class/Licensing/PinnedPublicKeys.php
@@ -264,6 +269,7 @@ class/Security/OAuth2Helper.php
 class/Security/RateLimiter.php
 class/Security/SecretMasker.php
 class/Security/SqlSafetyAnalyzer.php
+class/Security/SqlTableReferenceValidator.php
 class/Security/UrlPolicy.php
 class/Security/UrlPolicyContract.php
 class/Security/WorkflowActivationGuard.php
@@ -369,6 +375,7 @@ examples/starter/06-showcase-power-logic.knot.json
 examples/starter/README.md
 examples/test-greeting.knot.json
 examples/test-introspection.knot.json
+examples/test-quotes-report-whatsapp.knot.json
 examples/test-quotes-report.knot.json
 frontend/.gitignore
 frontend/README.md
@@ -548,6 +555,7 @@ frontend/src/views/TemplatesView.vue
 frontend/src/views/UpdatesView.vue
 frontend/src/views/VariablesView.vue
 frontend/src/views/WorkflowsView.vue
+frontend/src/views/__tests__/CredentialsView.spec.ts
 frontend/src/views/__tests__/EditorView.test.ts
 frontend/src/views/__tests__/MarketplaceView.test.ts
 frontend/src/views/__tests__/UpdatesView.spec.ts
@@ -694,6 +702,7 @@ tests/Api/Doc/OpenApiGeneratorTest.php
 tests/Api/InternalApiAuthMatrixTest.php
 tests/Api/JsonResponseTest.php
 tests/Api/WorkflowCreateGuardTest.php
+tests/Assistant/WorkflowAssistantPromptBuilderTest.php
 tests/Capabilities/CapabilitiesBuilderTest.php
 tests/Capabilities/WorkflowImportAnalyzerTest.php
 tests/Capabilities/WorkflowImportSecurityTest.php
@@ -708,6 +717,7 @@ tests/Connectors/ConnectorCoreI18nMetadataTest.php
 tests/Connectors/ConnectorRegistryCorePaletteTest.php
 tests/Connectors/ConnectorRegistryMethodsTest.php
 tests/Connectors/CoreConnectorDryRunTest.php
+tests/Connectors/CredentialSchemaNormalizerTest.php
 tests/Connectors/Dolibarr/ObjectActionExtendedTest.php
 tests/Connectors/Dolibarr/ObjectActionTest.php
 tests/Connectors/Dolibarr/SpecializedActionTest.php
@@ -722,6 +732,7 @@ tests/Credentials/CredentialResolverTest.php
 tests/Cron/CronEvaluatorTest.php
 tests/Dolibarr/DescriptorCacheFileCountTest.php
 tests/Dolibarr/DescriptorCacheTest.php
+tests/Dolibarr/DolibarrTableCatalogTest.php
 tests/Dolibarr/ExtrafieldsSchemaTest.php
 tests/Dolibarr/ObjectActionPropalLineMappingTest.php
 tests/Dolibarr/ObjectFactoryDescribeTest.php
@@ -774,6 +785,7 @@ tests/Licensing/InstanceBinderTest.php
 tests/Licensing/LicenseActivateCachePersistenceTest.php
 tests/Licensing/LicenseCacheTest.php
 tests/Licensing/LicenseStatusTest.php
+tests/Licensing/ManifestSignatureVerifierTest.php
 tests/Licensing/OfficialManifestSignaturesTest.php
 tests/Licensing/OfflineGracePolicyTest.php
 tests/Licensing/PinnedPublicKeysTest.php
@@ -824,6 +836,7 @@ tests/Security/OAuth2HelperTest.php
 tests/Security/RateLimiterTest.php
 tests/Security/SecretMaskerTest.php
 tests/Security/SqlSafetyAnalyzerTest.php
+tests/Security/SqlTableReferenceValidatorTest.php
 tests/Security/UrlPolicyTest.php
 tests/Security/WorkflowActivationGuardTest.php
 tests/Security/WorkflowRiskAnalyzerExtendedTest.php

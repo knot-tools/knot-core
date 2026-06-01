@@ -17,6 +17,12 @@ interface CredentialAware
      * Return the JSON-schema-like description of secrets stored alongside
      * the credential. Required fields go in the top-level `required` array.
      *
+     * Canonical shape (recommended):
+     * `{ type: 'object', required: ['apiKey'], properties: { apiKey: { title, type, secret } } }`
+     *
+     * Legacy shape (still accepted via {@see CredentialSchemaNormalizer}):
+     * `{ type: 'object', fields: [{ name, label, type, secret, required }] }`
+     *
      * Each property MAY include:
      *  - `secret: true` to flag values that must be masked in the UI/logs,
      *  - `title`, `description`,

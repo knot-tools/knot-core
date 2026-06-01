@@ -7,7 +7,116 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
-## [2.13.8] — 2026-05-26
+## [2.13.9] - 2026-06-01
+
+### Added
+
+- **`ManifestSignatureVerifier`:** cryptographic Ed25519 verification of extension
+  manifests at load time (release signing key); reduces dependency on static pin list.
+- **Credential schema normalizer**, **SQL table reference validator**, **Dolibarr table
+  catalog**, **workflow assistant prompt builder**, WhatsApp connector docs and example.
+
+### Fixed
+
+- **Host layout:** `#knot-app` offset synced to measured nav width (JS + CSS guard);
+  Dolibarr CSS double-`?` URL fix via explicit `<link>` tags in preview/setup.
+- **Responsive layout** e2e spec; editor/connectors grid at 880px breakpoint.
+
+## [Unreleased — archived batch notes]
+
+### Fixed — Responsive host layout (preview.php blank canvas)
+
+- **`css/knot-host.css`:** expand Dolibarr `#id-right` / `.fiche` when `.knot-nav` is
+  present and give `#knot-app` an explicit `width: calc(100% - var(--knot-nav-width))`
+  so the Vue host is not collapsed to **0px** beside the fixed rail.
+- **`frontend/src/styles/index.css`:** remove `container-type: inline-size` from `#knot-app`
+  (containment on the host amplified the collapse inside Dolibarr's narrow wrapper).
+- **`workflows/preview.php` / `admin/setup.php`:** cache-bust `knot-host.css` and
+  `knot-tokens.css` via `filemtime` (Cloudflare on demo caches static CSS 7 days).
+- **Follow-up:** reserve rail space with `#id-right { padding-left }` instead of
+  `#knot-app { margin-left + 100vw }` (sidebar no longer overlaps the editor); compact
+  « Quitter vers Dolibarr » footer button with collapse chevron pinned to the right;
+  zero top padding on `#id-container` / `#id-right` and `--knot-dolibarr-topbar-h`
+  for the gap under Dolibarr's top menu.
+- **`workflows/preview.php` / `admin/setup.php`:** load Knot CSS via explicit `<link>`
+  tags in `$knotHead` (Dolibarr's `llxHeader` CSS array produced invalid
+  `?v=…?lang=…` URLs) plus inline `#knot-host-layout-guard` beside the fixed rail.
+
+### Added — WS14 transverse (beta onboarding & ops)
+
+- **Beta onboarding:** [`docs/beta-testers/onboarding.md`](docs/beta-testers/onboarding.md) — install Core,
+  wizard, Pro Pack / Migration licence activation (no Core activation code).
+- **Apply recovery runbook:** [`docs/runbooks/apply-update-recovery.md`](docs/runbooks/apply-update-recovery.md) —
+  one-shot ZIP restore when in-app Apply fails (`release_signature_invalid`, rollback `failed`, or
+  extension licence **TAMPERED** after a bad swap).
+- **Examples audit:** all `core/examples/**/*.knot.json` and `pro-pack/examples/*.knot.json` checked —
+  no `llx_propale` or other catalogued SQL typos; propal samples use `llx_propal`.
+- **i18n parity (WS3/WS4/WS7/WS10/WS11):** `KnotNavExitDolibarr` in six Dolibarr `knot.lang` locales;
+  `sql_unknown_table` / `sql_unknown_table_hint` and `dolibarr.sql_query` field hints in six Vue locales.
+- **Version coherence:** no semver bump in this batch — display version stays **2.13.8**
+  (`modKnot` / `Version::FALLBACK` / `frontend/package.json` unchanged).
+
+### Added — Credentials regression tests (WS7)
+
+- Vitest `CredentialsView.spec.ts` — legacy `fields[]` credential schema renders secret inputs in the modal.
+
+### Added — Assistant & SQL grounding (WS4)
+
+- **Assistant prompt:** `WorkflowAssistantPromptBuilder` grounds LLM prompts with
+  curated Dolibarr table names from `ObjectFactory` / introspection
+  (`DolibarrTableCatalog`); explicit SQL rules (propal → `llx_propal`, never
+  `llx_propale`, `fk_statut`, multi-entity filter). `api/assistant.php` uses
+  `ConnectorRegistry::allWithExtensions()` for the connector catalog.
+- **SQL lint on save:** `WorkflowValidator` warns on unknown `llx_*` tables in
+  `dolibarr.sql_query` nodes (`SqlTableReferenceValidator`) with typo hints;
+  mirrored client-side in `validator.ts` for instant editor feedback.
+- **Error surfacing:** `DolibarrErrorTranslator` maps SQL failures to
+  `KNOT_DOLIBARR_SQL` (`DolibarrSqlError`); `WorkflowEngine` and
+  `dolibarr.sql_query` propagate structured Knot payloads instead of generic
+  execution errors.
+- **Docs / i18n:** beta troubleshooting (entity scope, SQL lint, execution codes);
+  `connectors.dolibarr.sql_query` field hints in six Vue locales.
+- **Tests:** `WorkflowAssistantPromptBuilderTest`, `DolibarrTableCatalogTest`,
+  `SqlTableReferenceValidatorTest`; SQL cases in `DolibarrErrorTranslatorTest`
+  and `WorkflowValidatorTest`.
+
+### Changed — Responsive shell (WS3)
+
+- **Editor grid:** replaced fixed Tailwind `260px 1fr 320px` columns with CSS
+  variables (`--knot-editor-palette-w`, `--knot-editor-inspector-w`) and
+  `@container` stacking at **880px** (`--knot-layout-breakpoint`), aligned with
+  `.knot-nav` responsive rules in `knot-host.css`. Global overflow guards on
+  `#knot-app` and grid children (`min-width: 0`, `max-width: 100%`,
+  `overflow-x: clip`).
+- **Connectors catalog:** same breakpoint via `.knot-connectors-layout` +
+  `.knot-view-shell` overflow guards.
+- **Host nav:** `.knot-nav__exit` link beside the collapse control → Dolibarr
+  home (`index.php?mainmenu=home`); i18n `KnotNavExitDolibarr` (six Dolibarr locales).
+- **E2E:** `core/tests/e2e/specs/responsive-layout.spec.ts` and
+  `test-playwright/tests/responsive-layout.spec.ts` (`npm run test:responsive`).
+
+### Fixed — Pro Pack credentials UI (WS7)
+
+- **`CredentialSchemaNormalizer`** converts legacy Pro Pack `fields[]` credential
+  schemas to JSON-schema `properties`/`required` at the API boundary
+  (`api/connectors.php`, `api/credentials.php` with extension connectors).
+- **`CredentialsView.vue`** frontend fallback for legacy `fields[]` shape.
+
+### Fixed — Extension manifest verification (TAMPERED on Apply)
+
+- **Cryptographic manifest verification.** `DolistoreValidator` now verifies
+  `license.manifestSignature` with the pinned **release** Ed25519 public key
+  (`ManifestSignatureVerifier`, same canonical JSON as `license/bin/sign_manifest.php`).
+  Any editor-signed extension release is accepted without bumping Core pin digests.
+- **Transition fallback.** `OfficialManifestSignatures::map()` remains as a digest
+  fallback during the rollout window when crypto verify is unavailable.
+
+### Changed — Extension manifest release process
+
+- **No Core bump per extension version.** Re-sign the manifest, publish the extension ZIP,
+  and Apply — Core no longer requires a synchronized pin update for each new digest.
+  See `docs/runbooks/extension-manifest-release.md`.
+
 
 ### Fixed — Marketplace UX polish
 

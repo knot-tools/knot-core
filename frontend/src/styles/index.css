@@ -17,6 +17,17 @@
     font-family: var(--knot-font-sans);
     color: var(--knot-color-text);
     background: var(--knot-color-bg);
+    /* Do not set container-type here — inline-size containment on the host
+       collapses width to 0 inside Dolibarr's narrow .fiche wrapper. Container
+       queries live on inner layouts (.knot-editor-layout, etc.). */
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  #knot-app > * {
+    min-width: 0;
+    max-width: 100%;
   }
 
   #knot-app *, #knot-app *::before, #knot-app *::after {
@@ -246,17 +257,62 @@
     margin: -12% 0 0 -8%;
   }
 
-  @media (max-width: 900px) {
-    #knot-app table {
-      display: block;
-      max-width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
+  #knot-app .km-shell__main {
+    width: 100%;
+  }
 
-    /* Editor keeps a 3-column grid on desktop; only narrow viewports stack. */
+  #knot-app .knot-view-shell {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  /*
+   * Editor + connectors split layouts — container queries follow the host nav
+   * breakpoint (--knot-layout-breakpoint, 880px). Stacking triggers when the
+   * Vue shell is narrower than three fixed columns + canvas, including when
+   * the Dolibarr left rail consumes --knot-nav-width.
+   */
+  #knot-app .knot-editor-layout {
+    container-type: inline-size;
+    container-name: knot-editor;
+    display: grid;
+    grid-template-columns:
+      minmax(0, var(--knot-editor-palette-w, 260px))
+      minmax(0, 1fr)
+      minmax(0, var(--knot-editor-inspector-w, 320px));
+    height: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  #knot-app .knot-editor-layout__pane {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  #knot-app .knot-connectors-layout {
+    container-type: inline-size;
+    container-name: knot-connectors;
+    display: grid;
+    grid-template-columns:
+      minmax(0, var(--knot-connectors-list-w, 320px))
+      minmax(0, 1fr);
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #knot-app .knot-connectors-layout__pane {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  @container knot-editor (max-width: 879px) {
     #knot-app .knot-editor-layout {
-      grid-template-columns: 1fr !important;
+      grid-template-columns: minmax(0, 1fr);
       grid-template-rows: auto auto minmax(520px, 1fr);
     }
 
@@ -270,6 +326,51 @@
 
     #knot-app .knot-editor-layout .vue-flow {
       min-height: 480px;
+    }
+  }
+
+  @container knot-connectors (max-width: 879px) {
+    #knot-app .knot-connectors-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    #knot-app .knot-connectors-layout > aside {
+      max-height: 360px;
+    }
+  }
+
+  @media (max-width: 880px) {
+    #knot-app table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Fallback when @container is unsupported — matches knot-host.css nav breakpoint. */
+    #knot-app .knot-editor-layout {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto minmax(520px, 1fr);
+    }
+
+    #knot-app .knot-editor-layout > aside {
+      max-height: 280px;
+    }
+
+    #knot-app .knot-editor-layout > main {
+      min-height: 520px;
+    }
+
+    #knot-app .knot-editor-layout .vue-flow {
+      min-height: 480px;
+    }
+
+    #knot-app .knot-connectors-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    #knot-app .knot-connectors-layout > aside {
+      max-height: 360px;
     }
   }
 
@@ -300,9 +401,5 @@
 
   #knot-app .km-card {
     border-radius: var(--k-radius-knot-md, 0.5rem);
-  }
-
-  #knot-app .km-shell__main {
-    width: 100%;
   }
 }
