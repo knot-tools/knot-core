@@ -46,6 +46,31 @@ final class ManifestSignatureVerifier
     }
 
     /**
+     * Verify the on-disk `knot-extension.json` bytes (same payload signed on licence VM).
+     *
+     * {@see ManifestSchema::validate()} normalises defaults and must not be passed to
+     * {@see verify()} — canonical JSON would diverge from the signed file.
+     */
+    public function verifyFromPath(string $manifestPath): bool
+    {
+        if (!is_readable($manifestPath)) {
+            return false;
+        }
+
+        $raw = file_get_contents($manifestPath);
+        if ($raw === false) {
+            return false;
+        }
+
+        $decoded = json_decode($raw, true);
+        if (!is_array($decoded)) {
+            return false;
+        }
+
+        return $this->verify($decoded);
+    }
+
+    /**
      * Build the canonical signed payload bytes for a manifest.
      *
      * @param array<string, mixed> $manifest

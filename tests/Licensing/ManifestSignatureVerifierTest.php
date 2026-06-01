@@ -58,4 +58,34 @@ final class ManifestSignatureVerifierTest extends TestCase
 
         self::assertFalse($verifier->verify($manifest));
     }
+
+    public function testVerifyFromPathReadsOnDiskManifest(): void
+    {
+        $harness = new Ed25519TestHarness();
+        $manifest = [
+            'id' => 'knot-pro-pack',
+            'version' => '0.99.0-unlisted',
+            'license' => [
+                'type' => 'commercial',
+                'validation' => 'dolistore',
+                'productId' => '12345',
+            ],
+        ];
+        $message = ManifestSignatureVerifier::canonicalMessage($manifest, stripSignature: true);
+        $manifest['license']['manifestSignature'] = sodium_bin2hex(
+            sodium_crypto_sign_detached($message, $harness->secretKey()),
+        );
+
+        $path = sys_get_temp_dir() . '/knot-manifest-' . uniqid('', true) . '.json';
+        file_put_contents($path, json_encode($manifest, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+
+        try {
+            $verifier = new ManifestSignatureVerifier(
+                new SignatureVerifier([$harness->publicKeyHex()]),
+            );
+            self::assertTrue($verifier->verifyFromPath($path));
+        } finally {
+            @unlink($path);
+        }
+    }
 }

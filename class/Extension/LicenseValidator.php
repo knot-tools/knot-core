@@ -66,9 +66,10 @@ class LicenseValidator
      * Inspect the license state for an extension manifest. Never throws.
      *
      * @param array<string, mixed> $manifest Normalised manifest (from ManifestSchema)
+     * @param string|null $manifestPath Absolute path to on-disk `knot-extension.json`
      * @return array{status: string, expiresAt: ?string, issuedTo: ?string, error: ?string}
      */
-    public function inspect(array $manifest): array
+    public function inspect(array $manifest, ?string $manifestPath = null): array
     {
         $license = $manifest['license'] ?? [];
         $type = is_array($license) ? ($license['type'] ?? 'free') : 'free';
@@ -94,7 +95,7 @@ class LicenseValidator
                     'error' => 'Dolistore validation requested but no DolistoreValidator wired in this runtime',
                 ];
             }
-            $resolved = $this->dolistoreValidator->inspect($manifest);
+            $resolved = $this->dolistoreValidator->inspect($manifest, $manifestPath);
             return [
                 'status' => $this->mapDolistoreStatus($resolved->status),
                 'expiresAt' => $resolved->expiresAt,
