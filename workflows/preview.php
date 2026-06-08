@@ -274,8 +274,15 @@ include __DIR__ . '/../tpl/knot-leftnav.tpl.php';
 
 ?>
 <style id="knot-host-layout-guard">
+:root {
+    --knot-mc-sidebar-w: 240px;
+    --knot-nav-width: var(--knot-mc-sidebar-w);
+    --knot-content-gap: 16px;
+    --knot-host-margin-left: calc(var(--knot-nav-width) + var(--knot-content-gap));
+}
 body.knot-host-page #id-container,
 body:has(.knot-nav) #id-container {
+    display: block !important;
     margin-top: 0 !important;
     padding-top: 0 !important;
     margin-left: 0 !important;
@@ -288,13 +295,20 @@ body:has(.knot-nav) #id-right {
     margin-top: 0 !important;
     padding-top: 0 !important;
     margin-left: 0 !important;
-    padding-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: var(--knot-host-margin-left) !important;
+    padding-right: var(--knot-content-gap) !important;
     box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
 }
 body.knot-host-page .fiche,
 body:has(.knot-nav) .fiche {
     margin: 0 !important;
     padding: 0 !important;
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
 }
 body.knot-host-page #knot-app,
 body.knot-host-page .knot-engine-banner,
@@ -302,9 +316,10 @@ body.knot-host-page .knot-shell,
 body:has(.knot-nav) #knot-app,
 body:has(.knot-nav) .knot-engine-banner,
 body:has(.knot-nav) .knot-shell {
-    margin-left: var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px)) !important;
-    width: calc(100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px))) !important;
-    max-width: calc(100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px))) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box;
 }
 </style>
@@ -320,6 +335,7 @@ body:has(.knot-nav) .knot-shell {
 })();
 window.KNOT_API_BASE = <?php print json_encode($apiBase); ?>;
 window.KNOT_CSRF_TOKEN = <?php print json_encode($csrfToken); ?>;
+window.DOL_URL_ROOT = <?php print json_encode(DOL_URL_ROOT); ?>;
 window.KNOT_BASE_URL = <?php print json_encode(DOL_URL_ROOT . '/custom/knot/workflows/preview.php'); ?>;
 window.KNOT_MARKETPLACE_UI_ENABLED = <?php print $marketplaceUiEnabled ? 'true' : 'false'; ?>;
 window.KNOT_ENGINE_ENABLED = <?php print $engineEnabled ? 'true' : 'false'; ?>;

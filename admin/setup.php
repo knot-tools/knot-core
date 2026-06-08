@@ -721,9 +721,12 @@ $knotHead = '<link rel="icon" type="image/svg+xml" href="' . dol_escape_htmltag(
 
 $knotHostCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot-host.css';
 $knotHostCssVer = file_exists($knotHostCssPath) ? rawurlencode((string) filemtime($knotHostCssPath)) : '0';
+$knotTokensCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot-tokens.css';
+$knotTokensCssVer = file_exists($knotTokensCssPath) ? rawurlencode((string) filemtime($knotTokensCssPath)) : '0';
 $knotModuleCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot.css';
 $knotModuleCssVer = file_exists($knotModuleCssPath) ? rawurlencode((string) filemtime($knotModuleCssPath)) : '0';
 $knotCssBase = DOL_URL_ROOT . '/custom/knot';
+$knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot-tokens.css?v=' . $knotTokensCssVer) . '">';
 $knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot-host.css?v=' . $knotHostCssVer) . '">';
 $knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot.css?v=' . $knotModuleCssVer) . '">';
 
@@ -779,12 +782,20 @@ $knotSetupOnclickCronCopyCta = htmlspecialchars(
     ENT_QUOTES,
     'UTF-8'
 );
+$knotActive = 'setup';
 include __DIR__ . '/../tpl/knot-leftnav.tpl.php';
 
 ?>
 <style id="knot-host-layout-guard">
+:root {
+    --knot-mc-sidebar-w: 240px;
+    --knot-nav-width: var(--knot-mc-sidebar-w);
+    --knot-content-gap: 16px;
+    --knot-host-margin-left: calc(var(--knot-nav-width) + var(--knot-content-gap));
+}
 body.knot-host-page #id-container,
 body:has(.knot-nav) #id-container {
+    display: block !important;
     margin-top: 0 !important;
     padding-top: 0 !important;
     margin-left: 0 !important;
@@ -797,21 +808,29 @@ body:has(.knot-nav) #id-right {
     margin-top: 0 !important;
     padding-top: 0 !important;
     margin-left: 0 !important;
-    padding-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: var(--knot-host-margin-left) !important;
+    padding-right: var(--knot-content-gap) !important;
     box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
 }
 body.knot-host-page .fiche,
 body:has(.knot-nav) .fiche {
     margin: 0 !important;
     padding: 0 !important;
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
 }
 body.knot-host-page .knot-shell,
 body.knot-host-page #knot-app,
 body:has(.knot-nav) .knot-shell,
 body:has(.knot-nav) #knot-app {
-    margin-left: var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px)) !important;
-    width: calc(100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px))) !important;
-    max-width: calc(100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px))) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box;
 }
 </style>

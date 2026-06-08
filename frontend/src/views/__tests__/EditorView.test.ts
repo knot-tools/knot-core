@@ -20,6 +20,8 @@ vi.mock('@vue-flow/core', () => ({
     onConnect: vi.fn(),
     setNodes: vi.fn(),
     setEdges: vi.fn(),
+    fitView: vi.fn(),
+    updateNodeInternals: vi.fn(),
   }),
   ConnectionMode: { Loose: 'loose' },
   MarkerType: { ArrowClosed: 'arrowclosed' },

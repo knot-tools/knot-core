@@ -29,6 +29,32 @@ final class ExpressionResolverTest extends TestCase
         self::assertSame('199', $this->resolver->resolve('{{ $json.invoice.lines.0.amount }}', $context));
     }
 
+    public function testResolvesBracketArrayIndexInPath(): void
+    {
+        $context = ['json' => ['rows' => [['iban' => 'FR7612345678901234567890189']]]];
+        self::assertSame(
+            'FR7612345678901234567890189',
+            $this->resolver->resolve('{{ $json.rows[0].iban }}', $context)
+        );
+        self::assertSame(
+            'FR7612345678901234567890189',
+            $this->resolver->resolve('{{ $json.rows.0.iban }}', $context)
+        );
+    }
+
+    public function testResolvesNodesScopedBracketPath(): void
+    {
+        $context = [
+            'nodes' => [
+                'sql_iban' => ['json' => ['rows' => [['iban' => 'FR76DEMO']]]],
+            ],
+        ];
+        self::assertSame(
+            'FR76DEMO',
+            $this->resolver->resolve('{{ $nodes.sql_iban.json.rows[0].iban }}', $context)
+        );
+    }
+
     public function testReturnsEmptyStringWhenPathMissing(): void
     {
         self::assertSame('Hello, ', $this->resolver->resolve('Hello, {{ $json.firstName }}', ['json' => []]));

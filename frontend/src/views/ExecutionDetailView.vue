@@ -18,6 +18,7 @@ import {
   RotateCcw,
 } from 'lucide-vue-next';
 import { knotApi, type ExecutionLog, type ExecutionSummary } from '../lib/api';
+import { formatExecutionDuration, resolveExecutionDurationMs } from '../lib/executionFormat';
 import ExecutionWaterfall from '../components/executions/ExecutionWaterfall.vue';
 import ExecutionErrorPanel from '../components/risk/ExecutionErrorPanel.vue';
 import { useI18n } from 'vue-i18n';
@@ -92,11 +93,13 @@ function statusIcon(status: string) {
   }
 }
 
-function formatDuration(ms: number | null): string {
-  if (ms === null) return '—';
-  if (ms < 1000) return `${ms} ms`;
-  return `${(ms / 1000).toFixed(2)} s`;
-}
+const executionDurationMs = computed(() => {
+  const row = execution.value;
+  if (!row) {
+    return null;
+  }
+  return resolveExecutionDurationMs(row.durationMs, row.startedAt, row.endedAt);
+});
 
 function formatDate(iso: string | null): string {
   if (!iso) return '—';
@@ -219,7 +222,7 @@ function executionStatusLabel(status: string): string {
         <div>
           <div class="k-text-[11px] k-uppercase k-text-knot-text-soft">{{ t('executionDetail.labelDuration') }}</div>
           <div class="k-mt-1 k-text-sm k-text-knot-text k-tabular-nums">
-            {{ formatDuration(execution.durationMs) }}
+            {{ formatExecutionDuration(executionDurationMs) }}
           </div>
         </div>
         <div>
@@ -314,7 +317,7 @@ function executionStatusLabel(status: string): string {
               <span class="k-font-mono k-text-knot-text-soft">{{ log.nodeId }}</span>
               <span class="k-text-knot-text">{{ log.nodeType }}</span>
               <span class="k-ml-auto k-tabular-nums k-text-knot-text-soft">
-                {{ formatDuration(log.durationMs) }}
+                {{ formatExecutionDuration(log.durationMs) }}
               </span>
             </div>
             <div

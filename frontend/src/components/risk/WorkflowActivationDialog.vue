@@ -15,82 +15,86 @@
     <div
       v-if="modelValue"
       data-knot-test="knot-activation-dialog"
-      class="k-fixed k-inset-0 k-flex k-items-center k-justify-center k-bg-slate-950/60 k-backdrop-blur-sm"
+      class="k-fixed k-inset-0 k-flex k-items-center k-justify-center k-bg-black/50 k-backdrop-blur-sm k-px-4"
       :style="overlayStyle"
-      role="dialog"
-      aria-modal="true"
+      role="presentation"
+      @click.self="onCancel"
     >
-    <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900 dark:text-slate-100">
-      <header class="mb-4 flex items-start gap-3">
-        <component
-          :is="headerIcon"
-          :size="28"
-          :class="headerIconClass"
-        />
-        <div>
-          <h2 class="text-lg font-semibold">{{ headerTitle }}</h2>
-          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            {{ headerSubtitle }}
-          </p>
-        </div>
-      </header>
+      <div
+        class="k-w-full k-max-w-lg k-rounded-knot-md k-bg-knot-surface k-text-knot-text k-p-6 k-shadow-knot-lg k-border k-border-knot-border"
+        role="dialog"
+        aria-modal="true"
+      >
+        <header class="k-mb-4 k-flex k-items-start k-gap-3">
+          <component
+            :is="headerIcon"
+            :size="28"
+            :class="headerIconClass"
+          />
+          <div class="k-min-w-0">
+            <h2 class="k-text-lg k-font-semibold k-text-knot-text">{{ headerTitle }}</h2>
+            <p class="k-mt-1 k-text-sm k-text-knot-text-muted">
+              {{ headerSubtitle }}
+            </p>
+          </div>
+        </header>
 
-      <section class="mb-5 space-y-3">
-        <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm dark:border-slate-700 dark:bg-slate-800/50">
-          <p class="font-medium">{{ workflowLabel }}</p>
-          <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            {{ summary }}
-          </p>
-        </div>
-        <ul v-if="criticalNodes.length" class="space-y-2 text-sm">
-          <li
-            v-for="node in criticalNodes"
-            :key="node.nodeId"
-            class="flex items-start justify-between gap-2 rounded-md border border-slate-200 px-2 py-1.5 dark:border-slate-700"
-          >
-            <span class="font-medium">{{ node.nodeLabel }}</span>
-            <button
-              type="button"
-              class="shrink-0 text-xs text-indigo-600 hover:underline dark:text-indigo-400"
-              @click="$emit('focus-node', node.nodeId)"
+        <section class="k-mb-5 k-space-y-3">
+          <div class="k-rounded-knot-sm k-border k-border-knot-border k-bg-knot-surface-soft k-p-3 k-text-sm">
+            <p class="k-font-medium k-text-knot-text">{{ workflowLabel }}</p>
+            <p class="k-mt-1 k-text-xs k-text-knot-text-muted">
+              {{ summary }}
+            </p>
+          </div>
+          <ul v-if="criticalNodes.length" class="k-space-y-2 k-text-sm">
+            <li
+              v-for="node in criticalNodes"
+              :key="node.nodeId"
+              class="k-flex k-items-start k-justify-between k-gap-2 k-rounded-knot-sm k-border k-border-knot-border k-bg-knot-surface k-px-2 k-py-1.5"
             >
-              {{ t('activation.viewInEditor', 'View in editor') }}
-            </button>
-          </li>
-        </ul>
-        <ul v-if="riskItems.length" class="space-y-1.5 text-sm">
-          <li v-for="item in riskItems" :key="item.label" class="flex items-start gap-2">
-            <component :is="item.icon" :size="14" class="mt-0.5 shrink-0" :class="item.color" />
-            <span>{{ item.label }}</span>
-          </li>
-        </ul>
-        <p v-if="scheduleActive" class="text-xs text-amber-600 dark:text-amber-400">
-          {{ t('activation.scheduleActive', 'A schedule or cron trigger may run this workflow automatically.') }}
-        </p>
-      </section>
+              <span class="k-font-medium k-text-knot-text">{{ node.nodeLabel }}</span>
+              <button
+                type="button"
+                class="k-shrink-0 k-text-xs k-text-knot-primary hover:k-underline"
+                @click="$emit('focus-node', node.nodeId)"
+              >
+                {{ t('activation.viewInEditor', 'View in editor') }}
+              </button>
+            </li>
+          </ul>
+          <ul v-if="riskItems.length" class="k-space-y-1.5 k-text-sm">
+            <li v-for="item in riskItems" :key="item.label" class="k-flex k-items-start k-gap-2 k-text-knot-text">
+              <component :is="item.icon" :size="14" class="k-mt-0.5 k-shrink-0" :class="item.color" />
+              <span>{{ item.label }}</span>
+            </li>
+          </ul>
+          <p v-if="scheduleActive" class="k-text-xs k-text-knot-warning">
+            {{ t('activation.scheduleActive', 'A schedule or cron trigger may run this workflow automatically.') }}
+          </p>
+        </section>
 
-      <footer class="flex items-center justify-between gap-2">
-        <button
-          type="button"
-          class="rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
-          @click="onCancel"
-        >
-          {{ t('actions.cancel') }}
-        </button>
-        <button
-          type="button"
-          :disabled="confirmDisabled"
-          class="rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50"
-          :class="confirmClass"
-          @click="onConfirm"
-        >
-          <span v-if="riskLevel === 'critical' && remainingSecs > 0">
-            {{ t('actions.confirm') }} ({{ remainingSecs }}s)
-          </span>
-          <span v-else>{{ confirmLabel }}</span>
-        </button>
-      </footer>
-    </div>
+        <footer class="k-flex k-items-center k-justify-between k-gap-2">
+          <button
+            type="button"
+            class="k-rounded-knot-sm k-px-3 k-py-2 k-text-sm k-text-knot-text-muted hover:k-bg-knot-surface-soft"
+            @click="onCancel"
+          >
+            {{ t('actions.cancel') }}
+          </button>
+          <button
+            type="button"
+            :disabled="confirmDisabled"
+            class="k-rounded-knot-sm k-px-4 k-py-2 k-text-sm k-font-semibold k-text-white k-shadow-sm k-transition disabled:k-cursor-not-allowed disabled:k-opacity-50"
+            :class="confirmClass"
+            @click="onConfirm"
+          >
+            <span v-if="riskLevel === 'critical' && remainingSecs > 0">
+              {{ t('actions.confirm') }} ({{ remainingSecs }}s)
+            </span>
+            <span v-else>{{ confirmLabel }}</span>
+          </button>
+        </footer>
+      </div>
     </div>
   </Teleport>
 </template>
@@ -171,10 +175,10 @@ const headerIcon = computed(() => {
 
 const headerIconClass = computed(() =>
   props.riskLevel === 'critical'
-    ? 'text-red-500'
+    ? 'k-text-knot-danger'
     : props.riskLevel === 'caution'
-      ? 'text-amber-500'
-      : 'text-emerald-500',
+      ? 'k-text-knot-warning'
+      : 'k-text-knot-success',
 );
 
 const headerTitle = computed(() => {
@@ -216,15 +220,15 @@ const riskItems = computed(() => {
       icon: AlertTriangle,
       color:
         eff === 'accounting' || eff === 'external-paid'
-          ? 'text-red-500'
-          : 'text-amber-500',
+          ? 'k-text-knot-danger'
+          : 'k-text-knot-warning',
     });
   }
   if (props.riskLevel === 'critical') {
     out.unshift({
       label: t('activation.effects.irreversible', 'Some actions are irreversible.'),
       icon: Activity,
-      color: 'text-red-500',
+      color: 'k-text-knot-danger',
     });
   }
   return out;
@@ -239,11 +243,11 @@ const confirmLabel = computed(() =>
 const confirmClass = computed(() => {
   switch (props.riskLevel) {
     case 'critical':
-      return 'bg-red-600 hover:bg-red-700';
+      return 'k-bg-knot-danger hover:k-bg-knot-danger/90';
     case 'caution':
-      return 'bg-amber-600 hover:bg-amber-700';
+      return 'k-bg-knot-warning hover:k-bg-knot-warning/90';
     default:
-      return 'bg-emerald-600 hover:bg-emerald-700';
+      return 'k-bg-knot-success hover:k-bg-knot-success/90';
   }
 });
 

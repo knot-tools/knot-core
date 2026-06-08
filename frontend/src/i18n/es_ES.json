@@ -112,6 +112,7 @@
     "clearCanvas": "Vaciar canvas",
     "starterHintDismiss": "Descartar",
     "paletteSearchPlaceholder": "Buscar nodos…",
+    "paletteRequiresLicense": "{connector} requiere una extensión con licencia (Pro Pack).",
     "sidebarBrandSubtitle": "Editor de workflows",
     "dragPaletteHint": "Arrastre nodos al canvas",
     "loadingWorkflow": "Cargando workflow…",
@@ -204,6 +205,18 @@
       "ai": "IA",
       "dolibarr": "Dolibarr",
       "universal": "Universal"
+    },
+    "legendTitle": "Ramas",
+    "quickAdd": "Añadir nodo",
+    "quickAddHint": "Arrastre un nodo desde la paleta para conectarlo.",
+    "deleteEdge": "Eliminar enlace",
+    "handles": {
+      "main": "Principal",
+      "true": "Verdadero",
+      "false": "Falso",
+      "iteration": "Iteración",
+      "done": "Hecho",
+      "error": "Error"
     }
   },
   "search": {
@@ -455,6 +468,10 @@
     "sourceFiltersLabel": "Origen",
     "detail": {
       "credentialsRequired": "Credenciales obligatorias",
+      "credentialFields": "Campos de credencial",
+      "colSecret": "Secreto",
+      "secretYes": "sí",
+      "secretNo": "no",
       "credentialsHint": "Este conector requiere una credencial de tipo {type}.",
       "credentialsLink": "Credenciales",
       "createCredentialHint": "Créela desde la pantalla {link}.",
@@ -479,12 +496,17 @@
       "tipHttpTls": "Las llamadas salientes pasan por el HttpClient de Knot, que exige TLS y tiempos de espera (30 s por defecto).",
       "tipOllama": "Se permite Ollama local (anulación UrlPolicy). Solo HTTP; no exponga este extremo a internet público.",
       "tipSecretsMasked": "SecretMasker enmascara todos los secretos en los registros de ejecución.",
+      "coreIncludedCallout": "Included in Knot Core (GPL) — uses Dolibarr SMTP configuration. No Pro Pack licence required.",
+      "tipEmailCore": "Configure outbound mail in Dolibarr Setup → Email, then use expressions in to, subject and body. No Knot credential type is required.",
+      "tipAlertVsEmail": "For transactional email (reminders, notifications), use the Send Email connector (action.email) in Core. Pro Pack fan-out adds Slack, Discord, webhooks and formatted alert email in one node.",
       "tipCommunicationTemplates": "Las plantillas admiten expresiones como {example} resueltas desde la salida del nodo anterior.",
       "tipCodeSandbox": "El código de usuario se ejecuta en un entorno aislado endurecido sin acceso al sistema de archivos ni a la red.",
       "tipTriggerNoInputs": "Los nodos disparador no admiten entradas; ponen en marcha el workflow.",
       "extensionProvidedBy": "Proporcionado por extensión",
-      "unknownReason": "desconocido"
-    }
+      "unknownReason": "desconocido",
+      "usageExampleTitle": "Ejemplo de uso"
+    },
+    "searchPlaceholder": "Buscar conectores…"
   },
   "dynamicForm": {
     "expressionModeTitle": "Modo expresión",
@@ -569,7 +591,9 @@
     "loadingLogs": "Cargando registros…",
     "ioSummary": "Entrada / salida",
     "clickablePathsSummary": "Rutas de salida pulsables",
-    "replayFromNode": "Reproducir desde este nodo"
+    "replayFromNode": "Reproducir desde este nodo",
+    "viewDetails": "Ver detalle (panel)",
+    "openFullPage": "Abrir página de detalle"
   },
   "credentialsPage": {
     "title": "Credenciales",
@@ -617,7 +641,8 @@
     "credentialCreated": "Credencial «{label}» creada.",
     "credentialDeleted": "Credencial «{label}» eliminada.",
     "deleteConfirmMessage": "¿Eliminar la credencial «{label}»? Los workflows que la usen fallarán.",
-    "oauthClientIdPrompt": "ID de cliente para {provider}:"
+    "oauthClientIdPrompt": "ID de cliente para {provider}:",
+    "whatsappCloudHelp": "WhatsApp Cloud usa la API de Meta (no OpenAI): Phone number ID y token System User desde Meta Business Manager."
   },
   "inspector": {
     "idempotencyLabel": "Clave de idempotencia",
@@ -810,7 +835,12 @@
       "graph_cycle": "El grafo del workflow contiene al menos un ciclo dirigido; asegúrese de que los bucles sean deliberados.",
       "orphan_node": "El nodo {nodeId} no es alcanzable desde ningún disparador siguiendo enlaces de éxito.",
       "sql_unknown_table": "El SQL referencia la tabla desconocida `{table}`.",
-      "sql_unknown_table_hint": "El SQL referencia `{table}` — ¿quiso decir `{hint}`?"
+      "sql_unknown_table_hint": "El SQL referencia `{table}` — ¿quiso decir `{hint}`?",
+      "object_type_unknown": "El tipo de objeto «{objectType}» no es un slug canónico de ObjectFactory.",
+      "object_type_unknown_hint": "El tipo «{objectType}» es desconocido — use el slug «{suggestion}».",
+      "expression_json_chain": "El campo $json.{field} puede sobrescribirse por el nodo anterior — prefiera {suggestion}.",
+      "if_operator_invalid": "Operador if inválido «{operator}» (condición #{index}).",
+      "if_operator_invalid_hint": "Operador «{operator}» inválido — use «{suggestion}» (condición #{index})."
     },
     "import": {
       "object_unknown": "El workflow «{workflowLabel}» usa el tipo dolibarr.object «{objectType}», que no está en el registro de objetos soportados.",
@@ -1287,7 +1317,12 @@
     "folderNewPlaceholder": "Carpeta nueva…",
     "folderCreate": "Crear carpeta",
     "folderAssign": "Carpeta",
-    "folderNone": "Ninguna"
+    "folderNone": "Ninguna",
+    "delete": "Eliminar",
+    "deleteTitle": "Eliminar workflow",
+    "deleteConfirm": "¿Eliminar el workflow «{label}» ({ref})? Esta acción es irreversible.",
+    "deleteSuccess": "Workflow «{label}» eliminado.",
+    "deleteFailed": "Error al eliminar el workflow."
   },
   "variablesPage": {
     "subtitle": "Globales o por workflow. Use el espacio de nombres $vars en expresiones.",
@@ -1454,7 +1489,25 @@
     "msgPasteDenied": "No se pudo leer el portapapeles (permisos).",
     "msgImporting": "Workflow #{id} importado. Redirigiendo al editor…",
     "msgImportFailed": "No se pudo importar el workflow.",
-    "msgImportNoWorkflow": "El servidor no devolvió un workflow creado. Compruebe el formato JSON."
+    "msgImportNoWorkflow": "El servidor no devolvió un workflow creado. Compruebe el formato JSON.",
+    "errWrongFormat": "Formato JSON no reconocido. Se espera exportación Knot o definición con nodes y edges.",
+    "errInvalidJson": "JSON no válido. Compruebe la sintaxis (comas, comillas, llaves). Los saltos de línea en cadenas deben escaparse (\\n), no pegarse como retornos reales.",
+    "errLegacySteps": "Formato Zapier/Make detectado (trigger + steps). Use el formato Knot (nodes + edges).",
+    "errUnknownConnectors": "Conectores no disponibles en esta instancia: {types}. Active la extensión o importe de todos modos.",
+    "preflightBlocked": "Su solicitud requiere extensiones de pago que faltan o no están licenciadas en esta instancia.",
+    "preflightCtaBuy": "Activar Pro Pack",
+    "preflightCtaRenew": "Renovar licencia",
+    "preflightCtaReinstall": "Reinstalar extensión",
+    "postImportHint": "Vincule las credenciales y pruebe antes de activar el workflow.",
+    "importAnyway": "Importar de todos modos",
+    "copyAnnex": "Copiar anexo técnico",
+    "msgAnnexCopied": "Anexo técnico copiado al portapapeles.",
+    "msgImportSuccess": "Workflow #{id} importado. Abra el editor para revisarlo.",
+    "openEditor": "Abrir en el editor",
+    "lintIssuesTitle": "Advertencias tras importar",
+    "copyFixForChatbot": "Copiar corrección para el chatbot",
+    "copyFixDone": "Mensaje de corrección copiado.",
+    "msgImportSuccessWithWarnings": "Workflow #{id} importado — {count} advertencia(s) de lint."
   },
   "webhookPanel": {
     "title": "Webhook",
@@ -1514,7 +1567,7 @@
     "action": {
       "email": {
         "label": "Enviar correo",
-        "description": "Envía un correo transaccional vía Dolibarr",
+        "description": "Envía un correo transaccional vía SMTP Dolibarr. Incluido en Knot Core — no requiere Pro Pack.",
         "fields": {
           "to": {
             "title": "Para",
@@ -1540,7 +1593,8 @@
             "title": "Remitente alternativo",
             "description": "Remitente opcional cuando la política del servidor lo permite."
           }
-        }
+        },
+        "usageExample": "Para: {'{'}{'$json.email'}{'}'} · Asunto: Recordatorio {'{'}{'$json.ref'}{'}'} · Cuerpo HTML con enlace de pago. Configure SMTP en Dolibarr."
       },
       "slack": {
         "label": "Slack",
@@ -1660,11 +1714,13 @@
             "title": "Exigir firma HMAC",
             "description": "Rechaza peticiones sin un HMAC válido cuando está activado."
           }
-        }
+        },
+        "usageExample": "Aprovisione la URL en el panel Webhook del workflow; Stripe o Shopify envía un POST firmado HMAC."
       },
       "manual": {
         "label": "Disparador manual",
-        "description": "Inicia este workflow manualmente desde la interfaz de Dolibarr."
+        "description": "Inicia este workflow manualmente desde la interfaz de Dolibarr.",
+        "usageExample": "Ejecute una prueba en seco desde el editor (Ejecutar) o la lista de workflows. Sin entrada previa — este nodo inicia el flujo."
       },
       "cron": {
         "label": "Disparador cron",
@@ -1678,7 +1734,8 @@
             "title": "Zona horaria",
             "description": "Identificador de zona PHP (p. ej. Europe/Madrid, UTC)."
           }
-        }
+        },
+        "usageExample": "Recordatorio diario a las 8 h lun–vie: expresión 0 8 * * 1-5, zona horaria Europe/Paris. Se ejecuta sin acción del usuario."
       },
       "dolibarr_event": {
         "label": "Evento Dolibarr",
@@ -1690,9 +1747,10 @@
           },
           "objectTypes": {
             "title": "Tipos de objeto",
-            "description": "Filtro opcional: tipos de elemento Dolibarr (p. ej. invoice, societe)."
+            "description": "Filtro opcional: tipos de elemento Dolibarr (p. ej. facture, thirdparty)."
           }
-        }
+        },
+        "usageExample": "Reaccione a la validación de una factura: evento BILL_VALIDATE, tipo de objeto facture (filtro opcional)."
       },
       "stripe_webhook": {
         "label": "Webhook Stripe",
@@ -1720,7 +1778,8 @@
             "title": "Continuar con error por elemento",
             "description": "Si es verdadero (predeterminado), un elemento fallido se registra pero el bucle sigue."
           }
-        }
+        },
+        "usageExample": "Recorra {'{'}{'$json.lines'}{'}'}; cada iteración expone el elemento actual a los nodos siguientes."
       },
       "switch": {
         "label": "Conmutador",
@@ -1778,7 +1837,8 @@
             "title": "Segundos",
             "description": "Retardo antes de continuar (máx. 60 para proteger los trabajadores PHP)."
           }
-        }
+        },
+        "usageExample": "Pausa de 5 s entre llamadas API (máx. 60 s por nodo) para respetar un límite del proveedor."
       },
       "filter": {
         "label": "Filtro",
@@ -1794,6 +1854,19 @@
           "right": {
             "title": "Operando derecho"
           }
+        },
+        "operator": {
+          "equals": "Igual",
+          "not_equals": "Distinto",
+          "contains": "Contiene",
+          "not_contains": "No contiene",
+          "greater": "Mayor",
+          "greater_equal": "Mayor o igual",
+          "less": "Menor",
+          "less_equal": "Menor o igual",
+          "is_empty": "Está vacío",
+          "is_not_empty": "No está vacío",
+          "regex": "Expresión regular"
         }
       },
       "if": {
@@ -1825,6 +1898,20 @@
             "title": "Operando derecho",
             "description": "Comparado con el izquierdo salvo que el operador lo ignore."
           }
+        },
+        "usageExample": "Si {'{'}{'$json.total_ttc'}{'}'} > 1000 → rama true (alerta); si no, rama false.",
+        "operator": {
+          "equals": "Igual",
+          "not_equals": "Distinto",
+          "contains": "Contiene",
+          "not_contains": "No contiene",
+          "greater": "Mayor",
+          "greater_equal": "Mayor o igual",
+          "less": "Menor",
+          "less_equal": "Menor o igual",
+          "is_empty": "Está vacío",
+          "is_not_empty": "No está vacío",
+          "regex": "Regex"
         }
       },
       "stop_error": {
@@ -2085,7 +2172,7 @@
           },
           "objectType": {
             "title": "Tipo de objeto",
-            "description": "Slug mapeado por Dolibarr ObjectFactory (p. ej. invoice, thirdparty)."
+            "description": "Slug mapeado por Dolibarr ObjectFactory (p. ej. facture, thirdparty)."
           },
           "id": {
             "title": "ID de registro",
@@ -2127,7 +2214,8 @@
           "curated": "Solo curados",
           "discovery": "Descubiertos",
           "discovery_unverified": "Descubiertos (experto)"
-        }
+        },
+        "usageExample": "Leer (fetch) una facture por id {'{'}{'$json.objectId'}{'}'}; o crear un thirdparty con nombre y dirección en Campos."
       },
       "read_object": {
         "label": "Leer objeto Dolibarr",
@@ -2147,9 +2235,10 @@
           "product": "Producto",
           "project": "Proyecto",
           "propal": "Presupuesto",
-          "order": "Pedido",
-          "invoice": "Factura"
-        }
+          "facture": "Factura",
+          "commande": "Pedido"
+        },
+        "usageExample": "Cargue la factura 123: tipo facture, id 123 — los campos Dolibarr están disponibles aguas abajo mediante expresiones."
       },
       "sql_query": {
         "label": "Consulta SQL Dolibarr",
@@ -2162,7 +2251,8 @@
           "limit": {
             "title": "Límite de filas"
           }
-        }
+        },
+        "usageExample": "SELECT ref, total_ttc FROM llx_facture WHERE entity IN (0, entidad actual) AND fk_statut = 1 LIMIT 50 — solo SELECT; filtro multi-entidad obligatorio."
       },
       "specialized": {
         "label": "Dolibarr especializado",
@@ -2190,7 +2280,7 @@
     "notification": {
       "alert": {
         "label": "Enviar alerta (auditoría)",
-        "description": "Escribe una entrada en el registro de auditoría. Para Slack, Discord, correo o webhook, use el conector Pro Pack « Alerta (fan-out) ».",
+        "description": "Escribe una entrada en el registro de auditoría (Core). Para correo saliente use Enviar correo (action.email, gratis en Core). El fan-out Pro Pack añade Slack, Discord, webhooks y alertas multi-canal.",
         "fields": {
           "title": {
             "title": "Título de alerta",
@@ -2217,6 +2307,26 @@
           "warn": "WARN",
           "error": "ERROR",
           "critical": "CRITICAL"
+        }
+      }
+    }
+  },
+  "credentials": {
+    "whatsapp": {
+      "cloud": {
+        "fields": {
+          "phoneNumberId": {
+            "title": "Phone number ID (Meta)",
+            "description": "ID del número WhatsApp en Meta Business Manager → API Setup."
+          },
+          "accessToken": {
+            "title": "Token System User (Meta)",
+            "description": "Token Meta con permiso whatsapp_business_messaging — no es una clave OpenAI."
+          },
+          "businessAccountId": {
+            "title": "WhatsApp Business Account ID (opcional)",
+            "description": "No es necesario para enviar mensajes; reservado para uso futuro."
+          }
         }
       }
     }

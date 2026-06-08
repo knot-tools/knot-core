@@ -7,6 +7,7 @@ namespace Knot\Connectors\Logic;
 use Knot\Connectors\Connector;
 use Knot\Connectors\ConnectorInterface;
 use Knot\Engine\ExpressionResolver;
+use Knot\Engine\IfConditionOperator;
 
 /**
  * If/Else routing node. Output handle "true" or "false" is taken
@@ -91,6 +92,19 @@ final class IfElseNode implements ConnectorInterface, BranchAware
                                 'type' => 'string',
                                 'titleKey' => 'connectors.logic.if.condition.operator.title',
                                 'enum' => $operators,
+                                'enumLabelKeys' => [
+                                    'connectors.logic.if.operator.equals',
+                                    'connectors.logic.if.operator.not_equals',
+                                    'connectors.logic.if.operator.contains',
+                                    'connectors.logic.if.operator.not_contains',
+                                    'connectors.logic.if.operator.greater',
+                                    'connectors.logic.if.operator.greater_equal',
+                                    'connectors.logic.if.operator.less',
+                                    'connectors.logic.if.operator.less_equal',
+                                    'connectors.logic.if.operator.is_empty',
+                                    'connectors.logic.if.operator.is_not_empty',
+                                    'connectors.logic.if.operator.regex',
+                                ],
                                 'default' => 'equals',
                                 'x-position' => 1,
                             ],
@@ -182,7 +196,7 @@ final class IfElseNode implements ConnectorInterface, BranchAware
 
     private function compare(mixed $left, mixed $right, string $operator): bool
     {
-        $operator = strtolower(trim($operator));
+        $operator = IfConditionOperator::normalize($operator);
         $leftStr = is_scalar($left) || $left === null ? (string) $left : json_encode($left, JSON_UNESCAPED_UNICODE);
         $rightStr = is_scalar($right) || $right === null ? (string) $right : json_encode($right, JSON_UNESCAPED_UNICODE);
 

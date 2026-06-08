@@ -1,4 +1,4 @@
-generated_at=2026-06-01T07:14:53Z
+generated_at=2026-06-08T03:56:11Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/ISSUE_TEMPLATE/bug_report.yml
@@ -82,6 +82,9 @@ class/Api/Doc/Schemas/Workflow.json
 class/Api/Doc/Schemas/WorkflowList.json
 class/Api/JsonResponse.php
 class/Api/WorkflowCreateGuard.php
+class/Assistant/AssistantConnectorPromptCatalog.php
+class/Assistant/AssistantPreflight.php
+class/Assistant/AssistantTechnicalAnnex.php
 class/Assistant/WorkflowAssistantPromptBuilder.php
 class/Capabilities/CapabilitiesBuilder.php
 class/Capabilities/WorkflowImportAnalyzer.php
@@ -148,6 +151,7 @@ class/Dolibarr/ObjectRegistryMode.php
 class/Dolibarr/SchemaBuilder.php
 class/Dolibarr/VerbDiscoverer.php
 class/Engine/CronWorker.php
+class/Engine/DolibarrObjectTypeAliases.php
 class/Engine/EngineConnectorBundle.php
 class/Engine/EngineConnectorResolver.php
 class/Engine/ErrorTranslator.php
@@ -155,8 +159,10 @@ class/Engine/ExecutionBackoff.php
 class/Engine/ExecutionContext.php
 class/Engine/ExpressionResolver.php
 class/Engine/HealthWorker.php
+class/Engine/IfConditionOperator.php
 class/Engine/LoopScopeAnalyzer.php
 class/Engine/RetentionWorker.php
+class/Engine/WorkflowDefinitionNormalizer.php
 class/Engine/WorkflowDiffer.php
 class/Engine/WorkflowEngine.php
 class/Engine/WorkflowValidationException.php
@@ -366,8 +372,10 @@ docs/testing.md
 docs/user-guide/en/README.md
 docs/user-guide/fr/README.md
 docs/workflow-format.md
+examples/starter/00-email-test-manuel.knot.json
 examples/starter/01-hello-world.knot.json
 examples/starter/02-relance-facture-impayee.knot.json
+examples/starter/03-facture-validee-email-bancaire.knot.json
 examples/starter/03-webhook-to-task.knot.json
 examples/starter/04-devis-to-facture.knot.json
 examples/starter/05-backup-quotidien.knot.json
@@ -397,6 +405,9 @@ frontend/src/canvas/KnotEdge.vue
 frontend/src/canvas/KnotNode.vue
 frontend/src/canvas/KnotNodeSmHintBadge.vue
 frontend/src/canvas/WebhookPanel.vue
+frontend/src/canvas/__tests__/KnotEdge.test.ts
+frontend/src/canvas/__tests__/KnotNode.test.ts
+frontend/src/canvas/__tests__/KnotNodeHandles.test.ts
 frontend/src/canvas/nodeRegistry.ts
 frontend/src/components/CommandPalette.vue
 frontend/src/components/DarkModeToggle.vue
@@ -495,6 +506,9 @@ frontend/src/i18n/index.ts
 frontend/src/i18n/it_IT.json
 frontend/src/i18n/pt_PT.json
 frontend/src/lib/__tests__/api.test.ts
+frontend/src/lib/__tests__/edgeSemantics.test.ts
+frontend/src/lib/__tests__/executionFormat.test.ts
+frontend/src/lib/__tests__/executionPath.test.ts
 frontend/src/lib/__tests__/knotCore.test.ts
 frontend/src/lib/__tests__/markdownLight.test.ts
 frontend/src/lib/__tests__/marketplaceCollections.test.ts
@@ -504,6 +518,7 @@ frontend/src/lib/__tests__/normalizeWorkflowImport.test.ts
 frontend/src/lib/__tests__/resolveConnectorSchema.test.ts
 frontend/src/lib/__tests__/utils.test.ts
 frontend/src/lib/__tests__/validator.test.ts
+frontend/src/lib/__tests__/workflowDefinitionRepair.test.ts
 frontend/src/lib/api.ts
 frontend/src/lib/autoLayout.ts
 frontend/src/lib/canvasSmRiskCache.ts
@@ -511,10 +526,14 @@ frontend/src/lib/connectorDescriptorsCache.ts
 frontend/src/lib/connectorLabels.ts
 frontend/src/lib/dolibarrConnectorOperations.ts
 frontend/src/lib/dolibarrWorkflowTriggers.ts
+frontend/src/lib/edgeSemantics.ts
+frontend/src/lib/executionFormat.ts
+frontend/src/lib/executionPath.ts
 frontend/src/lib/idempotencyPlaceholders.ts
 frontend/src/lib/knotCanvasSmInspector.ts
 frontend/src/lib/knotConnectorContext.ts
 frontend/src/lib/knotCore.ts
+frontend/src/lib/knotQuickAddContext.ts
 frontend/src/lib/known-skus.ts
 frontend/src/lib/markdownLight.ts
 frontend/src/lib/marketplaceCollections.ts
@@ -530,6 +549,7 @@ frontend/src/lib/productDisplayName.ts
 frontend/src/lib/resolveConnectorSchema.ts
 frontend/src/lib/utils.ts
 frontend/src/lib/validator.ts
+frontend/src/lib/workflowDefinitionRepair.ts
 frontend/src/main.ts
 frontend/src/styles/index.css
 frontend/src/styles/knot-tokens.css
@@ -702,6 +722,9 @@ tests/Api/Doc/OpenApiGeneratorTest.php
 tests/Api/InternalApiAuthMatrixTest.php
 tests/Api/JsonResponseTest.php
 tests/Api/WorkflowCreateGuardTest.php
+tests/Assistant/AssistantConnectorPromptCatalogTest.php
+tests/Assistant/AssistantCoreScenariosTest.php
+tests/Assistant/AssistantPreflightTest.php
 tests/Assistant/WorkflowAssistantPromptBuilderTest.php
 tests/Capabilities/CapabilitiesBuilderTest.php
 tests/Capabilities/WorkflowImportAnalyzerTest.php
@@ -721,6 +744,7 @@ tests/Connectors/CredentialSchemaNormalizerTest.php
 tests/Connectors/Dolibarr/ObjectActionExtendedTest.php
 tests/Connectors/Dolibarr/ObjectActionTest.php
 tests/Connectors/Dolibarr/SpecializedActionTest.php
+tests/Connectors/EmailActionBodyTest.php
 tests/Connectors/Logic/ApprovalWaitNodeTest.php
 tests/Connectors/Logic/CoreLogicNodesExecuteTest.php
 tests/Connectors/Logic/ExecuteWorkflowNodeTest.php
@@ -748,15 +772,19 @@ tests/Engine/ErrorTranslatorTest.php
 tests/Engine/ExecutionBackoffTest.php
 tests/Engine/ExpressionResolverTest.php
 tests/Engine/HealthWorkerTest.php
+tests/Engine/IfConditionOperatorTest.php
 tests/Engine/RetentionWorkerTest.php
+tests/Engine/ShowcaseStarter02WorkflowEngineTest.php
 tests/Engine/ShowcaseStarter06WorkflowEngineTest.php
 tests/Engine/Support/CronWorkerContextFactory.php
 tests/Engine/Support/CronWorkerScenario.php
 tests/Engine/Support/CronWorkerScenarioDb.php
+tests/Engine/WorkflowDefinitionNormalizerTest.php
 tests/Engine/WorkflowDifferTest.php
 tests/Engine/WorkflowEngineRetryTest.php
 tests/Engine/WorkflowEngineRuntimeLogTest.php
 tests/Engine/WorkflowEngineTest.php
+tests/Engine/WorkflowReliabilityScenariosTest.php
 tests/Engine/WorkflowRiskParityTest.php
 tests/Engine/WorkflowValidatorCoverageTest.php
 tests/Engine/WorkflowValidatorTest.php

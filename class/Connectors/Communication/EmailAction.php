@@ -127,7 +127,7 @@ final class EmailAction implements ConnectorInterface, DryRunAware
 
         $to = (string) $resolver->resolve((string) ($config['to'] ?? ''), $context);
         $subject = (string) $resolver->resolve((string) ($config['subject'] ?? ''), $context);
-        $body = (string) $resolver->resolve((string) ($config['body'] ?? ''), $context);
+        $body = $this->normalizeHtmlBody((string) $resolver->resolve((string) ($config['body'] ?? ''), $context));
         $cc = (string) $resolver->resolve((string) ($config['cc'] ?? ''), $context);
         $bcc = (string) $resolver->resolve((string) ($config['bcc'] ?? ''), $context);
         $replyTo = (string) $resolver->resolve((string) ($config['replyTo'] ?? ''), $context);
@@ -187,5 +187,23 @@ final class EmailAction implements ConnectorInterface, DryRunAware
             'errors' => [],
             'message' => sprintf('[DRY-RUN] would email %s subject "%s"', $to, $subject),
         ];
+    }
+
+    /**
+     * Plain-text bodies (with real or literal \n from LLM imports) become safe HTML.
+     */
+    private function normalizeHtmlBody(string $body): string
+    {
+        if ($body === '') {
+            return $body;
+        }
+
+        if (preg_match('/<(br|p|div|html|table|ul|ol|h[1-6])\b/i', $body) === 1) {
+            return $body;
+        }
+
+        $body = str_replace(['\\r\\n', '\\n', '\\r'], "\n", $body);
+
+        return nl2br(htmlspecialchars($body, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'), false);
     }
 }

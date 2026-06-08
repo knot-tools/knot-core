@@ -18,6 +18,15 @@ use RuntimeException;
 
 final class CoreConnectorDryRunTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        foreach (['Facture' => \FakeFacture::class] as $name => $target) {
+            if (!class_exists($name, false)) {
+                class_alias($target, $name);
+            }
+        }
+    }
+
     public function testManualTriggerPassesJsonThrough(): void
     {
         $out = (new ManualTrigger())->execute(['json' => ['hello' => 'world']]);
@@ -184,13 +193,20 @@ final class CoreConnectorDryRunTest extends TestCase
         };
         $reader = new DolibarrReadObject();
         self::assertFalse($reader->validate(['objectType' => 'thirdparty', 'objectId' => 0])['valid']);
+        self::assertTrue($reader->validate(['objectType' => 'facture', 'objectId' => '{{$json.objectId}}'])['valid']);
 
-        $out = $reader->execute([
-            'node' => ['config' => ['objectType' => 'thirdparty', 'objectId' => 15]],
+        $outInvoice = $reader->execute([
+            'node' => ['config' => ['objectType' => 'facture', 'objectId' => '{{$json.objectId}}']],
+            'json' => ['objectId' => 42],
+        ]);
+        self::assertSame('facture', $outInvoice['objectType']);
+        self::assertSame(42, $outInvoice['id']);
+
+        $this->expectException(\RuntimeException::class);
+        $reader->execute([
+            'node' => ['config' => ['objectType' => 'invoice', 'objectId' => 1]],
             'json' => [],
         ]);
-        self::assertSame('thirdparty', $out['objectType']);
-        self::assertSame(15, $out['id']);
     }
 }
 

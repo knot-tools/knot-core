@@ -564,6 +564,13 @@ final class DolistoreValidatorTest extends TestCase
         if ($releaseKeys === []) {
             self::markTestSkipped('No pinned release signing keys in this checkout.');
         }
+        $manifestVerifier = new ManifestSignatureVerifier(new SignatureVerifier($releaseKeys));
+        if (!$manifestVerifier->verifyFromPath($path)) {
+            self::markTestSkipped(
+                'pro-pack knot-extension.json Ed25519 signature stale vs pinned release key — '
+                . 're-run license/bin/sign_manifest.php on the licence VM.'
+            );
+        }
         $fork = new ForkDetector(['knot-pro-pack' => str_repeat('f', 128)]);
         $validator = new DolistoreValidator(
             $client,

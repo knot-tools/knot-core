@@ -74,13 +74,29 @@ final class ExpressionResolver
             if ($segment === '') {
                 continue;
             }
-            if (!is_array($current) || !array_key_exists($segment, $current)) {
-                return '';
+            foreach ($this->expandPathSegment($segment) as $part) {
+                if (!is_array($current) || !array_key_exists($part, $current)) {
+                    return '';
+                }
+                $current = $current[$part];
             }
-            $current = $current[$segment];
         }
 
         return $current;
+    }
+
+    /**
+     * Expand `rows[0]` into segment keys `rows`, then `0`.
+     *
+     * @return list<int|string>
+     */
+    private function expandPathSegment(string $segment): array
+    {
+        if (preg_match('/^([^\[]+)\[(\d+)\]$/', $segment, $matches) === 1) {
+            return [$matches[1], (int) $matches[2]];
+        }
+
+        return [$segment];
     }
 
     /**

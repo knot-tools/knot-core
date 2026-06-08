@@ -92,6 +92,9 @@ final class InMemoryExecutionDb extends \DoliDB
                         $this->executions[$id]['ended_at'] = $ended[1];
                     }
                 }
+                if (preg_match('/duration_ms = (\d+)/', $sql, $duration)) {
+                    $this->executions[$id]['duration_ms'] = (int) $duration[1];
+                }
                 if (preg_match('/next_retry_at = ([^,]+)/', $sql, $next)) {
                     $value = trim($next[1]);
                     $this->executions[$id]['next_retry_at'] = $value === 'NULL' ? null : trim($value, "'");
