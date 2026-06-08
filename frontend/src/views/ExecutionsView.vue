@@ -23,6 +23,8 @@ import {
   ListOrdered,
   Layers,
   Pencil,
+  Eye,
+  ExternalLink,
 } from 'lucide-vue-next';
 import {
   knotApi,
@@ -32,6 +34,7 @@ import {
   type QueueRetryRow,
   type QueueWorkflowQueuedRow,
 } from '../lib/api';
+import { formatExecutionDuration, resolveExecutionDurationMs } from '../lib/executionFormat';
 import { useToast } from '../composables/useToast';
 import { useConfirm } from '../composables/useConfirm';
 
@@ -301,7 +304,11 @@ function isPending(status: string): boolean {
 }
 
 function isRetryable(status: string): boolean {
-  return status === 'error' || status === 'cancelled' || status === 'timeout';
+  return status === 'error' || status === 'failed' || status === 'cancelled' || status === 'timeout';
+}
+
+function executionDurationMs(exec: ExecutionSummary): number | null {
+  return resolveExecutionDurationMs(exec.durationMs, exec.startedAt, exec.endedAt);
 }
 
 async function cancelExec(exec: ExecutionSummary, fromDrawer = false) {
@@ -487,13 +494,6 @@ function formatDate(value: string | null): string {
   }
 }
 
-function formatDuration(ms: number | null): string {
-  if (!ms) return '—';
-  if (ms < 1000) return `${ms} ms`;
-  if (ms < 60000) return `${(ms / 1000).toFixed(2)} s`;
-  return `${(ms / 60000).toFixed(2)} min`;
-}
-
 function expressionFor(path: string): string {
   return `{{$json.${path}}}`;
 }
@@ -561,7 +561,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="k-p-6 k-max-w-[1280px] k-mx-auto k-space-y-5">
+  <div class="knot-view-shell k-p-6 k-w-full k-min-w-0 k-space-y-5">
     <header class="k-flex k-items-center k-justify-between k-gap-4 k-flex-wrap">
       <div class="k-flex k-items-center k-gap-3">
         <div class="k-h-10 k-w-10 k-rounded-knot-sm k-bg-knot-primary-soft k-text-knot-primary k-flex k-items-center k-justify-center">
@@ -727,44 +727,60 @@ onMounted(() => {
                 </span>
               </td>
               <td class="k-px-4 k-py-2.5 k-text-knot-text-soft">{{ formatDate(exec.startedAt) }}</td>
-              <td class="k-px-4 k-py-2.5 k-text-knot-text-soft">{{ formatDuration(exec.durationMs) }}</td>
+              <td class="k-px-4 k-py-2.5 k-text-knot-text-soft k-tabular-nums">
+                {{ formatExecutionDuration(executionDurationMs(exec)) }}
+              </td>
               <td class="k-px-4 k-py-2 k-text-right k-whitespace-nowrap">
-                <div class="k-inline-flex k-items-center k-gap-1.5" @click.stop>
+                <div class="k-inline-flex k-items-center k-justify-end k-gap-0.5" @click.stop>
+                  <button
+                    type="button"
+                    class="k-inline-flex k-items-center k-justify-center k-h-8 k-w-8 k-rounded-knot-sm k-text-knot-text-muted hover:k-bg-knot-surface-soft hover:k-text-knot-primary"
+                    :title="t('executionsPage.viewDetails')"
+                    :aria-label="t('executionsPage.viewDetails')"
+                    @click="openDetail(exec)"
+                  >
+                    <Eye :size="15" />
+                  </button>
+                  <a
+                    :href="executionDetailUrl(exec.id)"
+                    class="k-inline-flex k-items-center k-justify-center k-h-8 k-w-8 k-rounded-knot-sm k-text-knot-text-muted hover:k-bg-knot-surface-soft hover:k-text-knot-primary"
+                    :title="t('executionsPage.openFullPage')"
+                    :aria-label="t('executionsPage.openFullPage')"
+                  >
+                    <ExternalLink :size="15" />
+                  </a>
                   <button
                     v-if="isPending(exec.status)"
                     type="button"
                     @click="runNow(exec)"
                     :disabled="actionRunning?.id === exec.id"
-                    class="k-inline-flex k-items-center k-gap-1 k-text-[11px] k-font-semibold k-px-2 k-py-1 k-rounded-knot-sm k-bg-knot-primary-soft k-text-knot-primary hover:k-bg-knot-primary hover:k-text-white disabled:k-opacity-50"
+                    class="k-inline-flex k-items-center k-justify-center k-h-8 k-w-8 k-rounded-knot-sm k-text-knot-primary hover:k-bg-knot-primary-soft disabled:k-opacity-50"
                     :title="t('executionsPage.runNowHint')"
                   >
-                    <Loader2 v-if="actionRunning?.id === exec.id && actionRunning?.kind === 'run'" :size="11" class="k-animate-spin" />
-                    <Zap v-else :size="11" />
-                    {{ t('executionsPage.runNow') }}
+                    <Loader2 v-if="actionRunning?.id === exec.id && actionRunning?.kind === 'run'" :size="14" class="k-animate-spin" />
+                    <Zap v-else :size="14" />
                   </button>
                   <button
                     v-if="isPending(exec.status)"
                     type="button"
                     @click="cancelExec(exec)"
                     :disabled="actionRunning?.id === exec.id"
-                    class="k-inline-flex k-items-center k-gap-1 k-text-[11px] k-font-semibold k-px-2 k-py-1 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border k-text-knot-text-muted hover:k-text-knot-danger hover:k-border-knot-danger disabled:k-opacity-50"
+                    class="k-inline-flex k-items-center k-justify-center k-h-8 k-w-8 k-rounded-knot-sm k-text-knot-text-muted hover:k-bg-knot-danger-soft hover:k-text-knot-danger disabled:k-opacity-50"
                     :title="t('actions.cancel')"
                   >
-                    <Loader2 v-if="actionRunning?.id === exec.id && actionRunning?.kind === 'cancel'" :size="11" class="k-animate-spin" />
-                    <Ban v-else :size="11" />
-                    {{ t('actions.cancel') }}
+                    <Loader2 v-if="actionRunning?.id === exec.id && actionRunning?.kind === 'cancel'" :size="14" class="k-animate-spin" />
+                    <Ban v-else :size="14" />
                   </button>
                   <button
                     v-if="isRetryable(exec.status)"
                     type="button"
                     @click="retryExec(exec)"
                     :disabled="actionRunning?.id === exec.id"
-                    class="k-inline-flex k-items-center k-gap-1 k-text-[11px] k-font-semibold k-px-2 k-py-1 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border k-text-knot-text-muted hover:k-text-knot-primary hover:k-border-knot-primary disabled:k-opacity-50"
+                    class="k-inline-flex k-items-center k-justify-center k-h-8 k-w-8 k-rounded-knot-sm k-text-knot-text-muted hover:k-bg-knot-surface-soft hover:k-text-knot-primary disabled:k-opacity-50"
                     :title="t('executionsPage.retryHint')"
                   >
-                    <Loader2 v-if="actionRunning?.id === exec.id && actionRunning?.kind === 'retry'" :size="11" class="k-animate-spin" />
-                    <RotateCcw v-else :size="11" />
-                    {{ t('executionsPage.retry') }}
+                    <Loader2 v-if="actionRunning?.id === exec.id && actionRunning?.kind === 'retry'" :size="14" class="k-animate-spin" />
+                    <RotateCcw v-else :size="14" />
                   </button>
                 </div>
               </td>
@@ -982,7 +998,8 @@ onMounted(() => {
             <span class="k-font-mono">{{ selected.triggerType }}</span></span
           >
           <span class="k-text-knot-text-muted"
-            >{{ t('executionsPage.inlineDurationPrefix') }} {{ formatDuration(selected.durationMs) }}</span
+            >{{ t('executionsPage.inlineDurationPrefix') }}
+            {{ formatExecutionDuration(executionDurationMs(selected)) }}</span
           >
           <div class="k-ml-auto k-flex k-gap-1.5">
             <button

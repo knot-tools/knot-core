@@ -59,13 +59,8 @@ import KnotNode from '../canvas/KnotNode.vue';
 import KnotEdge from '../canvas/KnotEdge.vue';
 import WebhookPanel from '../canvas/WebhookPanel.vue';
 import NodeInspectorBody from '../components/inspector/NodeInspectorBody.vue';
-import { PALETTE_SECTIONS, NODE_REGISTRY, resolveNodeMeta } from '../canvas/nodeRegistry';
+import { PALETTE_SECTIONS, NODE_REGISTRY, resolveNodeMeta, categoryColorHex } from '../canvas/nodeRegistry';
 import { connectorMessageKey, resolveConnectorLabel } from '../lib/connectorLabels';
-import {
-  minimapRiskHex,
-  resolveNodeRisk,
-  type ConnectorRiskMetadata,
-} from '../composables/useNodeRisk';
 import {
   knotApi,
   type ConnectorDescriptor,
@@ -81,6 +76,9 @@ import {
   IDEMPOTENCY_PLACEHOLDER_GENERIC,
   IDEMPOTENCY_PLACEHOLDER_HTTP,
 } from '../lib/idempotencyPlaceholders';
+import { deriveEdgeType, edgeMarker, handleColor } from '../lib/edgeSemantics';
+import { computeExecutionVisualization } from '../lib/executionPath';
+import { KNOT_QUICK_ADD_KEY } from '../lib/knotQuickAddContext';
 
 import '@vue-flow/core/dist/style.css';
 import '@vue-flow/core/dist/theme-default.css';
@@ -105,7 +103,30 @@ const {
   onConnect,
   setNodes,
   setEdges,
+  fitView,
+  updateNodeInternals,
 } = useVueFlow();
+
+/** Recalculate handle positions so edges render correctly after async load / connector catalog. */
+function refreshCanvasGeometry(nodeIds?: string[]) {
+  void nextTick(() => {
+    requestAnimationFrame(() => {
+      const ids = nodeIds ?? (nodes.value as Node[]).map((n) => String(n.id));
+      if (ids.length > 0) {
+        updateNodeInternals(ids);
+      }
+      requestAnimationFrame(() => {
+        if (ids.length > 0) {
+          updateNodeInternals(ids);
+        }
+      });
+    });
+  });
+}
+
+function onCanvasNodesInitialized() {
+  refreshCanvasGeometry();
+}
 
 const { t } = useI18n();
 
@@ -169,10 +190,47 @@ function createSampleNodes(): Node[] {
 
 const defaultMarker = { type: MarkerType.ArrowClosed, color: '#6366f1', width: 18, height: 18 };
 
+function buildKnotEdge(
+  partial: Pick<Edge, 'id' | 'source' | 'target'> & {
+    sourceHandle?: string | null;
+    targetHandle?: string | null;
+    animated?: boolean;
+  },
+): Edge {
+  const edgeType = deriveEdgeType(partial.sourceHandle ?? null);
+  return {
+    ...partial,
+    type: 'knot',
+    data: { type: edgeType },
+    animated: !!partial.animated,
+    markerEnd: edgeMarker(edgeType, MarkerType.ArrowClosed) as Edge['markerEnd'],
+  };
+}
+
 const SAMPLE_EDGES: Edge[] = [
-  { id: 'e1', source: 'manual_1', target: 'set_1', type: 'knot', animated: true, markerEnd: defaultMarker },
-  { id: 'e2', source: 'set_1', target: 'email_1', type: 'knot', markerEnd: defaultMarker },
+  buildKnotEdge({ id: 'e1', source: 'manual_1', target: 'set_1', sourceHandle: 'main' }),
+  buildKnotEdge({ id: 'e2', source: 'set_1', target: 'email_1', sourceHandle: 'main' }),
 ];
+
+const showCanvasLegend = ref(true);
+const connectingHandle = ref<string | null>(null);
+const connectionValid = ref(true);
+const quickAddPending = ref<{ sourceId: string; sourceHandle: string } | null>(null);
+
+provide(KNOT_QUICK_ADD_KEY, {
+  startQuickAdd(sourceId: string, sourceHandle: string) {
+    quickAddPending.value = { sourceId, sourceHandle };
+    successFlash.value = t('editor.quickAddHint');
+    setTimeout(() => {
+      if (successFlash.value === t('editor.quickAddHint')) {
+        successFlash.value = null;
+      }
+    }, 3500);
+  },
+  get pendingSource() {
+    return quickAddPending.value;
+  },
+});
 
 
 
@@ -185,7 +243,23 @@ const edgeTypes = { knot: KnotEdge };
 
 const search = ref('');
 
+function isPaletteNodeAvailable(typeId: string): boolean {
+  const entry = connectorCatalogById.value.get(typeId);
+  if (!entry) {
+    return true;
+  }
+  return entry.available !== false;
+}
+
+function paletteUnavailableTitle(typeId: string): string {
+  return t('editor.paletteRequiresLicense', { connector: paletteNodeLabel(typeId) });
+}
+
 function onPaletteDragStart(event: DragEvent, typeId: string) {
+  if (!isPaletteNodeAvailable(typeId)) {
+    event.preventDefault();
+    return;
+  }
   if (!event.dataTransfer) return;
   event.dataTransfer.setData('application/knot-node', typeId);
   event.dataTransfer.effectAllowed = 'move';
@@ -212,7 +286,7 @@ function onCanvasDragOver(event: DragEvent) {
 function onCanvasDrop(event: DragEvent) {
   event.preventDefault();
   const typeId = event.dataTransfer?.getData('application/knot-node');
-  if (!typeId) return;
+  if (!typeId || !isPaletteNodeAvailable(typeId)) return;
   const position = screenToFlowCoordinate({ x: event.clientX, y: event.clientY });
 
   const id = `${typeId.replace('.', '_')}_${Date.now()}`;
@@ -222,19 +296,68 @@ function onCanvasDrop(event: DragEvent) {
     position: { x: position.x - 130, y: position.y - 30 },
     data: { type: typeId, label: paletteNodeLabel(typeId), subtitle: paletteNodeDescription(typeId), config: {} },
   });
+  if (quickAddPending.value) {
+    addEdges(
+      buildKnotEdge({
+        id: `e_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        source: quickAddPending.value.sourceId,
+        target: id,
+        sourceHandle: quickAddPending.value.sourceHandle,
+        targetHandle: 'main',
+      }),
+    );
+    quickAddPending.value = null;
+  }
+}
+
+function isValidConnection(connection: Connection): boolean {
+  if (!connection.source || !connection.target) {
+    connectionValid.value = false;
+    return false;
+  }
+  if (connection.source === connection.target) {
+    connectionValid.value = false;
+    return false;
+  }
+  const targetNode = (nodes.value as Node[]).find((n) => n.id === connection.target);
+  const targetType = String((targetNode?.data as { type?: string } | undefined)?.type ?? '');
+  if (targetType.startsWith('trigger.')) {
+    connectionValid.value = false;
+    return false;
+  }
+  connectionValid.value = true;
+  return true;
 }
 
 onConnect((params: Connection) => {
-  addEdges({
-    id: `e_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-    source: params.source!,
-    target: params.target!,
-    sourceHandle: params.sourceHandle ?? undefined,
-    targetHandle: params.targetHandle ?? undefined,
-    type: 'knot',
-    markerEnd: defaultMarker,
-  });
+  if (!isValidConnection(params)) return;
+  addEdges(
+    buildKnotEdge({
+      id: `e_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      source: params.source!,
+      target: params.target!,
+      sourceHandle: params.sourceHandle ?? 'main',
+      targetHandle: params.targetHandle ?? undefined,
+    }),
+  );
 });
+
+const connectionLineStyle = computed(() => ({
+  stroke: connectionValid.value
+    ? handleColor(connectingHandle.value ?? 'main')
+    : 'var(--knot-edge-error, #ef4444)',
+  strokeWidth: 2,
+}));
+
+function onConnectStart(connectionEvent: { event?: MouseEvent; handleId?: string | null }) {
+  connectingHandle.value = connectionEvent.handleId ?? 'main';
+  connectionValid.value = true;
+}
+
+function onConnectEnd() {
+  connectingHandle.value = null;
+  connectionValid.value = true;
+}
 
 const selectedId = ref<string | null>(null);
 const selectedNode = computed<Node | null>(() => {
@@ -356,6 +479,12 @@ async function loadConnectorDescriptors(): Promise<void> {
 
 void loadConnectorDescriptors();
 
+watch(connectorDescriptorsReady, (ready) => {
+  if (ready && (nodes.value as Node[]).length > 0) {
+    refreshCanvasGeometry();
+  }
+});
+
 provide(KNOT_CONNECTORS_KEY, connectorDescriptors);
 
 const toast = useToast();
@@ -383,28 +512,9 @@ const connectorCatalogById = computed(() => {
   return map;
 });
 
-function connectorRiskMetadata(descriptor: ConnectorDescriptor | undefined): ConnectorRiskMetadata | null {
-  if (!descriptor) return null;
-  const m = descriptor.metadata;
-  return {
-    id: String(m.id ?? ''),
-    riskLevel: m.riskLevel as ConnectorRiskMetadata['riskLevel'],
-    reversible: m.reversible as boolean | undefined,
-    sideEffects: m.sideEffects as ConnectorRiskMetadata['sideEffects'],
-    riskByConfig: m.riskByConfig as ConnectorRiskMetadata['riskByConfig'],
-    riskFieldKey: m.riskFieldKey as string | undefined,
-  };
-}
-
 function minimapNodeColor(node: Node): string {
   const typeId = String(node.data?.type ?? '');
-  const config = (node.data?.config ?? {}) as Record<string, unknown>;
-  const descriptor = connectorCatalogById.value.get(typeId);
-  const resolved = resolveNodeRisk({
-    config,
-    metadata: connectorRiskMetadata(descriptor),
-  });
-  return minimapRiskHex(resolved.riskLevel);
+  return categoryColorHex(resolveNodeMeta(typeId).category);
 }
 
 const savedWorkflowStatus = ref<'draft' | 'active' | 'disabled' | 'error' | 'archived'>('draft');
@@ -645,23 +755,55 @@ watch([nodes, edges], () => {
 watch(simResult, (sim) => {
   const list = nodes.value as Node[];
   let changed = false;
-  const statusByNode: Record<string, string> = {};
-  if (sim) {
-    for (const log of sim.logs) {
-      const id = (log as { nodeId?: string }).nodeId;
-      const status = (log as { status?: string }).status;
-      if (id && status) statusByNode[id] = status;
-    }
-  }
+  const edgeList = edges.value as Edge[];
+  const viz = sim
+    ? computeExecutionVisualization(
+        sim.logs as Parameters<typeof computeExecutionVisualization>[0],
+        edgeList.map((e) => ({
+          id: String(e.id),
+          source: e.source,
+          target: e.target,
+          sourceHandle: e.sourceHandle ?? null,
+        })),
+      )
+    : null;
+
   const next = list.map((n) => {
-    const desired = sim ? (statusByNode[n.id] ?? 'idle') : 'idle';
-    if ((n.data as { status?: string } | undefined)?.status === desired) return n;
+    const desiredStatus = sim ? (viz?.statusByNode[n.id] ?? 'idle') : 'idle';
+    const desiredDimmed = sim ? !!viz?.branchDimmedByNode[n.id] : false;
+    const desiredHandles = sim ? (viz?.dimmedHandlesByNode[n.id] ?? []) : [];
+    const data = (n.data ?? {}) as Record<string, unknown>;
+    const sameStatus = data.status === desiredStatus;
+    const sameDimmed = !!data.branchDimmed === desiredDimmed;
+    const prevHandles = JSON.stringify(data.dimmedHandles ?? []);
+    const nextHandles = JSON.stringify(desiredHandles);
+    if (sameStatus && sameDimmed && prevHandles === nextHandles) return n;
     changed = true;
-    return { ...n, data: { ...(n.data || {}), status: desired } } as Node;
+    return {
+      ...n,
+      data: {
+        ...data,
+        status: desiredStatus,
+        branchDimmed: desiredDimmed,
+        dimmedHandles: desiredHandles,
+      },
+    } as Node;
   });
   if (changed) {
     nodes.value = next as typeof nodes.value;
     setNodes(next);
+  }
+
+  let edgesChanged = false;
+  const nextEdges = edgeList.map((e) => {
+    const shouldAnimate = sim ? (viz?.executedEdgeIds.has(String(e.id)) ?? false) : false;
+    if (!!e.animated === shouldAnimate) return e;
+    edgesChanged = true;
+    return { ...e, animated: shouldAnimate };
+  });
+  if (edgesChanged) {
+    edges.value = nextEdges as typeof edges.value;
+    setEdges(nextEdges);
   }
 });
 
@@ -700,12 +842,60 @@ function redoChange() {
   dirty.value = true;
 }
 
-function arrangeNodes() {
+function arrangeNodes(options?: { animateLayout?: boolean }) {
+  const animateLayout = options?.animateLayout ?? false;
   snapshot();
-  const laid = autoLayout(nodes.value as Node[], edges.value as Edge[]);
-  nodes.value = laid as typeof nodes.value;
-  setNodes(laid);
-  dirty.value = true;
+  const before = nodes.value as Node[];
+  const laid = autoLayout(before, edges.value as Edge[]);
+  if (!animateLayout) {
+    nodes.value = laid as typeof nodes.value;
+    setNodes(laid);
+    dirty.value = true;
+    void nextTick(() => {
+      fitView({ padding: 0.2, duration: 0 });
+      refreshCanvasGeometry();
+    });
+    return;
+  }
+
+  const startPositions = new Map(
+    before.map((n) => [n.id, { x: n.position.x, y: n.position.y }]),
+  );
+  const durationMs = 420;
+  const t0 = performance.now();
+
+  const tick = (now: number) => {
+    const raw = Math.min(1, (now - t0) / durationMs);
+    const eased = 1 - (1 - raw) ** 2;
+    const frame = laid.map((n) => {
+      const from = startPositions.get(n.id) ?? n.position;
+      return {
+        ...n,
+        position: {
+          x: from.x + (n.position.x - from.x) * eased,
+          y: from.y + (n.position.y - from.y) * eased,
+        },
+      };
+    });
+    nodes.value = frame as typeof nodes.value;
+    setNodes(frame);
+    if (raw < 1) {
+      requestAnimationFrame(tick);
+      return;
+    }
+    nodes.value = laid as typeof nodes.value;
+    setNodes(laid);
+    dirty.value = true;
+    void nextTick(() => {
+      fitView({ padding: 0.2, duration: 400 });
+      refreshCanvasGeometry();
+    });
+  };
+  requestAnimationFrame(tick);
+}
+
+function onToolbarArrangeClick() {
+  arrangeNodes();
 }
 
 function copySelection() {
@@ -875,16 +1065,14 @@ function applyWorkflow(workflow: KnotWorkflow) {
   });
   const loadedEdges: Edge[] = (def.edges ?? []).map((e) => {
     const data = e as Record<string, unknown>;
-    return {
+    return buildKnotEdge({
       id: String(data.id ?? `e_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`),
       source: String(data.source ?? ''),
       target: String(data.target ?? ''),
-      sourceHandle: (data.sourceHandle as string | null | undefined) ?? undefined,
+      sourceHandle: (data.sourceHandle as string | null | undefined) ?? 'main',
       targetHandle: (data.targetHandle as string | null | undefined) ?? undefined,
-      type: 'knot',
       animated: !!data.animated,
-      markerEnd: defaultMarker,
-    };
+    });
   });
 
   // Replace the v-model arrays directly: setNodes/setEdges from useVueFlow
@@ -896,6 +1084,7 @@ function applyWorkflow(workflow: KnotWorkflow) {
   // Keep VueFlow's internal store in sync (selection, zIndex, etc).
   setNodes(loadedNodes);
   setEdges(loadedEdges);
+  refreshCanvasGeometry(loadedNodes.map((n) => n.id));
   // The v-model reassignment + setNodes will trigger @nodes-change /
   // @edges-change which would otherwise mark the freshly loaded
   // workflow as "Unsaved". Reset on the next tick to ignore those events.
@@ -1096,9 +1285,20 @@ async function rollbackToVersion(version: WorkflowVersion) {
 
 async function loadWorkflow(id: number) {
   loading.value = true;
+  const shouldAutoLayout =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('layout') === '1';
   try {
     const result = await knotApi.getWorkflow(id);
     applyWorkflow(result.workflow);
+    if (shouldAutoLayout) {
+      arrangeNodes({ animateLayout: true });
+    } else {
+      void nextTick(() => {
+        fitView({ padding: 0.18, duration: 350 });
+        refreshCanvasGeometry();
+      });
+    }
     try {
       const cached = localStorage.getItem(`knot.lastSim.${id}`);
       if (cached) simResult.value = JSON.parse(cached);
@@ -1173,10 +1373,16 @@ watch(workflowName, () => {
             <template v-for="id in filteredIds(section.ids)" :key="id">
               <div
                 v-if="NODE_REGISTRY[id]"
-                draggable="true"
+                :draggable="isPaletteNodeAvailable(id)"
                 :data-knot-palette-node="id"
+                :title="isPaletteNodeAvailable(id) ? undefined : paletteUnavailableTitle(id)"
                 @dragstart="onPaletteDragStart($event, id)"
-                class="k-group k-flex k-items-center k-gap-2.5 k-px-2.5 k-py-2 k-rounded-knot-sm k-cursor-grab active:k-cursor-grabbing k-border k-border-transparent hover:k-border-knot-border-strong hover:k-bg-knot-surface-soft k-transition-all k-duration-knot k-ease-knot"
+                :class="[
+                  'k-group k-flex k-items-center k-gap-2.5 k-px-2.5 k-py-2 k-rounded-knot-sm k-border k-border-transparent k-transition-all k-duration-knot k-ease-knot',
+                  isPaletteNodeAvailable(id)
+                    ? 'k-cursor-grab active:k-cursor-grabbing hover:k-border-knot-border-strong hover:k-bg-knot-surface-soft'
+                    : 'k-opacity-50 k-cursor-not-allowed k-bg-knot-surface-soft',
+                ]"
               >
                 <div
                   class="k-h-8 k-w-8 k-rounded-knot-sm k-flex k-items-center k-justify-center k-text-white k-shadow-knot-xs k-shrink-0"
@@ -1241,14 +1447,22 @@ watch(workflowName, () => {
           </select>
           <span
             v-if="dirty"
-            class="k-text-[11px] k-px-2 k-py-0.5 k-rounded-knot-pill k-bg-knot-warning-soft k-text-knot-warning k-font-semibold k-flex-shrink-0 k-whitespace-nowrap"
-          >{{ t('editor.unsaved') }}</span>
+            :title="t('editor.unsaved')"
+            class="k-inline-flex k-items-center k-gap-1 k-text-[11px] k-px-2 k-py-0.5 k-rounded-knot-pill k-bg-knot-warning-soft k-text-knot-warning k-font-semibold k-flex-shrink-0 k-max-w-[9rem] lg:k-max-w-none"
+          >
+            <span class="k-hidden lg:k-inline k-whitespace-nowrap">{{ t('editor.unsaved') }}</span>
+            <span class="lg:k-hidden k-font-bold" aria-hidden="true">●</span>
+          </span>
           <span
             v-else
-            class="k-text-[11px] k-px-2 k-py-0.5 k-rounded-knot-pill k-bg-knot-success-soft k-text-knot-success k-font-semibold k-flex-shrink-0 k-whitespace-nowrap"
-          >{{ t('editor.saved') }}</span>
+            :title="t('editor.saved')"
+            class="k-inline-flex k-items-center k-gap-1 k-text-[11px] k-px-2 k-py-0.5 k-rounded-knot-pill k-bg-knot-success-soft k-text-knot-success k-font-semibold k-flex-shrink-0 k-max-w-[9rem] lg:k-max-w-none"
+          >
+            <span class="k-hidden lg:k-inline k-whitespace-nowrap">{{ t('editor.saved') }}</span>
+            <span class="lg:k-hidden k-font-bold" aria-hidden="true">✓</span>
+          </span>
         </div>
-        <div class="k-flex k-items-center k-gap-1.5 k-flex-shrink-0 k-flex-wrap k-justify-end">
+        <div class="k-relative k-z-20 k-flex k-items-center k-gap-1.5 k-flex-shrink-0 k-flex-wrap k-justify-end">
           <button
             @click="undoChange"
             :disabled="!history.canUndo()"
@@ -1262,7 +1476,7 @@ watch(workflowName, () => {
             class="k-inline-flex k-items-center k-px-2.5 k-py-1.5 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border k-text-knot-text k-text-sm hover:k-border-knot-primary disabled:k-opacity-40"
           ><Redo2 :size="14" /></button>
           <button
-            @click="arrangeNodes"
+            @click="onToolbarArrangeClick"
             :title="t('editor.toolbarArrangeTitle')"
             :aria-label="t('editor.toolbarArrangeAria')"
             class="k-inline-flex k-items-center k-px-2.5 k-py-1.5 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border k-text-knot-text k-text-sm hover:k-border-knot-primary"
@@ -1382,6 +1596,14 @@ watch(workflowName, () => {
           :select-nodes-on-drag="false"
           :connection-mode="ConnectionMode.Loose"
           :connect-on-click="false"
+          :connection-line-style="connectionLineStyle"
+          :is-valid-connection="isValidConnection"
+          elevate-edges-on-select
+          snap-to-grid
+          :snap-grid="[16, 16]"
+          @connect-start="onConnectStart"
+          @connect-end="onConnectEnd"
+          @nodes-initialized="onCanvasNodesInitialized"
           @node-click="onNodeClick"
           @pane-click="onPaneClick"
           @nodes-change="dirty = true"
@@ -1399,6 +1621,21 @@ watch(workflowName, () => {
             :node-stroke-width="2"
           />
         </VueFlow>
+        <div
+          v-if="showCanvasLegend"
+          class="k-absolute k-top-3 k-right-3 k-z-10 k-bg-knot-surface/95 k-border k-border-knot-border k-rounded-knot-sm k-px-3 k-py-2 k-text-[10px] k-text-knot-text-soft k-shadow-knot-sm k-space-y-1"
+        >
+          <div class="k-flex k-items-center k-justify-between k-gap-3 k-mb-1">
+            <span class="k-font-semibold k-text-knot-text">{{ t('editor.legendTitle') }}</span>
+            <button type="button" class="k-text-knot-text-muted hover:k-text-knot-text" @click="showCanvasLegend = false">
+              <X :size="12" />
+            </button>
+          </div>
+          <div class="k-flex k-items-center k-gap-2"><span class="k-w-3 k-h-0.5 k-rounded k-bg-[var(--knot-edge-main)]" /> {{ t('editor.handles.main') }}</div>
+          <div class="k-flex k-items-center k-gap-2"><span class="k-w-3 k-h-0.5 k-rounded k-bg-[var(--knot-edge-true)]" /> {{ t('editor.handles.true') }}</div>
+          <div class="k-flex k-items-center k-gap-2"><span class="k-w-3 k-h-0.5 k-rounded k-bg-[var(--knot-edge-false)]" /> {{ t('editor.handles.false') }}</div>
+          <div class="k-flex k-items-center k-gap-2"><span class="k-w-3 k-h-0.5 k-rounded k-bg-[var(--knot-edge-error)]" /> {{ t('editor.handles.error') }}</div>
+        </div>
       </div>
 
       <ProblemsPanel :issues="liveIssues" @jump="onJumpToNode" />
@@ -1830,9 +2067,19 @@ watch(workflowName, () => {
 .vue-flow__attribution a { color: inherit; }
 
 .vue-flow__connection-path {
-  stroke: var(--knot-color-primary);
   stroke-width: 2;
   stroke-dasharray: 6 6;
+  transition: stroke 120ms ease;
+}
+
+.vue-flow__edge:hover {
+  z-index: 999 !important;
+}
+.vue-flow__edge.selected {
+  z-index: 1000 !important;
+}
+.vue-flow__edge .knot-edge-path {
+  pointer-events: stroke;
 }
 
 .k-toast-enter-active, .k-toast-leave-active { transition: opacity 220ms ease, transform 220ms ease; }

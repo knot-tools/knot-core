@@ -1,9 +1,13 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
 import { describe, expect, it } from 'vitest';
 import {
   normalizeDefinition,
   normalizeWorkflowImport,
   parseWorkflowImportText,
   WorkflowImportFormatError,
+  WorkflowImportLegacyStepsError,
 } from '../normalizeWorkflowImport';
 
 describe('normalizeWorkflowImport', () => {
@@ -68,9 +72,35 @@ describe('normalizeWorkflowImport', () => {
     });
   });
 
+  it('throws legacy steps error for Zapier-like shape', () => {
+    expect(() =>
+      normalizeWorkflowImport(
+        { trigger: { type: 'manual' }, steps: [{ type: 'email' }] },
+        { label: 'Fallback' },
+      ),
+    ).toThrow(WorkflowImportLegacyStepsError);
+  });
+
   it('throws format error for unrecognized JSON shape', () => {
     expect(() => normalizeWorkflowImport({ foo: 'bar' }, { label: 'Fallback' })).toThrow(
       WorkflowImportFormatError,
     );
+  });
+
+  it('imports starter 03 invoice email workflow', () => {
+    const raw = readFileSync(
+      resolve(__dirname, '../../../../examples/starter/03-facture-validee-email-bancaire.knot.json'),
+      'utf8',
+    );
+    const parsed = parseWorkflowImportText(raw);
+    const payload = normalizeWorkflowImport(parsed, { label: 'Imported starter 03' });
+
+    expect(payload.label).toContain('Facture');
+    const nodes = payload.definition?.nodes ?? [];
+    const types = nodes.map((n) => n.type);
+    expect(types).toContain('trigger.dolibarr_event');
+    expect(types).toContain('action.email');
+    const trigger = nodes.find((n) => n.type === 'trigger.dolibarr_event');
+    expect(trigger?.config?.events).toContain('BILL_VALIDATE');
   });
 });

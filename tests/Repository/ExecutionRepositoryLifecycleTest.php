@@ -151,4 +151,37 @@ final class ExecutionRepositoryLifecycleTest extends TestCase
         self::assertSame(1, $repo->countSince(2, strtotime('2026-05-01 00:00:00')));
         self::assertSame(2, $repo->purgeFailuresOlderThan(2, 30));
     }
+
+    public function testMarkStatusPersistsDurationMsOnSuccess(): void
+    {
+        $db = new InMemoryExecutionDb();
+        $db->executions[1] = [
+            'rowid' => 1,
+            'fk_workflow' => 2,
+            'status' => 'running',
+            'trigger_type' => 'manual',
+            'trigger_data' => '{}',
+            'retry_count' => 0,
+            'entity' => 1,
+            'priority' => 5,
+            'scheduled_at' => null,
+            'max_attempts' => 3,
+            'backoff_strategy' => 'exponential',
+            'worker_id' => 'worker-a',
+            'started_at' => '2026-06-01 10:00:00',
+            'ended_at' => null,
+            'error_message' => null,
+            'error_payload' => null,
+            'duration_ms' => null,
+        ];
+        $repo = new ExecutionRepository($db);
+
+        self::assertTrue($repo->markStatus(1, 'success', 1));
+        $row = $repo->fetchOne(1, 1);
+        self::assertNotNull($row);
+        self::assertSame('success', $row['status']);
+        self::assertNotNull($row['endedAt']);
+        self::assertIsInt($row['durationMs']);
+        self::assertGreaterThanOrEqual(0, $row['durationMs']);
+    }
 }

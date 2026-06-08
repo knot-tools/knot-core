@@ -17,6 +17,8 @@ import {
   Download,
   Copy,
   Folder,
+  Trash2,
+  History,
 } from 'lucide-vue-next';
 import { knotApi, type WorkflowSummary, formatWorkflowImportWarningLine } from '../lib/api';
 import { normalizeWorkflowImport, parseWorkflowImportText, WorkflowImportFormatError } from '../lib/normalizeWorkflowImport';
@@ -185,6 +187,26 @@ function exportSelectedBulk() {
   window.location.href = `${baseUrl.value.replace(/\?.*$/, '')}/custom/knot/api/workflows.php?action=export_bulk&ids=${ids}`;
 }
 
+async function deleteWorkflow(wf: WorkflowSummary) {
+  const ok = await confirmDialog.confirm({
+    title: t('workflowsPage.deleteTitle'),
+    message: t('workflowsPage.deleteConfirm', { ref: wf.ref, label: wf.label }),
+  });
+  if (!ok) return;
+  loading.value = true;
+  error.value = null;
+  try {
+    await knotApi.bulkWorkflows({ operation: 'delete', ids: [wf.id] });
+    toast.success(t('workflowsPage.deleteSuccess', { label: wf.label }));
+    await load();
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : t('workflowsPage.deleteFailed');
+    toast.error(error.value);
+  } finally {
+    loading.value = false;
+  }
+}
+
 async function cloneWorkflow(wf: WorkflowSummary) {
   const suggested = `${wf.label} ${t('workflowsPage.cloneDefaultSuffix')}`.trim();
   const label = window.prompt(t('workflowsPage.clonePrompt'), suggested);
@@ -296,8 +318,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="k-p-6 k-max-w-[1280px] k-mx-auto k-space-y-5">
-    <header class="k-flex k-items-center k-justify-between k-gap-4">
+  <div class="knot-view-shell k-p-6 k-w-full k-min-w-0 k-space-y-5">
+    <header class="k-flex k-flex-wrap k-items-center k-justify-between k-gap-3 k-min-w-0">
       <div class="k-flex k-items-center k-gap-3">
         <div class="k-h-10 k-w-10 k-rounded-knot-sm k-bg-knot-primary-soft k-text-knot-primary k-flex k-items-center k-justify-center">
           <Workflow :size="20" />
@@ -309,7 +331,7 @@ onMounted(async () => {
           </p>
         </div>
       </div>
-      <div class="k-flex k-items-center k-gap-2">
+      <div class="k-flex k-flex-wrap k-items-center k-gap-2 k-min-w-0 k-justify-end">
         <button
           @click="load"
           :disabled="loading"
@@ -317,7 +339,7 @@ onMounted(async () => {
         >
           <Loader2 v-if="loading" :size="14" class="k-animate-spin" />
           <RefreshCw v-else :size="14" />
-          {{ t('actions.refresh') }}
+          <span class="k-hidden xl:k-inline">{{ t('actions.refresh') }}</span>
         </button>
         <a
           v-if="marketplaceChromeEnabled"
@@ -325,14 +347,14 @@ onMounted(async () => {
           class="k-inline-flex k-items-center k-gap-2 k-px-3 k-py-1.5 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border-strong k-text-knot-text k-text-sm k-font-semibold hover:k-border-knot-primary hover:k-text-knot-primary k-no-underline"
         >
           <Library :size="14" />
-          {{ t('workflowsPage.fromTemplate') }}
+          <span class="k-hidden xl:k-inline">{{ t('workflowsPage.fromTemplate') }}</span>
         </a>
         <button
           @click="importJsonClick"
           class="k-inline-flex k-items-center k-gap-2 k-px-3 k-py-1.5 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border-strong k-text-knot-text k-text-sm k-font-semibold hover:k-border-knot-primary hover:k-text-knot-primary"
         >
           <Upload :size="14" />
-          {{ t('actions.import') }}
+          <span class="k-hidden xl:k-inline">{{ t('actions.import') }}</span>
         </button>
         <input ref="importInput" type="file" accept="application/json,.json" class="k-hidden" @change="onImportFile" />
         <button
@@ -346,7 +368,7 @@ onMounted(async () => {
         <button
           @click="createBlank"
           :disabled="loading"
-          class="k-inline-flex k-items-center k-gap-2 k-px-3.5 k-py-1.5 k-rounded-knot-sm k-bg-knot-hero k-text-white k-text-sm k-font-semibold k-shadow-[0_8px_18px_rgba(99,102,241,0.35)] hover:k-shadow-[0_12px_24px_rgba(99,102,241,0.45)] disabled:k-opacity-60"
+          class="k-inline-flex k-items-center k-gap-2 k-px-3.5 k-py-1.5 k-rounded-knot-sm k-bg-knot-hero k-text-white k-text-sm k-font-semibold k-shadow-[0_8px_18px_rgba(99,102,241,0.35)] hover:k-shadow-[0_12px_24px_rgba(99,102,241,0.45)] disabled:k-opacity-60 k-flex-shrink-0"
         >
           <PlusCircle :size="14" />
           {{ t('workflowsPage.newWorkflow') }}
@@ -384,8 +406,8 @@ onMounted(async () => {
       {{ error }}
     </div>
 
-    <div class="k-flex k-gap-4 k-items-start">
-      <aside class="k-w-56 k-shrink-0 k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-md k-p-3 k-space-y-2">
+    <div class="k-flex k-gap-4 k-items-start k-w-full k-min-w-0">
+      <aside class="k-w-52 xl:k-w-56 k-shrink-0 k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-md k-p-3 k-space-y-2">
         <div class="k-flex k-items-center k-gap-2 k-text-xs k-font-bold k-uppercase k-tracking-wider k-text-knot-text-soft">
           <Folder :size="12" /> {{ t('workflowsPage.foldersTitle') }}
         </div>
@@ -434,16 +456,19 @@ onMounted(async () => {
         </div>
       </aside>
 
-      <div class="k-flex-1 k-min-w-0 k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-md k-shadow-knot-sm k-overflow-x-auto">
-      <table class="k-w-full k-text-sm">
+      <div
+        class="k-flex-1 k-min-w-0 k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-md k-shadow-knot-sm k-overflow-x-auto"
+        data-knot-test="workflows-table-scroll"
+      >
+      <table class="k-w-full k-text-sm knot-workflows-table" data-knot-test="workflows-table">
         <thead class="k-bg-knot-surface-soft k-text-knot-text-soft k-text-[11px] k-uppercase k-tracking-wider">
           <tr>
-            <th class="k-text-left k-px-4 k-py-3 k-font-semibold">{{ t('workflowsPage.thRef') }}</th>
-            <th class="k-text-left k-px-4 k-py-3 k-font-semibold">{{ t('workflowsPage.thLabel') }}</th>
-            <th class="k-text-left k-px-4 k-py-3 k-font-semibold">{{ t('workflowsPage.thStatus') }}</th>
-            <th class="k-text-left k-px-4 k-py-3 k-font-semibold">{{ t('workflowsPage.folderAssign') }}</th>
-            <th class="k-text-left k-px-4 k-py-3 k-font-semibold">{{ t('workflowsPage.thUpdated') }}</th>
-            <th class="k-text-right k-px-4 k-py-3 k-font-semibold">{{ t('workflowsPage.thActions') }}</th>
+            <th class="k-text-left k-px-3 k-py-3 k-font-semibold k-whitespace-nowrap">{{ t('workflowsPage.thRef') }}</th>
+            <th class="k-text-left k-px-3 k-py-3 k-font-semibold">{{ t('workflowsPage.thLabel') }}</th>
+            <th class="k-text-left k-px-3 k-py-3 k-font-semibold k-whitespace-nowrap">{{ t('workflowsPage.thStatus') }}</th>
+            <th class="k-text-left k-px-3 k-py-3 k-font-semibold k-whitespace-nowrap">{{ t('workflowsPage.folderAssign') }}</th>
+            <th class="k-text-left k-px-3 k-py-3 k-font-semibold k-whitespace-nowrap">{{ t('workflowsPage.thUpdated') }}</th>
+            <th class="k-text-right k-px-3 k-py-3 k-font-semibold k-whitespace-nowrap">{{ t('workflowsPage.thActions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -482,10 +507,14 @@ onMounted(async () => {
             :key="wf.id"
             class="k-border-t k-border-knot-border hover:k-bg-knot-surface-soft k-transition-colors"
           >
-            <td class="k-px-4 k-py-2.5 k-font-mono k-text-knot-text-muted">{{ wf.ref }}</td>
-            <td class="k-px-4 k-py-2.5">
-              <div class="k-flex k-items-center k-gap-2">
-                <a :href="editUrl(wf.id)" class="k-text-knot-text k-font-semibold hover:k-text-knot-primary">{{ wf.label }}</a>
+            <td class="k-px-3 k-py-2.5 k-font-mono k-text-[11px] k-text-knot-text-muted k-whitespace-nowrap k-align-top">{{ wf.ref }}</td>
+            <td class="k-px-3 k-py-2.5 k-align-top">
+              <div class="k-flex k-items-center k-gap-1.5 k-min-w-0">
+                <a
+                  :href="editUrl(wf.id)"
+                  class="k-text-knot-text k-font-semibold hover:k-text-knot-primary"
+                  :title="wf.label"
+                >{{ wf.label }}</a>
                 <span
                   v-if="wf.riskWorstLevel && wf.riskWorstLevel !== 'safe'"
                   class="k-inline-block k-h-2.5 k-w-2.5 k-rounded-full k-shrink-0"
@@ -502,16 +531,20 @@ onMounted(async () => {
                   {{ t('workflowsPage.guideBadge') }}
                 </span>
               </div>
-              <div v-if="wf.description" class="k-text-xs k-text-knot-text-soft k-truncate k-max-w-[420px]">{{ wf.description }}</div>
+              <div
+                v-if="wf.description"
+                class="k-mt-0.5 k-text-xs k-text-knot-text-soft k-line-clamp-1"
+                :title="wf.description"
+              >{{ wf.description }}</div>
             </td>
-            <td class="k-px-4 k-py-2.5">
+            <td class="k-px-3 k-py-2.5 k-align-top k-whitespace-nowrap">
               <span :class="['k-px-2 k-py-0.5 k-rounded-knot-pill k-text-[11px] k-font-semibold', statusBadge(wf.status)]">
                 {{ workflowStatusLabel(wf.status) }}
               </span>
             </td>
-            <td class="k-px-4 k-py-2.5">
+            <td class="k-px-3 k-py-2.5 k-align-top">
               <select
-                class="k-text-xs k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-sm k-px-2 k-py-1 k-max-w-[140px]"
+                class="k-text-xs k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-sm k-px-2 k-py-1 k-min-w-[7rem] k-max-w-[11rem]"
                 :value="wf.folderId ?? ''"
                 :disabled="folderBusy"
                 @change="assignWorkflowFolder(wf.id, ($event.target as HTMLSelectElement).value ? Number(($event.target as HTMLSelectElement).value) : null)"
@@ -522,23 +555,49 @@ onMounted(async () => {
                 </option>
               </select>
             </td>
-            <td class="k-px-4 k-py-2.5 k-text-knot-text-soft">{{ wf.updatedAt }}</td>
-            <td class="k-px-4 k-py-2.5 k-text-right">
-              <a :href="editUrl(wf.id)" class="k-inline-flex k-items-center k-gap-1 k-text-knot-primary k-text-xs k-font-semibold hover:k-underline">
-                {{ t('workflowsPage.edit') }} <ExternalLink :size="11" />
-              </a>
-              <a :href="executionsUrl(wf.id)" class="k-inline-flex k-items-center k-gap-1 k-text-knot-text-muted k-text-xs k-font-semibold hover:k-text-knot-primary k-ml-3">
-                {{ t('workflowsPage.executions') }}
-              </a>
-              <button
-                @click="cloneWorkflow(wf)"
-                :disabled="loading"
-                class="k-inline-flex k-items-center k-gap-1 k-text-knot-text-muted k-text-xs k-font-semibold hover:k-text-knot-primary k-ml-3 disabled:k-opacity-50"
-                :title="t('workflowsPage.cloneTitle')"
-              >
-                <Copy :size="11" />
-                {{ t('workflowsPage.clone') }}
-              </button>
+            <td class="k-px-3 k-py-2.5 k-text-knot-text-soft k-whitespace-nowrap k-text-xs k-align-top">{{ wf.updatedAt }}</td>
+            <td
+              class="k-px-2 k-py-2 k-align-top k-whitespace-nowrap"
+              data-knot-test="workflow-row-actions"
+            >
+              <div class="k-inline-flex k-items-center k-justify-end k-gap-0.5">
+                <a
+                  :href="editUrl(wf.id)"
+                  class="k-inline-flex k-items-center k-justify-center k-h-8 k-w-8 k-rounded-knot-sm k-text-knot-primary hover:k-bg-knot-primary-soft"
+                  :title="t('workflowsPage.edit')"
+                  :aria-label="t('workflowsPage.edit')"
+                >
+                  <ExternalLink :size="15" />
+                </a>
+                <a
+                  :href="executionsUrl(wf.id)"
+                  class="k-inline-flex k-items-center k-justify-center k-h-8 k-w-8 k-rounded-knot-sm k-text-knot-text-muted hover:k-bg-knot-surface-soft hover:k-text-knot-primary"
+                  :title="t('workflowsPage.executions')"
+                  :aria-label="t('workflowsPage.executions')"
+                >
+                  <History :size="15" />
+                </a>
+                <button
+                  type="button"
+                  @click="cloneWorkflow(wf)"
+                  :disabled="loading"
+                  class="k-inline-flex k-items-center k-justify-center k-h-8 k-w-8 k-rounded-knot-sm k-text-knot-text-muted hover:k-bg-knot-surface-soft hover:k-text-knot-primary disabled:k-opacity-50"
+                  :title="t('workflowsPage.cloneTitle')"
+                  :aria-label="t('workflowsPage.clone')"
+                >
+                  <Copy :size="15" />
+                </button>
+                <button
+                  type="button"
+                  @click="deleteWorkflow(wf)"
+                  :disabled="loading"
+                  class="k-inline-flex k-items-center k-justify-center k-h-8 k-w-8 k-rounded-knot-sm k-text-knot-danger hover:k-bg-knot-danger-soft disabled:k-opacity-50"
+                  :title="t('workflowsPage.deleteTitle')"
+                  :aria-label="t('workflowsPage.delete')"
+                >
+                  <Trash2 :size="15" />
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>

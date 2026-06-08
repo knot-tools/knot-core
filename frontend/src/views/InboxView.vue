@@ -26,7 +26,7 @@ onMounted(load);
 </script>
 
 <template>
-  <div class="k-p-6 k-max-w-[1100px] k-mx-auto k-space-y-5">
+  <div class="knot-view-shell k-p-6 k-w-full k-min-w-0 k-space-y-5">
     <header class="k-flex k-items-center k-justify-between k-gap-3">
       <div class="k-flex k-items-center k-gap-3">
         <div class="k-h-10 k-w-10 k-rounded-knot-sm k-bg-knot-primary-soft k-text-knot-primary k-flex k-items-center k-justify-center">

@@ -95,4 +95,84 @@ final class WorkflowValidatorTest extends TestCase
         $keys = array_map(static fn (array $i): string => (string) ($i['messageKey'] ?? ''), $issues);
         self::assertContains('sql_unknown_table_hint', $keys);
     }
+
+    public function testWarnsOnUnknownObjectTypeWithSuggestion(): void
+    {
+        $issues = $this->validator->validateAll([
+            'schemaVersion' => '1.0',
+            'nodes' => [
+                ['id' => 't1', 'type' => 'trigger.dolibarr_event'],
+                [
+                    'id' => 'r1',
+                    'type' => 'dolibarr.read_object',
+                    'config' => ['objectType' => 'invoice', 'objectId' => 1],
+                ],
+            ],
+            'edges' => [['source' => 't1', 'target' => 'r1']],
+        ]);
+
+        $match = null;
+        foreach ($issues as $issue) {
+            if (($issue['messageKey'] ?? '') === 'object_type_unknown_hint') {
+                $match = $issue;
+                break;
+            }
+        }
+        self::assertNotNull($match);
+        self::assertSame('warning', $match['severity']);
+        self::assertSame('facture', $match['messageParams']['suggestion'] ?? null);
+    }
+
+    public function testWarnsOnDollarJsonExpressionAfterNonTriggerUpstream(): void
+    {
+        $issues = $this->validator->validateAll([
+            'schemaVersion' => '1.0',
+            'nodes' => [
+                ['id' => 't1', 'type' => 'trigger.dolibarr_event'],
+                ['id' => 'r1', 'type' => 'dolibarr.read_object', 'config' => ['objectType' => 'facture', 'objectId' => 1]],
+                [
+                    'id' => 'sql1',
+                    'type' => 'dolibarr.sql_query',
+                    'config' => ['query' => 'SELECT 1 WHERE x = {{$json.total_ttc}}'],
+                ],
+            ],
+            'edges' => [
+                ['source' => 't1', 'target' => 'r1'],
+                ['source' => 'r1', 'target' => 'sql1'],
+            ],
+        ]);
+
+        $keys = array_map(static fn (array $i): string => (string) ($i['messageKey'] ?? ''), $issues);
+        self::assertContains('expression_json_chain', $keys);
+    }
+
+    public function testWarnsOnInvalidIfOperatorWithSuggestion(): void
+    {
+        $issues = $this->validator->validateAll([
+            'schemaVersion' => '1.0',
+            'nodes' => [
+                ['id' => 't1', 'type' => 'trigger.manual'],
+                [
+                    'id' => 'if1',
+                    'type' => 'logic.if',
+                    'config' => [
+                        'conditions' => [
+                            ['left' => '{{$json.amount}}', 'operator' => '>=', 'right' => '100'],
+                        ],
+                    ],
+                ],
+            ],
+            'edges' => [['source' => 't1', 'target' => 'if1']],
+        ]);
+
+        $match = null;
+        foreach ($issues as $issue) {
+            if (($issue['messageKey'] ?? '') === 'if_operator_invalid_hint') {
+                $match = $issue;
+                break;
+            }
+        }
+        self::assertNotNull($match);
+        self::assertSame('greater_equal', $match['messageParams']['suggestion'] ?? null);
+    }
 }

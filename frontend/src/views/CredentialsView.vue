@@ -132,22 +132,35 @@ const activeFields = computed(() => {
   const legacyFields = (schema as CredentialSchema & { fields?: Array<{
     name: string;
     label?: string;
+    labelKey?: string;
     title?: string;
     type?: string;
     secret?: boolean;
     required?: boolean;
     description?: string;
+    descriptionKey?: string;
+    uiHidden?: boolean;
   }> }).fields ?? [];
 
-  return legacyFields.map((field) => ({
-    name: field.name,
-    title: field.label || field.title || field.name,
-    secret: field.secret === true,
-    type: field.type || 'string',
-    required: field.required === true,
-    description: field.description || '',
-  }));
+  return legacyFields
+    .filter((field) => field.uiHidden !== true)
+    .map((field) => ({
+      name: field.name,
+      title: field.labelKey
+        ? t(field.labelKey)
+        : field.label || field.title || field.name,
+      secret: field.secret === true,
+      type: field.type || 'string',
+      required: field.required === true,
+      description: field.descriptionKey
+        ? t(field.descriptionKey)
+        : field.description || '',
+    }));
 });
+
+const showWhatsappCloudHelp = computed(
+  () => form.value.connectorType === 'action.whatsapp_cloud',
+);
 
 function resetForm() {
   form.value = {
@@ -300,7 +313,7 @@ onMounted(load);
 </script>
 
 <template>
-  <div class="knot-view-shell k-p-6 k-max-w-[1400px] k-mx-auto k-space-y-5 k-w-full">
+  <div class="knot-view-shell k-p-6 k-w-full k-min-w-0 k-space-y-5">
     <header class="k-flex k-items-center k-justify-between k-gap-4 k-flex-wrap">
       <div class="k-flex k-items-center k-gap-3">
         <div class="k-h-10 k-w-10 k-rounded-knot-sm k-bg-knot-success-soft k-text-knot-success k-flex k-items-center k-justify-center">
@@ -524,6 +537,14 @@ onMounted(load);
               </div>
             </div>
 
+            <div
+              v-if="showWhatsappCloudHelp"
+              class="k-bg-knot-primary-soft k-text-knot-primary k-px-4 k-py-3 k-rounded-knot-sm k-text-sm k-flex k-items-start k-gap-2"
+            >
+              <Info :size="16" class="k-shrink-0 k-mt-0.5" />
+              <div>{{ t('credentialsPage.whatsappCloudHelp') }}</div>
+            </div>
+
             <div class="k-space-y-3 k-p-4 k-rounded-knot-md k-bg-knot-surface-soft k-border k-border-knot-border">
               <div class="k-flex k-items-center k-justify-between">
                 <h3 class="k-text-sm k-font-semibold k-text-knot-text">{{ t('credentialsPage.secretFieldsTitle') }}</h3>
@@ -536,10 +557,13 @@ onMounted(load);
                 <span class="k-text-xs k-font-semibold k-text-knot-text-muted">
                   {{ field.title }} <span v-if="field.required" class="k-text-knot-danger">*</span>
                 </span>
+                <p v-if="field.description" class="k-text-[11px] k-text-knot-text-muted k-leading-snug">
+                  {{ field.description }}
+                </p>
                 <input
                   v-model="form.secrets[field.name]"
                   :type="field.secret ? 'password' : 'text'"
-                  :placeholder="field.description || field.name"
+                  :placeholder="field.title"
                   class="k-w-full k-px-3 k-py-2 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border k-text-knot-text focus:k-outline-none focus:k-border-knot-primary"
                 />
               </label>

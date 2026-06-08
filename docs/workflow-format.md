@@ -62,9 +62,9 @@ Le format JSON Knot est proprietaire, versionne, documente et migrable. Il ne co
       "id": "edge_1",
       "source": "manual_1",
       "target": "set_1",
-      "sourcePort": "main",
-      "targetPort": "main",
-      "type": "success"
+      "sourceHandle": "main",
+      "targetHandle": "main",
+      "type": "knot"
     }
   ],
   "metadata": {
@@ -93,17 +93,11 @@ Champs obligatoires :
 - `id`
 - `source`
 - `target`
-- `sourcePort`
-- `targetPort`
-- `type`
+- `sourceHandle` (ex. `main`, `true`, `false`, `iteration`, `done`, `error`)
+- `targetHandle` (souvent `main`)
+- `type` (canonique : `knot`)
 
-Valeurs `type` cibles :
-
-- `success`
-- `error`
-- `true`
-- `false`
-- `branch`
+Les handles de sortie depend du connecteur (`logic.if` → `true`/`false`, `logic.loop` → `iteration`/`done`, etc.).
 
 Les anciennes conventions `from/to` sont refusees dans le format natif Knot. Elles pourront etre acceptees uniquement par un importeur legacy local et converties.
 
@@ -134,8 +128,9 @@ Expressions delimitees par `{{ ... }}`.
 
 Variables cibles :
 
-- `{{$json.field}}`
-- `{{$node["Prepare Data"].json.message}}`
+- `{{$json.field}}` — sortie JSON du **dernier** nœud exécuté uniquement (pas une accumulation).
+- `{{$nodes.<nodeId>.json.<field>}}` — sortie d’un nœud antérieur (chaînage après plusieurs lectures / branches).
+- `{{$node["Prepare Data"].json.message}}` (alias historique)
 - `{{$workflow.ref}}`
 - `{{$execution.id}}`
 - `{{$now}}`

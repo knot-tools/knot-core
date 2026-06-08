@@ -53,6 +53,25 @@
   --knot-color-primary: #6366f1;
   --knot-color-primary-soft: #eef2ff;
   --knot-color-primary-strong: #4338ca;
+
+  /* ----- Canvas edge semantics ----- */
+  --knot-edge-main: #6366f1;
+  --knot-edge-true: #22c55e;
+  --knot-edge-false: #94a3b8;
+  --knot-edge-iteration: #8b5cf6;
+  --knot-edge-done: #6366f1;
+  --knot-edge-error: #ef4444;
+
+  /* ----- Canvas node category palette ----- */
+  --knot-cat-trigger: #6366f1;
+  --knot-cat-logic: #f59e0b;
+  --knot-cat-communication: #0ea5e9;
+  --knot-cat-notification: #ec4899;
+  --knot-cat-dolibarr: #0d9488;
+  --knot-cat-saas: #8b5cf6;
+  --knot-cat-ai: #a855f7;
+  --knot-cat-universal: #64748b;
+
   --knot-color-accent: #8b5cf6;
   --knot-color-accent-soft: #f3eaff;
 
@@ -168,6 +187,14 @@
   --knot-mc-sidebar-w: 240px;
   --knot-mc-sidebar-w-collapsed: 64px;
   --knot-nav-width: var(--knot-mc-sidebar-w);
+  /* Breathing room between fixed Knot rail and Vue host (both sides). */
+  --knot-content-gap: var(--knot-space-4);
+  --knot-host-margin-left: calc(
+    var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px)) + var(--knot-content-gap)
+  );
+  --knot-host-content-width: calc(
+    100% - var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px)) - (2 * var(--knot-content-gap))
+  );
   --knot-layout-breakpoint: 880px;
   --knot-editor-palette-w: 260px;
   --knot-editor-inspector-w: 320px;

@@ -9,7 +9,7 @@ import { Search, Plug, Loader2, KeyRound, Info, ArrowDownUp, AlertTriangle, Shop
 import { type ConnectorDescriptor, type ExtensionSummary } from '../lib/api';
 import { getConnectorsCatalogCached } from '../lib/connectorDescriptorsCache';
 import { resolveNodeMeta } from '../canvas/nodeRegistry';
-import { resolveConnectorLabel } from '../lib/connectorLabels';
+import { connectorMessageKey, resolveConnectorLabel } from '../lib/connectorLabels';
 import LicenseActivationModal from '../components/licensing/LicenseActivationModal.vue';
 import LicenseDeactivateModal from '../components/licensing/LicenseDeactivateModal.vue';
 import KProBadge from '../components/ui/KProBadge.vue';
@@ -178,11 +178,9 @@ function catalogTitle(m: ConnectorDescriptor['metadata']): string {
 }
 
 function catalogDescription(m: ConnectorDescriptor['metadata']): string {
-  const dk = m.descriptionKey;
-  if (dk) {
-    return resolveConnectorLabel(dk, String(m.description ?? resolveNodeMeta(String(m.id)).description));
-  }
-  return String(m.description ?? resolveNodeMeta(String(m.id)).description);
+  const id = String(m.id ?? '');
+  const dk = m.descriptionKey ? String(m.descriptionKey) : connectorMessageKey(id, 'description');
+  return resolveConnectorLabel(dk, String(m.description ?? resolveNodeMeta(id).description));
 }
 
 function categoryBadge(category: string) {
@@ -198,8 +196,28 @@ function categoryBadge(category: string) {
 
 function fieldEntries(schema: Record<string, unknown> | null | undefined) {
   if (!schema) return [];
+  const requiredList = Array.isArray(schema.required) ? (schema.required as string[]) : [];
+  const properties = schema.properties as Record<string, Record<string, unknown>> | undefined;
+  if (properties && typeof properties === 'object') {
+    return Object.entries(properties).map(([name, prop]) => ({
+      name,
+      key: name,
+      type: prop.type ?? 'string',
+      required: requiredList.includes(name),
+      description: prop.description ?? prop.title ?? '',
+      descriptionKey: prop.descriptionKey ?? prop.titleKey ?? '',
+      help: prop.description ?? '',
+    }));
+  }
   const fields = (schema.fields as Array<Record<string, unknown>>) ?? [];
   return Array.isArray(fields) ? fields : [];
+}
+
+function connectorUsageExample(c: ConnectorDescriptor): string {
+  const id = String(c.metadata.id ?? '');
+  const key = connectorMessageKey(id, 'usageExample');
+  const resolved = resolveConnectorLabel(key, '');
+  return resolved === key ? '' : resolved;
 }
 
 function fieldType(field: Record<string, unknown>): string {
@@ -208,6 +226,19 @@ function fieldType(field: Record<string, unknown>): string {
 
 function fieldRequired(field: Record<string, unknown>): boolean {
   return !!field.required;
+}
+
+function credentialFieldEntries(schema: ConnectorDescriptor['credentialSchema']) {
+  if (!schema?.properties) return [];
+  const requiredList = Array.isArray(schema.required) ? schema.required : [];
+  return Object.entries(schema.properties).map(([name, prop]) => ({
+    name,
+    key: name,
+    type: prop.type ?? 'string',
+    required: requiredList.includes(name),
+    secret: !!prop.secret,
+    description: prop.description ?? prop.title ?? '',
+  }));
 }
 
 const expressionExample = '{{$json.field}}';
@@ -283,7 +314,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="knot-view-shell k-p-6 k-w-full k-max-w-[1400px] k-mx-auto k-space-y-5 k-min-w-0 k-overflow-x-clip">
+  <div class="knot-view-shell k-p-6 k-w-full k-min-w-0 k-space-y-5">
     <header class="k-flex k-items-center k-justify-between k-gap-4">
       <div class="k-flex k-items-center k-gap-3">
         <div class="k-h-10 k-w-10 k-rounded-knot-sm k-bg-knot-accent-soft k-text-knot-accent k-flex k-items-center k-justify-center">
@@ -344,7 +375,7 @@ onMounted(() => {
             <input
               v-model="search"
               type="text"
-              placeholder="Search connectors..."
+              :placeholder="t('connectorsPage.searchPlaceholder')"
               class="k-w-full k-pl-9 k-pr-3 k-py-2 k-text-sm k-rounded-knot-sm k-bg-knot-surface-soft k-border k-border-knot-border focus:k-outline-none focus:k-border-knot-primary k-text-knot-text"
             />
           </div>
@@ -481,6 +512,17 @@ onMounted(() => {
             <p class="k-text-sm k-text-knot-text-muted k-leading-relaxed">
               {{ catalogDescription(selected.metadata) }}
             </p>
+            <div
+              v-if="String(selected.metadata.id) === 'action.email' && sourceTag(selected) === 'core'"
+              class="k-mt-3 k-bg-knot-success-soft k-border k-border-knot-success/30 k-text-knot-success k-px-3 k-py-2 k-rounded-knot-sm k-text-sm k-leading-relaxed"
+            >
+              {{ t('connectorsPage.detail.coreIncludedCallout') }}
+            </div>
+          </section>
+
+          <section v-if="connectorUsageExample(selected)">
+            <h3 class="k-text-sm k-font-bold k-text-knot-text k-mb-2">{{ t('connectorsPage.detail.usageExampleTitle') }}</h3>
+            <pre class="k-text-xs k-font-mono k-bg-knot-bg k-border k-border-knot-border k-rounded-knot-sm k-p-3 k-text-knot-text k-whitespace-pre-wrap">{{ connectorUsageExample(selected) }}</pre>
           </section>
 
           <section v-if="selected.extensionInfo">
@@ -530,13 +572,46 @@ onMounted(() => {
             <h3 class="k-text-sm k-font-bold k-text-knot-text k-flex k-items-center k-gap-2 k-mb-2">
               <KeyRound :size="14" class="k-text-knot-warning" /> {{ t('connectorsPage.detail.credentialsRequired') }}
             </h3>
-            <div class="k-bg-knot-warning-soft k-text-knot-warning k-px-3 k-py-2 k-rounded-knot-sm k-text-sm">
+            <div class="k-bg-knot-warning-soft k-text-knot-warning k-px-3 k-py-2 k-rounded-knot-sm k-text-sm k-mb-3">
               {{ t('connectorsPage.detail.credentialsHint', { type: selected.credentialType }) }}
               <i18n-t keypath="connectorsPage.detail.createCredentialHint" tag="span">
                 <template #link>
                   <a href="?mode=credentials" class="k-underline k-font-semibold">{{ t('connectorsPage.detail.credentialsLink') }}</a>
                 </template>
               </i18n-t>
+            </div>
+            <div v-if="credentialFieldEntries(selected.credentialSchema).length" class="k-overflow-hidden k-rounded-knot-sm k-border k-border-knot-border">
+              <h4 class="k-sr-only">{{ t('connectorsPage.detail.credentialFields') }}</h4>
+              <table class="k-w-full k-text-sm">
+                <thead class="k-bg-knot-surface-soft k-text-knot-text-soft k-text-[11px] k-uppercase k-tracking-wider">
+                  <tr>
+                    <th class="k-text-left k-px-3 k-py-2 k-font-semibold">{{ t('connectorsPage.detail.colField') }}</th>
+                    <th class="k-text-left k-px-3 k-py-2 k-font-semibold">{{ t('connectorsPage.detail.colType') }}</th>
+                    <th class="k-text-left k-px-3 k-py-2 k-font-semibold">{{ t('connectorsPage.detail.colRequired') }}</th>
+                    <th class="k-text-left k-px-3 k-py-2 k-font-semibold">{{ t('connectorsPage.detail.colSecret') }}</th>
+                    <th class="k-text-left k-px-3 k-py-2 k-font-semibold">{{ t('connectorsPage.detail.colDescription') }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="field in credentialFieldEntries(selected.credentialSchema)"
+                    :key="String(field.name)"
+                    class="k-border-t k-border-knot-border"
+                  >
+                    <td class="k-px-3 k-py-2 k-font-mono k-text-knot-text">{{ field.name }}</td>
+                    <td class="k-px-3 k-py-2 k-text-knot-text-muted">{{ fieldType(field) }}</td>
+                    <td class="k-px-3 k-py-2">
+                      <span v-if="fieldRequired(field)" class="k-text-knot-danger k-text-xs k-font-semibold">{{ t('connectorsPage.detail.required') }}</span>
+                      <span v-else class="k-text-knot-text-soft k-text-xs">{{ t('connectorsPage.detail.optional') }}</span>
+                    </td>
+                    <td class="k-px-3 k-py-2 k-text-xs">
+                      <span v-if="field.secret" class="k-text-knot-warning k-font-semibold">{{ t('connectorsPage.detail.secretYes') }}</span>
+                      <span v-else class="k-text-knot-text-soft">{{ t('connectorsPage.detail.secretNo') }}</span>
+                    </td>
+                    <td class="k-px-3 k-py-2 k-text-knot-text-muted">{{ field.description }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
 
@@ -611,8 +686,14 @@ onMounted(() => {
               <li v-if="String(selected.metadata.id) === 'ai.ollama_chat'">
                 {{ t('connectorsPage.detail.tipOllama') }}
               </li>
-              <li v-if="String(selected.metadata.category) === 'communication'">
+              <li v-if="String(selected.metadata.id) === 'action.email'">
+                {{ t('connectorsPage.detail.tipEmailCore') }}
+              </li>
+              <li v-else-if="String(selected.metadata.category) === 'communication'">
                 {{ t('connectorsPage.detail.tipCommunicationTemplates', { example: expressionExample }) }}
+              </li>
+              <li v-if="String(selected.metadata.id) === 'notification.alert'">
+                {{ t('connectorsPage.detail.tipAlertVsEmail') }}
               </li>
               <li v-if="String(selected.metadata.id) === 'logic.code'">
                 {{ t('connectorsPage.detail.tipCodeSandbox') }}

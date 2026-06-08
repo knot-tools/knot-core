@@ -1,28 +1,16 @@
 <!--
   TestSplitButton — V2.5 UX-3
   Split-button for the editor "Test" action with risk-aware behaviour.
-
-    [Tester ▾]
-       ├─ Test à blanc (dry-run)             ← default for any risk level
-       ├─ Test réel sur petite donnée        ← caution / critical
-       └─ Test réel complet                  ← critical only, with confirm
-
-  - On `safe` workflows, "Test à blanc" runs `simulate()` and "Test réel"
-    runs `execute()` without any extra confirmation.
-  - On `caution`, "Test réel" prompts a single-step confirm.
-  - On `critical`, "Test réel" requires a typed confirmation
-    ("YES" or workflow ref) to avoid muscle-memory accidents.
-
   Copyright (C) 2026 Knot — GPL-3.0-or-later
 -->
 <template>
-  <div class="relative inline-flex" data-component="test-split-button">
+  <div class="k-relative k-inline-flex" data-component="test-split-button">
     <button
       type="button"
-      class="rounded-l-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+      class="k-rounded-l-knot-sm k-border k-border-knot-border k-bg-knot-surface k-px-3 k-py-1.5 k-text-sm k-font-medium hover:k-bg-knot-surface-soft focus:k-outline-none focus:k-ring-2 focus:k-ring-knot-primary"
       @click="onPrimary"
     >
-      <span class="inline-flex items-center gap-1.5">
+      <span class="k-inline-flex k-items-center k-gap-1.5">
         <Beaker :size="14" />
         {{ t('test.dryRun') }}
       </span>
@@ -30,7 +18,7 @@
     <button
       type="button"
       :aria-expanded="open"
-      class="rounded-r-md border border-l-0 border-slate-300 bg-white px-1.5 py-1.5 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+      class="k-rounded-r-knot-sm k-border k-border-l-0 k-border-knot-border k-bg-knot-surface k-px-1.5 k-py-1.5 hover:k-bg-knot-surface-soft focus:k-outline-none focus:k-ring-2 focus:k-ring-knot-primary"
       @click="open = !open"
     >
       <ChevronDown :size="14" />
@@ -38,19 +26,19 @@
 
     <div
       v-if="open"
-      class="absolute right-0 top-full z-30 mt-1 min-w-[18rem] rounded-md border border-slate-200 bg-white shadow-lg"
+      class="k-absolute k-right-0 k-top-full k-z-30 k-mt-1 k-min-w-[18rem] k-rounded-knot-sm k-border k-border-knot-border k-bg-knot-surface k-shadow-lg"
       role="menu"
     >
       <button
         type="button"
-        class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm hover:bg-slate-50"
+        class="k-flex k-w-full k-items-start k-gap-2 k-px-3 k-py-2 k-text-left k-text-sm hover:k-bg-knot-surface-soft"
         role="menuitem"
         @click="run('dry')"
       >
-        <Beaker :size="14" class="mt-0.5 text-slate-500" />
+        <Beaker :size="14" class="k-mt-0.5 k-text-knot-text-muted" />
         <div>
-          <div class="font-medium">{{ t('test.dryRun') }}</div>
-          <p class="text-xs text-slate-500">
+          <div class="k-font-medium">{{ t('test.dryRun') }}</div>
+          <p class="k-text-xs k-text-knot-text-muted">
             {{ t('test.dryRunDesc') }}
           </p>
         </div>
@@ -58,14 +46,14 @@
 
       <button
         type="button"
-        class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm hover:bg-amber-50"
+        class="k-flex k-w-full k-items-start k-gap-2 k-px-3 k-py-2 k-text-left k-text-sm hover:k-bg-knot-warning-soft"
         role="menuitem"
         @click="onRealSmall"
       >
-        <Activity :size="14" class="mt-0.5 text-amber-500" />
+        <Activity :size="14" class="k-mt-0.5 k-text-knot-warning" />
         <div>
-          <div class="font-medium">{{ t('test.realSmall') }}</div>
-          <p class="text-xs text-slate-500">
+          <div class="k-font-medium">{{ t('test.realSmall') }}</div>
+          <p class="k-text-xs k-text-knot-text-muted">
             {{ t('test.realSmallDesc') }}
           </p>
         </div>
@@ -74,14 +62,14 @@
       <button
         v-if="riskLevel === 'critical'"
         type="button"
-        class="flex w-full items-start gap-2 border-t border-slate-100 px-3 py-2 text-left text-sm hover:bg-red-50"
+        class="k-flex k-w-full k-items-start k-gap-2 k-border-t k-border-knot-border k-px-3 k-py-2 k-text-left k-text-sm hover:k-bg-knot-danger-soft"
         role="menuitem"
         @click="onRealFull"
       >
-        <OctagonAlert :size="14" class="mt-0.5 text-red-500" />
+        <OctagonAlert :size="14" class="k-mt-0.5 k-text-knot-danger" />
         <div>
-          <div class="font-medium">{{ t('test.realFull') }}</div>
-          <p class="text-xs text-slate-500">
+          <div class="k-font-medium">{{ t('test.realFull') }}</div>
+          <p class="k-text-xs k-text-knot-text-muted">
             {{ t('test.realFullDesc') }}
           </p>
         </div>

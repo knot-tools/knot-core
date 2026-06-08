@@ -1,0 +1,43 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-06-07T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "00 — Test email manuel",
+    "description": "Trigger manuel + action.email pour valider SMTP Dolibarr. Remplacer le destinataire via l'import Assistant ou l'editeur.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "STARTER_EMAIL_TEST",
+        "label": "00 — Test email manuel",
+        "tags": ["starter", "demo", "smtp"],
+        "settings": { "timeoutSeconds": 60, "errorPolicy": "stop", "logPayloads": true }
+      },
+      "nodes": [
+        {
+          "id": "trigger_manual",
+          "type": "trigger.manual",
+          "label": "Demarrer",
+          "subtitle": "Run manuel",
+          "position": { "x": 80, "y": 160 },
+          "config": {}
+        },
+        {
+          "id": "send_email",
+          "type": "action.email",
+          "label": "Envoyer email test",
+          "subtitle": "SMTP Dolibarr",
+          "position": { "x": 400, "y": 160 },
+          "config": {
+            "to": "ops@example.com",
+            "subject": "Knot — test email",
+            "body": "Ceci est un email de test envoye depuis Knot (action.email)."
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_manual", "target": "send_email", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

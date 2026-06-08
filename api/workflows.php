@@ -17,6 +17,7 @@ use Knot\Api\WorkflowCreateGuard;
 use Knot\Capabilities\CapabilitiesBuilder;
 use Knot\Capabilities\WorkflowImportAnalyzer;
 use Knot\Engine\WorkflowValidator;
+use Knot\Engine\WorkflowDefinitionNormalizer;
 use Knot\Errors\SchemaViolationError;
 use Knot\Licensing\Bootstrap;
 use Knot\Marketplace\TierGate;
@@ -410,6 +411,7 @@ if ($definition !== null) {
     $definition['edges'] = is_array($definition['edges'] ?? null) ? $definition['edges'] : [];
 
     if (!empty($definition['nodes'])) {
+        $definition = (new WorkflowDefinitionNormalizer())->normalize($definition);
         $extReg = Bootstrap::buildExtensionRegistry($db);
         $allow = array_keys((new \Knot\Connectors\ConnectorRegistry())->allWithExtensions($extReg));
         $validator = new WorkflowValidator($allow);

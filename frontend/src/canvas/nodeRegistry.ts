@@ -42,6 +42,46 @@ import {
 
 export type NodeCategory = 'trigger' | 'logic' | 'communication' | 'notification' | 'ai' | 'dolibarr' | 'saas' | 'universal';
 
+/** Category palette tokens for CSS-only contexts (legend, minimap stroke). */
+export const CATEGORY_COLORS: Record<NodeCategory, string> = {
+  trigger: 'var(--knot-cat-trigger, #6366f1)',
+  logic: 'var(--knot-cat-logic, #f59e0b)',
+  communication: 'var(--knot-cat-communication, #0ea5e9)',
+  notification: 'var(--knot-cat-notification, #ec4899)',
+  ai: 'var(--knot-cat-ai, #a855f7)',
+  dolibarr: 'var(--knot-cat-dolibarr, #0d9488)',
+  saas: 'var(--knot-cat-saas, #8b5cf6)',
+  universal: 'var(--knot-cat-universal, #64748b)',
+};
+
+/** Hex fallbacks aligned with css/knot-tokens.css — required for inline styles (gradients). */
+export const CATEGORY_COLORS_HEX: Record<NodeCategory, string> = {
+  trigger: '#6366f1',
+  logic: '#f59e0b',
+  communication: '#0ea5e9',
+  notification: '#ec4899',
+  ai: '#a855f7',
+  dolibarr: '#0d9488',
+  saas: '#8b5cf6',
+  universal: '#64748b',
+};
+
+export function categoryColor(category: NodeCategory): string {
+  return CATEGORY_COLORS[category] ?? CATEGORY_COLORS.universal;
+}
+
+export function categoryColorHex(category: NodeCategory): string {
+  return CATEGORY_COLORS_HEX[category] ?? CATEGORY_COLORS_HEX.universal;
+}
+
+/** Build icon band gradient stops from a registry hex color. */
+export function iconGradientStops(hex: string): { start: string; mid: string; end: string } {
+  if (hex.startsWith('#') && hex.length === 7) {
+    return { start: hex, mid: `${hex}99`, end: `${hex}66` };
+  }
+  return { start: hex, mid: hex, end: hex };
+}
+
 export interface NodeMeta {
   /** Stable identifier matching backend connector id */
   id: string;
@@ -201,7 +241,7 @@ export const NODE_REGISTRY: Record<string, NodeMeta> = {
   'action.email': {
     id: 'action.email', label: 'Send Email', category: 'communication',
     icon: Mail, color: '#ec4899',
-    description: 'Send a transactional email via Dolibarr',
+    description: 'Send email via Dolibarr SMTP (included in Knot Core — no Pro Pack)',
   },
   'action.slack': {
     id: 'action.slack', label: 'Slack', category: 'communication',
@@ -242,7 +282,7 @@ export const NODE_REGISTRY: Record<string, NodeMeta> = {
   'notification.alert': {
     id: 'notification.alert', label: 'Send Alert', category: 'notification',
     icon: BellRing, color: '#ea580c',
-    description: 'Fan-out alert across Slack, Discord, email, webhook and audit log.',
+    description: 'Write an audit log entry. Use action.email (Core) for SMTP mail; Pro Pack for multi-channel fan-out.',
   },
 
   // SaaS

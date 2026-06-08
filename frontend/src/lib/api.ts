@@ -782,10 +782,28 @@ export const knotApi = {
 
   assistantPrompt(userRequest?: string) {
     const trimmed = userRequest?.trim() ?? '';
-    return request<{ prompt: string; connectors: ConnectorDescriptor[]; userRequest: string }>(`/assistant.php`, {
+    return request<{
+      prompt: string;
+      annex: string | null;
+      connectors: ConnectorDescriptor[];
+      userRequest: string;
+      preflight?: { blocked: boolean; missing: Array<{ id: string; label: string; licenseStatus: string }> };
+      tokenEstimate?: number;
+    }>(`/assistant.php`, {
       method: 'POST',
       body: JSON.stringify({ action: 'prompt', userRequest: trimmed }),
     });
+  },
+
+  assistantPreflight(userRequest?: string) {
+    const trimmed = userRequest?.trim() ?? '';
+    return request<{ preflight: { blocked: boolean; missing: Array<{ id: string; label: string; licenseStatus: string }> } }>(
+      `/assistant.php`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ action: 'preflight', userRequest: trimmed }),
+      },
+    );
   },
 
   conflictReport() {

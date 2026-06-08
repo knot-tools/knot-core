@@ -4,6 +4,7 @@
  */
 
 import type { WorkflowDefinition, WorkflowSavePayload } from './api';
+import { repairWorkflowDefinitionNodes } from './workflowDefinitionRepair';
 
 export type WorkflowImportStatus = 'draft' | 'active' | 'disabled' | 'archived' | 'error';
 
@@ -16,6 +17,14 @@ export class WorkflowImportFormatError extends Error {
   constructor() {
     super('WorkflowImportFormatError');
     this.name = 'WorkflowImportFormatError';
+  }
+}
+
+/** Zapier/Make-style { trigger, steps } payloads are not Knot import format. */
+export class WorkflowImportLegacyStepsError extends Error {
+  constructor() {
+    super('WorkflowImportLegacyStepsError');
+    this.name = 'WorkflowImportLegacyStepsError';
   }
 }
 
@@ -40,7 +49,9 @@ function normalizeEdge(edge: unknown): Record<string, unknown> {
 
 export function normalizeDefinition(input: unknown): WorkflowDefinition {
   const def = isRecord(input) ? input : {};
-  const nodes = Array.isArray(def.nodes) ? def.nodes : [];
+  const nodes = Array.isArray(def.nodes)
+    ? (repairWorkflowDefinitionNodes(def.nodes) as Record<string, unknown>[])
+    : [];
   const edges = Array.isArray(def.edges) ? def.edges.map(normalizeEdge) : [];
   const workflowMeta = isRecord(def.workflow) ? def.workflow : {};
   const metadata = isRecord(def.metadata) ? def.metadata : undefined;
@@ -111,6 +122,13 @@ export function normalizeWorkflowImport(
 ): WorkflowSavePayload {
   if (!isRecord(parsed)) {
     throw new Error('Invalid JSON: expected an object');
+  }
+
+  if (
+    ('trigger' in parsed && parsed.trigger !== undefined)
+    || ('steps' in parsed && Array.isArray(parsed.steps))
+  ) {
+    throw new WorkflowImportLegacyStepsError();
   }
 
   if (parsed.knotExport && isRecord(parsed.workflow)) {

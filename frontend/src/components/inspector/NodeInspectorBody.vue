@@ -15,6 +15,7 @@ import HttpPanel from './panels/HttpPanel.vue';
 import StripeShopifyPanel from './panels/StripeShopifyPanel.vue';
 import AiPromptPanel from './panels/AiPromptPanel.vue';
 import WebhookTriggerPanel from './panels/WebhookTriggerPanel.vue';
+import { canonicalConnectorId } from '@/lib/resolveConnectorSchema';
 
 const props = defineProps<{
   nodeType: string;
@@ -106,9 +107,9 @@ function setConfig(v: Record<string, unknown>) {
 }
 
 const panelComponent = computed(() => {
-  const typeId = props.nodeType;
+  const typeId = canonicalConnectorId(props.nodeType);
   if (typeId === 'dolibarr.object') return DolibarrObjectPanel;
-  if (typeId === 'trigger.dolibarr.event' || typeId === 'dolibarr.event') return DolibarrEventPanel;
+  if (typeId === 'trigger.dolibarr_event') return DolibarrEventPanel;
   if (typeId === 'logic.loop' || typeId === 'loop') return LoopPanel;
   if (typeId === 'logic.execute_workflow' || typeId === 'workflow.execute') return ExecuteWorkflowPanel;
   if (typeId === 'action.http' || typeId === 'http') return HttpPanel;

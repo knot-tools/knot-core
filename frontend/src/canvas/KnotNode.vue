@@ -1,23 +1,27 @@
 <!--
   KnotNode — universal Knot Vue Flow node.
   Copyright (C) 2026 Knot — GPL-3.0-or-later
-
-  Receives `data: { type, label, status?, subtitle?, meta? }`.
-  Renders an icon-led card in the Knot design system, with handles
-  whose colors depend on the category (trigger / logic / action).
 -->
 <script setup lang="ts">
 import { computed, inject } from 'vue';
-import { Handle, Position, type NodeProps } from '@vue-flow/core';
-import { CheckCircle2, AlertTriangle, Loader2 } from 'lucide-vue-next';
-import { resolveNodeMeta } from './nodeRegistry';
+import { Handle, Position, useVueFlow, type NodeProps } from '@vue-flow/core';
+import { CheckCircle2, AlertTriangle, Loader2, Plus } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+import { iconGradientStops, resolveNodeMeta } from './nodeRegistry';
 import { connectorMessageKey, resolveConnectorLabel } from '@/lib/connectorLabels';
 import { useCanvasChangeStatusRisk } from '../composables/useCanvasChangeStatusRisk';
 import { useNodeRisk, type ConnectorRiskMetadata } from '../composables/useNodeRisk';
 import KnotNodeSmHintBadge from './KnotNodeSmHintBadge.vue';
 import KnotNodeRiskBadge from '../components/risk/KnotNodeRiskBadge.vue';
 import { KNOT_CONNECTORS_KEY } from '../lib/knotConnectorContext';
+import { KNOT_QUICK_ADD_KEY } from '../lib/knotQuickAddContext';
 import type { ConnectorDescriptor } from '../lib/api';
+import {
+  defaultOutputsForCategory,
+  handleColor,
+  handleLabelKey,
+  layoutForOutput,
+} from '@/lib/edgeSemantics';
 
 interface KnotNodeData {
   type: string;
@@ -26,9 +30,13 @@ interface KnotNodeData {
   status?: 'idle' | 'running' | 'success' | 'error';
   config?: Record<string, unknown>;
   pinnedOutput?: Record<string, unknown> | null;
+  branchDimmed?: boolean;
+  dimmedHandles?: string[];
 }
 
 const props = defineProps<NodeProps<KnotNodeData>>();
+const { t } = useI18n();
+const { edges } = useVueFlow();
 
 const nodeTypeRef = computed(() => props.data?.type ?? '');
 const configRef = computed(() => (props.data?.config ?? {}) as Record<string, unknown>);
@@ -41,6 +49,7 @@ const { risk, onNodeMouseEnter, onNodeMouseLeave } = useCanvasChangeStatusRisk({
 });
 
 const connectorsRef = inject(KNOT_CONNECTORS_KEY, undefined);
+const quickAddRef = inject(KNOT_QUICK_ADD_KEY, undefined);
 
 const catalogRisk = useNodeRisk(() => {
   const list = connectorsRef?.value ?? [];
@@ -61,6 +70,7 @@ const catalogRisk = useNodeRisk(() => {
 
 const meta = computed(() => resolveNodeMeta(props.data?.type));
 const Icon = computed(() => meta.value.icon);
+const iconGradient = computed(() => iconGradientStops(meta.value.color));
 
 const catalogLabel = computed(() => {
   const list = connectorsRef?.value ?? [];
@@ -85,13 +95,104 @@ const catalogDescription = computed(() => {
 });
 
 const showLeftHandle = computed(() => meta.value.category !== 'trigger');
-const showRightHandle = computed(() => true);
-const showErrorHandle = computed(() => meta.value.category !== 'trigger');
 const isPinned = computed(() => !!props.data?.pinnedOutput);
-
-const handleColor = computed(() => meta.value.color);
-
 const status = computed(() => props.data?.status ?? 'idle');
+const branchDimmed = computed(() => !!props.data?.branchDimmed);
+const dimmedHandles = computed(() => new Set(props.data?.dimmedHandles ?? []));
+
+const sourceOutputs = computed(() => {
+  const list = connectorsRef?.value ?? [];
+  const descriptor = list.find((c: ConnectorDescriptor) => c.metadata.id === nodeTypeRef.value);
+  const outs = descriptor?.outputs;
+  if (Array.isArray(outs) && outs.length > 0) {
+    return outs.map((o) => ({
+      id: String((o as { id?: string }).id ?? 'main'),
+      label: String((o as { label?: string }).label ?? 'Main'),
+    }));
+  }
+  return defaultOutputsForCategory(meta.value.category);
+});
+
+const outputLayouts = computed(() =>
+  sourceOutputs.value.map((output) => ({
+    ...output,
+    ...layoutForOutput(output.id, meta.value.category, meta.value.color),
+  })),
+);
+
+const connectedSourceHandles = computed(() => {
+  const set = new Set<string>();
+  for (const e of edges.value) {
+    if (e.source === props.id && e.sourceHandle) {
+      set.add(String(e.sourceHandle));
+    }
+  }
+  return set;
+});
+
+function handlePosition(pos: string): Position {
+  switch (pos) {
+    case 'right-top':
+    case 'right-bottom':
+    case 'right':
+      return Position.Right;
+    case 'bottom':
+      return Position.Bottom;
+    case 'left':
+      return Position.Left;
+    default:
+      return Position.Right;
+  }
+}
+
+function handleStyle(color: string, position: string): Record<string, string> {
+  const base: Record<string, string> = {
+    background: color,
+    width: '12px',
+    height: '12px',
+    border: '2px solid var(--knot-color-surface)',
+    boxShadow: `0 0 0 1px ${color}`,
+  };
+  switch (position) {
+    case 'right-top':
+      base.top = '28%';
+      base.right = '-6px';
+      break;
+    case 'right-bottom':
+      base.top = '72%';
+      base.right = '-6px';
+      break;
+    case 'right':
+      base.right = '-6px';
+      break;
+    case 'bottom':
+      base.left = '50%';
+      base.bottom = '-6px';
+      base.transform = 'translateX(-50%)';
+      break;
+    default:
+      break;
+  }
+  return base;
+}
+
+function handleClasses(outputId: string): Record<string, boolean> {
+  const connected = isHandleConnected(outputId);
+  return {
+    'knot-handle--idle': !connected && !props.selected,
+    'knot-handle--visible': connected || !!props.selected,
+    'knot-handle--dimmed': dimmedHandles.value.has(outputId),
+  };
+}
+
+function isHandleConnected(id: string): boolean {
+  return connectedSourceHandles.value.has(id);
+}
+
+function onQuickAdd(handleId: string, event: MouseEvent) {
+  event.stopPropagation();
+  quickAddRef?.startQuickAdd(props.id, handleId);
+}
 
 const statusBadgeClass = computed(() => {
   switch (status.value) {
@@ -105,18 +206,33 @@ const statusBadgeClass = computed(() => {
       return 'k-hidden';
   }
 });
+
+const executionHaloClass = computed(() => {
+  switch (status.value) {
+    case 'running':
+      return 'knot-node--running';
+    case 'success':
+      return 'knot-node--success';
+    case 'error':
+      return 'knot-node--error';
+    default:
+      return '';
+  }
+});
 </script>
 
 <template>
   <div
     class="knot-node"
     :class="[
-      'k-group k-relative k-flex k-items-stretch k-rounded-knot-md k-border k-bg-knot-surface k-shadow-knot-sm k-transition-all k-duration-knot k-ease-knot k-min-w-[220px] k-max-w-[260px]',
+      'k-group k-relative k-flex k-items-stretch k-rounded-knot-md k-border k-bg-knot-surface k-shadow-knot-sm k-transition-all k-duration-knot k-ease-knot k-min-w-[220px] k-max-w-[260px] knot-node--enter',
+      executionHaloClass,
+      branchDimmed ? 'knot-node--dimmed' : '',
       props.selected
         ? 'k-border-knot-primary k-shadow-knot-md k-ring-2 k-ring-knot-primary/30'
         : isPinned
           ? 'k-border-violet-400 k-shadow-knot-md k-ring-2 k-ring-violet-400/25'
-        : 'k-border-knot-border hover:k-border-knot-primary/60 hover:k-shadow-knot-md',
+          : 'k-border-knot-border hover:k-border-knot-primary/60 hover:k-shadow-knot-md',
     ]"
     @mouseenter="onNodeMouseEnter"
     @mouseleave="onNodeMouseLeave"
@@ -129,21 +245,25 @@ const statusBadgeClass = computed(() => {
     />
     <Handle
       v-if="showLeftHandle"
+      id="main"
       type="target"
       :position="Position.Left"
       :style="{
-        background: handleColor,
+        background: handleColor('main', meta.color),
         width: '12px',
         height: '12px',
         border: '2px solid var(--knot-color-surface)',
-        boxShadow: '0 0 0 1px ' + handleColor,
+        boxShadow: '0 0 0 1px ' + meta.color,
+        left: '-6px',
+        top: '50%',
+        transform: 'translateY(-50%)',
       }"
     />
 
     <div
-      class="k-flex k-items-center k-justify-center k-w-12 k-rounded-l-knot-md k-shrink-0"
+      class="k-flex k-items-center k-justify-center k-w-12 k-rounded-l-knot-md k-shrink-0 knot-node__icon"
       :style="{
-        background: 'linear-gradient(135deg, ' + handleColor + ' 0%, ' + handleColor + 'cc 100%)',
+        background: `linear-gradient(145deg, ${iconGradient.start} 0%, ${iconGradient.mid} 55%, ${iconGradient.end} 100%)`,
         color: '#fff',
       }"
     >
@@ -152,7 +272,7 @@ const statusBadgeClass = computed(() => {
 
     <div class="k-flex-1 k-min-w-0 k-px-3 k-py-2.5">
       <div class="k-flex k-items-center k-justify-between k-gap-2">
-        <div class="k-text-[13px] k-font-semibold k-text-knot-text k-truncate">
+        <div class="k-text-[13px] k-font-semibold k-text-knot-text k-truncate k-tracking-tight">
           {{ props.data?.label ?? catalogLabel }}
         </div>
         <span
@@ -178,41 +298,184 @@ const statusBadgeClass = computed(() => {
 
     <KnotNodeSmHintBadge :risk="risk" />
 
-    <Handle
-      v-if="showRightHandle"
-      id="main"
-      type="source"
-      :position="Position.Right"
-      :style="{
-        background: handleColor,
-        width: '12px',
-        height: '12px',
-        border: '2px solid var(--knot-color-surface)',
-        boxShadow: '0 0 0 1px ' + handleColor,
-      }"
-    />
-
-    <Handle
-      v-if="showErrorHandle"
-      id="error"
-      type="source"
-      :position="Position.Bottom"
-      :style="{
-        background: 'var(--knot-color-danger)',
-        width: '12px',
-        height: '12px',
-        border: '2px solid var(--knot-color-surface)',
-        boxShadow: '0 0 0 1px var(--knot-color-danger)',
-      }"
-    />
+    <div
+      v-for="output in outputLayouts"
+      :key="output.id"
+      class="knot-node__handle-anchor"
+    >
+      <Handle
+        :id="output.id"
+        type="source"
+        :position="handlePosition(output.position)"
+        :style="handleStyle(output.color, output.position)"
+        :class="handleClasses(output.id)"
+      />
+      <span
+        v-if="handleLabelKey(output.id)"
+        class="knot-node__handle-label"
+        :class="`knot-node__handle-label--${output.position}`"
+      >
+        {{ t(handleLabelKey(output.id)!) }}
+      </span>
+      <button
+        v-if="quickAddRef"
+        type="button"
+        class="knot-node__quick-add"
+        :class="`knot-node__quick-add--${output.position}`"
+        :title="t('editor.quickAdd')"
+        @click="onQuickAdd(output.id, $event)"
+      >
+        <Plus :size="10" />
+      </button>
+    </div>
   </div>
 </template>
 
 <style>
-.knot-node .vue-flow__handle {
-  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+.knot-node {
+  overflow: visible;
+  box-shadow:
+    0 1px 2px rgb(15 23 42 / 6%),
+    0 4px 12px rgb(15 23 42 / 4%);
 }
-.knot-node:hover .vue-flow__handle {
-  transform: scale(1.15);
+.knot-node__handle-anchor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.knot-node__handle-anchor .vue-flow__handle {
+  pointer-events: all;
+}
+.knot-node--enter {
+  animation: knot-node-enter 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes knot-node-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.knot-node--running {
+  box-shadow: 0 0 0 2px rgb(99 102 241 / 25%), 0 0 18px rgb(99 102 241 / 20%);
+  animation: knot-node-pulse 1.4s ease-in-out infinite;
+}
+.knot-node--success {
+  box-shadow: 0 0 0 2px rgb(34 197 94 / 25%), 0 0 12px rgb(34 197 94 / 15%);
+}
+.knot-node--error {
+  box-shadow: 0 0 0 2px rgb(239 68 68 / 30%), 0 0 12px rgb(239 68 68 / 18%);
+}
+.knot-node--dimmed {
+  opacity: 0.45;
+  filter: grayscale(0.35);
+}
+@keyframes knot-node-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px rgb(99 102 241 / 20%), 0 0 12px rgb(99 102 241 / 12%);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 35%), 0 0 22px rgb(99 102 241 / 28%);
+  }
+}
+.knot-node .vue-flow__handle {
+  transition: opacity 200ms ease, box-shadow 200ms ease;
+}
+.knot-node:hover .vue-flow__handle,
+.knot-node .vue-flow__handle.knot-handle--visible {
+  box-shadow: 0 0 0 2px var(--knot-color-primary-soft);
+}
+.knot-node .vue-flow__handle.knot-handle--idle {
+  opacity: 0.35;
+}
+.knot-node:hover .vue-flow__handle.knot-handle--idle,
+.knot-node .vue-flow__handle.knot-handle--visible {
+  opacity: 1;
+}
+.knot-node .vue-flow__handle.knot-handle--dimmed {
+  opacity: 0.25 !important;
+  filter: grayscale(0.6);
+}
+.knot-node__handle-label {
+  position: absolute;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--knot-color-text-soft);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+  transition: opacity 150ms ease;
+}
+.knot-node__handle-label--right,
+.knot-node__handle-label--right-top,
+.knot-node__handle-label--right-bottom {
+  left: calc(100% + 8px);
+  right: auto;
+  transform: translateY(-50%);
+}
+.knot-node__handle-label--right {
+  top: 50%;
+}
+.knot-node__handle-label--right-top {
+  top: 28%;
+}
+.knot-node__handle-label--right-bottom {
+  top: 72%;
+}
+.knot-node__handle-label--bottom {
+  left: 50%;
+  top: calc(100% + 8px);
+  bottom: auto;
+  transform: translateX(-50%);
+}
+.knot-node:hover .knot-node__handle-label {
+  opacity: 1;
+}
+.knot-node__quick-add {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid var(--knot-color-border);
+  background: var(--knot-color-surface);
+  color: var(--knot-color-primary);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+  cursor: pointer;
+  z-index: 2;
+}
+.knot-node__quick-add--right,
+.knot-node__quick-add--right-top,
+.knot-node__quick-add--right-bottom {
+  left: calc(100% + 28px);
+  right: auto;
+  transform: translateY(-50%);
+}
+.knot-node__quick-add--right {
+  top: 50%;
+}
+.knot-node__quick-add--right-top {
+  top: 28%;
+}
+.knot-node__quick-add--right-bottom {
+  top: 72%;
+}
+.knot-node__quick-add--bottom {
+  left: 50%;
+  bottom: -22px;
+  transform: translateX(-50%);
+}
+.knot-node:hover .knot-node__quick-add {
+  opacity: 1;
+  pointer-events: all;
 }
 </style>

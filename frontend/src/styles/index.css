@@ -22,7 +22,13 @@
        queries live on inner layouts (.knot-editor-layout, etc.). */
     min-width: 0;
     max-width: 100%;
-    overflow-x: clip;
+    overflow-x: hidden;
+  }
+
+  @supports (overflow-x: clip) {
+    #knot-app {
+      overflow-x: clip;
+    }
   }
 
   #knot-app > * {
@@ -166,8 +172,13 @@
     border-radius: var(--km-card-radius);
     border: 1px solid var(--km-topbar-border);
     background: var(--km-topbar-bg);
-    backdrop-filter: blur(var(--knot-glass-blur));
-    -webkit-backdrop-filter: blur(var(--knot-glass-blur));
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    #knot-app .km-topbar {
+      backdrop-filter: blur(var(--knot-glass-blur));
+      -webkit-backdrop-filter: blur(var(--knot-glass-blur));
+    }
   }
 
   #knot-app .km-card {
@@ -262,9 +273,10 @@
   }
 
   #knot-app .knot-view-shell {
+    width: 100%;
     min-width: 0;
     max-width: 100%;
-    overflow-x: clip;
+    box-sizing: border-box;
   }
 
   /*
@@ -340,7 +352,7 @@
   }
 
   @media (max-width: 880px) {
-    #knot-app table {
+    #knot-app table:not(.knot-workflows-table) {
       display: block;
       max-width: 100%;
       overflow-x: auto;
@@ -401,5 +413,15 @@
 
   #knot-app .km-card {
     border-radius: var(--k-radius-knot-md, 0.5rem);
+  }
+
+  #knot-app .knot-workflows-table {
+    table-layout: auto;
+    width: 100%;
+  }
+
+  #knot-app .knot-workflows-table td,
+  #knot-app .knot-workflows-table th {
+    vertical-align: top;
   }
 }

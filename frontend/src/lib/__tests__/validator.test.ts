@@ -90,6 +90,39 @@ describe('validateWorkflow', () => {
     expect(issues.some((i) => i.code === 'sql_unknown_table_hint')).toBe(true);
   });
 
+  it('hints objectType alias invoice -> facture', () => {
+    const issues = validateWorkflow(
+      [
+        trigger,
+        {
+          id: 'read1',
+          data: {
+            type: 'dolibarr.read_object',
+            label: 'Read',
+            config: { objectType: 'invoice', objectId: 1 },
+          },
+        },
+      ],
+      [{ source: 'trig', target: 'read1' }],
+    );
+    expect(issues.some((i) => i.code === 'object_type_alias_hint')).toBe(true);
+  });
+
+  it('warns when $json field follows non-trigger upstream', () => {
+    const issues = validateWorkflow(
+      [
+        trigger,
+        { id: 'read1', data: { type: 'dolibarr.read_object', config: { objectType: 'facture', objectId: 1 } } },
+        { id: 'sql1', data: { type: 'dolibarr.sql_query', config: { query: 'SELECT 1 WHERE x = {{$json.total_ttc}}' } } },
+      ],
+      [
+        { source: 'trig', target: 'read1' },
+        { source: 'read1', target: 'sql1' },
+      ],
+    );
+    expect(issues.some((i) => i.code === 'expression_json_chain')).toBe(true);
+  });
+
   it('returns no issues for a happy-path workflow', () => {
     const issues = validateWorkflow(
       [

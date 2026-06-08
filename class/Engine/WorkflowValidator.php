@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Knot\Engine;
 
 use Knot\Connectors\ConnectorRegistry;
+use Knot\Dolibarr\ObjectFactory;
 use Knot\Security\SqlTableReferenceValidator;
 
 /**
@@ -166,6 +167,9 @@ final class WorkflowValidator
 
         $this->appendCycleAndOrphanIssues($typesById, $edges, $issues);
         $this->appendSqlQueryTableIssues($nodes, $issues);
+        $this->appendObjectTypeIssues($nodes, $issues);
+        $this->appendExpressionIssues($nodes, $edges, $issues);
+        $this->appendIfOperatorIssues($nodes, $issues);
 
         return $issues;
     }
@@ -203,6 +207,207 @@ final class WorkflowValidator
                     $lint['messageParams'],
                     $nodeId,
                 );
+            }
+        }
+    }
+
+    /** @var array<string, string> */
+    private const OBJECT_TYPE_ALIASES = DolibarrObjectTypeAliases::ALIASES;
+
+    /** @var list<string> */
+    private const IF_OPERATORS = IfConditionOperator::CANONICAL;
+
+    /** @var array<string, string> */
+    private const IF_OPERATOR_SUGGESTIONS = IfConditionOperator::ALIASES;
+
+    /** @var list<string> */
+    private const TRIGGER_PAYLOAD_FIELDS = [
+        'objectId',
+        'objectRef',
+        'objectType',
+        'event',
+    ];
+
+    /**
+     * @param array<int, mixed> $nodes
+     * @param array<int, array<string, mixed>> $issues
+     */
+    private function appendObjectTypeIssues(array $nodes, array &$issues): void
+    {
+        $supported = array_fill_keys((new ObjectFactory())->listSupported(), true);
+
+        foreach ($nodes as $node) {
+            if (!is_array($node)) {
+                continue;
+            }
+            $type = is_string($node['type'] ?? null) ? self::canonicalConnectorId($node['type']) : '';
+            if (!in_array($type, ['dolibarr.read_object', 'dolibarr.object'], true)) {
+                continue;
+            }
+            $nodeId = is_string($node['id'] ?? null) ? $node['id'] : null;
+            $config = is_array($node['config'] ?? null) ? $node['config'] : [];
+            $raw = trim((string) ($config['objectType'] ?? ''));
+            if ($raw === '' || str_contains($raw, '{{')) {
+                continue;
+            }
+            $lower = strtolower($raw);
+            if (isset($supported[$lower])) {
+                continue;
+            }
+            $suggestion = self::OBJECT_TYPE_ALIASES[$lower] ?? null;
+            $params = ['objectType' => $raw];
+            if ($suggestion !== null) {
+                $params['suggestion'] = $suggestion;
+                $issues[] = $this->issue(
+                    'warning',
+                    'KNOT_DSL_OBJECT_TYPE_UNKNOWN',
+                    'object_type_unknown_hint',
+                    $params,
+                    $nodeId,
+                );
+            } else {
+                $issues[] = $this->issue(
+                    'warning',
+                    'KNOT_DSL_OBJECT_TYPE_UNKNOWN',
+                    'object_type_unknown',
+                    $params,
+                    $nodeId,
+                );
+            }
+        }
+    }
+
+    /**
+     * @param array<int, mixed> $nodes
+     * @param array<int, mixed> $edges
+     * @param array<int, array<string, mixed>> $issues
+     */
+    private function appendExpressionIssues(array $nodes, array $edges, array &$issues): void
+    {
+        if ($nodes === []) {
+            return;
+        }
+
+        /** @var array<string, list<string>> $upstream */
+        $upstream = [];
+        foreach ($nodes as $node) {
+            if (!is_array($node)) {
+                continue;
+            }
+            $id = is_string($node['id'] ?? null) ? $node['id'] : null;
+            if ($id !== null) {
+                $upstream[$id] = [];
+            }
+        }
+        foreach ($edges as $edge) {
+            if (!is_array($edge)) {
+                continue;
+            }
+            $source = $edge['source'] ?? null;
+            $target = $edge['target'] ?? null;
+            if (!is_string($source) || !is_string($target) || !isset($upstream[$target])) {
+                continue;
+            }
+            $upstream[$target][] = $source;
+        }
+
+        $typesById = [];
+        foreach ($nodes as $node) {
+            if (!is_array($node)) {
+                continue;
+            }
+            $id = is_string($node['id'] ?? null) ? $node['id'] : null;
+            $type = is_string($node['type'] ?? null) ? self::canonicalConnectorId($node['type']) : '';
+            if ($id !== null) {
+                $typesById[$id] = $type;
+            }
+        }
+
+        foreach ($nodes as $node) {
+            if (!is_array($node)) {
+                continue;
+            }
+            $nodeId = is_string($node['id'] ?? null) ? $node['id'] : null;
+            if ($nodeId === null) {
+                continue;
+            }
+            $sources = $upstream[$nodeId] ?? [];
+            if ($sources === []) {
+                continue;
+            }
+            $primarySource = $sources[0];
+            $upstreamType = $typesById[$primarySource] ?? '';
+            $isTriggerUpstream = str_starts_with($upstreamType, 'trigger.');
+            $blob = json_encode($node['config'] ?? [], JSON_THROW_ON_ERROR);
+            if (!preg_match_all('/\{\{\$json\.([a-zA-Z0-9_]+)\}\}/', $blob, $matches)) {
+                continue;
+            }
+            foreach (array_unique($matches[1]) as $field) {
+                if ($isTriggerUpstream && in_array($field, self::TRIGGER_PAYLOAD_FIELDS, true)) {
+                    continue;
+                }
+                if (!$isTriggerUpstream) {
+                    $issues[] = $this->issue(
+                        'warning',
+                        'KNOT_DSL_EXPRESSION_JSON_CHAIN',
+                        'expression_json_chain',
+                        [
+                            'field' => $field,
+                            'upstreamId' => $primarySource,
+                            'suggestion' => '{{$nodes.' . $primarySource . '.json.' . $field . '}}',
+                        ],
+                        $nodeId,
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * @param array<int, mixed> $nodes
+     * @param array<int, array<string, mixed>> $issues
+     */
+    private function appendIfOperatorIssues(array $nodes, array &$issues): void
+    {
+        foreach ($nodes as $node) {
+            if (!is_array($node)) {
+                continue;
+            }
+            $type = is_string($node['type'] ?? null) ? self::canonicalConnectorId($node['type']) : '';
+            if ($type !== 'logic.if') {
+                continue;
+            }
+            $nodeId = is_string($node['id'] ?? null) ? $node['id'] : null;
+            $config = is_array($node['config'] ?? null) ? $node['config'] : [];
+            $conditions = is_array($config['conditions'] ?? null) ? $config['conditions'] : [];
+            foreach ($conditions as $idx => $cond) {
+                if (!is_array($cond)) {
+                    continue;
+                }
+                $op = trim((string) ($cond['operator'] ?? ''));
+                if ($op === '' || in_array($op, self::IF_OPERATORS, true)) {
+                    continue;
+                }
+                $suggestion = self::IF_OPERATOR_SUGGESTIONS[$op] ?? null;
+                $params = ['operator' => $op, 'index' => $idx];
+                if ($suggestion !== null) {
+                    $params['suggestion'] = $suggestion;
+                    $issues[] = $this->issue(
+                        'warning',
+                        'KNOT_DSL_IF_OPERATOR_INVALID',
+                        'if_operator_invalid_hint',
+                        $params,
+                        $nodeId,
+                    );
+                } else {
+                    $issues[] = $this->issue(
+                        'warning',
+                        'KNOT_DSL_IF_OPERATOR_INVALID',
+                        'if_operator_invalid',
+                        $params,
+                        $nodeId,
+                    );
+                }
             }
         }
     }

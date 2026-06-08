@@ -144,14 +144,19 @@ final class ExecutionRepository extends AbstractRepository
         $payloadSql = $this->sqlErrorPayloadLiteral($errorPayload);
 
         if ($failures >= $maxAttempts) {
+            $endedTs = time();
+            $durationSql = $this->sqlDurationMsLiteral($executionId, $entity, $endedTs);
             $sql = 'UPDATE ' . $this->table('execution') . ' SET ';
             $sql .= "status = 'error', ";
             $sql .= 'retry_count = ' . $failures . ', ';
             $sql .= "error_message = '" . $this->db->escape($errorMessage) . "', ";
             $sql .= 'error_payload = ' . $payloadSql . ', ';
-            $sql .= 'ended_at = ' . $nowLit . ', ';
-            $sql .= 'worker_id = NULL ';
-            $sql .= 'WHERE rowid = ' . (int) $executionId . ' AND entity = ' . (int) $entity;
+            $sql .= "ended_at = '" . $this->db->idate($endedTs) . "', ";
+            $sql .= 'worker_id = NULL';
+            if ($durationSql !== null) {
+                $sql .= ', duration_ms = ' . $durationSql;
+            }
+            $sql .= ' WHERE rowid = ' . (int) $executionId . ' AND entity = ' . (int) $entity;
 
             $this->db->query($sql);
 
@@ -407,8 +412,13 @@ final class ExecutionRepository extends AbstractRepository
             $sql .= ', error_payload = NULL';
         }
         if (in_array($status, ['success', 'error', 'timeout', 'cancelled'], true)) {
-            $sql .= ", ended_at = '" . $this->db->idate(time()) . "'";
+            $endedTs = time();
+            $durationSql = $this->sqlDurationMsLiteral($executionId, $entity, $endedTs);
+            $sql .= ", ended_at = '" . $this->db->idate($endedTs) . "'";
             $sql .= ', worker_id = NULL';
+            if ($durationSql !== null) {
+                $sql .= ', duration_ms = ' . $durationSql;
+            }
         }
         if ($errorMessage !== null) {
             $sql .= ", error_message = '" . $this->db->escape($errorMessage) . "'";
@@ -480,13 +490,18 @@ final class ExecutionRepository extends AbstractRepository
      */
     public function cancel(int $executionId, int $entity): bool
     {
+        $endedTs = time();
+        $durationSql = $this->sqlDurationMsLiteral($executionId, $entity, $endedTs);
         $sql = 'UPDATE ' . $this->table('execution') . ' SET ';
         $sql .= "status = 'cancelled', ";
-        $sql .= "ended_at = '" . $this->db->idate(time()) . "', ";
+        $sql .= "ended_at = '" . $this->db->idate($endedTs) . "', ";
         $sql .= "error_message = 'Cancelled by user', ";
         $sql .= 'error_payload = NULL, ';
-        $sql .= 'worker_id = NULL ';
-        $sql .= 'WHERE rowid = ' . (int) $executionId . ' AND entity = ' . (int) $entity . ' ';
+        $sql .= 'worker_id = NULL';
+        if ($durationSql !== null) {
+            $sql .= ', duration_ms = ' . $durationSql;
+        }
+        $sql .= ' WHERE rowid = ' . (int) $executionId . ' AND entity = ' . (int) $entity . ' ';
         $sql .= "AND status IN ('queued','running')";
 
         return (bool) $this->db->query($sql);
@@ -565,6 +580,24 @@ final class ExecutionRepository extends AbstractRepository
             'workflowRef' => isset($obj->workflow_ref) && $obj->workflow_ref !== ''
                 ? (string) $obj->workflow_ref : null,
         ];
+    }
+
+    private function sqlDurationMsLiteral(int $executionId, int $entity, int $endedUnixTs): ?int
+    {
+        $row = $this->fetchOne($executionId, $entity);
+        if ($row === null) {
+            return null;
+        }
+        $startedRaw = $row['startedAt'] ?? null;
+        if (!is_string($startedRaw) || $startedRaw === '') {
+            return null;
+        }
+        $startedTs = strtotime($startedRaw);
+        if ($startedTs === false) {
+            return null;
+        }
+
+        return max(0, ($endedUnixTs - $startedTs) * 1000);
     }
 
     /**

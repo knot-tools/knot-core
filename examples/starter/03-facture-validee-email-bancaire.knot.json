@@ -1,0 +1,69 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-06-07T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "03 — Facture validee email bancaire",
+    "description": "Quand une facture est validee (BILL_VALIDATE), envoyer un email au tiers avec les coordonnees bancaires Dolibarr. Relance J+30 : utiliser le starter 02 (cron) ou creer un evenement agenda via dolibarr.object actioncomm.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "STARTER_FACTURE_EMAIL_IBAN",
+        "label": "03 — Facture validee email bancaire",
+        "tags": ["starter", "compta", "demo"],
+        "settings": { "timeoutSeconds": 120, "errorPolicy": "stop", "logPayloads": true }
+      },
+      "nodes": [
+        {
+          "id": "trigger_bill_validate",
+          "type": "trigger.dolibarr_event",
+          "label": "Facture validee",
+          "subtitle": "BILL_VALIDATE",
+          "position": { "x": 80, "y": 200 },
+          "config": {
+            "events": ["BILL_VALIDATE"],
+            "objectTypes": ["facture"]
+          }
+        },
+        {
+          "id": "read_facture",
+          "type": "dolibarr.read_object",
+          "label": "Lire la facture",
+          "subtitle": "ref + montant + fk_account",
+          "position": { "x": 380, "y": 200 },
+          "config": {
+            "objectType": "facture",
+            "objectId": "{{$json.objectId}}"
+          }
+        },
+        {
+          "id": "sql_iban",
+          "type": "dolibarr.sql_query",
+          "label": "IBAN compte bancaire",
+          "subtitle": "llx_bank_account",
+          "position": { "x": 700, "y": 200 },
+          "config": {
+            "query": "SELECT ba.iban_prefix AS iban, ba.label AS bank_label FROM llx_bank_account ba WHERE ba.rowid = {{$nodes.read_facture.json.fk_account}} LIMIT 1"
+          }
+        },
+        {
+          "id": "send_email",
+          "type": "action.email",
+          "label": "Email avec IBAN",
+          "subtitle": "SMTP Dolibarr",
+          "position": { "x": 1020, "y": 200 },
+          "config": {
+            "to": "{{$nodes.read_facture.json.email}}",
+            "subject": "Facture {{$nodes.read_facture.json.ref}} — coordonnees bancaires",
+            "body": "Bonjour,\n\nVotre facture {{$nodes.read_facture.json.ref}} d'un montant de {{$nodes.read_facture.json.total_ttc}} EUR est validee.\nMerci de regler sur le compte suivant :\nIBAN : {{$json.rows.0.iban}}\n\nCordialement"
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_bill_validate", "target": "read_facture", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e2", "source": "read_facture", "target": "sql_iban", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e3", "source": "sql_iban", "target": "send_email", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

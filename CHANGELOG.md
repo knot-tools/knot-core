@@ -7,6 +7,80 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.12] - 2026-06-08
+
+### Added
+
+- **Assistant lint loop:** post-import server+local lint in `AssistantView`, copy-fix message for external chatbot.
+- **WorkflowValidator:** warn-only rules for unknown `objectType` slugs, fragile `{{$json.*}}` chains, invalid `logic.if` operators.
+- **Editor canvas:** dynamic branch handles from connector `outputs`, coloured edge labels/markers, execution-path animation (`executedEdgeIds` + branch-aware handles), flow dot on animated edges, invalid-connection preview, category colour tokens, animated auto-layout, canvas legend, quick-add from handles, auto-layout on assistant import (`layout=1`).
+- **Assistant (Tier 1):** slim external-chatbot prompt with hello-world embed, anti-patterns,
+  exhaustive Core connector specs, contextual recipes, Dolibarr events, optional Tier 2 annex.
+- **`AssistantPreflight`:** blocks prompt generation when Pro Pack connectors are required but
+  unavailable; Marketplace CTA in `AssistantView`.
+- **Starters:** `00-email-test-manuel.knot.json`, `03-facture-validee-email-bancaire.knot.json`.
+- **Workflows list:** delete action with confirmation modal (`bulkWorkflows` delete).
+- **Connectors catalog:** JSON Schema `properties` in config fields table, usage examples, i18n search.
+- **Editor:** palette gating for unavailable Pro connectors; responsive toolbar badge; `TestSplitButton` k-* tokens.
+- **Credentials:** WhatsApp Cloud inline help (Meta tokens, not OpenAI); `labelKey`/`descriptionKey` on credential fields.
+- **Docs:** `docs/browser-support.md`, `docs/llm/assistant-prompt-spec.md`, beta-troubleshooting refresh.
+- **E2E:** Playwright Firefox + WebKit projects; `viewports.ts` matrix; `no-overflow-matrix`, `visual-baseline`, `zoom-a11y`, `workflow-delete` specs.
+
+### Known issues
+
+- **Workflows list — Export ZIP:** bulk selection (`selectedIds`) is not wired yet; the button stays
+  disabled until multi-select is implemented.
+
+### Fixed
+
+- **`ExpressionResolver`:** bracket index paths (`rows[0].iban`) resolve like dot notation (`rows.0.iban`).
+- **`action.email`:** literal `\n` in LLM-generated bodies become HTML line breaks.
+- **`logic.if` / `IfConditionOperator`:** normalize `>=`, `gte`, and related operators at runtime and on import.
+- **`WorkflowDefinitionNormalizer`:** repair Assistant imports (`sql`→`query`, objectType aliases, if operators, email body).
+- **Frontend import parity:** `workflowDefinitionRepair.ts` mirrors server normalizer before save/activate.
+- **`dolibarr.read_object`:** canonical ObjectFactory slugs only (no `invoice`/`order` aliases); prompt catalog prints inline enum values.
+- **`logic.filter`:** translated operator labels via `enumLabelKeys` (6 locales).
+- **`NodeInspectorBody`:** `trigger.dolibarr_event` panel loads via `canonicalConnectorId`.
+- **Starter 03:** `objectType=facture`, `{{$nodes.*}}` expressions for chained reads.
+- **Host layout:** rail gutter via `#id-right` padding (fixes setup/configuration overlap);
+  `#id-container` forced to `display:block` (eldy table shell); explicit `knot-tokens.css`
+  on setup.php; inline `:root` fallbacks in layout guard;
+  data-heavy views (Workflows, Executions, Connectors, Credentials, Book, Audit, Variables,
+  Approvals) use full-width `knot-view-shell` instead of centered `max-w-*` caps.
+- **Executions list:** persist `duration_ms` when a run finishes; show duration from
+  `started_at`/`ended_at` for legacy rows; icon actions (view panel, full page, retry) on every row.
+- **Pro Pack settings URL:** `KNOT_BASE_URL` fallback when `DOL_URL_ROOT` missing; `ui.onboarding` in manifest.
+- **`preview.php`:** inject `window.DOL_URL_ROOT`.
+- **Import:** `WorkflowImportLegacyStepsError` for Zapier `trigger`/`steps`; explicit i18n errors in Assistant.
+- **Starter 02:** `query` field + `logic.loop` `itemsPath`/`realIteration`.
+- **`workflow-format.md`:** `sourceHandle`/`targetHandle` (not `sourcePort`).
+- **knot-migration:** `KTargetVersionSelect` badge wrap, cloning stepper truncate.
+
+### Tests
+
+- `AssistantPreflightTest`, expanded `WorkflowAssistantPromptBuilderTest`, `normalizeWorkflowImport` legacy test,
+  `ProPackSettingsView.spec.ts`, `KTargetVersionSelect` badge containment.
+
+## [2.13.11] - 2026-06-07
+
+### Changed
+
+- **Product / UX:** highlight **`action.email`** as a free Knot Core connector (catalog
+  callout, palette copy, i18n FR/EN + locales). Clarify **`notification.alert`** (audit-only)
+  vs **`action.email`** (SMTP) vs Pro Pack fan-out / Gmail API.
+- **Starter example:** `examples/starter/02-relance-facture-impayee.knot.json` — drop
+  obsolete `credentialId`; document Core-only SMTP path.
+
+### Documentation
+
+- Align connector counts and mail boundary post-V2.8.1 (`docs/ecosystem.md`,
+  `docs/connectors-inventory.md`, beta invitation template, LLM analysis resync).
+
+### Tests
+
+- **`ShowcaseStarter02WorkflowEngineTest`** — guards starter overdue-invoice reminder uses
+  free Core `action.email` (validate + dry-run simulate).
+
 ## [2.13.10] - 2026-06-01
 
 ### Fixed
