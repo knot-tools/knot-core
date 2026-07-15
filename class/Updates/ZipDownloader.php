@@ -54,7 +54,9 @@ final class ZipDownloader
         }
         $scheme = strtolower((string) $parsed['scheme']);
         $host = strtolower((string) $parsed['host']);
-        if ($scheme !== 'https') {
+        $localDevHost = $host === 'localhost' || $host === '127.0.0.1';
+        // Production artefacts: HTTPS only. Local Apply lab may use HTTP on loopback.
+        if ($scheme !== 'https' && !($scheme === 'http' && $localDevHost)) {
             throw new RuntimeException('Only HTTPS artefact URLs are permitted.');
         }
         if (!self::allowedHost($host)) {

@@ -93,6 +93,85 @@ final class InstallerTest extends TestCase
         self::assertStringContainsString('"name":"demo"', (string) file_get_contents($live));
     }
 
+    public function testSwapFallsBackWhenRenameAcrossDirectoriesFails(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            self::markTestSkipped('ZipArchive extension required');
+        }
+
+        $this->tmpRoot = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'installer-xdev-' . bin2hex(random_bytes(6));
+        $stageRoot = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'installer-stage-' . bin2hex(random_bytes(6));
+        @mkdir($this->tmpRoot, 0777, true);
+        @mkdir($stageRoot, 0777, true);
+
+        $artifact = $this->tmpRoot . DIRECTORY_SEPARATOR . 'pkg.zip';
+        $this->makeDemoZip($artifact, 'knot');
+
+        $installer = new Installer();
+        $prepared = $installer->prepare($artifact, $stageRoot, 'knot');
+        $liveRoot = $this->tmpRoot . DIRECTORY_SEPARATOR . 'live-old';
+        @mkdir($liveRoot, 0777, true);
+        file_put_contents($liveRoot . DIRECTORY_SEPARATOR . 'old.txt', 'prev');
+
+        $installer->swap($prepared, $liveRoot);
+
+        self::assertFileExists($liveRoot . DIRECTORY_SEPARATOR . 'manifest.json');
+        self::assertFileDoesNotExist($liveRoot . DIRECTORY_SEPARATOR . 'old.txt');
+    }
+
+    public function testPrepareAdoptsArchiveFolderWhenLiveDirNameDiffers(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            self::markTestSkipped('ZipArchive extension required');
+        }
+
+        $this->tmpRoot = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'installer-alias-' . bin2hex(random_bytes(6));
+        @mkdir($this->tmpRoot, 0777, true);
+
+        // Signed Migration artefacts ship `knotmigration/` while operators may
+        // have deployed under `custom/knot-migration/` — prepare() must adopt
+        // the archive folder under the expected (live) name.
+        $artifact = $this->tmpRoot . DIRECTORY_SEPARATOR . 'pkg.zip';
+        $this->makeDemoZip($artifact, 'knotmigration');
+
+        $prepared = (new Installer())->prepare(
+            $artifact,
+            $this->tmpRoot . DIRECTORY_SEPARATOR . 'stage-parent',
+            'knot-migration',
+        );
+
+        self::assertSame('knot-migration', basename($prepared));
+        self::assertFileExists($prepared . DIRECTORY_SEPARATOR . 'manifest.json');
+    }
+
+    public function testPrepareMismatchErrorNamesTheArchiveFolder(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            self::markTestSkipped('ZipArchive extension required');
+        }
+
+        $this->tmpRoot = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'installer-multi-' . bin2hex(random_bytes(6));
+        @mkdir($this->tmpRoot, 0777, true);
+
+        // Two manifest-bearing folders → ambiguous, no silent adoption.
+        $staging = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'zip-multi-' . bin2hex(random_bytes(3));
+        foreach (['alpha', 'beta'] as $folder) {
+            @mkdir($staging . DIRECTORY_SEPARATOR . $folder, 0777, true);
+            file_put_contents($staging . DIRECTORY_SEPARATOR . $folder . '/manifest.json', "{}\n");
+        }
+        $artifact = $this->tmpRoot . DIRECTORY_SEPARATOR . 'multi.zip';
+        $zip = new ZipArchive();
+        self::assertTrue($zip->open($artifact, ZipArchive::CREATE | ZipArchive::OVERWRITE));
+        $zip->addFile($staging . '/alpha/manifest.json', 'alpha/manifest.json');
+        $zip->addFile($staging . '/beta/manifest.json', 'beta/manifest.json');
+        $zip->close();
+        $this->rrmdir($staging);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('manifest.json missing at top-level folder "expected"');
+        (new Installer())->prepare($artifact, $this->tmpRoot . DIRECTORY_SEPARATOR . 'ext', 'expected');
+    }
+
     public function testPrepareFailsWhenManifestMissing(): void
     {
         if (!class_exists(ZipArchive::class)) {

@@ -50,10 +50,10 @@
             "operation": "create",
             "objectType": "actioncomm",
             "fields": {
-              "label": "{{$json.label}}",
-              "note": "{{$json.note}}",
-              "datep": "{{$json.datep}}",
-              "type_code": "{{$json.type_code}}"
+              "label": "{{$nodes.set_task_payload.json.label}}",
+              "note": "{{$nodes.set_task_payload.json.note}}",
+              "datep": "{{$nodes.set_task_payload.json.datep}}",
+              "type_code": "{{$nodes.set_task_payload.json.type_code}}"
             }
           }
         }

@@ -17,7 +17,11 @@
     "inbox": "Boîte de réception",
     "assistant": "Assistant",
     "book": "Manuel",
-    "marketplace": "Marketplace"
+    "marketplace": "Marketplace",
+    "home": "Accueil",
+    "suiteHealth": "Santé",
+    "updates": "Mises à jour",
+    "setup": "Configuration"
   },
   "actions": {
     "save": "Enregistrer",
@@ -38,7 +42,8 @@
     "create": "Créer",
     "update": "Mettre à jour",
     "search": "Rechercher",
-    "loading": "Chargement…"
+    "loading": "Chargement…",
+    "retry": "Réessayer"
   },
   "activation": {
     "titleCritical": "Ce workflow effectue des actions critiques",
@@ -76,7 +81,7 @@
     "supportedObjectsTitle": "Slugs d’objets supportés",
     "supportedObjectsHint": "MAP courant plus slugs découverts exposés à l’API — peut différer du nombre de lignes brutes du fichier d’introspection JSON.",
     "descriptorFileTitle": "Lignes du fichier descripteurs",
-    "descriptorFileHint": "Nombre de lignes dans documents/knot/dolibarr_descriptors.json après le dernier scan (identique au Doctor / setup).",
+    "descriptorFileHint": "Nombre de lignes dans documents/knot/dolibarr_descriptors.json après le dernier scan (identique au Diagnostic / setup).",
     "rawJson": "JSON brut"
   },
   "status": {
@@ -112,7 +117,9 @@
     "clearCanvas": "Vider le canevas",
     "starterHintDismiss": "Masquer",
     "paletteSearchPlaceholder": "Rechercher un nœud…",
-    "paletteRequiresLicense": "{connector} nécessite une extension licenciée (Pro Pack).",
+    "paletteRequiresLicense": "{connector} nécessite une extension licenciée (Pro Pack). Cliquez pour activer.",
+    "paletteRequiresLicenseShort": "Pro Pack — cliquez pour activer",
+    "paletteProPackLabel": "Knot Pro Pack",
     "sidebarBrandSubtitle": "Éditeur de workflows",
     "dragPaletteHint": "Glissez les nœuds vers le canvas",
     "loadingWorkflow": "Chargement du workflow…",
@@ -132,6 +139,13 @@
     "saveFallback": "Échec de l'enregistrement",
     "simulateBeforeSave": "Enregistrez le workflow avant de simuler.",
     "simulateFailedFallback": "Échec de la simulation.",
+    "simulateTimedOut": "Simulation expirée (~25 s). Ce workflow nécessite une exécution asynchrone.",
+    "retryAsRun": "Relancer en Run",
+    "retryAsRunHint": "Met le workflow en file d'attente pour exécution cron.",
+    "runQueuedCronDisabled": "Exécution en file, mais le worker cron Knot est désactivé. Activez-le dans Accueil → Outils → Tâches planifiées.",
+    "runQueuedCronGlobalOff": "Exécution en file, mais les tâches cron Dolibarr sont globalement désactivées (CRON_DISABLE_JOBS).",
+    "runQueuedCronNever": "Exécution en file. Le worker cron Knot n'a jamais tourné — vérifiez les tâches planifiées Dolibarr.",
+    "runQueuedCronStale": "Exécution en file. Le worker cron Knot n'a pas tourné depuis {minutes} min — vérifiez les tâches planifiées Dolibarr.",
     "runBeforeSave": "Enregistrez le workflow avant de l'exécuter.",
     "runInactive": "Le workflow doit être actif pour être exécuté.",
     "runFallback": "Échec de l'exécution",
@@ -193,8 +207,10 @@
     "starterManualSubtitle": "Depuis l'éditeur",
     "starterSetLabel": "Préparer la charge utile",
     "starterSetSubtitle": "message, destinataire",
+    "starterGreetingValue": "Bonjour depuis Knot",
     "starterEmailLabel": "Envoyer un e-mail",
     "starterEmailSubtitle": "SMTP via Dolibarr",
+    "starterEmailSubject": "Démo Knot",
     "problemsTitle": "Problèmes",
     "paletteSections": {
       "trigger": "Déclencheurs",
@@ -217,7 +233,20 @@
       "iteration": "Itération",
       "done": "Terminé",
       "error": "Erreur"
-    }
+    },
+    "editJson": "Éditer JSON",
+    "editJsonTitle": "Éditer le JSON du workflow",
+    "editJsonLead": "Collez un workflow corrigé (ex. depuis votre chatbot) ou modifiez le JSON directement. L'application remplace le canevas sans enregistrer.",
+    "editJsonApply": "Appliquer au canevas",
+    "editJsonCancel": "Annuler",
+    "editJsonApplied": "JSON du workflow appliqué — vérifiez puis enregistrez.",
+    "editJsonAppliedWithRepairs": "JSON du workflow appliqué — {count} auto-réparation(s) appliquée(s). Vérifiez puis enregistrez.",
+    "editJsonInvalid": "Ce JSON n'est pas un workflow Knot valide.",
+    "editJsonInvalidJson": "JSON invalide — vérifiez la syntaxe (un seul bloc json attendu).",
+    "editJsonLegacy": "Format historique trigger/steps détecté — utilisez l'import legacy explicite dans Workflows.",
+    "problemsCopyFix": "Copier correctif pour chatbot",
+    "problemsCopyFixTitle": "Copier les problèmes actuels + le JSON du workflow comme prompt de correction chatbot",
+    "problemsCopyFixDone": "Prompt de correction copié — collez-le à votre chatbot."
   },
   "search": {
     "placeholder": "Rechercher un workflow…",
@@ -298,6 +327,31 @@
       "Sam"
     ]
   },
+  "suiteHealth": {
+    "title": "Santé de la suite",
+    "cronTitle": "Planificateur (cron)",
+    "cronRegistered": "Enregistré",
+    "cronEnabled": "Activé",
+    "cronLastRun": "Dernière exécution",
+    "yes": "Oui",
+    "no": "Non",
+    "jobsTitle": "Exécutions",
+    "jobsSuccess": "Réussies",
+    "jobsFailed": "Échouées",
+    "jobsQueued": "En attente",
+    "jobsRunning": "En cours",
+    "licenseValid": "Active",
+    "licenseExpired": "Expirée",
+    "licenseInvalid": "Invalide",
+    "licenseUnknown": "Inconnue",
+    "installedVersion": "Version installée",
+    "publishedVersion": "Version publiée",
+    "publishedShort": "pub {version}",
+    "updateAvailable": "MàJ",
+    "pageTitle": "Santé de la suite",
+    "pageLead": "Produits installés, licences, planificateur et compteurs d’exécution pour toute la suite Knot Tools.",
+    "openUpdates": "Ouvrir les mises à jour"
+  },
   "updatesBadge": {
     "upToDate": "Tous les produits installés sont à jour.",
     "oneUpdate": "Mise à jour disponible : {slug}",
@@ -315,8 +369,8 @@
     "dismissAria": "Me rappeler dans 7 jours"
   },
   "updatesPage": {
-    "heroTitle": "Produits installés",
-    "heroSubtitle": "Métadonnées de releases via Knot Tools — appliquer une mise à jour remplace les fichiers Knot Core (custom/knot) ou le répertoire d’extension enregistré.",
+    "heroTitle": "Gardez Knot Tools à jour",
+    "heroSubtitle": "Un clic applique une release signée. Sécurité, correctifs, et alignement Core / Pro Pack / Migration.",
     "productNames": {
       "knot": "Knot Core",
       "knotProPack": "Knot Pro Pack",
@@ -329,12 +383,12 @@
     "colLatest": "Dispo.",
     "colChannel": "Canal",
     "colStatus": "Statut",
-    "noUpdates": "Aucune mise à jour détectée.",
+    "noUpdates": "Aucun produit Knot détecté pour les contrôles de mise à jour sur cette instance.",
     "apply": "Appliquer",
     "buy": "Acheter / renouveler",
     "marketplaceUnavailable": "Ouvrir le marketplace pour les liens d'achat.",
     "confirmTitle": "Appliquer cette mise à jour ?",
-    "confirmBody": "Les fichiers de {slug} seront remplacés sur ce serveur.",
+    "confirmBody": "{product} sera mis à jour vers {version} sur ce serveur. Les fichiers précédents sont remplacés après vérification de signature.",
     "applySuccess": "Mise à jour appliquée ({slug}).",
     "migrationsApplied": "{count} migration(s) base de données appliquée(s).",
     "applyError": "Échec de l'application.",
@@ -342,7 +396,30 @@
     "migrationFailedCritical": "Échec de la migration BDD — la restauration des fichiers a aussi échoué.",
     "signatureInvalidTitle": "Signature de release invalide",
     "signatureInvalidBody": "Le paquet n'a pas passé la vérification Ed25519. N'appliquez pas l'update tant qu'un artefact signé n'est pas disponible via Knot Tools.",
-    "loadMarketplaceHint": "Impossible de résoudre l'URL d'achat — ouvrir le marketplace manuellement."
+    "loadMarketplaceHint": "Impossible de résoudre l'URL d'achat — ouvrir le marketplace manuellement.",
+    "activationMissingTitle": "Activez d'abord l'extension",
+    "activationMissingBody": "La mise à jour automatique a besoin du code d'activation enregistré. Ouvrez Configuration → Knot → Licence, activez cette extension une fois, puis réessayez.",
+    "downloadDeniedTitle": "Jeton de téléchargement refusé",
+    "downloadDeniedBody": "Le serveur de licence a refusé d'émettre un jeton de téléchargement pour cette instance (licence expirée, mauvaise instance, ou accès bêta terminé).",
+    "backendUnreachableTitle": "Serveur de licence injoignable",
+    "backendUnreachableBody": "license.knot.tools est injoignable depuis ce serveur. Vérifiez HTTPS sortant/pare-feu, puis réessayez — les instructions de repli manuel sont dans le détail de l'erreur.",
+    "licenseInvalidTitle": "Licence d'extension invalide",
+    "licenseInvalidBody": "La licence de cette extension est expirée, révoquée ou non reconnue. Renouvelez ou réactivez dans Configuration → Knot → Licence.",
+    "versionMismatchTitle": "Décalage de version",
+    "versionMismatchBody": "Le serveur de licence a résolu une version différente de celle demandée. Attendez la publication de la version cible ou rafraîchissez la liste des mises à jour.",
+    "extensionUnknownTitle": "Extension introuvable",
+    "extensionUnknownBody": "Cette extension n'est pas installée ou n'est pas détectable sur cette instance. Installez-la d'abord via le Marketplace ou manuellement.",
+    "heroPill": "Mises à jour signées",
+    "trustBanner": "Chaque paquet est vérifié en Ed25519. En cas d’échec de migration BDD, Knot restaure les fichiers précédents quand c’est possible. Sauvegardez avant une montée majeure.",
+    "statusUpdateAvailable": "Mise à jour dispo.",
+    "statusUpToDate": "À jour",
+    "statusCheckFailed": "Vérif. échouée",
+    "pendingSummary": "{count} mise(s) à jour prête(s) — recommandées pour la sécurité et la compatibilité.",
+    "allUpToDateTitle": "Vous êtes à jour",
+    "allUpToDateBody": "Aucune mise à jour en attente pour les produits Knot installés. Revérifiez après publication d’une nouvelle release.",
+    "channelLabel": "Canal · {channel}",
+    "applyDisabled": "Actuel",
+    "statusAhead": "En avance sur le canal"
   },
   "observability": {
     "heroPill": "Agrégats · sans payload",
@@ -499,7 +576,7 @@
       "tipSecretsMasked": "Tous les secrets sont masqués dans les journaux d'exécution par SecretMasker.",
       "coreIncludedCallout": "Inclus dans Knot Core (GPL) — utilise la configuration SMTP de Dolibarr. Aucune licence Pro Pack requise.",
       "tipEmailCore": "Configurez l'envoi de mail dans Dolibarr (Configuration → E-mail), puis utilisez des expressions dans les champs destinataire, objet et corps. Aucun credential Knot n'est requis.",
-      "tipAlertVsEmail": "Pour un e-mail transactionnel (relances, notifications), utilisez le connecteur Envoyer un e-mail (action.email) dans Core. Le fan-out Pro Pack ajoute Slack, Discord, webhooks et e-mail d'alerte formaté en un seul nœud.",
+      "tipAlertVsEmail": "Ce connecteur est audit-only : il écrit dans le journal d’audit et n’envoie rien. Pour un e-mail réel : Envoyer un e-mail (action.email, Core). Pour Slack, Discord, webhooks ou e-mail d’alerte formaté : Alerte fan-out (notification.alert_fanout, Pro Pack).",
       "tipCommunicationTemplates": "Les modèles acceptent des expressions comme {example} résolues depuis la sortie du nœud amont.",
       "tipCodeSandbox": "Le code utilisateur s'exécute dans un bac à sable durci sans accès disque ni réseau.",
       "tipTriggerNoInputs": "Les nœuds déclencheurs n'acceptent pas d'entrées ; ils démarrent le workflow.",
@@ -595,6 +672,22 @@
     "viewDetails": "Voir le détail (panneau)",
     "openFullPage": "Ouvrir la page détail"
   },
+  "inboxPage": {
+    "title": "Boîte d'approbations",
+    "subtitle": "Décisions humaines en attente d'action.",
+    "refresh": "Actualiser",
+    "empty": "Aucune approbation en attente.",
+    "emptyTitle": "Aucune décision humaine en attente",
+    "emptyBody": "Quand un workflow se met en pause sur un nœud d'approbation, les demandes apparaissent ici. Créez ou ouvrez un workflow qui nécessite une revue humaine pour en voir.",
+    "emptyAction": "Ouvrir les workflows",
+    "metaLine": "Approbation #{id} · nœud {nodeId}",
+    "executionMeta": "Exécution #{executionId} · {createdAt}",
+    "statusPending": "en attente",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "decideApproved": "Approbation #{id} approuvée.",
+    "decideRejected": "Approbation #{id} rejetée."
+  },
   "credentialsPage": {
     "title": "Identifiants",
     "subtitle": "Secrets chiffrés utilisés par vos connecteurs (AES-256-GCM au repos, masqués dans les journaux).",
@@ -668,7 +761,13 @@
       "noteHelp": "Stockée au niveau du nœud dans le JSON du workflow (`notes`). Visible par tous ceux qui ouvrent ce nœud — ne mettez ni identifiants ni données client.",
       "testInputLabel": "Entrée test (JSON)",
       "testNodeButton": "Tester ce nœud seul",
-      "testSimulatedNote": "Utilisez Simulate sur le canvas pour une exécution complète."
+      "testHonestyTitle": "Simulation locale — pas une exécution réelle",
+      "testHonestyBody": "Cet onglet Test ne fait qu'écho du JSON dans le navigateur. Il n'appelle pas les connecteurs, n'écrit pas dans Dolibarr et n'enqueue pas d'exécution réelle. Utilisez Simuler sur le canvas pour un dry-run, ou Exécuter pour un run live.",
+      "testEmptyTitle": "Cet onglet n'exécute pas le workflow",
+      "testEmptyBody": "Utilisez Simuler dans la barre d'outils du canvas pour un dry-run complet et une timeline lisible. Le formulaire ci-dessous ne fait qu'écho du JSON pour un contrôle local — ce n'est pas un substitut à Simuler.",
+      "testSimulatedNote": "Utilisez Simuler dans la barre d'outils du canvas pour un dry-run complet avec une timeline lisible.",
+      "testHumanSummary": "Écho local pour « {label} » ({type}). Préférez Simuler sur le canvas pour un vrai dry-run.",
+      "testRawJson": "JSON brut (optionnel)"
     }
   },
   "testDataModal": {
@@ -742,7 +841,8 @@
       "license": {
         "title": "Licence invalide ou expirée",
         "hint": "Vérifiez la licence du pack sous Admin → Knot → Extensions.",
-        "hintActivate": "Activez ou renouvelez la licence de l'extension pour exécuter ce nœud."
+        "hintActivate": "Activez ou renouvelez la licence Pro Pack pour simuler ou exécuter ce nœud.",
+        "hintSimulate": "La simulation est bloquée sans licence Pro Pack valide. Activez la licence, puis réessayez."
       },
       "auth": {
         "title": "Authentification refusée",
@@ -969,7 +1069,7 @@
     "packDefaultDescription": "Add-on Knot.",
     "lockedCtaRenew": "Renouveler la licence",
     "lockedCtaBuyEnterprise": "Acheter Enterprise",
-    "lockedCtaBuyProPack": "Acheter Pro Pack",
+    "lockedCtaBuyProPack": "Programme beta sur knot.tools",
     "lockedCtaActivate": "Activer la licence",
     "packStatusNotInstalled": "Non installé",
     "packStatusLicenseActive": "Actif (licence valide)",
@@ -1256,6 +1356,12 @@
     "execSuccess": "{n} succès",
     "execError": "{n} erreurs",
     "introspectionRefresh": "Rafraîchis le cache depuis setup → introspection.",
+    "severityError": "erreur",
+    "severityWarning": "avertissement",
+    "uninstallTitle": "Désactiver ou retirer Knot",
+    "uninstallBody": "Pour arrêter Knot sans supprimer les données, désactivez le module dans Modules / Applications Dolibarr. La désactivation ne purge ni les workflows ni les identifiants. Les étapes de nettoyage complet (DROP SQL, documents, constantes) sont documentées — il n'y a pas de bouton de purge dans cette interface.",
+    "disableModuleLink": "Ouvrir Modules / Applications",
+    "uninstallDocsLink": "Lire la doc de désinstallation",
     "check": {
       "dolibarr": "Dolibarr",
       "php": "PHP",
@@ -1281,6 +1387,7 @@
     "subtitleCounts": "{count} workflows — {active} actifs · {draft} brouillons",
     "fromTemplate": "Depuis un modèle",
     "exportZip": "Exporter ZIP",
+    "selectAll": "Tout sélectionner",
     "newWorkflow": "Nouveau workflow",
     "searchPlaceholder": "Rechercher des workflows…",
     "allStatuses": "Tous les statuts",
@@ -1302,6 +1409,8 @@
     "cloneTitle": "Cloner ce workflow",
     "emptyTitle": "Pas encore de workflow — créons-en un ensemble.",
     "emptyBody": "Démarre depuis un template Dolibarr courant (relance facture, devis → facture, backup quotidien…) ou crée un workflow vierge en quelques secondes.",
+    "emptyStarterCta": "Importer les starters",
+    "emptyStarterBusy": "Import des starters…",
     "blankWorkflow": "Workflow vierge",
     "thRef": "Réf.",
     "thLabel": "Libellé",
@@ -1322,7 +1431,9 @@
     "folderNewPlaceholder": "Nouveau dossier…",
     "folderCreate": "Créer le dossier",
     "folderAssign": "Dossier",
-    "folderNone": "Aucun"
+    "folderNone": "Aucun",
+    "starterHintTitle": "Importez ce template starter",
+    "starterHintBody": "Utilisez Importer et sélectionnez {file} depuis le dossier du module Knot sur le serveur (ou téléchargez-le depuis le dépôt). Puis éditeur → Simuler → Exécuter."
   },
   "variablesPage": {
     "subtitle": "Globales ou liées à un workflow. Utilisez l'espace de noms $vars dans les expressions.",
@@ -1417,7 +1528,10 @@
     "unknownType": "inconnu",
     "resultSuccess": "Succès",
     "resultError": "Erreur",
-    "nodeTiming": "{type} · {ms} ms"
+    "nodeTiming": "{type} · {ms} ms",
+    "licenseBlockedHint": "Un ou plusieurs nœuds Pro Pack n'ont pas pu être simulés sans licence valide. Activez Pro Pack, puis relancez Simuler.",
+    "licenseBlockedCta": "Activer Pro Pack",
+    "licenseBlockedNode": "Échec sur « {label} » — licence Pro Pack requise"
   },
   "bookPage": {
     "title": "Carnet des workflows",
@@ -1468,8 +1582,8 @@
     "mdSectionNativeOverlaps": "## Native Dolibarr overlaps"
   },
   "assistantPage": {
-    "title": "Assistant workflow",
-    "subtitle": "Décrivez votre besoin, générez un prompt sur mesure, collez-le dans un chatbot, puis importez le JSON.",
+    "title": "Assistant workflow (prompt + réparation)",
+    "subtitle": "Ce n’est pas un agent IA intégré : Knot génère un prompt pour un chatbot externe, puis vous importez le JSON. Meilleur chemin : copier un prompt de correction, coller le JSON, importer. La génération from scratch est optionnelle — la boucle de réparation bat le canvas vide.",
     "step0Title": "0. Décrivez votre besoin",
     "step0Optional": "Optionnel — sera intégré au prompt",
     "step0Placeholder": "Exemple : lorsqu'une facture Dolibarr est validée et que son total dépasse 1000 EUR, envoyer au client un message WhatsApp avec le lien de paiement Stripe et créer une tâche de relance pour le commercial.",
@@ -1507,7 +1621,11 @@
     "lintIssuesTitle": "Avertissements après import",
     "copyFixForChatbot": "Copier le correctif pour le chatbot",
     "copyFixDone": "Message de correctif copié.",
-    "msgImportSuccessWithWarnings": "Workflow #{id} importé — {count} avertissement(s) de lint."
+    "copyFixIncrementalDone": "Correctif incrémental copié (findings restants uniquement).",
+    "msgImportSuccessWithWarnings": "Workflow #{id} importé — {count} avertissement(s) de lint.",
+    "msgImportSuccessRepaired": "Workflow #{id} importé — {count} auto-réparation(s) appliquée(s).",
+    "msgImportSuccessWithRepairs": "Workflow #{id} importé — {repairs} auto-réparation(s) appliquée(s), {warnings} avertissement(s).",
+    "autoRepairsTitle": "Réparations automatiques appliquées avant import"
   },
   "webhookPanel": {
     "title": "Webhook",
@@ -1520,6 +1638,7 @@
     "loadFailed": "Échec du chargement du webhook.",
     "provisionFailed": "Échec du provisionnement du webhook.",
     "rotateFailed": "Échec de la régénération du secret.",
+    "saveFirst": "Enregistrez le workflow une fois pour provisionner une URL de webhook.",
     "none": "Aucun webhook provisionné pour ce workflow.",
     "provision": "Provisionner un webhook",
     "publicUrl": "URL publique",
@@ -1541,7 +1660,9 @@
   },
   "dolibarrEventPanel": {
     "title": "Événements Dolibarr",
-    "hint": "Ces codes correspondent aux événements du module workflows Dolibarr (<code>BILL_*</code>, …). Le connecteur <code>dolibarr.object</code> expose séparément fetch / create / update / delete… (voir inspecteur objet)."
+    "hint": "Ces codes correspondent aux événements du module workflows Dolibarr (<code>BILL_*</code>, …). Le connecteur <code>dolibarr.object</code> expose séparément fetch / create / update / delete… (voir inspecteur objet).",
+    "selectLabel": "Écouter ces événements Dolibarr",
+    "selectedCount": "{count} événement(s) sélectionné(s)"
   },
   "dolibarrPicker": {
     "searchIn": "Rechercher dans {slug}…",
@@ -2279,8 +2400,8 @@
     },
     "notification": {
       "alert": {
-        "label": "Envoyer une alerte (audit)",
-        "description": "Écrit une entrée dans le journal d'audit Knot (Core). Pour un e-mail sortant, utilisez Envoyer un e-mail (action.email, gratuit dans Core). Le fan-out Pro Pack ajoute Slack, Discord, webhooks et alertes multi-canal.",
+        "label": "Entrée d’audit (n’envoie rien)",
+        "description": "Écrit uniquement dans le journal d’audit Knot — pas d’e-mail, Slack ni SMS. Pour un envoi réel : Envoyer un e-mail (action.email, gratuit Core) ou fan-out Pro Pack.",
         "fields": {
           "title": {
             "title": "Titre de l’alerte",
@@ -2328,6 +2449,71 @@
             "description": "Non requis pour envoyer un message ; conservé pour usage futur."
           }
         }
+      }
+    }
+  },
+  "starJourney": {
+    "title": "Commencez ici — trois parcours PME",
+    "subtitle": "Importez un starter depuis examples/starter/, ouvrez l’éditeur, Simulez, puis Exécutez. Gardez le cron Dolibarr actif (Diagnostic).",
+    "overdueTitle": "Relance facture impayée",
+    "overdueBody": "Cron quotidien : factures impayées → e-mail de relance. Premier gain classique pour la finance.",
+    "quoteTitle": "Devis accepté → facture",
+    "quoteBody": "À l’acceptation d’une propale, crée la facture. Événements Dolibarr + actions spécialisées.",
+    "welcomeTitle": "Bienvenue nouveau client",
+    "welcomeBody": "Création d’un tiers → e-mail de bienvenue. Démo onboarding rapide.",
+    "cta": "Ouvrir les workflows pour importer",
+    "footer": "Avant d’activer les planifications, vérifiez le cron dans",
+    "doctorLink": "Diagnostic"
+  },
+  "cronBanner": {
+    "title": "Run asynchrone : worker cron Knot requis",
+    "notRegistered": "KnotCronWorker n’est pas enregistré. Réactivez le module Knot ou vérifiez les jobs planifiés Dolibarr.",
+    "disabled": "KnotCronWorker est désactivé. Activez-le sous Accueil › Outils d’admin › Jobs planifiés, puis ouvrez le Diagnostic.",
+    "neverRan": "KnotCronWorker est actif mais n’a jamais tourné. Lancez le cron Dolibarr ou attendez le prochain tick.",
+    "ok": "Worker cron OK — dernier passage {lastRun}",
+    "openDoctor": "Ouvrir le diagnostic"
+  },
+  "suiteHome": {
+    "eyebrow": "Suite",
+    "title": "Knot Tools — votre système d’exploitation Dolibarr",
+    "titleHighlight": "Knot Tools",
+    "lead": "Une coquille pour les workflows visuels, les upgrades guidés et les connecteurs premium — 100 % self-hosted.",
+    "coreVersion": "Core {version}",
+    "ctaCore": "Ouvrir Knot Core",
+    "ctaHealth": "Santé de la suite",
+    "nextHeading": "Prochaines étapes",
+    "nextWorkflows": "Ouvrir les workflows",
+    "nextInstallPro": "Installer le Pro Pack",
+    "nextOpenMigration": "Ouvrir Migration",
+    "productsHeading": "Produits",
+    "productsLead": "Choisissez un produit pour continuer. Configuration, santé et mises à jour restent au niveau suite.",
+    "utilityNav": "Raccourcis suite",
+    "open": "Ouvrir",
+    "links": {
+      "health": "Santé",
+      "updates": "Mises à jour",
+      "coreDashboard": "Tableau de bord Core"
+    },
+    "products": {
+      "core": {
+        "title": "Knot Core",
+        "lead": "Workflows visuels, connecteurs et exécutions dans Dolibarr.",
+        "cta": "Ouvrir Core"
+      },
+      "migration": {
+        "title": "Knot Migration",
+        "lead": "Upgrades Dolibarr guidés — découverte, planning, bascule.",
+        "cta": "Ouvrir Migration"
+      },
+      "pro": {
+        "title": "Knot Pro Pack",
+        "lead": "Connecteurs et packs d’automatisation premium sur Core.",
+        "cta": "Ouvrir Pro Pack"
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "lead": "Parcourir packs, templates et produits de l’écosystème.",
+        "cta": "Parcourir le marketplace"
       }
     }
   }

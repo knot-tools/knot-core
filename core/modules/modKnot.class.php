@@ -27,7 +27,7 @@ class modKnot extends DolibarrModules
         $this->name = preg_replace('/^mod/i', '', get_class($this));
         $this->description = 'KnotDesc';
         $this->descriptionlong = 'KnotDescLong';
-        $this->version = '2.13.12';
+        $this->version = '2.13.14';
         $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
         // Dolibarr resolves picto "basename@knot" to custom/knot/img/basename.png (see dev docs).
         $this->picto = 'knot@knot';
@@ -97,7 +97,7 @@ class modKnot extends DolibarrModules
                 'comment' => 'Process queued Knot workflow executions',
                 'frequency' => 1,
                 'unitfrequency' => 60,
-                'status' => 0,
+                'status' => 1,
                 'test' => 'isModEnabled("knot") && getDolGlobalString("KNOT_ENGINE_ENABLED")',
             ],
             [
@@ -110,7 +110,7 @@ class modKnot extends DolibarrModules
                 'comment' => 'Purge old execution / log / audit rows (RGPD retention)',
                 'frequency' => 6,
                 'unitfrequency' => 3600,
-                'status' => 0,
+                'status' => 1,
                 'test' => 'isModEnabled("knot")',
             ],
             [
@@ -123,7 +123,7 @@ class modKnot extends DolibarrModules
                 'comment' => 'Detect stale running executions and recompute health metrics',
                 'frequency' => 5,
                 'unitfrequency' => 60,
-                'status' => 0,
+                'status' => 1,
                 'test' => 'isModEnabled("knot")',
             ],
         ];
@@ -271,7 +271,13 @@ class modKnot extends DolibarrModules
      */
     public function init($options = '')
     {
-        $sql = [];
+        // Force-enable Knot cron jobs on install/upgrade. Descriptor status=1
+        // only applies to newly inserted rows; existing installs may still have
+        // status=0 from older descriptors (Run queue never drained).
+        $sql = [
+            'UPDATE ' . MAIN_DB_PREFIX . "cronjob SET status = 1 WHERE label IN ("
+                . "'KnotCronWorker','KnotRetentionWorker','KnotHealthWorker')",
+        ];
         $result = $this->_load_tables('/knot/sql/');
 
         return $this->_init($sql, $options) && $result >= 0 ? 1 : -1;

@@ -1,0 +1,78 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-07-08T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "09 — Webhook CRM Sync",
+    "description": "Receives external webhook payloads (e.g. from a web form or external CRM), extracts contact data, and creates or updates a third-party in Dolibarr. Demonstrates webhook trigger + Set + Dolibarr object write.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "STARTER_WEBHOOK_CRM",
+        "label": "09 — Webhook CRM Sync",
+        "tags": ["starter", "webhook", "crm"],
+        "settings": { "timeoutSeconds": 30, "errorPolicy": "stop", "logPayloads": true }
+      },
+      "nodes": [
+        {
+          "id": "trigger_webhook",
+          "type": "trigger.webhook",
+          "label": "Incoming webhook",
+          "subtitle": "External form submission",
+          "position": { "x": 80, "y": 180 },
+          "config": {}
+        },
+        {
+          "id": "extract_data",
+          "type": "logic.set",
+          "label": "Extract contact data",
+          "subtitle": "Map webhook payload",
+          "position": { "x": 380, "y": 180 },
+          "config": {
+            "values": {
+              "company_name": "{{$json.body.company}}",
+              "email": "{{$json.body.email}}",
+              "phone": "{{$json.body.phone}}",
+              "source": "webhook"
+            }
+          }
+        },
+        {
+          "id": "create_thirdparty",
+          "type": "dolibarr.object",
+          "label": "Create third-party",
+          "subtitle": "Upsert in Dolibarr",
+          "position": { "x": 700, "y": 180 },
+          "config": {
+            "objectType": "thirdparty",
+            "action": "create",
+            "fields": {
+              "nom": "{{$nodes.extract_data.json.company_name}}",
+              "email": "{{$nodes.extract_data.json.email}}",
+              "phone": "{{$nodes.extract_data.json.phone}}",
+              "client": 1,
+              "note_private": "Created via {{$workflow.ref}} webhook"
+            }
+          }
+        },
+        {
+          "id": "confirm_alert",
+          "type": "notification.alert",
+          "label": "Confirm sync",
+          "subtitle": "Knot notification",
+          "position": { "x": 1020, "y": 180 },
+          "config": {
+            "level": "success",
+            "title": "CRM Sync",
+            "message": "New third-party created: {{$nodes.extract_data.json.company_name}}"
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_webhook", "target": "extract_data", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e2", "source": "extract_data", "target": "create_thirdparty", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e3", "source": "create_thirdparty", "target": "confirm_alert", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

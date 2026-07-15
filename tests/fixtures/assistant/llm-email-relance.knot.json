@@ -1,0 +1,126 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-07-14T18:00:00Z",
+  "exportedBy": "Knot Assistant",
+  "workflow": {
+    "label": "Assistant LLM — Relance facture (email)",
+    "description": "Generated-style fixture: manual seed of invoice context, optional IF on customer email, then action.email. Uses {{$nodes.*}} after non-trigger nodes (lint-clean).",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "LLM_ASSISTANT_EMAIL_RELANCE",
+        "label": "Assistant LLM — Relance facture (email)",
+        "tags": ["assistant", "llm-fixture", "email", "lint-clean"],
+        "settings": {
+          "timeoutSeconds": 60,
+          "errorPolicy": "stop",
+          "logPayloads": true
+        }
+      },
+      "nodes": [
+        {
+          "id": "trigger_manual",
+          "type": "trigger.manual",
+          "label": "Run manually",
+          "subtitle": "Simulate / dry-run",
+          "position": { "x": 60, "y": 180 },
+          "config": {}
+        },
+        {
+          "id": "set_invoice",
+          "type": "logic.set",
+          "label": "Seed invoice context",
+          "subtitle": "LLM-style demo payload",
+          "position": { "x": 320, "y": 180 },
+          "config": {
+            "values": {
+              "ref": "FA2026-0042",
+              "total_ttc": "1280.50",
+              "due_date": "2026-05-01",
+              "soc_name": "Example Industries",
+              "soc_email": "billing@example.com",
+              "days_overdue": 35
+            }
+          }
+        },
+        {
+          "id": "if_has_email",
+          "type": "logic.if",
+          "label": "Customer email present?",
+          "subtitle": "Skip send when empty",
+          "position": { "x": 580, "y": 180 },
+          "config": {
+            "mode": "all",
+            "conditions": [
+              {
+                "left": "{{$nodes.set_invoice.json.soc_email}}",
+                "operator": "is_not_empty",
+                "right": ""
+              }
+            ]
+          }
+        },
+        {
+          "id": "send_relance",
+          "type": "action.email",
+          "label": "Send payment reminder",
+          "subtitle": "SMTP Dolibarr",
+          "position": { "x": 860, "y": 100 },
+          "config": {
+            "to": "{{$nodes.set_invoice.json.soc_email}}",
+            "subject": "Payment reminder — invoice {{$nodes.set_invoice.json.ref}}",
+            "body": "<p>Hello {{$nodes.set_invoice.json.soc_name}},</p><p>Our invoice <strong>{{$nodes.set_invoice.json.ref}}</strong> ({{$nodes.set_invoice.json.total_ttc}} EUR) was due on {{$nodes.set_invoice.json.due_date}} and is now {{$nodes.set_invoice.json.days_overdue}} days overdue.</p><p>Please arrange payment or contact us.</p><p>Best regards,<br/>Accounts receivable</p>"
+          }
+        },
+        {
+          "id": "skip_no_email",
+          "type": "logic.set",
+          "label": "Skip — no email",
+          "subtitle": "False branch",
+          "position": { "x": 860, "y": 280 },
+          "config": {
+            "values": {
+              "skipped": true,
+              "reason": "missing-soc-email",
+              "invoiceRef": "{{$nodes.set_invoice.json.ref}}"
+            }
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e_trig_set",
+          "source": "trigger_manual",
+          "target": "set_invoice",
+          "sourceHandle": "main",
+          "targetHandle": "main",
+          "type": "knot"
+        },
+        {
+          "id": "e_set_if",
+          "source": "set_invoice",
+          "target": "if_has_email",
+          "sourceHandle": "main",
+          "targetHandle": "main",
+          "type": "knot"
+        },
+        {
+          "id": "e_if_true_email",
+          "source": "if_has_email",
+          "target": "send_relance",
+          "sourceHandle": "true",
+          "targetHandle": "main",
+          "type": "knot"
+        },
+        {
+          "id": "e_if_false_skip",
+          "source": "if_has_email",
+          "target": "skip_no_email",
+          "sourceHandle": "false",
+          "targetHandle": "main",
+          "type": "knot"
+        }
+      ]
+    }
+  }
+}

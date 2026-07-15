@@ -19,6 +19,9 @@ import {
   Folder,
   Trash2,
   History,
+  CheckSquare,
+  Square,
+  Gift,
 } from 'lucide-vue-next';
 import { knotApi, type WorkflowSummary, formatWorkflowImportWarningLine } from '../lib/api';
 import { normalizeWorkflowImport, parseWorkflowImportText, WorkflowImportFormatError } from '../lib/normalizeWorkflowImport';
@@ -28,6 +31,7 @@ import { useToast } from '../composables/useToast';
 import { useConfirm } from '../composables/useConfirm';
 import { useI18n } from 'vue-i18n';
 import MigrationBanner from '../components/licensing/MigrationBanner.vue';
+import KEmptyState from '../components/ui/KEmptyState.vue';
 
 const { t, te } = useI18n();
 
@@ -37,7 +41,22 @@ const confirmDialog = useConfirm();
 const items = ref<WorkflowSummary[]>([]);
 const counts = ref<Record<string, number>>({});
 const loading = ref(false);
+const starterBusy = ref(false);
 const error = ref<string | null>(null);
+
+/** Deep-link from dashboard star journey: ?starter=02-relance-facture-impayee */
+const starterSlug = ref<string | null>(null);
+try {
+  const q = new URLSearchParams(window.location.search);
+  const s = q.get('starter');
+  starterSlug.value = s && /^[a-z0-9][a-z0-9-]{1,80}$/i.test(s) ? s : null;
+} catch {
+  starterSlug.value = null;
+}
+
+const starterFileHint = computed(() =>
+  starterSlug.value ? `examples/starter/${starterSlug.value}.knot.json` : null,
+);
 
 const search = ref('');
 const statusFilter = ref<string>('');
@@ -132,6 +151,32 @@ const filtered = computed(() => {
 const importInput = ref<HTMLInputElement | null>(null);
 const selectedIds = ref<number[]>([]);
 
+function toggleSelectId(id: number) {
+  const idx = selectedIds.value.indexOf(id);
+  if (idx >= 0) {
+    selectedIds.value.splice(idx, 1);
+  } else {
+    selectedIds.value.push(id);
+  }
+}
+
+const allFilteredSelected = computed(() =>
+  filtered.value.length > 0 && filtered.value.every((w) => selectedIds.value.includes(w.id)),
+);
+
+function toggleSelectAll() {
+  if (allFilteredSelected.value) {
+    const ids = new Set(filtered.value.map((w) => w.id));
+    selectedIds.value = selectedIds.value.filter((id) => !ids.has(id));
+  } else {
+    const current = new Set(selectedIds.value);
+    for (const w of filtered.value) {
+      current.add(w.id);
+    }
+    selectedIds.value = [...current];
+  }
+}
+
 function importJsonClick() {
   importInput.value?.click();
 }
@@ -185,6 +230,10 @@ function exportSelectedBulk() {
   if (selectedIds.value.length === 0) return;
   const ids = selectedIds.value.join(',');
   window.location.href = `${baseUrl.value.replace(/\?.*$/, '')}/custom/knot/api/workflows.php?action=export_bulk&ids=${ids}`;
+}
+
+function goMarketplaceTemplates() {
+  window.location.href = `${baseUrl.value}?mode=marketplace&tab=templates`;
 }
 
 async function deleteWorkflow(wf: WorkflowSummary) {
@@ -251,6 +300,24 @@ async function createBlank() {
   } catch (err) {
     error.value = err instanceof Error ? err.message : t('workflowsPage.createFailed');
     loading.value = false;
+  }
+}
+
+async function importStarterTemplates() {
+  if (starterBusy.value) return;
+  starterBusy.value = true;
+  error.value = null;
+  try {
+    const result = await knotApi.importStarters();
+    const count = result.imported?.length ?? 0;
+    toast.success(t('marketplace.startersImported', { count }));
+    await load();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : t('workflowsPage.createFailed');
+    error.value = msg;
+    toast.error(msg);
+  } finally {
+    starterBusy.value = false;
   }
 }
 
@@ -378,6 +445,18 @@ onMounted(async () => {
 
     <MigrationBanner global />
 
+    <aside
+      v-if="starterFileHint"
+      class="k-rounded-knot-md k-border k-border-knot-primary/30 k-bg-knot-primary-soft k-text-knot-primary k-px-4 k-py-3 k-text-sm"
+      data-testid="starter-import-hint"
+      role="status"
+    >
+      <p class="k-font-semibold">{{ t('workflowsPage.starterHintTitle') }}</p>
+      <p class="k-text-xs k-mt-1 k-opacity-90">
+        {{ t('workflowsPage.starterHintBody', { file: starterFileHint }) }}
+      </p>
+    </aside>
+
     <div class="k-flex k-items-center k-gap-3">
       <div class="k-relative k-flex-1 k-max-w-md">
         <Search :size="14" class="k-absolute k-left-3 k-top-1/2 k--translate-y-1/2 k-text-knot-text-soft" />
@@ -463,6 +542,17 @@ onMounted(async () => {
       <table class="k-w-full k-text-sm knot-workflows-table" data-knot-test="workflows-table">
         <thead class="k-bg-knot-surface-soft k-text-knot-text-soft k-text-[11px] k-uppercase k-tracking-wider">
           <tr>
+            <th class="k-px-3 k-py-3 k-w-8">
+              <button
+                type="button"
+                class="k-flex k-items-center k-justify-center k-text-knot-text-muted hover:k-text-knot-primary"
+                :title="t('workflowsPage.selectAll')"
+                @click="toggleSelectAll"
+              >
+                <CheckSquare v-if="allFilteredSelected && filtered.length > 0" :size="15" class="k-text-knot-primary" />
+                <Square v-else :size="15" />
+              </button>
+            </th>
             <th class="k-text-left k-px-3 k-py-3 k-font-semibold k-whitespace-nowrap">{{ t('workflowsPage.thRef') }}</th>
             <th class="k-text-left k-px-3 k-py-3 k-font-semibold">{{ t('workflowsPage.thLabel') }}</th>
             <th class="k-text-left k-px-3 k-py-3 k-font-semibold k-whitespace-nowrap">{{ t('workflowsPage.thStatus') }}</th>
@@ -473,33 +563,22 @@ onMounted(async () => {
         </thead>
         <tbody>
           <tr v-if="!filtered.length && !loading">
-            <td colspan="6" class="k-px-4 k-py-10">
-              <div class="k-flex k-flex-col k-items-center k-text-center k-gap-3">
-                <div class="k-w-14 k-h-14 k-rounded-knot-pill k-bg-knot-hero k-text-white k-flex k-items-center k-justify-center k-shadow-[0_8px_24px_rgba(99,102,241,0.35)]">
-                  <Workflow :size="22" />
-                </div>
-                <div class="k-text-base k-font-semibold k-text-knot-text">
-                  {{ t('workflowsPage.emptyTitle') }}
-                </div>
-                <p class="k-text-sm k-text-knot-text-muted k-max-w-md">
-                  {{ t('workflowsPage.emptyBody') }}
-                </p>
-                <div class="k-flex k-flex-wrap k-items-center k-gap-2 k-mt-1">
-                  <a
-                    v-if="marketplaceChromeEnabled"
-                    :href="`${baseUrl}?mode=marketplace&tab=templates`"
-                    class="k-inline-flex k-items-center k-gap-2 k-px-4 k-py-2 k-rounded-knot-pill k-bg-knot-hero k-text-white k-text-sm k-font-semibold k-shadow-[0_8px_18px_rgba(99,102,241,0.35)] hover:k-shadow-[0_12px_24px_rgba(99,102,241,0.5)] k-transition-shadow k-no-underline"
-                  >
-                    <Library :size="14" /> {{ t('workflowsPage.fromTemplate') }}
-                  </a>
-                  <button
-                    @click="createBlank"
-                    class="k-inline-flex k-items-center k-gap-2 k-px-4 k-py-2 k-rounded-knot-pill k-bg-knot-surface k-border k-border-knot-border-strong k-text-knot-text k-text-sm k-font-semibold hover:k-border-knot-primary hover:k-text-knot-primary k-transition-colors"
-                  >
-                    <PlusCircle :size="14" /> {{ t('workflowsPage.blankWorkflow') }}
-                  </button>
-                </div>
-              </div>
+            <td colspan="7" class="k-px-4 k-py-6">
+              <KEmptyState
+                :title="t('workflowsPage.emptyTitle')"
+                :body="t('workflowsPage.emptyBody')"
+                :action-label="starterBusy ? t('workflowsPage.emptyStarterBusy') : t('workflowsPage.emptyStarterCta')"
+                :secondary-label="t('workflowsPage.blankWorkflow')"
+                :tertiary-label="marketplaceChromeEnabled ? t('workflowsPage.fromTemplate') : undefined"
+                @action="importStarterTemplates"
+                @secondary="createBlank"
+                @tertiary="goMarketplaceTemplates"
+              >
+                <template #icon>
+                  <Gift v-if="!starterBusy" :size="22" />
+                  <Loader2 v-else :size="22" class="k-animate-spin" />
+                </template>
+              </KEmptyState>
             </td>
           </tr>
           <tr
@@ -507,6 +586,16 @@ onMounted(async () => {
             :key="wf.id"
             class="k-border-t k-border-knot-border hover:k-bg-knot-surface-soft k-transition-colors"
           >
+            <td class="k-px-3 k-py-2.5 k-align-top k-w-8">
+              <button
+                type="button"
+                class="k-flex k-items-center k-justify-center k-text-knot-text-muted hover:k-text-knot-primary"
+                @click="toggleSelectId(wf.id)"
+              >
+                <CheckSquare v-if="selectedIds.includes(wf.id)" :size="15" class="k-text-knot-primary" />
+                <Square v-else :size="15" />
+              </button>
+            </td>
             <td class="k-px-3 k-py-2.5 k-font-mono k-text-[11px] k-text-knot-text-muted k-whitespace-nowrap k-align-top">{{ wf.ref }}</td>
             <td class="k-px-3 k-py-2.5 k-align-top">
               <div class="k-flex k-items-center k-gap-1.5 k-min-w-0">

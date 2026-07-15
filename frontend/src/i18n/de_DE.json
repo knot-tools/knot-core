@@ -17,7 +17,11 @@
     "inbox": "Posteingang",
     "assistant": "Assistent",
     "book": "Book",
-    "marketplace": "Marketplace"
+    "marketplace": "Marketplace",
+    "home": "Start",
+    "suiteHealth": "Suite-Gesundheit",
+    "updates": "Updates",
+    "setup": "Konfiguration"
   },
   "actions": {
     "save": "Speichern",
@@ -38,7 +42,8 @@
     "create": "Erstellen",
     "update": "Aktualisieren",
     "search": "Suchen",
-    "loading": "Wird geladen…"
+    "loading": "Wird geladen…",
+    "retry": "Erneut versuchen"
   },
   "activation": {
     "titleCritical": "Dieser Workflow führt kritische Aktionen aus",
@@ -112,7 +117,7 @@
     "clearCanvas": "Canvas leeren",
     "starterHintDismiss": "Ausblenden",
     "paletteSearchPlaceholder": "Knoten suchen…",
-    "paletteRequiresLicense": "{connector} erfordert eine lizenzierte Erweiterung (Pro Pack).",
+    "paletteRequiresLicense": "{connector} erfordert eine lizenzierte Erweiterung (Pro Pack). Klicken zum Aktivieren.",
     "sidebarBrandSubtitle": "Workflow-Editor",
     "dragPaletteHint": "Knoten auf das Canvas ziehen",
     "loadingWorkflow": "Workflow wird geladen…",
@@ -132,6 +137,13 @@
     "saveFallback": "Speichern fehlgeschlagen",
     "simulateBeforeSave": "Speichern Sie den Workflow vor der Simulation.",
     "simulateFailedFallback": "Simulation fehlgeschlagen.",
+    "simulateTimedOut": "Simulation abgelaufen (~25 s). Dieser Workflow benötigt asynchrone Ausführung.",
+    "retryAsRun": "Als Run wiederholen",
+    "retryAsRunHint": "Stellt den Workflow zur Hintergrundausführung per Cron in die Warteschlange.",
+    "runQueuedCronDisabled": "Ausführung in der Warteschlange, aber der Knot-Cron-Worker ist deaktiviert. Aktivieren Sie ihn unter Start → Tools → Geplante Aufgaben.",
+    "runQueuedCronGlobalOff": "Ausführung in der Warteschlange, aber Dolibarr-Cronjobs sind global deaktiviert (CRON_DISABLE_JOBS).",
+    "runQueuedCronNever": "Ausführung in der Warteschlange. Der Knot-Cron-Worker ist noch nie gelaufen — prüfen Sie die geplanten Aufgaben.",
+    "runQueuedCronStale": "Ausführung in der Warteschlange. Der Knot-Cron-Worker läuft seit {minutes} Min. nicht — prüfen Sie die geplanten Aufgaben.",
     "runBeforeSave": "Speichern Sie den Workflow, bevor Sie ihn ausführen.",
     "runInactive": "Der Workflow muss aktiv sein, um ausgeführt zu werden.",
     "runFallback": "Ausführung fehlgeschlagen",
@@ -193,8 +205,10 @@
     "starterManualSubtitle": "Aus dem Editor ausgelöst",
     "starterSetLabel": "Bereiten Sie die Nutzlast vor",
     "starterSetSubtitle": "Nachricht, Empfänger",
+    "starterGreetingValue": "Hallo von Knot",
     "starterEmailLabel": "E-Mail senden",
     "starterEmailSubtitle": "SMTP via Dolibarr",
+    "starterEmailSubject": "Knot-Demo",
     "problemsTitle": "Probleme",
     "paletteSections": {
       "trigger": "Trigger",
@@ -217,7 +231,22 @@
       "iteration": "Iteration",
       "done": "Fertig",
       "error": "Fehler"
-    }
+    },
+    "editJson": "JSON bearbeiten",
+    "editJsonTitle": "Workflow-JSON bearbeiten",
+    "editJsonLead": "Fügen Sie einen korrigierten Workflow ein (z. B. von Ihrem Chatbot) oder bearbeiten Sie das JSON direkt. Das Anwenden ersetzt die Arbeitsfläche ohne zu speichern.",
+    "editJsonApply": "Auf Arbeitsfläche anwenden",
+    "editJsonCancel": "Abbrechen",
+    "editJsonApplied": "Workflow-JSON angewendet — prüfen und speichern.",
+    "editJsonAppliedWithRepairs": "Workflow-JSON angewendet — {count} Auto-Reparatur(en). Prüfen und speichern.",
+    "editJsonInvalid": "Dieses JSON ist kein gültiger Knot-Workflow.",
+    "editJsonInvalidJson": "Ungültiges JSON — Syntax prüfen (ein einzelner json-Block wird erwartet).",
+    "editJsonLegacy": "Altes trigger/steps-Format erkannt — nutzen Sie den expliziten Legacy-Import in Workflows.",
+    "problemsCopyFix": "Korrektur für Chatbot kopieren",
+    "problemsCopyFixTitle": "Aktuelle Probleme + Workflow-JSON als Chatbot-Korrektur-Prompt kopieren",
+    "problemsCopyFixDone": "Korrektur-Prompt kopiert — fügen Sie ihn in Ihren Chatbot ein.",
+    "paletteRequiresLicenseShort": "Pro Pack — klicken zum Aktivieren",
+    "paletteProPackLabel": "Knot Pro Pack"
   },
   "search": {
     "placeholder": "Workflow suchen…",
@@ -298,6 +327,31 @@
       "Sa"
     ]
   },
+  "suiteHealth": {
+    "title": "Suite-Zustand",
+    "cronTitle": "Planer (Cron)",
+    "cronRegistered": "Registriert",
+    "cronEnabled": "Aktiviert",
+    "cronLastRun": "Letzter Lauf",
+    "yes": "Ja",
+    "no": "Nein",
+    "jobsTitle": "Ausführungen",
+    "jobsSuccess": "Erfolgreich",
+    "jobsFailed": "Fehlgeschlagen",
+    "jobsQueued": "Warteschlange",
+    "jobsRunning": "Laufend",
+    "licenseValid": "Aktiv",
+    "licenseExpired": "Abgelaufen",
+    "licenseInvalid": "Ungültig",
+    "licenseUnknown": "Unbekannt",
+    "installedVersion": "Installierte Version",
+    "publishedVersion": "Veröffentlichte Version",
+    "publishedShort": "pub {version}",
+    "updateAvailable": "Update",
+    "pageTitle": "Suite-Gesundheit",
+    "pageLead": "Installierte Produkte, Lizenzen, Scheduler und Live-Ausführungszähler für Knot Tools.",
+    "openUpdates": "Updates öffnen"
+  },
   "updatesBadge": {
     "upToDate": "Alle installierten Produkte sind aktuell.",
     "oneUpdate": "Aktualisieren available: {slug}",
@@ -315,8 +369,8 @@
     "dismissAria": "Me rappeler in 7 jours"
   },
   "updatesPage": {
-    "heroTitle": "Installierte Produkte",
-    "heroSubtitle": "Release-Metadaten von Knot Tools — beim Anwenden eines Updates werden Knot-Core-Dateien (custom/knot) oder registrierte Erweiterungsverzeichnisse ersetzt.",
+    "heroTitle": "Knot Tools aktuell halten",
+    "heroSubtitle": "Ein Klick installiert ein signiertes Release. Sicherheit, Fixes und Abstimmung von Core, Pro Pack und Migration.",
     "productNames": {
       "knot": "Knot Core",
       "knotProPack": "Knot Pro Pack",
@@ -329,12 +383,12 @@
     "colLatest": "Dispo.",
     "colChannel": "Canal",
     "colStatus": "Status",
-    "noUpdates": "Keine Updates erkannt.",
+    "noUpdates": "Keine Knot-Produkte für Update-Checks auf dieser Instanz erkannt.",
     "apply": "Anwenden",
     "buy": "Kaufen / reNeueer",
     "marketplaceUnavailable": "Öffnen Sie marketplace für Kauflinks.",
     "confirmTitle": "Dieses Update anwenden ?",
-    "confirmBody": "Dateien von {slug} werden auf diesem Server ersetzt.",
+    "confirmBody": "{product} wird auf diesem Server auf {version} aktualisiert. Die vorherigen Dateien werden nach Signaturprüfung ersetzt.",
     "applySuccess": "Aktualisieren applied ({slug}).",
     "migrationsApplied": "{count} Datenbankmigration(en) angewendet.",
     "applyError": "Anwendung fehlgeschlagen.",
@@ -342,7 +396,30 @@
     "migrationFailedCritical": "Datenbankmigration fehlgeschlagen — Datei-Rollback ebenfalls fehlgeschlagen.",
     "signatureInvalidTitle": "Release-Signatur ungültig",
     "signatureInvalidBody": "Das Update-Paket hat die Ed25519-Prüfung nicht bestanden. Versuchen Sie es nicht erneut, bis ein signiertes Artefakt von Knot Tools verfügbar ist.",
-    "loadMarketplaceHint": "Kauf-URL kann nicht aufgelöst werden – öffnen Sie marketplace manuell."
+    "loadMarketplaceHint": "Kauf-URL kann nicht aufgelöst werden – öffnen Sie marketplace manuell.",
+    "activationMissingTitle": "Aktivieren Sie zuerst die Erweiterung",
+    "activationMissingBody": "Das Auto-Update benötigt den gespeicherten Aktivierungscode. Öffnen Sie Setup → Knot → Lizenz, aktivieren Sie diese Erweiterung einmal und versuchen Sie es erneut.",
+    "downloadDeniedTitle": "Download-Token abgelehnt",
+    "downloadDeniedBody": "Der Lizenzserver hat die Ausstellung eines Download-Tokens für diese Instanz abgelehnt (Lizenz abgelaufen, falsche Instanz oder Beta-Zugang beendet).",
+    "backendUnreachableTitle": "Lizenzserver nicht erreichbar",
+    "backendUnreachableBody": "license.knot.tools ist von diesem Server aus nicht erreichbar. Prüfen Sie ausgehendes HTTPS/Firewall und versuchen Sie es erneut — manuelle Fallback-Anweisungen stehen in den Fehlerdetails.",
+    "licenseInvalidTitle": "Erweiterungslizenz ungültig",
+    "licenseInvalidBody": "Die Lizenz dieser Erweiterung ist abgelaufen, widerrufen oder nicht erkannt. Erneuern oder reaktivieren Sie unter Setup → Knot → Lizenz.",
+    "versionMismatchTitle": "Versionskonflikt",
+    "versionMismatchBody": "Der Lizenzserver hat eine andere Version als die angeforderte aufgelöst. Warten Sie, bis die Zielversion veröffentlicht wird, oder aktualisieren Sie die Update-Liste.",
+    "extensionUnknownTitle": "Erweiterung nicht gefunden",
+    "extensionUnknownBody": "Diese Erweiterung ist auf dieser Instanz nicht installiert oder nicht auffindbar. Installieren Sie sie zuerst über den Marketplace oder manuell.",
+    "heroPill": "Signierte Updates",
+    "trustBanner": "Jedes Paket wird mit Ed25519 geprüft. Bei fehlgeschlagener DB-Migration stellt Knot die vorherigen Dateien nach Möglichkeit wieder her. Vor großen Upgrades sichern.",
+    "statusUpdateAvailable": "Update verfügbar",
+    "statusUpToDate": "Aktuell",
+    "statusCheckFailed": "Prüfung fehlgeschlagen",
+    "pendingSummary": "{count} Update(s) bereit — empfohlen für Sicherheit und Kompatibilität.",
+    "allUpToDateTitle": "Sie sind auf dem neuesten Stand",
+    "allUpToDateBody": "Keine ausstehenden Updates für installierte Knot-Produkte. Nach einer neuen Veröffentlichung erneut prüfen.",
+    "channelLabel": "Kanal · {channel}",
+    "applyDisabled": "Aktuell",
+    "statusAhead": "Neuer als veröffentlicht"
   },
   "observability": {
     "heroPill": "Aggregate · ohne Payload",
@@ -498,7 +575,7 @@
       "tipSecretsMasked": "Alle Geheimnisse werden von SecretMasker in Ausführungsprotokollen verborgen.",
       "coreIncludedCallout": "Included in Knot Core (GPL) — uses Dolibarr SMTP configuration. No Pro Pack licence required.",
       "tipEmailCore": "Configure outbound mail in Dolibarr Setup → Email, then use expressions in to, subject and body. No Knot credential type is required.",
-      "tipAlertVsEmail": "For transactional email (reminders, notifications), use the Send Email connector (action.email) in Core. Pro Pack fan-out adds Slack, Discord, webhooks and formatted alert email in one node.",
+      "tipAlertVsEmail": "Dieser Connector ist nur Audit: er schreibt ins Knot-Audit-Log und sendet nichts. Für echte E-Mail: E-Mail senden (action.email, Core). Für Slack, Discord, Webhooks oder formatierte Alert-E-Mail: Alert-Fan-out (notification.alert_fanout, Pro Pack).",
       "tipCommunicationTemplates": "Vorlagen support expressions like {example} resolved from upstream Knoten output.",
       "tipCodeSandbox": "Der Benutzercode wird in einer gehärteten Sandbox ohne Festplatten- oder Netzwerkzugriff ausgeführt.",
       "tipTriggerNoInputs": "Triggerknoten akzeptieren keine Eingaben; Sie beginnen am workflow.",
@@ -595,6 +672,22 @@
     "viewDetails": "Details anzeigen (Panel)",
     "openFullPage": "Detailseite öffnen"
   },
+  "inboxPage": {
+    "title": "Freigabe-Posteingang",
+    "subtitle": "Entscheidungen mit menschlicher Prüfung, die auf eine Aktion warten.",
+    "refresh": "Aktualisieren",
+    "empty": "Keine ausstehenden Freigaben.",
+    "metaLine": "Freigabe #{id} · Knoten {nodeId}",
+    "executionMeta": "Ausführung #{executionId} · {createdAt}",
+    "statusPending": "ausstehend",
+    "approve": "Genehmigen",
+    "reject": "Ablehnen",
+    "decideApproved": "Freigabe #{id} genehmigt.",
+    "decideRejected": "Freigabe #{id} abgelehnt.",
+    "emptyTitle": "Keine menschliche Entscheidung ausstehend",
+    "emptyBody": "Wenn ein Workflow an einem Freigabeknoten pausiert, erscheinen Anfragen hier. Öffnen Sie einen Workflow mit menschlicher Prüfung, um Einträge zu sehen.",
+    "emptyAction": "Workflows öffnen"
+  },
   "credentialsPage": {
     "title": "Anmeldedaten",
     "subtitle": "Verschlüsselte Geheimnisse, die von Ihren Connectors verwendet werden (AES-256-GCM im Ruhezustand, in Protokollen versteckt).",
@@ -668,7 +761,13 @@
       "noteHelp": "Auf Knotenebene im Workflow-JSON (`notes`) gespeichert. Sichtbar für alle, die diesen Knoten öffnen — keine Anmeldedaten oder Kundendaten eintragen.",
       "testInputLabel": "Eingabe Test (JSON)",
       "testNodeButton": "Testen dieser Knoten seul",
-      "testSimulatedNote": "Use main canvas Simulieren for full execution."
+      "testEmptyTitle": "Dieser Tab führt den Workflow nicht aus",
+      "testEmptyBody": "Nutzen Sie Simulieren in der Canvas-Werkzeugleiste für einen vollständigen Dry-Run und eine lesbare Timeline. Das Formular unten gibt nur JSON lokal wieder — kein Ersatz für Simulieren.",
+      "testSimulatedNote": "Nutzen Sie Simulieren in der Canvas-Werkzeugleiste für einen vollständigen Dry-Run mit lesbarer Timeline.",
+      "testHumanSummary": "Lokales Echo für « {label} » ({type}). Bevorzugen Sie Simulieren auf der Leinwand für einen echten Dry-Run.",
+      "testRawJson": "Rohes JSON (optional)",
+      "testHonestyTitle": "Lokale Simulation — keine Live-Ausführung",
+      "testHonestyBody": "Dieser Test-Tab gibt JSON nur im Browser wieder. Er ruft keine Connectoren auf, schreibt nicht in Dolibarr und stellt keinen echten Lauf in die Warteschlange. Nutzen Sie Simulieren für einen Dry-Run oder Ausführen für einen Live-Lauf."
     }
   },
   "testDataModal": {
@@ -742,7 +841,8 @@
       "license": {
         "title": "Ungültige oder abgelaufene Lizenz",
         "hint": "Überprüfen Sie die Paketlizenz unter Admin → Knot → Erweiterungen.",
-        "hintActivate": "Aktivieren oder erneuern Sie die Lizenz der Erweiterung, um diesen Knoten auszuführen."
+        "hintActivate": "Aktivieren oder erneuern Sie die Pro-Pack-Lizenz, um diesen Knoten zu simulieren oder auszuführen.",
+        "hintSimulate": "Die Simulation ist ohne gültige Pro-Pack-Lizenz blockiert. Aktivieren Sie die Lizenz und versuchen Sie es erneut."
       },
       "auth": {
         "title": "Authentifizierung abgelehnt",
@@ -969,7 +1069,7 @@
     "packDefaultDescription": "Add-on Knot.",
     "lockedCtaRenew": "Lizenz erneuern",
     "lockedCtaBuyEnterprise": "Kaufen Enterprise",
-    "lockedCtaBuyProPack": "Kaufen Pro Pack",
+    "lockedCtaBuyProPack": "Beta-Programm auf knot.tools",
     "lockedCtaActivate": "Aktivieren licence",
     "packStatusNotInstalled": "Nicht installiert",
     "packStatusLicenseActive": "Actif (Lizenz valide)",
@@ -1275,12 +1375,19 @@
       "engine_enabled": "Engine Ausführung",
       "setup_completed": "Einrichtung completed",
       "introspection_cache": "Cache introspection Dolibarr"
-    }
+    },
+    "severityError": "Fehler",
+    "severityWarning": "Warnung",
+    "uninstallTitle": "Knot deaktivieren oder entfernen",
+    "uninstallBody": "Um Knot ohne Datenverlust zu stoppen, deaktivieren Sie das Modul unter Module / Anwendungen. Deaktivieren löscht weder Workflows noch Zugangsdaten. Vollständige Bereinigungsschritte stehen in der Dokumentation — es gibt keine Purge-Schaltfläche in dieser UI.",
+    "disableModuleLink": "Module / Anwendungen öffnen",
+    "uninstallDocsLink": "Deinstallationsdokumentation lesen"
   },
   "workflowsPage": {
     "subtitleCounts": "{count} Workflows — {active} actifs · {draft} Entwurfs",
     "fromTemplate": "Aus Vorlage",
     "exportZip": "ZIP exportieren",
+    "selectAll": "Alle auswählen",
     "newWorkflow": "Neuer Workflow",
     "searchPlaceholder": "Suchen workflows…",
     "allStatuses": "Alle Status",
@@ -1322,7 +1429,11 @@
     "deleteTitle": "Workflow löschen",
     "deleteConfirm": "Workflow \"{label}\" ({ref}) löschen? Diese Aktion ist unwiderruflich.",
     "deleteSuccess": "Workflow \"{label}\" gelöscht.",
-    "deleteFailed": "Workflow konnte nicht gelöscht werden."
+    "deleteFailed": "Workflow konnte nicht gelöscht werden.",
+    "starterHintTitle": "Diesen Starter-Template importieren",
+    "starterHintBody": "Import nutzen und {file} aus dem Knot-Modulordner wählen. Dann Editor → Simulieren → Ausführen.",
+    "emptyStarterCta": "Starter-Templates importieren",
+    "emptyStarterBusy": "Starter werden importiert…"
   },
   "variablesPage": {
     "subtitle": "Global oder mit einem workflow verknüpft. Verwenden Sie den Namespace $vars in Ausdrücken.",
@@ -1417,7 +1528,10 @@
     "unknownType": "inconnu",
     "resultSuccess": "Erfolg",
     "resultError": "Fehler",
-    "nodeTiming": "{type} · {ms} ms"
+    "nodeTiming": "{type} · {ms} ms",
+    "licenseBlockedHint": "Ein oder mehrere Pro-Pack-Knoten konnten ohne gültige Lizenz nicht simuliert werden. Aktivieren Sie Pro Pack und wiederholen Sie die Simulation.",
+    "licenseBlockedCta": "Pro Pack aktivieren",
+    "licenseBlockedNode": "Fehler bei « {label} » — Pro-Pack-Lizenz erforderlich"
   },
   "bookPage": {
     "title": "Workflow-Book",
@@ -1468,8 +1582,8 @@
     "mdSectionNativeOverlaps": "## Native Dolibarr-Überschneidungen"
   },
   "assistantPage": {
-    "title": "Workflow-Assistent",
-    "subtitle": "Beschreiben Sie Ihren Bedarf, generieren Sie einen maßgeschneiderten Prompt, fügen Sie ihn in einen Chatbot ein und importieren Sie das JSON.",
+    "title": "Workflow-Assistent (Prompt + Reparatur)",
+    "subtitle": "Bester Weg: Fix-Prompt für den Chatbot kopieren, korrigiertes JSON einfügen, importieren. Scratch-Generierung ist optional.",
     "step0Title": "0. Beschreiben Sie Ihren Bedarf",
     "step0Optional": "Optional – wird in die Eingabeaufforderung integriert",
     "step0Placeholder": "Beispiel: Wenn eine Rechnung Dolibarr validiert wird und ihr Gesamtbetrag 1000 EUR übersteigt, senden Sie dem Kunden eine WhatsApp-Nachricht mit dem Stripe-Zahlungslink und erstellen Sie eine Folgeaufgabe für den Verkäufer.",
@@ -1507,7 +1621,11 @@
     "lintIssuesTitle": "Warnungen nach Import",
     "copyFixForChatbot": "Korrektur für Chatbot kopieren",
     "copyFixDone": "Korrekturmeldung kopiert.",
-    "msgImportSuccessWithWarnings": "Workflow #{id} importiert — {count} Lint-Warnung(en)."
+    "copyFixIncrementalDone": "Inkrementelle Korrektur kopiert (nur verbleibende Findings).",
+    "msgImportSuccessWithWarnings": "Workflow #{id} importiert — {count} Lint-Warnung(en).",
+    "msgImportSuccessRepaired": "Workflow #{id} importiert — {count} Auto-Reparatur(en) angewendet.",
+    "msgImportSuccessWithRepairs": "Workflow #{id} importiert — {repairs} Auto-Reparatur(en) angewendet, {warnings} Warnung(en).",
+    "autoRepairsTitle": "Automatische Reparaturen vor dem Import"
   },
   "webhookPanel": {
     "title": "Webhook",
@@ -1537,11 +1655,14 @@
     "copyLabelSecret": "Secret",
     "copyLabelCurl": "Kopieren cURL",
     "securityTitle": "Sicherheit.",
-    "securityBody": "Teilen Sie den Token niemals öffentlich. Wenn Sie ein Leck vermuten, generieren Sie das HMAC-Geheimnis neu – alle vorhandenen Integrationen müssen aktualisiert werden."
+    "securityBody": "Teilen Sie den Token niemals öffentlich. Wenn Sie ein Leck vermuten, generieren Sie das HMAC-Geheimnis neu – alle vorhandenen Integrationen müssen aktualisiert werden.",
+    "saveFirst": "Speichern Sie den Workflow einmal, um eine Webhook-URL bereitzustellen."
   },
   "dolibarrEventPanel": {
     "title": "Dolibarr-Ereignisse",
-    "hint": "Diese Codes entsprechen den Ereignissen des Dolibarr-Workflow-Moduls (<code>BILL_*</code>, …). Der Connector <code>dolibarr.object</code> stellt fetch / create / update / delete separat bereit (siehe Objekt-Inspektor)."
+    "hint": "Diese Codes entsprechen den Ereignissen des Dolibarr-Workflow-Moduls (<code>BILL_*</code>, …). Der Connector <code>dolibarr.object</code> stellt fetch / create / update / delete separat bereit (siehe Objekt-Inspektor).",
+    "selectLabel": "Auf diese Dolibarr-Ereignisse hören",
+    "selectedCount": "{count} Ereignis(se) ausgewählt"
   },
   "dolibarrPicker": {
     "searchIn": "Suchen in {slug}…",
@@ -2279,8 +2400,8 @@
     },
     "notification": {
       "alert": {
-        "label": "Alert senden (Audit)",
-        "description": "Schreibt einen Eintrag ins Knot-Audit-Log (Core). Für ausgehende E-Mail: Send Email (action.email, kostenlos in Core). Pro-Pack-Fan-out ergänzt Slack, Discord, Webhooks und Multi-Kanal-Alert-E-Mail.",
+        "label": "Audit-Eintrag (sendet nichts)",
+        "description": "Schreibt nur in das Knot-Audit-Log — keine E-Mail/Slack/SMS. Für echten Versand: E-Mail senden (action.email) oder Pro-Pack-Fan-out.",
         "fields": {
           "title": {
             "title": "Alert-Titel",
@@ -2330,5 +2451,70 @@
         }
       }
     }
+  },
+  "starJourney": {
+    "title": "Hier starten — drei KMU-Workflows",
+    "subtitle": "Starter aus examples/starter/ importieren, Editor öffnen, Simulieren, dann Ausführen. Dolibarr-Cron aktiv lassen (Doctor).",
+    "overdueTitle": "Mahnung offene Rechnung",
+    "overdueBody": "Täglicher Cron findet offene Rechnungen und sendet eine Erinnerung.",
+    "quoteTitle": "Angebot angenommen → Rechnung",
+    "quoteBody": "Bei Angebotsannahme Rechnung erstellen. Dolibarr-Events + Spezialaktionen.",
+    "welcomeTitle": "Willkommen neuer Kunde",
+    "welcomeBody": "Bei Anlage eines Dritten Willkommens-E-Mail senden.",
+    "cta": "Workflows zum Import öffnen",
+    "footer": "Vor Aktivierung von Zeitplänen Cron prüfen in",
+    "doctorLink": "Doctor"
+  },
+  "cronBanner": {
+    "title": "Async Run braucht den Knot-Cron-Worker",
+    "notRegistered": "KnotCronWorker ist nicht registriert. Modul Knot neu aktivieren oder geplante Jobs prüfen.",
+    "disabled": "KnotCronWorker ist deaktiviert. Unter Start › Admin-Tools › Geplante Jobs aktivieren, dann Doctor öffnen.",
+    "neverRan": "KnotCronWorker ist aktiv, lief aber noch nie. Dolibarr-Cron auslösen oder nächsten Tick abwarten.",
+    "ok": "Cron-Worker OK — letzter Lauf {lastRun}",
+    "openDoctor": "Doctor öffnen"
+  },
+  "suiteHome": {
+    "eyebrow": "Suite",
+    "title": "Knot Tools — Ihr Dolibarr-Betriebssystem",
+    "titleHighlight": "Knot Tools",
+    "lead": "Eine Hülle für visuelle Workflows, geführte Upgrades und Premium-Konnektoren — vollständig self-hosted.",
+    "coreVersion": "Core {version}",
+    "ctaCore": "Knot Core öffnen",
+    "ctaHealth": "Suite-Gesundheit",
+    "productsHeading": "Produkte",
+    "productsLead": "Wählen Sie ein Produkt. Konfiguration, Gesundheit und Updates bleiben auf Suite-Ebene.",
+    "utilityNav": "Suite-Kurzbefehle",
+    "open": "Öffnen",
+    "links": {
+      "health": "Gesundheit",
+      "updates": "Updates",
+      "coreDashboard": "Core-Dashboard"
+    },
+    "products": {
+      "core": {
+        "title": "Knot Core",
+        "lead": "Visuelle Workflows, Konnektoren und Ausführungen in Dolibarr.",
+        "cta": "Core öffnen"
+      },
+      "migration": {
+        "title": "Knot Migration",
+        "lead": "Geführte Dolibarr-Upgrades — Discovery, Planung, Cutover.",
+        "cta": "Migration öffnen"
+      },
+      "pro": {
+        "title": "Knot Pro Pack",
+        "lead": "Premium-Konnektoren und Automatisierungspacks auf Core.",
+        "cta": "Pro Pack öffnen"
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "lead": "Packs, Vorlagen und Ökosystemprodukte entdecken.",
+        "cta": "Marketplace öffnen"
+      }
+    },
+    "nextHeading": "Nächste Schritte",
+    "nextWorkflows": "Workflows öffnen",
+    "nextInstallPro": "Pro Pack installieren",
+    "nextOpenMigration": "Migration öffnen"
   }
 }

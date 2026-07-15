@@ -13,11 +13,33 @@ export interface WorkflowLintCounts {
   warningCount: number;
 }
 
+/** Normalize DSL codes so PHP `KNOT_DSL_*` and TS short codes collapse. */
+function lintDedupeKey(issue: ValidationIssue): string {
+  const raw = String(issue.code ?? '');
+  const code = raw.startsWith('KNOT_DSL_')
+    ? raw.slice('KNOT_DSL_'.length).toLowerCase()
+    : raw.toLowerCase();
+  const params = issue.messageParams
+    ? JSON.stringify(issue.messageParams)
+    : '';
+  return `${issue.nodeId ?? ''}|${code}|${issue.messageKey ?? ''}|${params}`;
+}
+
 export function mergeLocalAndRemoteLint(
   remote: ValidationIssue[],
   local: ValidationIssue[],
 ): ValidationIssue[] {
-  return [...remote, ...local];
+  const seen = new Set<string>();
+  const out: ValidationIssue[] = [];
+  for (const issue of [...remote, ...local]) {
+    const key = lintDedupeKey(issue);
+    if (seen.has(key)) {
+      continue;
+    }
+    seen.add(key);
+    out.push(issue);
+  }
+  return out;
 }
 
 export function createWorkflowLinter(debounceMs = 300) {

@@ -695,9 +695,6 @@ onMounted(() => {
               <li v-if="String(selected.metadata.id) === 'notification.alert'">
                 {{ t('connectorsPage.detail.tipAlertVsEmail') }}
               </li>
-              <li v-if="String(selected.metadata.id) === 'logic.code'">
-                {{ t('connectorsPage.detail.tipCodeSandbox') }}
-              </li>
               <li>
                 {{ t('connectorsPage.detail.tipSecretsMasked') }}
               </li>

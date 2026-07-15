@@ -32,6 +32,8 @@ final class SidebarPresentation
      * @var array<string, string>
      */
     public const NATIVE_SECTION_MAP = [
+        'home' => 'home',
+        'knot-core' => 'dashboard',
         'dashboard' => 'dashboard',
         'observability' => 'dashboard',
         'workflows' => 'operations',
@@ -48,6 +50,8 @@ final class SidebarPresentation
         'variables' => 'catalog',
         'audit' => 'catalog',
         'capabilities' => 'catalog',
+        'suite-health' => 'admin',
+        'updates' => 'admin',
         'setup' => 'admin',
     ];
 
@@ -130,6 +134,14 @@ final class SidebarPresentation
             $category = $extension['category'] ?? null;
             $isPremium = is_string($category) && $category === 'premium';
 
+            $navChildren = self::buildNavigationChildren(
+                $ui['navigation'] ?? null,
+                $previewUrl,
+                $mode,
+                $translate,
+                (string) $extId,
+            );
+
             $items[] = [
                 'key' => 'ext-' . $extId,
                 'icon' => $icon,
@@ -142,10 +154,142 @@ final class SidebarPresentation
                 '_isCtaAdmin' => $isCtaAdmin,
                 '_isPremium' => $isPremium,
                 '_mode' => $mode,
+                '_navChildren' => $navChildren,
             ];
         }
 
         return $items;
+    }
+
+    /**
+     * Flatten `ui.navigation` into child sidebar rows (option B).
+     * Labels resolve via the extension lang domain when possible.
+     *
+     * @param mixed    $navigationRaw
+     * @param callable $translate Closure `fn(string $key, ?string $domain): string`
+     *
+     * @return list<array{key: string, navKey: string, icon: string, label: string, url: string, hash: string, _extId: string, _mode: string, _isNavChild: true}>
+     */
+    public static function buildNavigationChildren(
+        mixed $navigationRaw,
+        string $previewUrl,
+        string $mode,
+        callable $translate,
+        string $extId,
+    ): array {
+        if (!is_array($navigationRaw) || $navigationRaw === []) {
+            return [];
+        }
+
+        $children = [];
+        foreach ($navigationRaw as $section) {
+            if (!is_array($section)) {
+                continue;
+            }
+            $items = $section['items'] ?? null;
+            if (!is_array($items)) {
+                continue;
+            }
+            foreach ($items as $item) {
+                if (!is_array($item)) {
+                    continue;
+                }
+                $itemKey = (string) ($item['key'] ?? '');
+                $labelKey = (string) ($item['labelKey'] ?? '');
+                $hash = (string) ($item['hash'] ?? '');
+                if ($itemKey === '' || $labelKey === '' || $hash === '' || $hash[0] !== '#') {
+                    continue;
+                }
+                // Deferred / unshipped entries — keep in extension manifest for
+                // future slices but do not expose ghosts in the Core leftnav.
+                // Settings is suite-level (Core Configuration), not a submenu.
+                if (
+                    $itemKey === 'workspace'
+                    || $itemKey === 'settings'
+                    || !empty($item['disabled'])
+                    || !empty($item['hidden'])
+                ) {
+                    continue;
+                }
+                $icon = self::normalizeNavIcon((string) ($item['icon'] ?? 'circle'));
+                $label = (string) $translate($labelKey, null);
+                // Dolibarr langs do not know Vue i18n keys (`nav.discovery`).
+                // Prefer a readable humanized key until the extension hydrates
+                // labels from its own locale bundle (see installCoreNavLabels).
+                if ($label === '' || $label === $labelKey) {
+                    $label = self::humanizeNavKey($itemKey);
+                }
+                $children[] = [
+                    'key' => 'ext-' . $extId . '-' . $itemKey,
+                    'navKey' => $itemKey,
+                    'icon' => $icon,
+                    'label' => $label,
+                    'url' => $previewUrl . '?mode=' . rawurlencode($mode) . $hash,
+                    'hash' => $hash,
+                    '_extId' => $extId,
+                    '_mode' => $mode,
+                    '_isNavChild' => true,
+                ];
+            }
+        }
+
+        return $children;
+    }
+
+    /**
+     * Turn a kebab/snake nav key into a short English label for the
+     * server-rendered leftnav when no Dolibarr lang entry exists.
+     */
+    public static function humanizeNavKey(string $key): string
+    {
+        $key = trim($key);
+        if ($key === '') {
+            return '';
+        }
+        $spaced = str_replace(['-', '_'], ' ', $key);
+
+        return ucwords($spaced);
+    }
+
+    /**
+     * Map Lucide-style manifest icon names to Font Awesome 5 classes
+     * used by Dolibarr's leftnav (`fas …`). Already-prefixed `fa-*`
+     * values pass through.
+     */
+    public static function normalizeNavIcon(string $icon): string
+    {
+        $icon = trim($icon);
+        if ($icon === '') {
+            return 'fa-circle';
+        }
+        if (strncmp($icon, 'fa-', 3) === 0) {
+            return $icon;
+        }
+
+        /** @var array<string, string> $lucideToFa */
+        static $lucideToFa = [
+            'switch' => 'fa-exchange-alt',
+            'settings' => 'fa-cog',
+            'lifebuoy' => 'fa-life-ring',
+            'life-buoy' => 'fa-life-ring',
+            'check' => 'fa-check',
+            'home' => 'fa-home',
+            'compass' => 'fa-compass',
+            'map' => 'fa-map',
+            'copy' => 'fa-copy',
+            'history' => 'fa-history',
+            'stethoscope' => 'fa-stethoscope',
+            'upload' => 'fa-upload',
+            'layers' => 'fa-layer-group',
+            'route' => 'fa-route',
+            'circle' => 'fa-circle',
+        ];
+
+        if (isset($lucideToFa[$icon])) {
+            return $lucideToFa[$icon];
+        }
+
+        return 'fa-' . $icon;
     }
 
     /**

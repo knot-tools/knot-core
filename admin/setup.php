@@ -833,6 +833,14 @@ body:has(.knot-nav) #knot-app {
     max-width: 100% !important;
     box-sizing: border-box;
 }
+/* Mirror css/knot-host.css ≤880px — inline guard must not keep rail padding. */
+@media (max-width: 880px) {
+    body.knot-host-page #id-right,
+    body:has(.knot-nav) #id-right {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
 </style>
 <script>document.body.classList.add('knot-host-page');</script>
 <div class="knot-shell">

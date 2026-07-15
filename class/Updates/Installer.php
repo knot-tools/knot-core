@@ -49,10 +49,40 @@ final class Installer
 
         $root = $staging . DIRECTORY_SEPARATOR . trim($topFolder, '/');
         if (!is_file($root . DIRECTORY_SEPARATOR . 'manifest.json')) {
-            throw new RuntimeException('Invalid archive — manifest.json missing at top-level folder.');
+            // Beta-tester resilience: the live install folder name can differ
+            // from the ZIP top-level folder (e.g. extension deployed under
+            // custom/knot-migration/ while the signed artefact ships
+            // knotmigration/). When exactly one extracted folder carries a
+            // manifest.json, adopt it under the expected name so the swap
+            // still targets the live directory.
+            $fallback = self::detectSingleManifestRoot($staging);
+            if ($fallback !== null && $fallback !== $root && @rename($fallback, $root)) {
+                return $root;
+            }
+            throw new RuntimeException(sprintf(
+                'Invalid archive — manifest.json missing at top-level folder "%s"%s.',
+                trim($topFolder, '/'),
+                $fallback !== null ? sprintf(' (archive ships "%s")', basename($fallback)) : '',
+            ));
         }
 
         return $root;
+    }
+
+    /**
+     * Returns the only direct sub-directory of `$staging` containing a
+     * `manifest.json`, or null when none / more than one matches.
+     */
+    private static function detectSingleManifestRoot(string $staging): ?string
+    {
+        $matches = [];
+        foreach (glob($staging . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR) ?: [] as $dir) {
+            if (is_file($dir . DIRECTORY_SEPARATOR . 'manifest.json')) {
+                $matches[] = $dir;
+            }
+        }
+
+        return count($matches) === 1 ? $matches[0] : null;
     }
 
     public function swap(string $preparedRoot, string $liveModuleRoot): void
@@ -71,7 +101,7 @@ final class Installer
             . '.backup.' . gmdate('YmdHis') . '_' . bin2hex(random_bytes(3));
 
         if (is_dir($live) || is_file($live)) {
-            if (!rename($live, $backup)) {
+            if (!self::movePath($live, $backup)) {
                 throw new RuntimeException('Unable to stash live module tree before swap.');
             }
             $this->backupPath = $backup;
@@ -79,7 +109,7 @@ final class Installer
 
         $this->livePath = $live;
 
-        if (!rename($incoming, $live)) {
+        if (!self::movePath($incoming, $live)) {
             $this->restoreBackupQuiet();
             throw new RuntimeException('Unable to finalize install rename.');
         }
@@ -127,7 +157,7 @@ final class Installer
         if (!is_dir($backup)) {
             return false;
         }
-        if (!@rename($backup, $live)) {
+        if (!self::movePath($backup, $live)) {
             return false;
         }
         clearstatcache(true);
@@ -138,6 +168,53 @@ final class Installer
     private function restoreBackupQuiet(): void
     {
         $this->rollback();
+    }
+
+    /**
+     * Prefer atomic rename; fall back to recursive copy + delete when volumes
+     * differ (EXDEV) — common when staging lives under DOL_DATA_ROOT and the
+     * module under DOL_DOCUMENT_ROOT/custom.
+     */
+    private static function movePath(string $from, string $to): bool
+    {
+        if (@rename($from, $to)) {
+            return true;
+        }
+        if (!is_dir($from) && !is_file($from)) {
+            return false;
+        }
+        if (is_dir($to) || is_file($to)) {
+            return false;
+        }
+        if (!self::copyPathRecursive($from, $to)) {
+            self::rrmdirQuietStatic($to);
+
+            return false;
+        }
+        self::rrmdirQuietStatic($from);
+
+        return is_dir($to) || is_file($to);
+    }
+
+    private static function copyPathRecursive(string $from, string $to): bool
+    {
+        if (is_link($from) || is_file($from)) {
+            return @copy($from, $to);
+        }
+        if (!is_dir($from)) {
+            return false;
+        }
+        if (!@mkdir($to, 0755, true) && !is_dir($to)) {
+            return false;
+        }
+        foreach (glob($from . DIRECTORY_SEPARATOR . '*') ?: [] as $child) {
+            $name = basename($child);
+            if (!self::copyPathRecursive($child, $to . DIRECTORY_SEPARATOR . $name)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

@@ -152,7 +152,14 @@ final class DescriptorCache
             if (!is_dir($root)) {
                 continue;
             }
-            $files = glob($root . '/{class,*/class,*/*/class}/*.class.php', GLOB_BRACE) ?: [];
+            // GLOB_BRACE is unavailable on non-GNU libc builds (musl/Alpine,
+            // Solaris), so expand the brace patterns manually for portability.
+            $files = array_merge(
+                glob($root . '/class/*.class.php') ?: [],
+                glob($root . '/*/class/*.class.php') ?: [],
+                glob($root . '/*/*/class/*.class.php') ?: [],
+            );
+            $files = array_values(array_unique($files));
             sort($files);
             foreach ($files as $f) {
                 $mtime = @filemtime($f);

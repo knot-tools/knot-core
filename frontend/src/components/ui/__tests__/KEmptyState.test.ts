@@ -42,4 +42,16 @@ describe('KEmptyState', () => {
     expect(buttons[0].text()).toBe('Create');
     expect(buttons[1].text()).toBe('Import');
   });
+
+  it('emits tertiary when the tertiary CTA is clicked', async () => {
+    const wrapper = mount(KEmptyState, {
+      props: {
+        title: 'Empty',
+        actionLabel: 'Create',
+        tertiaryLabel: 'Starters',
+      },
+    });
+    await wrapper.get('[data-testid="k-empty-state-tertiary"]').trigger('click');
+    expect(wrapper.emitted('tertiary')).toBeTruthy();
+  });
 });

@@ -65,9 +65,9 @@ function tt(key: string): string {
 const PATTERNS: PatternDef[] = [
   {
     bucket: 'license',
-    re: /extension_(?:expired|missing|unlicensed|tampered)/i,
+    re: /\[license_required\]|license_required|extension_(?:expired|missing|unlicensed|tampered)/i,
     titleKey: 'errors.execution.license.title',
-    hintKey: 'errors.execution.license.hint',
+    hintKey: 'errors.execution.license.hintActivate',
   },
   {
     bucket: 'license',
@@ -178,7 +178,14 @@ export function extractKnotPayloadFromUnknown(err: unknown): KnotErrorPayload | 
 
 export function extractExtensionIdFromLicenseError(raw: string): string | null {
   const match = /Extension\s+"([^"]+)"\s+license check failed/i.exec(raw);
-  return match?.[1] ?? null;
+  if (match?.[1]) {
+    return match[1];
+  }
+  // Pro Pack LicenseGate prefixes: `[license_required] …`
+  if (/\[?license_required\]?/i.test(raw)) {
+    return 'knot-pro-pack';
+  }
+  return null;
 }
 
 /** Allows only http(s) or same-origin module documentation paths in clickable links. */

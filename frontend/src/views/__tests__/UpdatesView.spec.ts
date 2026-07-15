@@ -99,8 +99,10 @@ describe('UpdatesView', () => {
     });
     await flushPromises();
 
-    expect(wrapper.text()).toContain('knot');
+    expect(wrapper.text()).toContain('Knot Core');
     expect(wrapper.text()).toContain('2.0.0');
+    expect(wrapper.text()).toContain('Update available');
+    expect(wrapper.get('[data-testid="updates-trust-banner"]').exists()).toBe(true);
     wrapper.unmount();
   });
 
@@ -138,12 +140,11 @@ describe('UpdatesView', () => {
     });
     await flushPromises();
 
-    const btn = wrapper.findAll('button').find((b) => b.text().includes('Apply'));
-    expect(btn).toBeTruthy();
-    await btn!.trigger('click');
+    const btn = wrapper.get('[data-testid="updates-apply-knot"]');
+    await btn.trigger('click');
     await flushPromises();
 
-    expect(applySpy).toHaveBeenCalledWith({ slug: 'knot' });
+    expect(applySpy).toHaveBeenCalledWith({ slug: 'knot', version: '2.1.0', channel: 'stable' });
     wrapper.unmount();
   });
 

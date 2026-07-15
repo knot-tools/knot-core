@@ -39,7 +39,6 @@ const path = computed(() =>
 );
 
 const color = computed(() => edgeStrokeColor(semanticType.value));
-const gradientId = computed(() => `knot-edge-grad-${props.id}`);
 const flowDotId = computed(() => `knot-edge-dot-${props.id}`);
 
 const labelKey = computed(() => {
@@ -67,13 +66,9 @@ function removeEdge() {
 </script>
 
 <template>
-  <defs>
-    <linearGradient :id="gradientId" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" :stop-color="color" stop-opacity="0.95" />
-      <stop offset="100%" :stop-color="color" stop-opacity="0.55" />
-    </linearGradient>
-  </defs>
-  <!-- Wide hit area for hover -->
+  <!-- Solid stroke (not SVG gradient url()) so edges paint on first layout —
+       gradients in fragmented edge SVGs often stay invisible until a node
+       drag forces remeasure. -->
   <path
     :d="path[0]"
     fill="none"
@@ -87,7 +82,7 @@ function removeEdge() {
     :id="props.id"
     :path="path[0]"
     :style="{
-      stroke: `url(#${gradientId})`,
+      stroke: color,
       strokeWidth,
       strokeDasharray: props.animated ? '8 6' : undefined,
       cursor: 'pointer',

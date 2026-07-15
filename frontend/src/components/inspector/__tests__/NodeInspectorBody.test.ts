@@ -141,7 +141,8 @@ describe('NodeInspectorBody', () => {
     await clickTab(wrapper, 'test');
     await flushPromises();
 
-    expect(wrapper.text().toLowerCase()).toMatch(/test|run|dry|pin/);
+    expect(wrapper.find('[data-testid="inspector-test-empty-hint"]').exists()).toBe(true);
+    expect(wrapper.text().toLowerCase()).toMatch(/simulate/);
     wrapper.unmount();
   });
 

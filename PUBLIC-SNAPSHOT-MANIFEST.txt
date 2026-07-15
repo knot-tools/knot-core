@@ -1,4 +1,4 @@
-generated_at=2026-06-08T03:56:11Z
+generated_at=2026-07-15T02:04:08Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/ISSUE_TEMPLATE/bug_report.yml
@@ -337,6 +337,7 @@ data/templates/index.json
 dist/knot-app.css
 dist/knot-app.js
 docs/admin-guide/README.md
+docs/admin-guide/integrator-first-success.md
 docs/admin-guide/marketplace.md
 docs/architecture.md
 docs/architecture/state-machine-design.md
@@ -380,6 +381,10 @@ examples/starter/03-webhook-to-task.knot.json
 examples/starter/04-devis-to-facture.knot.json
 examples/starter/05-backup-quotidien.knot.json
 examples/starter/06-showcase-power-logic.knot.json
+examples/starter/07-new-customer-welcome.knot.json
+examples/starter/08-overdue-invoice-escalation.knot.json
+examples/starter/09-webhook-crm-sync.knot.json
+examples/starter/10-complex-routing-email-report.knot.json
 examples/starter/README.md
 examples/test-greeting.knot.json
 examples/test-introspection.knot.json
@@ -419,6 +424,10 @@ frontend/src/components/SimulationSidePanel.vue
 frontend/src/components/TestDataModal.vue
 frontend/src/components/__tests__/KnotExtensionMount.test.ts
 frontend/src/components/__tests__/OnboardingWizard.test.ts
+frontend/src/components/__tests__/ProblemsPanel.test.ts
+frontend/src/components/dashboard/CronHealthBanner.vue
+frontend/src/components/dashboard/StarJourneyPanel.vue
+frontend/src/components/dashboard/SuiteHealthPanel.vue
 frontend/src/components/executions/ExecutionWaterfall.vue
 frontend/src/components/executions/__tests__/ExecutionWaterfall.test.ts
 frontend/src/components/inspector/DolibarrPicker.vue
@@ -481,6 +490,7 @@ frontend/src/composables/__tests__/useWorkflowRiskSummary.test.ts
 frontend/src/composables/__tests__/workflowRiskParity.test.ts
 frontend/src/composables/useCanvasChangeStatusRisk.ts
 frontend/src/composables/useConfirm.ts
+frontend/src/composables/useEditorWorkflowApi.ts
 frontend/src/composables/useHistory.ts
 frontend/src/composables/useLazyMount.ts
 frontend/src/composables/useMarketplaceCollections.ts
@@ -506,9 +516,12 @@ frontend/src/i18n/index.ts
 frontend/src/i18n/it_IT.json
 frontend/src/i18n/pt_PT.json
 frontend/src/lib/__tests__/api.test.ts
+frontend/src/lib/__tests__/chatbotFix.test.ts
 frontend/src/lib/__tests__/edgeSemantics.test.ts
 frontend/src/lib/__tests__/executionFormat.test.ts
 frontend/src/lib/__tests__/executionPath.test.ts
+frontend/src/lib/__tests__/extensionNavHost.test.ts
+frontend/src/lib/__tests__/humanExecutionLog.test.ts
 frontend/src/lib/__tests__/knotCore.test.ts
 frontend/src/lib/__tests__/markdownLight.test.ts
 frontend/src/lib/__tests__/marketplaceCollections.test.ts
@@ -522,13 +535,17 @@ frontend/src/lib/__tests__/workflowDefinitionRepair.test.ts
 frontend/src/lib/api.ts
 frontend/src/lib/autoLayout.ts
 frontend/src/lib/canvasSmRiskCache.ts
+frontend/src/lib/chatbotFix.ts
 frontend/src/lib/connectorDescriptorsCache.ts
 frontend/src/lib/connectorLabels.ts
 frontend/src/lib/dolibarrConnectorOperations.ts
 frontend/src/lib/dolibarrWorkflowTriggers.ts
 frontend/src/lib/edgeSemantics.ts
+frontend/src/lib/editorUiState.ts
 frontend/src/lib/executionFormat.ts
 frontend/src/lib/executionPath.ts
+frontend/src/lib/extensionNavHost.ts
+frontend/src/lib/humanExecutionLog.ts
 frontend/src/lib/idempotencyPlaceholders.ts
 frontend/src/lib/knotCanvasSmInspector.ts
 frontend/src/lib/knotConnectorContext.ts
@@ -571,6 +588,8 @@ frontend/src/views/ExecutionsView.vue
 frontend/src/views/InboxView.vue
 frontend/src/views/MarketplaceView.vue
 frontend/src/views/ObservabilityView.vue
+frontend/src/views/SuiteHealthView.vue
+frontend/src/views/SuiteHomeView.vue
 frontend/src/views/TemplatesView.vue
 frontend/src/views/UpdatesView.vue
 frontend/src/views/VariablesView.vue
@@ -776,6 +795,8 @@ tests/Engine/IfConditionOperatorTest.php
 tests/Engine/RetentionWorkerTest.php
 tests/Engine/ShowcaseStarter02WorkflowEngineTest.php
 tests/Engine/ShowcaseStarter06WorkflowEngineTest.php
+tests/Engine/ShowcaseStarter10WorkflowEngineTest.php
+tests/Engine/StarterExamplesLintCleanTest.php
 tests/Engine/Support/CronWorkerContextFactory.php
 tests/Engine/Support/CronWorkerScenario.php
 tests/Engine/Support/CronWorkerScenarioDb.php
@@ -838,6 +859,7 @@ tests/Marketplace/WorkflowTierAuditorTest.php
 tests/Migration/ConnectorMigrationTest.php
 tests/Migration/MigratorTest.php
 tests/Migration/MigratorV2120Test.php
+tests/Module/ModKnotCronJobsTest.php
 tests/Module/ModuleExpectationsTest.php
 tests/Observability/RuntimeLoggerTest.php
 tests/Reporting/MetricsCollectorAggregatesTest.php
@@ -894,6 +916,7 @@ tests/Updates/UpdateClientChannelFilterTest.php
 tests/Updates/UpdateClientTest.php
 tests/Updates/UpdateLatestResolverTest.php
 tests/Updates/UpdateStatusCacheMultiEntityTest.php
+tests/Updates/UpdatesApplyChannelAndVersionGuardTest.php
 tests/Updates/UpdatesApplyLogicTest.php
 tests/Updates/UpdatesApplyPostSwapTest.php
 tests/Updates/UpdatesApplyRollbackTest.php
@@ -904,6 +927,9 @@ tests/Version/VersionCurrentTest.php
 tests/bootstrap.php
 tests/e2e/Support/LicenseServerHarness.php
 tests/e2e/fixtures/license-server.php
+tests/fixtures/assistant/llm-dolibarr-read.knot.json
+tests/fixtures/assistant/llm-email-relance.knot.json
+tests/fixtures/assistant/llm-logic-nested.knot.json
 tests/fixtures/demo_workflow.json
 tests/fixtures/demos/lead_ai_qualification.json
 tests/fixtures/demos/relance_facture_impayee.json

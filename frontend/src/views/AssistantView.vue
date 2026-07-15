@@ -5,9 +5,12 @@ import { knotApi, type WorkflowDefinition } from '../lib/api';
 import {
   normalizeWorkflowImport,
   parseWorkflowImportText,
+  extractRepairs,
   WorkflowImportFormatError,
   WorkflowImportLegacyStepsError,
+  type RepairEntry,
 } from '../lib/normalizeWorkflowImport';
+import { buildChatbotFixMessage } from '../lib/chatbotFix';
 import { mergeLocalAndRemoteLint } from '../composables/useWorkflowLinter';
 import {
   formatValidationIssueMessage,
@@ -30,6 +33,8 @@ const preflightMissing = ref<Array<{ id: string; label: string; licenseStatus: s
 const importedWorkflowId = ref<number | null>(null);
 const unknownTypes = ref<string[]>([]);
 const lintIssues = ref<ValidationIssue[]>([]);
+const autoRepairs = ref<RepairEntry[]>([]);
+const chatbotFixRound = ref(0);
 const assistantRoot = ref<HTMLElement | null>(null);
 
 function scrollAssistantToTop() {
@@ -81,26 +86,29 @@ async function runPostImportLint(definition: WorkflowDefinition) {
   lintIssues.value = mergeLocalAndRemoteLint(remote, local);
 }
 
-function buildCopyFixMessage(): string {
-  const lines = lintIssues.value.map(
-    (issue) => `- [${issue.severity}] ${formatValidationIssueMessage(issue)}`,
-  );
-  return [
-    'Corrige ce workflow Knot selon les avertissements suivants (JSON inchangé structurellement, slugs canoniques, expressions $nodes) :',
-    '',
-    ...lines,
-    '',
-    'JSON actuel :',
-    jsonText.value.trim(),
-    '',
-    'Reponds avec un seul bloc ```json``` valide (schemaVersion 1.0, nodes[], edges[]).',
-  ].join('\n');
+async function resolveInstalledSlugs(): Promise<string[]> {
+  try {
+    const res = await knotApi.connectors();
+    return (res.connectors ?? [])
+      .map((c) => String(c.metadata?.id ?? '').trim())
+      .filter((id) => id.length > 0);
+  } catch {
+    return [];
+  }
 }
 
 async function copyFixForChatbot() {
-  const text = buildCopyFixMessage();
+  const incremental = chatbotFixRound.value > 0;
+  const installedSlugs = await resolveInstalledSlugs();
+  const text = buildChatbotFixMessage(lintIssues.value, jsonText.value, {
+    incremental,
+    installedSlugs,
+  });
   await navigator.clipboard?.writeText(text);
-  message.value = t('assistantPage.copyFixDone');
+  chatbotFixRound.value += 1;
+  message.value = incremental
+    ? t('assistantPage.copyFixIncrementalDone')
+    : t('assistantPage.copyFixDone');
   messageKind.value = 'success';
 }
 
@@ -184,12 +192,16 @@ async function importWorkflow(force = false) {
   }
   importedWorkflowId.value = null;
   lintIssues.value = [];
+  autoRepairs.value = [];
+  chatbotFixRound.value = 0;
   try {
     const parsed = parseWorkflowImportText(jsonText.value);
     const payload = normalizeWorkflowImport(parsed, {
       label: t('workflowsPage.importedWorkflowDefault'),
       status: 'draft',
     });
+
+    autoRepairs.value = extractRepairs(payload.definition);
 
     const connectors = await knotApi.connectors();
     const known = new Set(connectors.connectors.map((c) => String(c.metadata.id)));
@@ -210,10 +222,16 @@ async function importWorkflow(force = false) {
       await runPostImportLint(payload.definition);
     }
     const warnCount = lintIssues.value.filter((i) => i.severity === 'warning').length;
-    message.value =
-      warnCount > 0
-        ? t('assistantPage.msgImportSuccessWithWarnings', { id: result.workflow.id, count: warnCount })
-        : t('assistantPage.msgImportSuccess', { id: result.workflow.id });
+    const repairCount = autoRepairs.value.length;
+    if (repairCount > 0 && warnCount > 0) {
+      message.value = t('assistantPage.msgImportSuccessWithRepairs', { id: result.workflow.id, repairs: repairCount, warnings: warnCount });
+    } else if (repairCount > 0) {
+      message.value = t('assistantPage.msgImportSuccessRepaired', { id: result.workflow.id, count: repairCount });
+    } else if (warnCount > 0) {
+      message.value = t('assistantPage.msgImportSuccessWithWarnings', { id: result.workflow.id, count: warnCount });
+    } else {
+      message.value = t('assistantPage.msgImportSuccess', { id: result.workflow.id });
+    }
     messageKind.value = warnCount > 0 ? 'info' : 'success';
     scrollAssistantToTop();
   } catch (e) {
@@ -306,6 +324,12 @@ async function importAnywayConfirm() {
           <li v-for="(issue, idx) in lintIssues" :key="idx">
             {{ formatValidationIssueMessage(issue) }}
           </li>
+        </ul>
+      </div>
+      <div v-if="autoRepairs.length" class="k-mt-3 k-space-y-1">
+        <p class="k-font-semibold k-text-xs k-text-knot-success">{{ t('assistantPage.autoRepairsTitle') }}</p>
+        <ul class="k-list-disc k-pl-5 k-text-xs k-space-y-0.5 k-text-knot-text-muted">
+          <li v-for="(r, idx) in autoRepairs" :key="idx">{{ r.detail }}</li>
         </ul>
       </div>
       <div v-if="unknownTypes.length" class="k-mt-2">

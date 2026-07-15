@@ -99,4 +99,18 @@ describe('extractExtensionIdFromLicenseError', () => {
     expect(extractExtensionIdFromLicenseError('Extension "knot-pro-pack" license check failed')).toBe('knot-pro-pack');
     expect(extractExtensionIdFromLicenseError('no extension here')).toBeNull();
   });
+
+  it('defaults to knot-pro-pack for LicenseGate license_required prefix', () => {
+    expect(
+      extractExtensionIdFromLicenseError('[license_required] Extension license missing'),
+    ).toBe('knot-pro-pack');
+  });
+});
+
+describe('translateError license_required', () => {
+  it('maps [license_required] to license bucket with simulate hint', () => {
+    const t = translateError('[license_required] licence missing');
+    expect(t.bucket).toBe('license');
+    expect(t.hint).toMatch(/simulate|Pro Pack|activate/i);
+  });
 });

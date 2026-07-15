@@ -76,13 +76,18 @@ function navigateExplore(href: string): void {
 </script>
 
 <template>
-  <div class="k-space-y-10">
+  <div
+    class="k-space-y-10"
+    data-testid="marketplace-home-discovery"
+    data-editorial-type="home_discovery"
+  >
     <BannerBlock v-if="showPromoBanner" :show-stale="true" />
 
     <section
       v-if="spotlightItems.length"
       class="k-space-y-4"
       role="region"
+      data-testid="marketplace-spotlight"
       :aria-label="homeEditorial?.spotlight?.title ?? t('marketplace.spotlightTitle')"
     >
       <header class="k-flex k-items-end k-justify-between k-gap-3">

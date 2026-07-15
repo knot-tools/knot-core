@@ -42,7 +42,17 @@ import {
   FlaskConical,
   ArrowLeft,
   X,
+  Braces,
+  Lock,
 } from 'lucide-vue-next';
+import { buildChatbotFixMessage } from '../lib/chatbotFix';
+import {
+  normalizeWorkflowImport,
+  parseWorkflowImportText,
+  extractRepairs,
+  WorkflowImportLegacyStepsError,
+} from '../lib/normalizeWorkflowImport';
+import { loadEditorUiState, saveEditorUiState } from '../lib/editorUiState';
 import { useHistory } from '../composables/useHistory';
 import { autoLayout } from '../lib/autoLayout';
 import { createWorkflowLinter } from '../composables/useWorkflowLinter';
@@ -61,13 +71,14 @@ import WebhookPanel from '../canvas/WebhookPanel.vue';
 import NodeInspectorBody from '../components/inspector/NodeInspectorBody.vue';
 import { PALETTE_SECTIONS, NODE_REGISTRY, resolveNodeMeta, categoryColorHex } from '../canvas/nodeRegistry';
 import { connectorMessageKey, resolveConnectorLabel } from '../lib/connectorLabels';
+import { KNOWN_SKU_PRO_PACK } from '../lib/known-skus';
 import {
-  knotApi,
   type ConnectorDescriptor,
   type Workflow as KnotWorkflow,
   type WorkflowDefinition,
   type WorkflowVersion,
 } from '../lib/api';
+import { useEditorWorkflowApi } from '../composables/useEditorWorkflowApi';
 import { getConnectorDescriptorsCached } from '../lib/connectorDescriptorsCache';
 import { buildConnectorSchemaIndex, resolveConnectorConfigSchema } from '../lib/resolveConnectorSchema';
 import { KNOT_CANVAS_SM_INSPECTOR } from '../lib/knotCanvasSmInspector';
@@ -105,20 +116,29 @@ const {
   setEdges,
   fitView,
   updateNodeInternals,
+  setViewport,
+  onViewportChange,
 } = useVueFlow();
+
+const editorApi = useEditorWorkflowApi();
 
 /** Recalculate handle positions so edges render correctly after async load / connector catalog. */
 function refreshCanvasGeometry(nodeIds?: string[]) {
+  const run = () => {
+    const ids = nodeIds ?? (nodes.value as Node[]).map((n) => String(n.id));
+    if (ids.length > 0) {
+      updateNodeInternals(ids);
+    }
+  };
   void nextTick(() => {
     requestAnimationFrame(() => {
-      const ids = nodeIds ?? (nodes.value as Node[]).map((n) => String(n.id));
-      if (ids.length > 0) {
-        updateNodeInternals(ids);
-      }
+      run();
       requestAnimationFrame(() => {
-        if (ids.length > 0) {
-          updateNodeInternals(ids);
-        }
+        run();
+        // Catalog / fitView / viewport restore can settle after first paint.
+        window.setTimeout(run, 50);
+        window.setTimeout(run, 200);
+        window.setTimeout(run, 450);
       });
     });
   });
@@ -171,7 +191,7 @@ function createSampleNodes(): Node[] {
         type: 'logic.set',
         label: t('editor.starterSetLabel'),
         subtitle: t('editor.starterSetSubtitle'),
-        config: { values: { greeting: 'Hello from Knot' } },
+        config: { values: { greeting: t('editor.starterGreetingValue') } },
       },
     },
     {
@@ -182,7 +202,11 @@ function createSampleNodes(): Node[] {
         type: 'action.email',
         label: t('editor.starterEmailLabel'),
         subtitle: t('editor.starterEmailSubtitle'),
-        config: { to: 'ops@example.com', subject: 'Knot demo', body: '<p>{{greeting}}</p>' },
+        config: {
+          to: 'ops@example.com',
+          subject: t('editor.starterEmailSubject'),
+          body: '<p>{{greeting}}</p>',
+        },
       },
     },
   ];
@@ -253,6 +277,26 @@ function isPaletteNodeAvailable(typeId: string): boolean {
 
 function paletteUnavailableTitle(typeId: string): string {
   return t('editor.paletteRequiresLicense', { connector: paletteNodeLabel(typeId) });
+}
+
+/** Locked Pro Pack palette entry: open activation upsell (or Pro Pack hub). */
+function onPaletteLockedClick(typeId: string): void {
+  if (isPaletteNodeAvailable(typeId)) {
+    return;
+  }
+  const knotCore = (
+    window as unknown as {
+      KnotCore?: { openLicenseActivationModal?: (id: string, label?: string) => void };
+    }
+  ).KnotCore;
+  if (typeof knotCore?.openLicenseActivationModal === 'function') {
+    knotCore.openLicenseActivationModal(
+      KNOWN_SKU_PRO_PACK,
+      t('editor.paletteProPackLabel', 'Knot Pro Pack'),
+    );
+    return;
+  }
+  window.location.href = '?mode=pro-pack';
 }
 
 function onPaletteDragStart(event: DragEvent, typeId: string) {
@@ -559,11 +603,63 @@ const upstreamDataPaths = computed(() => {
 
 function onNodeClick(payload: NodeMouseEvent) {
   selectedId.value = payload.node.id;
+  saveEditorUiState({
+    workflowId: currentWorkflowId.value,
+    selectedNodeId: payload.node.id,
+  });
 }
 
 function onPaneClick() {
   selectedId.value = null;
+  saveEditorUiState({
+    workflowId: currentWorkflowId.value,
+    selectedNodeId: null,
+  });
 }
+
+function restoreEditorUiSelection(): void {
+  const saved = loadEditorUiState();
+  if (!saved || saved.workflowId !== currentWorkflowId.value || !saved.selectedNodeId) {
+    return;
+  }
+  const exists = (nodes.value as Node[]).some((n) => n.id === saved.selectedNodeId);
+  if (exists) {
+    selectedId.value = saved.selectedNodeId;
+  }
+}
+
+function restoreEditorViewport(): void {
+  const saved = loadEditorUiState();
+  if (!saved || saved.workflowId !== currentWorkflowId.value || !saved.viewport) {
+    return;
+  }
+  const { x, y, zoom } = saved.viewport;
+  if (
+    typeof x !== 'number'
+    || typeof y !== 'number'
+    || typeof zoom !== 'number'
+    || !Number.isFinite(x)
+    || !Number.isFinite(y)
+    || !Number.isFinite(zoom)
+    || zoom <= 0
+  ) {
+    return;
+  }
+  void nextTick(() => {
+    setViewport({ x, y, zoom }, { duration: 0 });
+  });
+}
+
+let viewportPersistTimer: ReturnType<typeof setTimeout> | null = null;
+onViewportChange((vp) => {
+  if (viewportPersistTimer) clearTimeout(viewportPersistTimer);
+  viewportPersistTimer = setTimeout(() => {
+    saveEditorUiState({
+      workflowId: currentWorkflowId.value,
+      viewport: { x: vp.x, y: vp.y, zoom: vp.zoom },
+    });
+  }, 250);
+});
 
 function updateSelectedField(field: 'label' | 'subtitle', value: string) {
   const id = selectedId.value;
@@ -717,8 +813,72 @@ const replayFromNode = ref<string | null>(null);
 const simResult = ref<{ logs: Array<Record<string, unknown>>; durationMs: number; status: 'success' | 'error'; dryRun: boolean } | null>(null);
 const fullTraceOpen = ref(false);
 const simulating = ref(false);
+const simulateTimedOut = ref(false);
+const runQueuedHint = ref<string | null>(null);
 const liveIssues = ref<ValidationIssue[]>([]);
 const workflowLinter = createWorkflowLinter(300);
+
+// "Edit JSON" dialog — paste a corrected workflow (e.g. from an external
+// chatbot) without leaving the editor or going through bulk import.
+const jsonDialogOpen = ref(false);
+const jsonDialogText = ref('');
+const jsonDialogError = ref<string | null>(null);
+
+function openJsonDialog() {
+  jsonDialogText.value = JSON.stringify(buildDefinition(), null, 2);
+  jsonDialogError.value = null;
+  jsonDialogOpen.value = true;
+}
+
+function applyJsonDialog() {
+  jsonDialogError.value = null;
+  try {
+    const parsed = parseWorkflowImportText(jsonDialogText.value);
+    const payload = normalizeWorkflowImport(parsed, {
+      label: workflowName.value || t('editor.defaultWorkflowName'),
+    });
+    const repairs = extractRepairs(payload.definition);
+    applyWorkflow({
+      id: currentWorkflowId.value,
+      label: payload.label || workflowName.value,
+      ref: workflowRef.value,
+      status: workflowStatus.value,
+      definition: payload.definition,
+    } as KnotWorkflow);
+    jsonDialogOpen.value = false;
+    void nextTick(() => {
+      dirty.value = true;
+    });
+    if (repairs.length > 0) {
+      toast.success(t('editor.editJsonAppliedWithRepairs', { count: repairs.length }));
+    } else {
+      toast.success(t('editor.editJsonApplied'));
+    }
+  } catch (err) {
+    if (err instanceof WorkflowImportLegacyStepsError) {
+      jsonDialogError.value = t('editor.editJsonLegacy');
+      return;
+    }
+    if (err instanceof SyntaxError) {
+      jsonDialogError.value = t('editor.editJsonInvalidJson');
+      return;
+    }
+    jsonDialogError.value = err instanceof Error && err.message !== ''
+      ? err.message
+      : t('editor.editJsonInvalid');
+  }
+}
+
+async function copyProblemsFixForChatbot() {
+  const installedSlugs = [...connectorCatalogById.value.keys()];
+  const text = buildChatbotFixMessage(
+    liveIssues.value,
+    JSON.stringify(buildDefinition(), null, 2),
+    { installedSlugs },
+  );
+  await navigator.clipboard?.writeText(text);
+  toast.success(t('editor.problemsCopyFixDone'));
+}
 
 function recomputeIssues() {
   const getDef = (): WorkflowDefinition => buildDefinition();
@@ -986,7 +1146,7 @@ const schedulePresets = computed(() => [
 async function saveSchedule() {
   if (!currentWorkflowId.value) return;
   try {
-    await knotApi.saveSchedule(currentWorkflowId.value, scheduleDraft.value);
+    await editorApi.saveSchedule(currentWorkflowId.value, scheduleDraft.value);
     scheduleOpen.value = false;
     successFlash.value = t('editor.toastScheduleSaved');
     setTimeout(() => (successFlash.value = null), 2500);
@@ -1090,6 +1250,8 @@ function applyWorkflow(workflow: KnotWorkflow) {
   // workflow as "Unsaved". Reset on the next tick to ignore those events.
   void nextTick(() => {
     dirty.value = false;
+    restoreEditorUiSelection();
+    restoreEditorViewport();
   });
 }
 
@@ -1107,7 +1269,7 @@ async function persistWorkflow(extra: Record<string, unknown> = {}) {
   saving.value = true;
   clearTopErrors();
   try {
-    const result = await knotApi.saveWorkflow({
+    const result = await editorApi.saveWorkflow({
       id: currentWorkflowId.value ?? undefined,
       label: workflowName.value,
       status: workflowStatus.value,
@@ -1170,9 +1332,10 @@ async function executeSync(triggerData: Record<string, unknown>) {
   if (!currentWorkflowId.value) return;
   testModalOpen.value = false;
   simulating.value = true;
+  simulateTimedOut.value = false;
   clearTopErrors();
   try {
-    const result = await knotApi.simulateWorkflow({
+    const result = await editorApi.simulateWorkflow({
       workflowId: currentWorkflowId.value,
       dryRun: testSimulateDryRun.value,
       fromNode: replayFromNode.value || undefined,
@@ -1188,7 +1351,14 @@ async function executeSync(triggerData: Record<string, unknown>) {
       localStorage.setItem(`knot.lastSim.${currentWorkflowId.value}`, JSON.stringify(simResult.value));
     } catch {}
   } catch (err) {
-    setTopErrorFromCatch(err, t('editor.simulateFailedFallback'));
+    const msg = err instanceof Error ? err.message : '';
+    const isTimeout = /timeout|timed?\s*out|504|408/i.test(msg);
+    if (isTimeout) {
+      simulateTimedOut.value = true;
+      setPlainTopError(t('editor.simulateTimedOut'));
+    } else {
+      setTopErrorFromCatch(err, t('editor.simulateFailedFallback'));
+    }
   } finally {
     simulating.value = false;
   }
@@ -1223,6 +1393,36 @@ function pinNodeOutput(nodeId: string) {
   flashSuccess(t('editor.toastOutputPinned', { nodeId }));
 }
 
+async function refreshRunQueuedCronHint(): Promise<void> {
+  runQueuedHint.value = null;
+  try {
+    const health = await editorApi.health();
+    const cron = health.doctor?.cron;
+    if (!cron) {
+      return;
+    }
+    if (!cron.registered || !cron.enabled) {
+      runQueuedHint.value = t('editor.runQueuedCronDisabled');
+      return;
+    }
+    if (cron.globalEnabled === false) {
+      runQueuedHint.value = t('editor.runQueuedCronGlobalOff');
+      return;
+    }
+    const stale = health.doctor?.cronStaleSeconds;
+    if (stale === null || stale === undefined) {
+      runQueuedHint.value = t('editor.runQueuedCronNever');
+      return;
+    }
+    if (stale >= 900) {
+      const minutes = Math.max(1, Math.round(stale / 60));
+      runQueuedHint.value = t('editor.runQueuedCronStale', { minutes });
+    }
+  } catch {
+    /* best-effort hint only */
+  }
+}
+
 async function runWorkflow() {
   if (!currentWorkflowId.value) {
     setPlainTopError(t('editor.runBeforeSave'));
@@ -1234,14 +1434,22 @@ async function runWorkflow() {
   }
   saving.value = true;
   clearTopErrors();
+  runQueuedHint.value = null;
   try {
-    const result = await knotApi.executeWorkflow(currentWorkflowId.value);
+    const result = await editorApi.executeWorkflow(currentWorkflowId.value);
     flashSuccess(t('editor.toastExecutionQueued', { id: result.executionId }));
+    void refreshRunQueuedCronHint();
   } catch (err) {
     setTopErrorFromCatch(err, t('editor.runFallback'));
   } finally {
     saving.value = false;
   }
+}
+
+function retryAsRun() {
+  simulateTimedOut.value = false;
+  clearTopErrors();
+  void runWorkflow();
 }
 
 async function openVersions() {
@@ -1253,7 +1461,7 @@ async function openVersions() {
   versionsLoading.value = true;
   clearTopErrors();
   try {
-    const result = await knotApi.listWorkflowVersions(currentWorkflowId.value);
+    const result = await editorApi.listWorkflowVersions(currentWorkflowId.value);
     versions.value = result.versions;
   } catch (err) {
     setTopErrorFromCatch(err, t('editor.versionsFallback'));
@@ -1272,7 +1480,7 @@ async function rollbackToVersion(version: WorkflowVersion) {
   if (!ok) return;
   versionsLoading.value = true;
   try {
-    const result = await knotApi.rollbackWorkflow(currentWorkflowId.value, version.id);
+    const result = await editorApi.rollbackWorkflow(currentWorkflowId.value, version.id);
     applyWorkflow(result.workflow);
     versionsOpen.value = false;
     flashSuccess(t('editor.rollbackSuccess', { id: version.id }));
@@ -1289,7 +1497,7 @@ async function loadWorkflow(id: number) {
     typeof window !== 'undefined' &&
     new URLSearchParams(window.location.search).get('layout') === '1';
   try {
-    const result = await knotApi.getWorkflow(id);
+    const result = await editorApi.getWorkflow(id);
     applyWorkflow(result.workflow);
     if (shouldAutoLayout) {
       arrangeNodes({ animateLayout: true });
@@ -1373,19 +1581,26 @@ watch(workflowName, () => {
             <template v-for="id in filteredIds(section.ids)" :key="id">
               <div
                 v-if="NODE_REGISTRY[id]"
+                role="button"
+                :tabindex="isPaletteNodeAvailable(id) ? -1 : 0"
                 :draggable="isPaletteNodeAvailable(id)"
                 :data-knot-palette-node="id"
+                :data-knot-palette-locked="isPaletteNodeAvailable(id) ? undefined : '1'"
                 :title="isPaletteNodeAvailable(id) ? undefined : paletteUnavailableTitle(id)"
+                :aria-label="isPaletteNodeAvailable(id) ? undefined : paletteUnavailableTitle(id)"
                 @dragstart="onPaletteDragStart($event, id)"
+                @click="onPaletteLockedClick(id)"
+                @keydown.enter.prevent="onPaletteLockedClick(id)"
+                @keydown.space.prevent="onPaletteLockedClick(id)"
                 :class="[
                   'k-group k-flex k-items-center k-gap-2.5 k-px-2.5 k-py-2 k-rounded-knot-sm k-border k-border-transparent k-transition-all k-duration-knot k-ease-knot',
                   isPaletteNodeAvailable(id)
                     ? 'k-cursor-grab active:k-cursor-grabbing hover:k-border-knot-border-strong hover:k-bg-knot-surface-soft'
-                    : 'k-opacity-50 k-cursor-not-allowed k-bg-knot-surface-soft',
+                    : 'k-opacity-60 k-cursor-pointer k-bg-knot-surface-soft hover:k-border-knot-warning/40',
                 ]"
               >
                 <div
-                  class="k-h-8 k-w-8 k-rounded-knot-sm k-flex k-items-center k-justify-center k-text-white k-shadow-knot-xs k-shrink-0"
+                  class="k-h-8 k-w-8 k-rounded-knot-sm k-flex k-items-center k-justify-center k-text-white k-shadow-knot-xs k-shrink-0 k-relative"
                   :style="{
                     background:
                       'linear-gradient(135deg, ' +
@@ -1396,13 +1611,24 @@ watch(workflowName, () => {
                   }"
                 >
                   <component :is="NODE_REGISTRY[id].icon" :size="15" />
+                  <span
+                    v-if="!isPaletteNodeAvailable(id)"
+                    class="k-absolute k--right-1 k--bottom-1 k-h-4 k-w-4 k-rounded-full k-bg-knot-warning k-text-white k-flex k-items-center k-justify-center"
+                    aria-hidden="true"
+                  >
+                    <Lock :size="9" />
+                  </span>
                 </div>
                 <div class="k-min-w-0 k-flex-1">
                   <div class="k-text-[13px] k-font-semibold k-text-knot-text k-leading-tight k-truncate">
                     {{ paletteNodeLabel(id) }}
                   </div>
                   <div class="k-text-[11px] k-text-knot-text-soft k-truncate">
-                    {{ paletteNodeDescription(id) }}
+                    {{
+                      isPaletteNodeAvailable(id)
+                        ? paletteNodeDescription(id)
+                        : t('editor.paletteRequiresLicenseShort')
+                    }}
                   </div>
                 </div>
               </div>
@@ -1420,8 +1646,11 @@ watch(workflowName, () => {
 
     <!-- Canvas + toolbar -->
     <main class="knot-editor-layout__pane k-relative k-bg-knot-bg k-flex k-flex-col k-min-h-0 k-min-w-0">
-      <!-- Top toolbar -->
-      <div class="k-min-h-[3rem] k-px-3 lg:k-px-4 k-py-1.5 k-flex k-flex-wrap k-items-center k-justify-between k-gap-y-1 k-gap-x-2 k-bg-knot-surface k-border-b k-border-knot-border k-shadow-knot-xs k-z-10">
+      <!-- Top toolbar — labels hide below xl so 1366×768 + side panes stay icon-first -->
+      <div
+        data-knot-test="knot-editor-toolbar"
+        class="k-min-h-[3rem] k-min-w-0 k-max-w-full k-overflow-x-hidden k-px-3 lg:k-px-4 k-py-1.5 k-flex k-flex-wrap k-items-center k-justify-between k-gap-y-1 k-gap-x-2 k-bg-knot-surface k-border-b k-border-knot-border k-shadow-knot-xs k-z-10"
+      >
         <div class="k-flex k-items-center k-gap-1.5 k-min-w-0 k-flex-1">
           <a
             :href="workflowsListUrl"
@@ -1482,13 +1711,20 @@ watch(workflowName, () => {
             class="k-inline-flex k-items-center k-px-2.5 k-py-1.5 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border k-text-knot-text k-text-sm hover:k-border-knot-primary"
           ><LayoutTemplate :size="14" /></button>
           <button
+            data-knot-test="knot-editor-edit-json"
+            @click="openJsonDialog"
+            :title="t('editor.editJsonTitle')"
+            :aria-label="t('editor.editJson')"
+            class="k-inline-flex k-items-center k-px-2.5 k-py-1.5 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border k-text-knot-text k-text-sm hover:k-border-knot-primary"
+          ><Braces :size="14" /></button>
+          <button
             @click="openVersions"
             :disabled="saving || !currentWorkflowId"
             :title="t('editor.toolbarVersionsTitle')"
             class="k-inline-flex k-items-center k-gap-1.5 k-px-2.5 k-py-1.5 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border-strong k-text-knot-text k-text-sm k-font-semibold hover:k-bg-knot-surface-soft hover:k-border-knot-primary hover:k-text-knot-primary disabled:k-opacity-50 disabled:k-cursor-not-allowed k-transition-all k-duration-knot k-ease-knot k-whitespace-nowrap"
           >
             <History :size="14" />
-            <span class="k-hidden md:k-inline">{{ t('editor.versions') }}</span>
+            <span class="k-hidden xl:k-inline">{{ t('editor.versions') }}</span>
           </button>
           <TestSplitButton
             v-if="riskSummary.worstLevel === 'critical' && currentWorkflowId && !liveIssues.some((i) => i.severity === 'error')"
@@ -1505,11 +1741,11 @@ watch(workflowName, () => {
             :title="t('editor.simulatePartialDryRunHint')"
           >
             <FlaskConical :size="14" />
-            <span class="k-hidden md:k-inline">{{ t('editor.simulate') }}</span>
+            <span class="k-hidden xl:k-inline">{{ t('editor.simulate') }}</span>
           </button>
           <p
             v-if="workflowUsesSlowConnectors && currentWorkflowId"
-            class="k-hidden lg:k-block k-max-w-xs k-text-xs k-text-knot-warning k-m-0 k-mr-1"
+            class="k-hidden xl:k-block k-max-w-[12rem] k-text-xs k-text-knot-warning k-m-0 k-mr-1 k-truncate"
             role="note"
           >
             {{ t('editor.runSlowProfileWarning') }}
@@ -1521,7 +1757,7 @@ watch(workflowName, () => {
             class="k-inline-flex k-items-center k-gap-1.5 k-px-2.5 k-py-1.5 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border-strong k-text-knot-text k-text-sm k-font-semibold hover:k-bg-knot-surface-soft hover:k-border-knot-primary hover:k-text-knot-primary disabled:k-opacity-50 disabled:k-cursor-not-allowed k-transition-all k-duration-knot k-ease-knot k-whitespace-nowrap"
           >
             <Play :size="14" />
-            <span class="k-hidden md:k-inline">{{ t('editor.run') }}</span>
+            <span class="k-hidden xl:k-inline">{{ t('editor.run') }}</span>
           </button>
           <button
             @click="saveWorkflow"
@@ -1531,7 +1767,7 @@ watch(workflowName, () => {
           >
             <Loader2 v-if="saving" :size="14" class="k-animate-spin" />
             <Save v-else :size="14" />
-            <span class="k-hidden md:k-inline">{{ saving ? t('editor.saving') : t('editor.save') }}</span>
+            <span class="k-hidden xl:k-inline">{{ saving ? t('editor.saving') : t('editor.save') }}</span>
           </button>
         </div>
       </div>
@@ -1638,7 +1874,7 @@ watch(workflowName, () => {
         </div>
       </div>
 
-      <ProblemsPanel :issues="liveIssues" @jump="onJumpToNode" />
+      <ProblemsPanel :issues="liveIssues" @jump="onJumpToNode" @copy-fix="copyProblemsFixForChatbot" />
 
       <transition name="k-toast">
         <div
@@ -1661,11 +1897,34 @@ watch(workflowName, () => {
           />
           <div
             v-else
-            class="k-flex k-items-center k-gap-2 k-rounded-knot-sm k-bg-knot-danger-soft k-text-knot-danger k-px-3 k-py-2 k-text-sm"
+            class="k-rounded-knot-sm k-bg-knot-danger-soft k-text-knot-danger k-px-3 k-py-2 k-text-sm"
           >
-            <AlertCircle :size="14" />
-            {{ saveError }}
+            <div class="k-flex k-items-center k-gap-2">
+              <AlertCircle :size="14" />
+              {{ saveError }}
+            </div>
+            <div v-if="simulateTimedOut" class="k-mt-2 k-flex k-items-center k-gap-2">
+              <button
+                type="button"
+                class="k-inline-flex k-items-center k-gap-1 k-px-2.5 k-py-1 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border k-text-knot-text k-text-xs k-font-semibold hover:k-border-knot-primary"
+                @click="retryAsRun"
+              >
+                <Play :size="12" />
+                {{ t('editor.retryAsRun') }}
+              </button>
+              <span class="k-text-[11px] k-text-knot-text-muted">{{ t('editor.retryAsRunHint') }}</span>
+            </div>
           </div>
+        </div>
+      </transition>
+
+      <transition name="k-toast">
+        <div
+          v-if="runQueuedHint"
+          class="k-absolute k-bottom-4 k-left-1/2 k--translate-x-1/2 k-max-w-lg k-min-w-[280px] k-rounded-knot-sm k-bg-knot-warning-soft k-text-knot-warning k-px-3 k-py-2 k-text-sm k-shadow-knot-md"
+          data-knot-test="editor-run-queued-cron-hint"
+        >
+          {{ runQueuedHint }}
         </div>
       </transition>
     </main>
@@ -1977,6 +2236,61 @@ watch(workflowName, () => {
             </template>
           </div>
         </aside>
+      </div>
+    </Teleport>
+
+    <Teleport to="body">
+      <div
+        v-if="jsonDialogOpen"
+        class="k-fixed k-inset-0 k-z-[9999] k-bg-black/50 k-backdrop-blur-sm k-flex k-items-center k-justify-center k-p-4"
+        @click.self="jsonDialogOpen = false"
+      >
+        <div
+          data-knot-test="knot-editor-json-dialog"
+          class="k-w-full k-max-w-3xl k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-lg k-shadow-knot-lg k-overflow-hidden k-flex k-flex-col"
+          role="dialog"
+          :aria-label="t('editor.editJsonTitle')"
+        >
+          <div class="k-px-5 k-py-4 k-border-b k-border-knot-border k-flex k-items-center k-justify-between">
+            <div>
+              <h2 class="k-text-lg k-font-bold k-text-knot-text">{{ t('editor.editJsonTitle') }}</h2>
+              <p class="k-text-xs k-text-knot-text-muted">{{ t('editor.editJsonLead') }}</p>
+            </div>
+            <button class="k-text-knot-text-muted hover:k-text-knot-text" @click="jsonDialogOpen = false">×</button>
+          </div>
+          <div class="k-p-4 k-flex k-flex-col k-gap-3">
+            <label for="knot-editor-json-textarea" class="k-sr-only">{{ t('editor.editJsonTitle') }}</label>
+            <textarea
+              id="knot-editor-json-textarea"
+              v-model="jsonDialogText"
+              data-knot-test="knot-editor-json-textarea"
+              spellcheck="false"
+              class="k-w-full k-h-80 k-resize-y k-rounded-knot-sm k-border k-border-knot-border k-bg-knot-surface-soft k-p-3 k-font-mono k-text-xs k-text-knot-text focus:k-outline-none focus:k-border-knot-primary"
+            ></textarea>
+            <p
+              v-if="jsonDialogError"
+              data-knot-test="knot-editor-json-error"
+              class="k-m-0 k-rounded-knot-sm k-border k-border-knot-danger k-bg-knot-danger-soft k-p-2 k-text-sm k-text-knot-danger"
+            >
+              {{ jsonDialogError }}
+            </p>
+            <div class="k-flex k-justify-end k-gap-2">
+              <button
+                class="k-inline-flex k-items-center k-px-3 k-py-1.5 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border k-text-knot-text k-text-sm hover:k-border-knot-primary"
+                @click="jsonDialogOpen = false"
+              >
+                {{ t('editor.editJsonCancel') }}
+              </button>
+              <button
+                data-knot-test="knot-editor-json-apply"
+                class="k-inline-flex k-items-center k-gap-1.5 k-px-3 k-py-1.5 k-rounded-knot-sm k-bg-knot-hero k-text-white k-text-sm k-font-semibold hover:k-opacity-90"
+                @click="applyJsonDialog"
+              >
+                {{ t('editor.editJsonApply') }}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </Teleport>
 

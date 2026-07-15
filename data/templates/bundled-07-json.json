@@ -21,7 +21,7 @@
       "type": "logic.json",
       "label": "Parse",
       "position": { "x": 600, "y": 120 },
-      "config": { "operation": "parse", "input": "{{$json.raw}}" }
+      "config": { "operation": "parse", "input": "{{$nodes.s_raw.json.raw}}" }
     }
   ],
   "edges": [

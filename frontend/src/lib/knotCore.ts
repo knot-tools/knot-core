@@ -33,6 +33,15 @@
  *     a bundle.
  */
 
+import {
+  createNavigationBadgesApi,
+  installExtensionHostNav,
+  type KnotNavBadgesProvider,
+  type KnotNavChildBadge,
+} from './extensionNavHost';
+
+export type { KnotNavBadgesProvider, KnotNavChildBadge };
+
 // ADR-20 §4.2 canonical contract. The legacy `requiredPermission`
 // and `hasPermission` keys are still accepted at read-time so a Core
 // build can render extension bundles built against the older shape;
@@ -61,6 +70,18 @@ export interface KnotExtensionMeta {
   licenseStatus: 'valid' | 'invalid' | 'not_required' | 'unknown' | 'grace' | 'missing';
   licenseExpiresAt: string | null;
   isAdmin: boolean;
+  /** Optional in-extension nav sections from knot-extension.json `ui.navigation`. */
+  navigation?: Array<{
+    key: string;
+    labelKey: string;
+    items: Array<{
+      key: string;
+      labelKey: string;
+      icon: string;
+      hash: string;
+      badge?: string;
+    }>;
+  }> | null;
 }
 
 export interface KnotExtensionContext {
@@ -248,6 +269,16 @@ export interface KnotCoreSurface {
    */
   commandPalette: KnotCommandPalette;
   /**
+   * Dynamic badges for Core leftnav extension children (ADR option B).
+   * Extensions register a provider that maps short nav keys
+   * (`discovery`, `cutover`, …) to visual states; Core paints the
+   * host `[data-knot-ext-nav-child]` rows.
+   */
+  navigationBadges: {
+    register(extensionId: string, provider: KnotNavBadgesProvider): () => void;
+    notify(): void;
+  };
+  /**
    * Open Core's `LicenseActivationModal` for a given extension id.
    *
    * Extensions call this when their own UI gates on a missing/invalid
@@ -374,6 +405,9 @@ export function installKnotCore(target: Window = window): KnotCoreSurface {
     },
   };
 
+  const navigationBadges = createNavigationBadgesApi(target);
+  installExtensionHostNav(target);
+
   const apiFetch = (path: string, init?: RequestInit): Promise<Response> => {
     const url = path.startsWith('http') ? path : `${apiBase.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
     const headers = new Headers(init?.headers ?? {});
@@ -400,6 +434,7 @@ export function installKnotCore(target: Window = window): KnotCoreSurface {
     },
     apiFetch,
     commandPalette,
+    navigationBadges,
     registerExtension(id: string, registration: KnotExtensionRegistration) {
       if (typeof registration.mount !== 'function') {
         // eslint-disable-next-line no-console

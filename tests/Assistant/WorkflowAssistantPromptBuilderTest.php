@@ -23,6 +23,19 @@ final class WorkflowAssistantPromptBuilderTest extends TestCase
         self::assertStringContainsString('conditions[]', $prompt);
     }
 
+    public function testPromptPrefersNodesExpressionsOverJsonChain(): void
+    {
+        $prompt = $this->buildPrompt('panier loop email total', []);
+
+        self::assertStringContainsString('expression_json_chain', $prompt);
+        self::assertStringContainsString('$nodes.<setOrSqlId>.json.items', $prompt);
+        self::assertStringContainsString('$loop.item', $prompt);
+        self::assertStringContainsString('preferer toujours', $prompt);
+        // Cron recipe (when selected) also teaches nodes-based rows path.
+        $cronPrompt = $this->buildPrompt('cron quotidien relance impaye', []);
+        self::assertStringContainsString('$nodes.sql_impayes.json.rows', $cronPrompt);
+    }
+
     public function testPromptEmbedsHelloWorldNotEmptyNodes(): void
     {
         $prompt = $this->buildPrompt('Test', []);

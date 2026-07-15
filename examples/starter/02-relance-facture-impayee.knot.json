@@ -43,7 +43,7 @@
           "subtitle": "continueOnItemError",
           "position": { "x": 700, "y": 200 },
           "config": {
-            "itemsPath": "{{$json.rows}}",
+            "itemsPath": "{{$nodes.sql_overdue.json.rows}}",
             "realIteration": true,
             "continueOnItemError": true,
             "maxItems": 50
@@ -56,9 +56,9 @@
           "subtitle": "Vers soc_email",
           "position": { "x": 1020, "y": 200 },
           "config": {
-            "to": "{{$json.soc_email}}",
-            "subject": "Relance amiable — facture {{$json.ref}}",
-            "body": "Bonjour {{$json.soc_name}},\n\nNotre facture {{$json.ref}} ({{$json.total_ttc}} EUR) etait due le {{$json.date_lim_reglement}}.\nMerci de proceder au reglement ou de nous contacter en cas de difficulte.\n\nCordialement,\nL'equipe comptable"
+            "to": "{{$loop.item.soc_email}}",
+            "subject": "Relance amiable — facture {{$loop.item.ref}}",
+            "body": "Bonjour {{$loop.item.soc_name}},\n\nNotre facture {{$loop.item.ref}} ({{$loop.item.total_ttc}} EUR) etait due le {{$loop.item.date_lim_reglement}}.\nMerci de proceder au reglement ou de nous contacter en cas de difficulte.\n\nCordialement,\nL'equipe comptable"
           }
         }
       ],

@@ -1,0 +1,79 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-07-14T18:10:00Z",
+  "exportedBy": "Knot Assistant",
+  "workflow": {
+    "label": "Assistant LLM — Dolibarr read + audit alert",
+    "description": "Generated-style fixture: BILL_VALIDATE event → dolibarr.read_object → notification.alert (audit). object_id from trigger payload; alert uses $nodes.read_invoice.* (lint-clean).",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "LLM_ASSISTANT_DOLIBARR_READ",
+        "label": "Assistant LLM — Dolibarr read + audit alert",
+        "tags": ["assistant", "llm-fixture", "dolibarr", "lint-clean"],
+        "settings": {
+          "timeoutSeconds": 45,
+          "errorPolicy": "stop",
+          "logPayloads": true
+        }
+      },
+      "nodes": [
+        {
+          "id": "trigger_bill_validate",
+          "type": "trigger.dolibarr_event",
+          "label": "Invoice validated",
+          "subtitle": "BILL_VALIDATE",
+          "position": { "x": 60, "y": 180 },
+          "config": {
+            "events": ["BILL_VALIDATE"]
+          }
+        },
+        {
+          "id": "read_invoice",
+          "type": "dolibarr.read_object",
+          "label": "Fetch invoice",
+          "subtitle": "facture by object_id",
+          "position": { "x": 360, "y": 180 },
+          "config": {
+            "objectType": "facture",
+            "objectId": "{{$json.object_id}}"
+          }
+        },
+        {
+          "id": "audit_alert",
+          "type": "notification.alert",
+          "label": "Audit trail entry",
+          "subtitle": "channels.audit only",
+          "position": { "x": 680, "y": 180 },
+          "config": {
+            "title": "Invoice validated — {{$nodes.read_invoice.json.ref}}",
+            "message": "Invoice {{$nodes.read_invoice.json.ref}} (id {{$nodes.read_invoice.json.id}}) total_ttc={{$nodes.read_invoice.json.total_ttc}} for thirdparty {{$nodes.read_invoice.json.socid}}.",
+            "severity": "info",
+            "tag": "llm-assistant-dolibarr-read",
+            "channels": {
+              "audit": { "enabled": true }
+            }
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e_trig_read",
+          "source": "trigger_bill_validate",
+          "target": "read_invoice",
+          "sourceHandle": "main",
+          "targetHandle": "main",
+          "type": "knot"
+        },
+        {
+          "id": "e_read_alert",
+          "source": "read_invoice",
+          "target": "audit_alert",
+          "sourceHandle": "main",
+          "targetHandle": "main",
+          "type": "knot"
+        }
+      ]
+    }
+  }
+}

@@ -7,6 +7,227 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+### Fixed
+
+- **Assistant prompt:** stop teaching `itemsPath="{{$json.items|rows}}"` and
+  `$json` on `logic.if` left — prefer `{{$nodes.<producerId>.json.*}}` /
+  `{{$loop.item.*}}` so first-import stays free of `expression_json_chain`
+  (aligned with editor lint + chatbotFix DSL contract).
+- **Editor edges:** KnotEdge uses solid stroke (SVG gradient `url(#…)` could
+  stay invisible until a node drag); stronger `updateNodeInternals` retries
+  after load / catalog / fitView.
+- **Lint panel:** dedupe PHP `KNOT_DSL_*` with local TS codes (same finding
+  shown once). REAL-KNOT-L03/L04 seed expressions use `$nodes.*`.
+
+### Changed
+
+- **UX polish (score-5):** trigger panels fully i18n (webhook save-first hint),
+  inspector Test tab honesty banner (local simulation ≠ live run), unified
+  `KEmptyState` empty states on Workflows (starter import CTA) and Inbox,
+  Suite Home next-action CTAs (Workflows / Install Pro / Open Migration),
+  Doctor links to Modules disable + `docs/uninstall.md` (no purge UI), and
+  FR copy cleanup on Accueil / Editor / Doctor. Fresh-install smoke adds an
+  async drain check (`CronWorker` tick → execution success).
+- **Pro Pack upsell honesty:** locked palette nodes open activate / Pro hub
+  (not tooltip-only); Simulate surfaces `license_required` with CTA.
+- **Discovery scores:** `docs/testing/discovery-pre-dolistore.md` retargeted
+  to suite scores~5 (Pro 0.1.10 + Migration 0.21.9 signed on license-vm).
+- **OfficialManifestSignatures:** Migration primary pin after Workspace nav
+  removal (transition keeps previous 0.21.9 digest).
+
+## [2.13.14] - 2026-07-14
+
+### Fixed
+
+- **Starter DSL hygiene:** all `examples/starter/*.knot.json` use `$nodes.*` /
+  `$loop.item.*` so ProblemsPanel shows **0** `expression_json_chain` warnings
+  (`StarterExamplesLintCleanTest`).
+- **Apply across volumes:** `Installer::swap` falls back to recursive copy when
+  `rename()` fails (EXDEV between `DOL_DATA_ROOT` staging and `custom/`).
+- **Apply lab HTTP:** `ZipDownloader` allows `http://localhost` /
+  `http://127.0.0.1` artefacts for local signed labs (production still HTTPS-only).
+
+### Changed
+
+- **Updates UX:** card layout per product, human status badges (Update available /
+  Up to date / Ahead of channel), trust banner (Ed25519 + rollback), no purchase
+  CTA on Core, and a clear “all current” empty state. Starter **10** adds nested
+  If/Switch/Loop plus enriched HTML email report (corridors + route tags).
+- **Docker Apply N−1:** standalone `docker/docker-compose.apply-n1.yml` +
+  `scripts/docker_apply_n1_bootstrap.sh` / `docker_apply_n1_prepare_lab.sh` so
+  operators can test Core Apply from **2.13.12 → N** without the `:ro` bind-mount
+  (ports **8088** / **8199** by default). Proven **2.13.12 → 2.13.14**.
+- **Pre-Dolistore validation:** Assistant LLM fixtures +
+  `assistant-import-lint.spec.ts`, fresh-install smoke
+  (`scripts/docker_fresh_install_smoke.sh`), discovery scores in
+  `docs/testing/discovery-pre-dolistore.md`, honesty known-limits (CodeNode /
+  n8n import / alert / Assistant external chatbot).
+
+## [2.13.13] - 2026-07-14
+
+### Fixed
+
+- **Cron jobs enabled on install/upgrade:** descriptor `status => 1` (already)
+  plus `init()` UPDATE so existing installs with `status=0` are re-enabled
+  (async Run / retention / health). Guarded by `ModKnotCronJobsTest`.
+- **EditorView Vitest:** mock `onViewportChange` / `setViewport` (CI Frontend build).
+- **Suite Accueil ≠ Core dashboard:** `?mode=home` renders `SuiteHomeView`
+  (product chooser for Core / Migration / Pro Pack). Core dashboard stays on
+  `?mode=dashboard` under Knot Core. Suite **Santé** (`?mode=suite-health`) and
+  **Mises à jour** are top-level before Configuration; Updates removed from Core
+  children. `SuiteHealthPanel` lives on the Santé page (not the Core dashboard).
+  Accueil uses `KHero` mesh band + staggered product tiles (brand-first suite landing).
+- **Suite Cmd+K / single rail (S1):** Command palette Navigate includes Accueil,
+  Santé, Updates, Configuration; keyboard arrows/Enter work across workflows,
+  extension entries, and nav. Migration hides its local sidebar whenever
+  `aside.knot-nav` is present (option B single chrome).
+
+- **Suite sidebar hierarchy:** Accueil (`mode=home`) at the top; Core children
+  nest under **Knot Core** (incl. Observabilité); **Configuration** is suite-level
+  (after extensions); Migration `settings` no longer appears in the submenu.
+  Empty `data-knot-ext-nav-hash` no longer marks every Core child `is-active`
+  (purple outline bug).
+
+- **Product truth (C0):** n8n import marked **out of scope** (not shipped);
+  Core UI density control not advertised; Pro Pack `simulate()` docblocks
+  aligned with LicenseGate (already enforced in code).
+
+- **Sidebar branding:** brand name is **Knot Tools**; footer tagline
+  « Automatisation · Migration · Extensions ». Golden **Knot Core** parent
+  nests Core-only entries; Marketplace / extensions stay top-level.
+
+- **Host layout ≤880px:** inline `knot-host-layout-guard` in `preview.php` / `setup.php` mirrored
+  the rail `padding-left` without the `knot-host.css` mobile override, so stacked nav still reserved
+  256px and caused ~8px horizontal overflow (assistant no-overflow E2E). Guard now zeroes padding
+  under `max-width: 880px`; `.knot-nav` uses `box-sizing: border-box`.
+- **Marketplace E2E selectors:** specs no longer require a page-level “Marketplace” heading (editorial
+  home uses Spotlight). Shared `expectMarketplaceShell` checks `data-mode` + topbar navigation.
+  Bundled / template gallery tests open `#/templates` (hash router) instead of `?tab=` alone.
+- **Marketplace `#/templates` tab sync:** `StorefrontTabsBlock` selected Packs even on the Templates
+  hash route when `?tab=` was absent; initial tab (and route watch) now follow `#/templates` / `#/packs`.
+- **Unified sidebar option B:** Lucide→Font Awesome icon map (`switch`/`settings`/`lifebuoy`);
+  Core leftnav children get hash `is-active`, journey badges via `KnotCore.navigationBadges`,
+  tour anchors (`data-tour=sidebar-journey|sidebar-help`), and humanized label fallbacks when
+  Dolibarr langs miss Vue `nav.*` keys.
+
+### Added
+
+- **C1 time-to-value:** Core cronjobs default to `status=1` on install; Workflows multi-select
+  checkboxes for bulk ZIP export; Simulate timeout offers « Retry as Run »; Run queued shows
+  cron health hint via `health.php`; chatbot fix prompt includes DSL contract + incremental
+  mode; `repairWorkflowDefinition` auto-repairs edges/ids/defaults before chatbot; starter
+  templates 07–09; E2E `zero-to-hero.spec.ts` + responsive matrix 1366×768 / 1280×720 / h768.
+- **C4 polish (partial):** human execution log lines (`humanExecutionLog.ts` + simulation panel);
+  editor selection **and viewport** restore via `editorUiState` sessionStorage; ADR extension
+  navigation (`docs/decisions/adr-extension-navigation.md`); Core forwards `ui.navigation` into
+  `KNOT_EXTENSIONS` + leftnav children when the extension mode is active; proofs index
+  `docs/proofs/README.md` + **`docs/proofs/reference-module.md`** (introspection, risk-grammar,
+  Ed25519 updates); `useEditorWorkflowApi` seam wired through EditorView CRUD/simulate/run.
+  Inspector Test tab empty state points to canvas **Simulate** (i18n ×6; raw JSON optional/collapsed).
+  risk-grammar §3 permission pills remain **PARTIAL** (honest status table). Editor toolbar at
+  1366×768: icon-first labels below `xl` + `overflow-x-hidden` to reduce action-row overflow.
+- **Suite health panel (C2-4):** `SuiteHealthPanel` on `?mode=suite-health` —
+  Core / Pro Pack / Migration installed **and published** versions (via `updates.php`),
+  update chip, license status per product, cron scheduler state, and live execution
+  counters. i18n ×6. Error state offers **Retry**.
+- **Star journey + cron banner (product polish):** dashboard `StarJourneyPanel` (3 SME paths →
+  Workflows deep-link) and `CronHealthBanner` when KnotCronWorker is missing/disabled/never ran;
+  Workflows shows starter import hint for `?starter=`; Inspector Test tab leads with human summary
+  (raw JSON collapsed); Assistant framed as prompt + repair; `notification.alert` label clarifies
+  audit-only (no send); ConnectorsView tip + palette fallback spell out audit-only vs
+  `notification.alert_fanout` (Pro Pack).
+- **Chatbot fix catalogue (C1-1a):** `buildChatbotFixMessage` embeds installed connector slugs from
+  the capabilities/connectors API (fallback Core catalogue when unavailable).
+- **E2E (C1-2 / C1-3c):** Playwright projects `chromium-dsf-125` / `chromium-dsf-150`;
+  `import-export.spec.ts` asserts multi-select Export ZIP (download when list non-empty).
+- **Updates apply — actionable error messages (C2-3):** `license_invalid`,
+  `release_version_mismatch`, and `extension_unknown` error codes now surface dedicated toasts
+  with recovery guidance (i18n ×6), complementing the existing `activation_code_missing`,
+  `license_download_token_denied`, `backend_unreachable`, and `release_signature_invalid` toasts.
+- **InboxView i18n:** approval inbox title, actions, empty state and decision toasts use `$t` / `inboxPage.*` (6 locales).
+- **E2E licence prep (C1/C2):** Playwright `license-monetization-prep.spec.ts` — asserts
+  `dolistore_licensing_ready` stays false, `license_status` shape, mocked activation modal flow,
+  marketplace CTA not pointing at license checkout. Full prod signed chain remains deferred.
+- **Editor — Edit JSON dialog:** toolbar action to view the current workflow JSON and paste a
+  corrected one (chatbot round-trip) straight onto the canvas — same normalizer/repair pipeline
+  as import (`normalizeWorkflowImport`), marks the editor unsaved, no bulk re-import needed.
+- **Editor — Problems panel:** « Copy fix for chatbot » action (shared `lib/chatbotFix.ts`
+  builder with `AssistantView`) — copies current lint findings + workflow JSON as a correction
+  prompt. Beta feedback follow-up on `KNOT_DSL_EXPRESSION_JSON_CHAIN` triage.
+
+### Changed
+
+- **Legal pointer:** `docs/legal/cgv-knot-migration-brouillon.md` → slim beta
+  access terms at https://license.knot.tools/legal/terms (ADR-31 opt-in).
+- **OfficialManifestSignatures:** pin Pro Pack `0.1.10` and Migration `0.21.9`
+  manifest signatures (transition pins retained for prior releases).
+
+### Documentation
+
+- **C5 commercial support:** [`docs/runbooks/commercial-support.md`](docs/runbooks/commercial-support.md)
+  operable for solo operator — business days Mon–Fri, timezone
+  **America/Martinique (UTC−4)**, mailbox ticket store, billing hand-off,
+  reply templates; removed pure « draft » placeholder status for beta use.
+- **C1 integrator first success:** one-page checklist
+  [`docs/admin-guide/integrator-first-success.md`](docs/admin-guide/integrator-first-success.md)
+  (install → activate → wizard → starter → Simulate → Run; cron must stay
+  `status=1`). **Demo environment** section documents the seeded demo path for
+  replaying TTV. Linked from the admin-guide index.
+
+### Testing
+
+- **Visual baseline Accueil:** `?mode=home` added to Playwright visual-baseline
+  primary views (suite landing regression guard).
+- **Updates apply Pro Pack:** E2E no longer hard-codes 0.1.3→0.1.4 — applies when
+  an update is available, skips when already latest / Apply disabled.
+- **Marketplace copy (S5):** locked template CTAs use beta programme wording
+  (knot.tools), not « Acheter / Buy Pro Pack ».
+- **Marketplace discovery E2E:** `marketplace-discovery.spec.ts` asserts
+  `home_discovery` mount + external CTAs stay off `license.knot.tools`.
+- **Dolistore package readiness (S6):** `python3 scripts/package_dolistore.py`
+  → `build/knot-2.13.12.zip` **VERDICT: PASS** (local, no Dolistore upload).
+
+### Changed
+
+- **Marketplace locked CTAs:** i18n `lockedCtaBuyProPack` aligned with
+  `buyOnLicensePortal` (beta honesty, pre-checkout).
+- **C2 monetisation ops (draft):** commercial support runbook
+  (`docs/runbooks/commercial-support.md` — channels, severity, evidence bundle);
+  operator Apply error cheat-sheet (`docs/runbooks/updates-apply-operator.md`) plus
+  quick-reference section in `updates-apply.md` for `activation_code_missing`,
+  `release_signature_invalid`, `license_download_token_denied`, `backend_unreachable`.
+  `package_dolistore.py` has no `--dry-run` (only `--skip-audit` / `--skip-gitleaks`);
+  full pack + audit **must PASS** before any commercial GPL / Dolistore release.
+  Does **not** flip `dolistore_licensing_ready`.
+- **Beta known-limits:** CodeNode marked **not shipped** (FR + EN) — removes the false
+  implication that a Pro Pack PHP sandbox exists.
+- **Extensibility:** unified sidebar option B documented as landed (Core forwards
+  `ui.navigation`), not as future tense.
+
+### Tooling
+
+- **Inbox E2E:** `inbox.spec.ts` assertions aligned with localized headings and empty state.
+
+### Fixed
+
+- **Updates apply — channel + version guards (C2-1b):** the `channel` field from the frontend
+  request body is now forwarded to the license download-token endpoint (previously only the
+  global `KNOT_RELEASE_CHANNEL` was used, causing the backend to potentially resolve the wrong
+  channel). A new `release_version_mismatch` guard (HTTP 409) rejects apply when the backend
+  resolves a different version than the one the operator selected.
+- **Updates apply (extensions):** `Installer::prepare()` adopts the archive top-level folder when
+  it differs from the live install directory (e.g. ZIP ships `knotmigration/` but the extension
+  was deployed under `custom/knot-migration/`) — previously the apply failed with
+  « manifest.json missing at top-level folder » at beta testers'. The mismatch error now names
+  the folder shipped by the archive. Onboarding doc aligned on `custom/knotmigration/`.
+- **Updates view:** actionable error toasts for `activation_code_missing` (activate the licence
+  first), `license_download_token_denied` and `backend_unreachable` instead of the generic
+  apply failure copy (i18n ×6).
+- **`DescriptorCache`:** replace `GLOB_BRACE` (unavailable on non-GNU libc — musl/Alpine) with
+  explicit glob patterns so descriptor hashing works on every supported platform.
+- **`OfficialManifestSignatures`:** correct the Migration transition-pin comment — the pinned
+  digest belongs to the 0.21.7 manifest (verified against the signed release ZIP), not 0.21.5.
+
 ## [2.13.12] - 2026-06-08
 
 ### Added
