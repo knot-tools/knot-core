@@ -92,7 +92,7 @@ Les specs chargent souvent **`demo/seed.env`** / **`KNOT_E2E_BASE_URL`** / **`DO
 - CSRF operations mutantes
 - Webhook HMAC
 - SSRF HttpAction
-- Sandbox CodeNode
+- Sandbox CodeNode (**not shipped** — see `known-limits.md`; do not treat as a required test)
 - Regex ReDoS
 
 ### Charge

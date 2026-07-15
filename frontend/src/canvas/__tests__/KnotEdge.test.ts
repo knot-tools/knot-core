@@ -57,11 +57,12 @@ const Host = defineComponent({
 });
 
 describe('KnotEdge', () => {
-  it('renders linearGradient and flow dot when animated', () => {
+  it('renders solid stroke path and flow dot when animated', () => {
     const wrapper = mount(Host, {
       global: { plugins: [i18n] },
     });
-    expect(wrapper.find('linearGradient').exists()).toBe(true);
+    expect(wrapper.find('linearGradient').exists()).toBe(false);
+    expect(wrapper.find('.base-edge-stub').exists()).toBe(true);
     expect(wrapper.find('.knot-edge-flow-dot').exists()).toBe(true);
   });
 

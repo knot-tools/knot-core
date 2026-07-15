@@ -331,6 +331,192 @@ final class SidebarPresentationTest extends TestCase
         self::assertSame('start', $items[0]['_placement']);
     }
 
+    public function testBuildNavigationChildrenFromUiNavigation(): void
+    {
+        $children = SidebarPresentation::buildNavigationChildren(
+            [
+                [
+                    'key' => 'journey',
+                    'labelKey' => 'nav.section.journey',
+                    'items' => [
+                        [
+                            'key' => 'discovery',
+                            'labelKey' => 'nav.discovery',
+                            'icon' => 'compass',
+                            'hash' => '#/discovery',
+                        ],
+                    ],
+                ],
+            ],
+            'https://example.com/preview.php',
+            'migration',
+            static fn (string $key, ?string $domain): string => $key,
+            'knot-migration',
+        );
+
+        self::assertCount(1, $children);
+        self::assertSame('ext-knot-migration-discovery', $children[0]['key']);
+        self::assertSame('discovery', $children[0]['navKey']);
+        self::assertSame('Discovery', $children[0]['label']);
+        self::assertSame('fa-compass', $children[0]['icon']);
+        self::assertSame('#/discovery', $children[0]['hash']);
+        self::assertStringContainsString('mode=migration#/discovery', $children[0]['url']);
+        self::assertTrue($children[0]['_isNavChild']);
+        self::assertSame('Mission Control', SidebarPresentation::humanizeNavKey('mission-control'));
+    }
+
+    public function testNormalizeNavIconMapsLucideNamesToFontAwesome(): void
+    {
+        self::assertSame('fa-exchange-alt', SidebarPresentation::normalizeNavIcon('switch'));
+        self::assertSame('fa-cog', SidebarPresentation::normalizeNavIcon('settings'));
+        self::assertSame('fa-life-ring', SidebarPresentation::normalizeNavIcon('lifebuoy'));
+        self::assertSame('fa-compass', SidebarPresentation::normalizeNavIcon('compass'));
+        self::assertSame('fa-cog', SidebarPresentation::normalizeNavIcon('fa-cog'));
+    }
+
+    public function testBuildNavigationChildrenMapsBrokenLucideIcons(): void
+    {
+        $children = SidebarPresentation::buildNavigationChildren(
+            [
+                [
+                    'key' => 'system',
+                    'labelKey' => 'nav.section.system',
+                    'items' => [
+                        [
+                            'key' => 'cutover',
+                            'labelKey' => 'nav.cutover',
+                            'icon' => 'switch',
+                            'hash' => '#/cutover',
+                        ],
+                        [
+                            'key' => 'settings',
+                            'labelKey' => 'nav.settings',
+                            'icon' => 'settings',
+                            'hash' => '#/settings',
+                        ],
+                        [
+                            'key' => 'help',
+                            'labelKey' => 'nav.help',
+                            'icon' => 'lifebuoy',
+                            'hash' => '#/help',
+                        ],
+                    ],
+                ],
+            ],
+            'https://example.com/preview.php',
+            'migration',
+            static fn (string $key, ?string $domain): string => $key,
+            'knot-migration',
+        );
+
+        self::assertSame('fa-exchange-alt', $children[0]['icon']);
+        self::assertSame('fa-life-ring', $children[1]['icon']);
+        self::assertCount(2, $children);
+    }
+
+    public function testBuildNavigationChildrenSkipsSettingsAndWorkspace(): void
+    {
+        $children = SidebarPresentation::buildNavigationChildren(
+            [
+                [
+                    'key' => 'system',
+                    'labelKey' => 'nav.section.system',
+                    'items' => [
+                        [
+                            'key' => 'settings',
+                            'labelKey' => 'nav.settings',
+                            'icon' => 'settings',
+                            'hash' => '#/settings',
+                        ],
+                        [
+                            'key' => 'help',
+                            'labelKey' => 'nav.help',
+                            'icon' => 'lifebuoy',
+                            'hash' => '#/help',
+                        ],
+                    ],
+                ],
+            ],
+            'https://example.com/preview.php',
+            'migration',
+            static fn (string $key, ?string $domain): string => $key,
+            'knot-migration',
+        );
+
+        self::assertCount(1, $children);
+        self::assertSame('help', $children[0]['navKey']);
+    }
+
+    public function testBuildNavigationChildrenSkipsWorkspaceAndDisabledItems(): void
+    {
+        $children = SidebarPresentation::buildNavigationChildren(
+            [
+                [
+                    'key' => 'tools',
+                    'labelKey' => 'nav.section.tools',
+                    'items' => [
+                        [
+                            'key' => 'history',
+                            'labelKey' => 'nav.history',
+                            'icon' => 'history',
+                            'hash' => '#/history',
+                        ],
+                        [
+                            'key' => 'workspace',
+                            'labelKey' => 'nav.workspace',
+                            'icon' => 'layers',
+                            'hash' => '#/workspace',
+                        ],
+                        [
+                            'key' => 'soon-feature',
+                            'labelKey' => 'nav.soonFeature',
+                            'icon' => 'circle',
+                            'hash' => '#/soon',
+                            'disabled' => true,
+                        ],
+                    ],
+                ],
+            ],
+            'https://example.com/preview.php',
+            'migration',
+            static fn (string $key, ?string $domain): string => $key,
+            'knot-migration',
+        );
+
+        self::assertCount(1, $children);
+        self::assertSame('ext-knot-migration-history', $children[0]['key']);
+    }
+
+    public function testBuildExtensionItemsAttachesNavChildrenWhenDeclared(): void
+    {
+        $ext = $this->migrationExtension();
+        $ext['ui']['navigation'] = [
+            [
+                'key' => 'overview',
+                'labelKey' => 'nav.section.overview',
+                'items' => [
+                    [
+                        'key' => 'mission-control',
+                        'labelKey' => 'nav.missionControl',
+                        'icon' => 'home',
+                        'hash' => '#/mission-control',
+                    ],
+                ],
+            ],
+        ];
+
+        $items = SidebarPresentation::buildExtensionItems(
+            ['knot-migration' => $ext],
+            static fn (string $perm): bool => true,
+            true,
+            static fn (string $key, ?string $domain): string => $key,
+            'https://example.com/preview.php'
+        );
+
+        self::assertNotEmpty($items[0]['_navChildren']);
+        self::assertSame('ext-knot-migration-mission-control', $items[0]['_navChildren'][0]['key']);
+    }
+
     public function testMergeWithNoExtensionsReturnsNativeUnchanged(): void
     {
         $native = [['key' => 'dashboard'], ['key' => 'setup']];

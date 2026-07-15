@@ -59,7 +59,7 @@
                         "mode": "all",
                         "conditions": [
                             {
-                                "left": "{{$json.items}}",
+                                "left": "{{$nodes.seed.json.items}}",
                                 "operator": "is_not_empty",
                                 "right": ""
                             }
@@ -98,7 +98,7 @@
                     "subtitle": "bulk / retail / clearance",
                     "position": { "x": 1000, "y": 200 },
                     "config": {
-                        "expression": "{{$json.lane}}",
+                        "expression": "{{$loop.item.lane}}",
                         "cases": [
                             { "value": "bulk", "output": "case_1" },
                             { "value": "retail", "output": "case_2" }
@@ -286,8 +286,8 @@
                     "position": { "x": 880, "y": 40 },
                     "config": {
                         "values": {
-                            "linesProcessed": "{{$json.count}}",
-                            "perLineSnapshots": "{{$json.items}}",
+                            "linesProcessed": "{{$nodes.loop_lines.json.count}}",
+                            "perLineSnapshots": "{{$nodes.loop_lines.json.items}}",
                             "template": "WF_STARTER_06_SHOWCASE_LOGIC",
                             "routingSummary": "{{$json}}",
                             "_usage": {

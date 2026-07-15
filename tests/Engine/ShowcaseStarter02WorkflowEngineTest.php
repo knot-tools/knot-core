@@ -40,12 +40,15 @@ final class ShowcaseStarter02WorkflowEngineTest extends TestCase
 
         $sim = (new EmailAction())->simulate([
             'node' => ['config' => $config],
-            'json' => [
-                'soc_email' => 'billing@example.com',
-                'ref' => 'FA2501-0042',
-                'soc_name' => 'Example Industries',
-                'total_ttc' => '1200.00',
-                'date_lim_reglement' => '2026-04-01',
+            'json' => [],
+            'loop' => [
+                'item' => [
+                    'soc_email' => 'billing@example.com',
+                    'ref' => 'FA2501-0042',
+                    'soc_name' => 'Example Industries',
+                    'total_ttc' => '1200.00',
+                    'date_lim_reglement' => '2026-04-01',
+                ],
             ],
         ]);
         self::assertTrue($sim['_dryRun']);

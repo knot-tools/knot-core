@@ -129,6 +129,8 @@ body.knot-nav-collapsed {
     left: 0;
     bottom: 0;
     width: var(--knot-nav-width, var(--knot-mc-sidebar-w, 240px));
+    max-width: 100%;
+    box-sizing: border-box;
     z-index: 5;
     display: flex;
     flex-direction: column;
@@ -283,6 +285,78 @@ body.knot-nav-collapsed {
    (permission missing for non-admin: item is hidden upstream).      */
 .knot-nav__item--ext {
     /* hook for future per-extension theming; no default override */
+}
+
+/* Unified sidebar option B — in-extension children when mode is active. */
+.knot-nav__ext-children {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0 0 6px 12px;
+    padding-left: 8px;
+    border-left: 2px solid var(--knot-color-border, #e5e7eb);
+}
+
+.knot-nav__item--ext-child {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    font-size: 12px;
+}
+
+.knot-nav__item--ext-child .knot-nav__icon {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+}
+
+/* Journey badges on Core leftnav children (ADR option B). */
+.knot-nav__item--ext-child[data-knot-nav-state="signed"] .knot-nav__icon,
+.knot-nav__item--ext-child[data-knot-nav-state="in_progress"] .knot-nav__icon,
+.knot-nav__item--ext-child[data-knot-nav-state="locked"] .knot-nav__icon,
+.knot-nav__item--ext-child[data-knot-nav-state="upcoming"] .knot-nav__icon {
+    font-family: var(--knot-font-sans, inherit);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.knot-nav__item--ext-child[data-knot-nav-state="signed"] .knot-nav__icon {
+    color: var(--knot-color-success, #059669);
+}
+
+.knot-nav__item--ext-child[data-knot-nav-state="in_progress"] .knot-nav__icon {
+    color: #fff;
+    background: var(--knot-color-primary, #6366f1);
+    border-radius: 999px;
+}
+
+.knot-nav__item--ext-child[data-knot-nav-state="locked"] .knot-nav__icon {
+    color: var(--knot-color-text-muted, #9ca3af);
+}
+
+.knot-nav__item--ext-child.is-active {
+    background: var(--knot-color-primary-soft, rgba(99, 102, 241, 0.12));
+    color: var(--knot-color-primary-strong, #4338ca);
+    border-color: var(--knot-color-primary, #6366f1);
+    box-shadow: none;
+}
+
+.knot-nav__item--ext-child:not(.is-active) {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    font-weight: 500;
+}
+
+.knot-nav__item--ext-child:not(.is-active):hover {
+    background: var(--knot-color-surface-soft, #f3f4f6);
+    border-color: transparent;
+    color: var(--knot-color-text) !important;
+}
+
+.knot-nav__item--ext-child:not(.is-active):hover .knot-nav__icon {
+    background: var(--knot-color-surface-soft, #e5e7eb);
+    color: var(--knot-color-primary, #6366f1);
 }
 
 .knot-nav__item--ext-cta {
@@ -490,6 +564,22 @@ html[data-marketplace-unread="true"]
 .knot-nav__status-link:hover {
     background: var(--knot-color-primary-soft);
     color: var(--knot-color-primary-strong) !important;
+}
+
+.knot-nav__suite-tagline {
+    margin: 8px 4px 0;
+    padding: 0 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--knot-color-text-soft);
+    line-height: 1.35;
+    text-align: center;
+}
+
+.knot-nav.is-collapsed .knot-nav__suite-tagline {
+    display: none !important;
 }
 
 .knot-nav__collapse {

@@ -102,6 +102,13 @@ const testInput = ref('{}');
 const testOutput = shallowRef<unknown>(null);
 const testError = ref<string | null>(null);
 
+const testHumanSummary = computed(() => {
+  const out = testOutput.value;
+  if (!out || typeof out !== 'object' || out === null) return null;
+  const summary = (out as { humanSummary?: unknown }).humanSummary;
+  return typeof summary === 'string' ? summary : null;
+});
+
 function setConfig(v: Record<string, unknown>) {
   emit('update:config', v);
 }
@@ -138,8 +145,17 @@ function applyAdvanced(value: string) {
 function runTest() {
   testError.value = null;
   try {
-    JSON.parse(testInput.value || '{}');
-    testOutput.value = { simulated: true, note: t('inspector.nodeBody.testSimulatedNote') };
+    const parsed = JSON.parse(testInput.value || '{}') as Record<string, unknown>;
+    const type = String(props.nodeType ?? '');
+    testOutput.value = {
+      simulated: true,
+      humanSummary: t('inspector.nodeBody.testHumanSummary', {
+        label: type || 'node',
+        type: type || '—',
+      }),
+      note: t('inspector.nodeBody.testSimulatedNote'),
+      echoInput: parsed,
+    };
   } catch (err) {
     testError.value = err instanceof Error ? err.message : t('inspector.nodeBody.invalidTestJson');
   }
@@ -248,7 +264,22 @@ function runTest() {
       </p>
     </div>
 
-    <div v-show="tab === 'test'" class="k-space-y-2">
+    <div v-show="tab === 'test'" class="k-space-y-2" data-knot-test="inspector-test-tab">
+      <div
+        class="k-rounded-knot-sm k-border k-border-knot-warning/40 k-bg-knot-warning-soft k-px-2.5 k-py-2 k-text-[11px] k-text-knot-text k-leading-snug"
+        role="status"
+        data-testid="inspector-test-honesty-banner"
+      >
+        <p class="k-font-semibold">{{ t('inspector.nodeBody.testHonestyTitle') }}</p>
+        <p class="k-mt-1 k-text-knot-text-muted">{{ t('inspector.nodeBody.testHonestyBody') }}</p>
+      </div>
+      <div
+        class="k-rounded-knot-sm k-border k-border-knot-info/30 k-bg-knot-info-soft k-px-2.5 k-py-2 k-text-[11px] k-text-knot-text k-leading-snug"
+        data-testid="inspector-test-empty-hint"
+      >
+        <p class="k-font-semibold">{{ t('inspector.nodeBody.testEmptyTitle') }}</p>
+        <p class="k-mt-1 k-text-knot-text-muted">{{ t('inspector.nodeBody.testEmptyBody') }}</p>
+      </div>
       <label class="k-text-[11px] k-text-knot-text-soft k-font-bold">{{ t('inspector.nodeBody.testInputLabel') }}</label>
       <textarea
         v-model="testInput"
@@ -262,7 +293,18 @@ function runTest() {
         {{ t('inspector.nodeBody.testNodeButton') }}
       </button>
       <p v-if="testError" class="k-text-[11px] k-text-knot-danger">{{ testError }}</p>
-      <pre v-if="testOutput" class="k-text-[10px] k-bg-knot-surface-soft k-border k-border-knot-border k-rounded-knot-sm k-p-2 k-overflow-x-auto">{{ JSON.stringify(testOutput, null, 2) }}</pre>
+      <div
+        v-if="testHumanSummary"
+        class="k-text-xs k-font-medium k-text-knot-text k-bg-knot-success-soft k-border k-border-knot-success/20 k-rounded-knot-sm k-px-2.5 k-py-2"
+        data-testid="inspector-test-human-summary"
+      >
+        {{ testHumanSummary }}
+      </div>
+      <p v-if="testOutput" class="k-text-[11px] k-text-knot-text-muted">{{ t('inspector.nodeBody.testSimulatedNote') }}</p>
+      <details v-if="testOutput" class="k-text-[10px]">
+        <summary class="k-cursor-pointer k-text-knot-text-soft k-font-semibold">{{ t('inspector.nodeBody.testRawJson') }}</summary>
+        <pre class="k-mt-1 k-bg-knot-surface-soft k-border k-border-knot-border k-rounded-knot-sm k-p-2 k-overflow-x-auto">{{ JSON.stringify(testOutput, null, 2) }}</pre>
+      </details>
     </div>
   </div>
 </template>

@@ -29,7 +29,7 @@ $marketplaceUiEnabled = KnotMarketplacePresentation::marketplaceUiEnabled();
 
 $marketplaceDependentModes = ['marketplace', 'templates'];
 // ADR-20 slice 5+: legacy "pro-pack-migration" redirects to the Pro Pack hub.
-$allowedModesFull = ['editor', 'workflows', 'executions', 'queue', 'execution', 'dashboard', 'observability', 'connectors', 'credentials', 'inbox', 'assistant', 'book', 'diff', 'doctor', 'compatibility', 'capabilities', 'templates', 'variables', 'audit', 'updates', 'marketplace'];
+$allowedModesFull = ['home', 'suite-health', 'editor', 'workflows', 'executions', 'queue', 'execution', 'dashboard', 'observability', 'connectors', 'credentials', 'inbox', 'assistant', 'book', 'diff', 'doctor', 'compatibility', 'capabilities', 'templates', 'variables', 'audit', 'updates', 'marketplace'];
 $allowedModes = $marketplaceUiEnabled
     ? $allowedModesFull
     : array_values(array_diff($allowedModesFull, $marketplaceDependentModes));
@@ -93,10 +93,24 @@ try {
             $bundleCss = isset($ui['bundle']['css']) && $ui['bundle']['css'] !== null
                 ? (string) $ui['bundle']['css']
                 : null;
-            $jsUrl = DOL_URL_ROOT . '/custom/' . $extFolder . '/' . ltrim($bundleJs, '/');
-            $cssUrl = $bundleCss !== null
-                ? DOL_URL_ROOT . '/custom/' . $extFolder . '/' . ltrim($bundleCss, '/')
-                : null;
+            $extRoot = $extPath !== ''
+                ? rtrim($extPath, DIRECTORY_SEPARATOR)
+                : DOL_DOCUMENT_ROOT . '/custom/' . $extFolder;
+            $jsRelative = ltrim($bundleJs, '/');
+            $jsDiskPath = $extRoot . '/' . $jsRelative;
+            $jsVer = file_exists($jsDiskPath)
+                ? rawurlencode((string) filemtime($jsDiskPath))
+                : rawurlencode((string) ($extension['version'] ?? '0'));
+            $jsUrl = DOL_URL_ROOT . '/custom/' . $extFolder . '/' . $jsRelative . '?v=' . $jsVer;
+            $cssUrl = null;
+            if ($bundleCss !== null) {
+                $cssRelative = ltrim($bundleCss, '/');
+                $cssDiskPath = $extRoot . '/' . $cssRelative;
+                $cssVer = file_exists($cssDiskPath)
+                    ? rawurlencode((string) filemtime($cssDiskPath))
+                    : rawurlencode((string) ($extension['version'] ?? '0'));
+                $cssUrl = DOL_URL_ROOT . '/custom/' . $extFolder . '/' . $cssRelative . '?v=' . $cssVer;
+            }
             // Key names below mirror the ADR-20 §4.2 contract
             // (`KnotExtensionContext`): `requiresPermission`,
             // `userHasPermission`, `licenseExpiresAt`, `status`.
@@ -106,6 +120,11 @@ try {
             // rename; remove them in a follow-up once all in-tree
             // consumers (Knot Core + Pro Pack + Migration) read the
             // canonical names.
+            $navigationPayload = null;
+            $navigationRaw = $ui['navigation'] ?? null;
+            if (is_array($navigationRaw) && $navigationRaw !== []) {
+                $navigationPayload = $navigationRaw;
+            }
             $knotExtensionsPayload[] = [
                 'id' => $extId,
                 'label' => (string) ($extension['label'] ?? $extId),
@@ -127,6 +146,8 @@ try {
                 'licenseStatus' => $licenseStatus,
                 'licenseExpiresAt' => is_string($licenseExpiresAt) ? $licenseExpiresAt : null,
                 'isAdmin' => ((int) ($user->admin ?? 0)) > 0,
+                // ADR unified sidebar option B — forward ui.navigation for Core leftnav.
+                'navigation' => $navigationPayload,
             ];
             $knotExtensionAssets[] = ['js' => $jsUrl, 'css' => $cssUrl];
             $knotExtensionModes[] = $extMode;
@@ -321,6 +342,15 @@ body:has(.knot-nav) .knot-shell {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box;
+}
+/* Must mirror css/knot-host.css @media (max-width: 880px): this inline guard
+   otherwise wins the cascade and keeps rail padding when the nav stacks. */
+@media (max-width: 880px) {
+    body.knot-host-page #id-right,
+    body:has(.knot-nav) #id-right {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
 }
 </style>
 <script>document.body.classList.add('knot-host-page');</script>

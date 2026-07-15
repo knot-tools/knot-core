@@ -4,7 +4,12 @@
  */
 
 import type { WorkflowDefinition, WorkflowSavePayload } from './api';
-import { repairWorkflowDefinitionNodes } from './workflowDefinitionRepair';
+import {
+  repairWorkflowDefinition,
+  type RepairEntry,
+} from './workflowDefinitionRepair';
+
+export type { RepairEntry } from './workflowDefinitionRepair';
 
 export type WorkflowImportStatus = 'draft' | 'active' | 'disabled' | 'archived' | 'error';
 
@@ -47,21 +52,22 @@ function normalizeEdge(edge: unknown): Record<string, unknown> {
   };
 }
 
-export function normalizeDefinition(input: unknown): WorkflowDefinition {
+export function normalizeDefinition(input: unknown): WorkflowDefinition & { _repairs?: RepairEntry[] } {
   const def = isRecord(input) ? input : {};
-  const nodes = Array.isArray(def.nodes)
-    ? (repairWorkflowDefinitionNodes(def.nodes) as Record<string, unknown>[])
-    : [];
-  const edges = Array.isArray(def.edges) ? def.edges.map(normalizeEdge) : [];
+  const rawNodes = Array.isArray(def.nodes) ? def.nodes : [];
+  const rawEdges = Array.isArray(def.edges) ? def.edges.map(normalizeEdge) : [];
   const workflowMeta = isRecord(def.workflow) ? def.workflow : {};
   const metadata = isRecord(def.metadata) ? def.metadata : undefined;
+
+  const repaired = repairWorkflowDefinition(rawNodes, rawEdges);
 
   return {
     schemaVersion: String(def.schemaVersion ?? '1.0'),
     workflow: workflowMeta,
-    nodes,
-    edges,
+    nodes: repaired.nodes as Record<string, unknown>[],
+    edges: repaired.edges as Record<string, unknown>[],
     ...(metadata !== undefined ? { metadata } : {}),
+    _repairs: repaired.repairs.length > 0 ? repaired.repairs : undefined,
   };
 }
 
@@ -151,4 +157,13 @@ export function normalizeWorkflowImport(
   }
 
   throw new WorkflowImportFormatError();
+}
+
+/**
+ * Extract auto-repair entries from a definition that went through normalizeDefinition.
+ * Returns empty array if no repairs were applied.
+ */
+export function extractRepairs(definition: WorkflowDefinition | undefined): RepairEntry[] {
+  if (!definition) return [];
+  return (definition as WorkflowDefinition & { _repairs?: RepairEntry[] })._repairs ?? [];
 }

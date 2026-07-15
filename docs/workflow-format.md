@@ -160,4 +160,8 @@ Chaque migration doit definir :
 
 ## Import n8n
 
-L'import n8n sera ecrit from scratch. Il convertit uniquement les nodes mappables, produit un rapport d'avertissements et ne conserve aucun credential.
+> **Status: out of scope — not shipped.** Knot does **not** import n8n
+> workflows. The product JSON format is proprietary. Mentions of a future
+> from-scratch converter (no n8n code or dependency) remain backlog only
+> with **no committed timeline**. Do not advertise n8n import in user-facing
+> docs or marketing.

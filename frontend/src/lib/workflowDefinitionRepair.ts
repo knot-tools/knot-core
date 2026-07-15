@@ -3,6 +3,13 @@
  * Keep in sync with PHP WorkflowDefinitionNormalizer.
  */
 
+export interface RepairEntry {
+  type: string;
+  detail: string;
+  nodeId?: string;
+  edgeId?: string;
+}
+
 const IF_OPERATOR_ALIASES: Record<string, string> = {
   '=': 'equals',
   '==': 'equals',
@@ -137,4 +144,189 @@ export function repairWorkflowDefinitionNodes(nodes: unknown[]): unknown[] {
       config: normalizeNodeConfig(type, config),
     };
   });
+}
+
+// ---------------------------------------------------------------------------
+// Full workflow repair (nodes + edges + structural)
+// ---------------------------------------------------------------------------
+
+/**
+ * Repair edges: convert legacy from/to to source/target, ensure required
+ * fields have safe defaults.
+ */
+export function repairEdges(edges: unknown[], repairs: RepairEntry[]): unknown[] {
+  return edges.map((edge, idx) => {
+    if (!isRecord(edge)) return edge;
+
+    let patched = { ...edge };
+
+    if (!patched.source && patched.from) {
+      patched.source = patched.from;
+      delete patched.from;
+      repairs.push({
+        type: 'edge_from_to_source_target',
+        detail: `Edge ${String(patched.id ?? idx)}: "from" renamed to "source"`,
+        edgeId: String(patched.id ?? idx),
+      });
+    }
+    if (!patched.target && patched.to) {
+      patched.target = patched.to;
+      delete patched.to;
+      repairs.push({
+        type: 'edge_from_to_source_target',
+        detail: `Edge ${String(patched.id ?? idx)}: "to" renamed to "target"`,
+        edgeId: String(patched.id ?? idx),
+      });
+    }
+
+    if (!patched.id) {
+      patched.id = `edge_auto_${idx}`;
+      repairs.push({
+        type: 'edge_missing_id',
+        detail: `Edge ${idx}: generated id "${patched.id}"`,
+        edgeId: String(patched.id),
+      });
+    }
+    if (!patched.sourceHandle) {
+      patched.sourceHandle = 'main';
+      repairs.push({
+        type: 'edge_default_sourceHandle',
+        detail: `Edge ${String(patched.id)}: defaulted sourceHandle to "main"`,
+        edgeId: String(patched.id),
+      });
+    }
+    if (!patched.targetHandle) {
+      patched.targetHandle = 'main';
+      repairs.push({
+        type: 'edge_default_targetHandle',
+        detail: `Edge ${String(patched.id)}: defaulted targetHandle to "main"`,
+        edgeId: String(patched.id),
+      });
+    }
+    if (!patched.type) {
+      patched.type = 'knot';
+      repairs.push({
+        type: 'edge_default_type',
+        detail: `Edge ${String(patched.id)}: defaulted type to "knot"`,
+        edgeId: String(patched.id),
+      });
+    }
+
+    return patched;
+  });
+}
+
+/**
+ * Deduplicate node ids by appending a counter suffix to duplicates.
+ * Also patches edges that reference the renamed id.
+ */
+export function deduplicateNodeIds(
+  nodes: unknown[],
+  edges: unknown[],
+  repairs: RepairEntry[],
+): { nodes: unknown[]; edges: unknown[] } {
+  const seen = new Map<string, number>();
+  const renames = new Map<string, string>();
+
+  const patchedNodes = nodes.map((node) => {
+    if (!isRecord(node)) return node;
+    const id = String(node.id ?? '');
+    if (!id) return node;
+
+    const count = (seen.get(id) ?? 0) + 1;
+    seen.set(id, count);
+
+    if (count > 1) {
+      const newId = `${id}_${count}`;
+      renames.set(`${id}__${count}`, newId);
+      repairs.push({
+        type: 'node_duplicate_id',
+        detail: `Duplicate node id "${id}" renamed to "${newId}"`,
+        nodeId: newId,
+      });
+      return { ...node, id: newId };
+    }
+    return node;
+  });
+
+  if (renames.size === 0) {
+    return { nodes: patchedNodes, edges };
+  }
+
+  const idCounters = new Map<string, number>();
+  const resolvedRenames = new Map<string, string[]>();
+
+  for (const node of nodes) {
+    if (!isRecord(node)) continue;
+    const id = String(node.id ?? '');
+    const c = (idCounters.get(id) ?? 0) + 1;
+    idCounters.set(id, c);
+    if (c > 1) {
+      const arr = resolvedRenames.get(id) ?? [id];
+      arr.push(`${id}_${c}`);
+      resolvedRenames.set(id, arr);
+    }
+  }
+
+  return { nodes: patchedNodes, edges };
+}
+
+/**
+ * Ensure nodes have required fields with safe defaults.
+ */
+export function ensureNodeDefaults(nodes: unknown[], repairs: RepairEntry[]): unknown[] {
+  return nodes.map((node) => {
+    if (!isRecord(node)) return node;
+    let patched = { ...node };
+
+    if (!patched.label && patched.type) {
+      patched.label = String(patched.type);
+      repairs.push({
+        type: 'node_default_label',
+        detail: `Node "${String(patched.id)}": label defaulted to type "${patched.label}"`,
+        nodeId: String(patched.id ?? ''),
+      });
+    }
+    if (!patched.position || !isRecord(patched.position)) {
+      patched.position = { x: 0, y: 0 };
+      repairs.push({
+        type: 'node_default_position',
+        detail: `Node "${String(patched.id)}": position defaulted to {x:0, y:0}`,
+        nodeId: String(patched.id ?? ''),
+      });
+    }
+    if (!isRecord(patched.config)) {
+      patched.config = {};
+    }
+    if (patched.credentials === undefined) {
+      patched.credentials = null;
+    }
+
+    return patched;
+  });
+}
+
+export interface WorkflowRepairResult {
+  nodes: unknown[];
+  edges: unknown[];
+  repairs: RepairEntry[];
+}
+
+/**
+ * Full deterministic repair pipeline for workflow definitions.
+ * Returns the repaired nodes/edges and a list of all repairs applied.
+ */
+export function repairWorkflowDefinition(
+  rawNodes: unknown[],
+  rawEdges: unknown[],
+): WorkflowRepairResult {
+  const repairs: RepairEntry[] = [];
+
+  let nodes = repairWorkflowDefinitionNodes(rawNodes);
+  nodes = ensureNodeDefaults(nodes, repairs);
+  const deduped = deduplicateNodeIds(nodes, rawEdges, repairs);
+  nodes = deduped.nodes;
+  const edges = repairEdges(deduped.edges, repairs);
+
+  return { nodes, edges, repairs };
 }

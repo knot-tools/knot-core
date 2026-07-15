@@ -19,7 +19,7 @@ Decisions structurantes (introspection, file d'attente, licensing core/pro pack,
 - Tables : `llx_knot_*`
 - Dolibarr : V20+ uniquement
 - PHP : 8.1+
-- Frontend : Vue 3, Rete.js v2, CodeMirror 6
+- Frontend : Vue 3, Vue Flow, CodeMirror 6
 - Production : pas de Node.js obligatoire, assets compiles livres
 - Deploiement : Git push puis pull manuel sur Plesk
 - Remplacement Plesk : desinstallation propre de l'ancien module, pas de coexistence runtime
@@ -61,9 +61,7 @@ htdocs/custom/knot/
 │   ├── Connectors/         # triggers, logic, Dolibarr, email, notification.alert (AI/SaaS/HTTP → extensions)
 │   ├── Credentials/        # chiffrement, masquage, rotation
 │   ├── Engine/             # orchestration, queue, expressions
-│   ├── Export/             # export Knot
 │   ├── Hooks/              # triggers/hooks Dolibarr
-│   ├── Import/             # import Knot, import n8n from scratch
 │   ├── Reporting/          # metriques agregees (execution, execution_log)
 │   ├── Repository/         # tout acces SQL
 │   └── Security/           # sandbox, SSRF, rate limits, CSRF policies
@@ -260,7 +258,7 @@ Tout SQL passe par ces classes.
 
 ## Frontend
 
-L'editeur historique est remplace. Vue/Rete devient la seule source UI :
+L'editeur historique est remplace. Vue Flow devient la seule source UI :
 
 - `js/components/editor/`
 - `js/components/setup/`
@@ -310,7 +308,7 @@ Le format canonique des edges est `source` / `target` / `type`. Toute autre conv
 ## Risques Architecturaux
 
 - Scope connecteurs trop large : mitigation par V1 must/should/could.
-- Frontend Rete complexe : spike obligatoire en phase A.
+- Frontend Vue Flow complexe : spike obligatoire en phase A.
 - Multi-entite : tests dedies requis.
 - Credentials : chiffrement et masquage des la phase A.
 - Plesk : remplacement uniquement apres backup et staging.

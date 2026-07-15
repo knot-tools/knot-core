@@ -6,6 +6,8 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import EditorView from './views/EditorView.vue';
 import DashboardView from './views/DashboardView.vue';
+import SuiteHomeView from './views/SuiteHomeView.vue';
+import SuiteHealthView from './views/SuiteHealthView.vue';
 import ExecutionsView from './views/ExecutionsView.vue';
 import ExecutionDetailView from './views/ExecutionDetailView.vue';
 import WorkflowsView from './views/WorkflowsView.vue';
@@ -114,6 +116,10 @@ onUnmounted(() => {
 
 const view = computed(() => {
   switch (props.mode) {
+    case 'home':
+      return SuiteHomeView;
+    case 'suite-health':
+      return SuiteHealthView;
     case 'dashboard':
       return DashboardView;
     case 'observability':

@@ -1,5 +1,5 @@
 <!--
-  CommandPalette — Cmd+K global search.
+  CommandPalette — Cmd+K global search (suite nav aligned with leftnav).
   Copyright (C) 2026 Knot — GPL-3.0-or-later
 -->
 <script setup lang="ts">
@@ -11,9 +11,35 @@ import { isMarketplaceUiEnabled } from '../lib/marketplaceUi';
 import type { KnotCommandPaletteEntry, KnotCoreSurface } from '../lib/knotCore';
 import { KNOT_Z_MODAL, knotViewportTopOffset } from '../lib/overlayStacking';
 
+type WorkflowHit = {
+  kind: 'workflow';
+  id: number | string;
+  label: string;
+  subtitle?: string;
+  href: string;
+};
+
+type NavHit = {
+  kind: 'nav';
+  id: string;
+  label: string;
+  href: string;
+};
+
+type ExtHit = {
+  kind: 'extension';
+  id: string;
+  label: string;
+  description?: string;
+  hint?: string;
+  entry: KnotCommandPaletteEntry;
+};
+
+type PaletteHit = WorkflowHit | NavHit | ExtHit;
+
 const open = ref(false);
 const query = ref('');
-const results = ref<Array<{ kind: string; id: number | string; label: string; subtitle?: string; href: string }>>([]);
+const results = ref<WorkflowHit[]>([]);
 const cursor = ref(0);
 const inputEl = ref<HTMLInputElement | null>(null);
 const baseUrl = ((window as any).KNOT_BASE_URL || '') as string;
@@ -25,10 +51,6 @@ const commandPaletteStyle = {
   paddingTop: knotViewportTopOffset(2),
 };
 
-// Extension-contributed entries (ADR-20 Phase 6g). Reactive copy of
-// `window.KnotCore.commandPalette.getEntries()`, refreshed on every
-// `knot:command-palette-updated` event so the palette stays in sync
-// with extension routing without polling.
 const extensionEntries = ref<KnotCommandPaletteEntry[]>([]);
 
 function readKnotCorePalette(): KnotCommandPaletteEntry[] {
@@ -54,7 +76,7 @@ async function refresh() {
   try {
     const wfs = await knotApi.listWorkflows();
     const qLower = q.toLowerCase();
-    const matched = [];
+    const matched: WorkflowHit[] = [];
     for (const w of wfs.workflows) {
       if ((w.label || '').toLowerCase().includes(qLower)) {
         matched.push({
@@ -77,64 +99,11 @@ async function refresh() {
 let debounce: ReturnType<typeof setTimeout> | undefined;
 watch(query, () => {
   if (debounce) clearTimeout(debounce);
-  debounce = setTimeout(refresh, 150);
+  debounce = setTimeout(() => {
+    void refresh();
+  }, 150);
 });
 
-function onKey(e: KeyboardEvent) {
-  const isMod = e.metaKey || e.ctrlKey;
-  if (isMod && e.key.toLowerCase() === 'k') {
-    e.preventDefault();
-    open.value = !open.value;
-    if (open.value) {
-      refreshExtensionEntries();
-      nextTick(() => inputEl.value?.focus());
-    }
-    return;
-  }
-  if (!open.value) return;
-  if (e.key === 'Escape') { open.value = false; return; }
-  if (e.key === 'ArrowDown') { e.preventDefault(); cursor.value = Math.min(cursor.value + 1, results.value.length - 1); }
-  if (e.key === 'ArrowUp') { e.preventDefault(); cursor.value = Math.max(cursor.value - 1, 0); }
-  if (e.key === 'Enter') {
-    const r = results.value[cursor.value];
-    if (r) window.location.href = r.href;
-  }
-}
-
-function onPaletteOpenRequest(): void {
-  if (!open.value) {
-    open.value = true;
-    refreshExtensionEntries();
-    nextTick(() => inputEl.value?.focus());
-  }
-}
-
-function onPaletteCloseRequest(): void {
-  if (open.value) {
-    open.value = false;
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('keydown', onKey);
-  window.addEventListener('knot:command-palette-updated', refreshExtensionEntries);
-  window.addEventListener('knot:command-palette-open', onPaletteOpenRequest);
-  window.addEventListener('knot:command-palette-close', onPaletteCloseRequest);
-  refreshExtensionEntries();
-});
-onUnmounted(() => {
-  window.removeEventListener('keydown', onKey);
-  window.removeEventListener('knot:command-palette-updated', refreshExtensionEntries);
-  window.removeEventListener('knot:command-palette-open', onPaletteOpenRequest);
-  window.removeEventListener('knot:command-palette-close', onPaletteCloseRequest);
-});
-
-/**
- * Group extension entries by `category` and filter by current query.
- * Categories preserve insertion order via Map semantics so an
- * extension can decide its own grouping (e.g. "Knot Migration",
- * "Knot Migration / Discovery").
- */
 const groupedExtensionEntries = computed(() => {
   const q = query.value.trim().toLowerCase();
   const matches = (entry: KnotCommandPaletteEntry): boolean => {
@@ -158,6 +127,71 @@ const groupedExtensionEntries = computed(() => {
   return Array.from(groups.entries()).map(([category, entries]) => ({ category, entries }));
 });
 
+const navItems = computed(() => {
+  const all = [
+    { id: 'home', labelKey: 'nav.home', href: `${baseUrl}?mode=home`, hideIfNoMarketplace: false },
+    { id: 'dashboard', labelKey: 'nav.dashboard', href: `${baseUrl}?mode=dashboard`, hideIfNoMarketplace: false },
+    { id: 'observability', labelKey: 'nav.observability', href: `${baseUrl}?mode=observability`, hideIfNoMarketplace: false },
+    { id: 'workflows', labelKey: 'nav.workflows', href: `${baseUrl}?mode=workflows`, hideIfNoMarketplace: false },
+    { id: 'executions', labelKey: 'nav.executions', href: `${baseUrl}?mode=executions`, hideIfNoMarketplace: false },
+    { id: 'connectors', labelKey: 'nav.connectors', href: `${baseUrl}?mode=connectors`, hideIfNoMarketplace: false },
+    { id: 'credentials', labelKey: 'nav.credentials', href: `${baseUrl}?mode=credentials`, hideIfNoMarketplace: false },
+    { id: 'marketplace', labelKey: 'nav.marketplace', href: `${baseUrl}?mode=marketplace`, hideIfNoMarketplace: true },
+    { id: 'templates', labelKey: 'nav.templates', href: `${baseUrl}?mode=marketplace&tab=templates`, hideIfNoMarketplace: true },
+    { id: 'variables', labelKey: 'nav.variables', href: `${baseUrl}?mode=variables`, hideIfNoMarketplace: false },
+    { id: 'audit', labelKey: 'nav.audit', href: `${baseUrl}?mode=audit`, hideIfNoMarketplace: false },
+    { id: 'doctor', labelKey: 'nav.doctor', href: `${baseUrl}?mode=doctor`, hideIfNoMarketplace: false },
+    { id: 'inbox', labelKey: 'nav.inbox', href: `${baseUrl}?mode=inbox`, hideIfNoMarketplace: false },
+    { id: 'assistant', labelKey: 'nav.assistant', href: `${baseUrl}?mode=assistant`, hideIfNoMarketplace: false },
+    { id: 'book', labelKey: 'nav.book', href: `${baseUrl}?mode=book`, hideIfNoMarketplace: false },
+    { id: 'suite-health', labelKey: 'nav.suiteHealth', href: `${baseUrl}?mode=suite-health`, hideIfNoMarketplace: false },
+    { id: 'updates', labelKey: 'nav.updates', href: `${baseUrl}?mode=updates`, hideIfNoMarketplace: false },
+    { id: 'setup', labelKey: 'nav.setup', href: `${baseUrl}/admin/setup.php?admin=1`, hideIfNoMarketplace: false },
+  ];
+  const enabled = isMarketplaceUiEnabled();
+  const filtered = enabled ? all : all.filter((row) => !row.hideIfNoMarketplace);
+
+  return filtered
+    .filter((row) => {
+      if (!query.value) return true;
+      const ql = query.value.toLowerCase();
+      return t(row.labelKey).toLowerCase().includes(ql);
+    })
+    .map(({ hideIfNoMarketplace: _, labelKey, id, href }) => ({
+      kind: 'nav' as const,
+      id,
+      href,
+      label: t(labelKey),
+    }));
+});
+
+/** Flat list for keyboard navigation — workflows, then extensions, then suite nav. */
+const flatHits = computed((): PaletteHit[] => {
+  const hits: PaletteHit[] = [...results.value];
+  for (const group of groupedExtensionEntries.value) {
+    for (const entry of group.entries) {
+      hits.push({
+        kind: 'extension',
+        id: entry.id,
+        label: entry.label,
+        description: entry.description,
+        hint: entry.hint,
+        entry,
+      });
+    }
+  }
+  for (const nav of navItems.value) {
+    hits.push(nav);
+  }
+  return hits;
+});
+
+watch(flatHits, (hits) => {
+  if (cursor.value >= hits.length) {
+    cursor.value = Math.max(0, hits.length - 1);
+  }
+});
+
 function runEntry(entry: KnotCommandPaletteEntry): void {
   if (entry.action) {
     try {
@@ -173,36 +207,77 @@ function runEntry(entry: KnotCommandPaletteEntry): void {
   }
 }
 
-const navItems = computed(() => {
-  const all = [
-    { labelKey: 'nav.dashboard', href: `${baseUrl}?mode=dashboard`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.observability', href: `${baseUrl}?mode=observability`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.workflows', href: `${baseUrl}?mode=workflows`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.executions', href: `${baseUrl}?mode=executions`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.connectors', href: `${baseUrl}?mode=connectors`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.credentials', href: `${baseUrl}?mode=credentials`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.marketplace', href: `${baseUrl}?mode=marketplace`, hideIfNoMarketplace: true },
-    { labelKey: 'nav.templates', href: `${baseUrl}?mode=marketplace&tab=templates`, hideIfNoMarketplace: true },
-    { labelKey: 'nav.variables', href: `${baseUrl}?mode=variables`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.audit', href: `${baseUrl}?mode=audit`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.doctor', href: `${baseUrl}?mode=doctor`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.inbox', href: `${baseUrl}?mode=inbox`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.assistant', href: `${baseUrl}?mode=assistant`, hideIfNoMarketplace: false },
-    { labelKey: 'nav.book', href: `${baseUrl}?mode=book`, hideIfNoMarketplace: false },
-  ];
-  const enabled = isMarketplaceUiEnabled();
-  const filtered = enabled ? all : all.filter((row) => !row.hideIfNoMarketplace);
+function activateHit(hit: PaletteHit | undefined): void {
+  if (!hit) return;
+  if (hit.kind === 'extension') {
+    runEntry(hit.entry);
+    return;
+  }
+  window.location.href = hit.href;
+}
 
-  return filtered
-    .filter((row) => {
-      if (!query.value) return true;
-      const ql = query.value.toLowerCase();
-      return t(row.labelKey).toLowerCase().includes(ql);
-    })
-    .map(({ hideIfNoMarketplace: _, labelKey, ...rest }) => ({
-      ...rest,
-      label: t(labelKey),
-    }));
+function onKey(e: KeyboardEvent) {
+  const isMod = e.metaKey || e.ctrlKey;
+  if (isMod && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    open.value = !open.value;
+    if (open.value) {
+      refreshExtensionEntries();
+      nextTick(() => inputEl.value?.focus());
+    }
+    return;
+  }
+  if (!open.value) return;
+  if (e.key === 'Escape') { open.value = false; return; }
+  const hits = flatHits.value;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (hits.length === 0) return;
+    cursor.value = Math.min(cursor.value + 1, hits.length - 1);
+  }
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (hits.length === 0) return;
+    cursor.value = Math.max(cursor.value - 1, 0);
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    activateHit(hits[cursor.value]);
+  }
+}
+
+function onPaletteOpenRequest(): void {
+  if (!open.value) {
+    open.value = true;
+    refreshExtensionEntries();
+    nextTick(() => inputEl.value?.focus());
+  }
+}
+
+function onPaletteCloseRequest(): void {
+  if (open.value) {
+    open.value = false;
+  }
+}
+
+function isActive(hit: PaletteHit): boolean {
+  const hits = flatHits.value;
+  const idx = hits.findIndex((h) => h.kind === hit.kind && h.id === hit.id);
+  return idx === cursor.value;
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', onKey);
+  window.addEventListener('knot:command-palette-updated', refreshExtensionEntries);
+  window.addEventListener('knot:command-palette-open', onPaletteOpenRequest);
+  window.addEventListener('knot:command-palette-close', onPaletteCloseRequest);
+  refreshExtensionEntries();
+});
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKey);
+  window.removeEventListener('knot:command-palette-updated', refreshExtensionEntries);
+  window.removeEventListener('knot:command-palette-open', onPaletteOpenRequest);
+  window.removeEventListener('knot:command-palette-close', onPaletteCloseRequest);
 });
 </script>
 
@@ -229,12 +304,12 @@ const navItems = computed(() => {
           <div v-if="results.length" class="k-py-1">
             <div class="k-px-3 k-py-1 k-text-[10px] k-uppercase k-tracking-wider k-text-knot-text-soft k-font-bold">{{ t('commandPalette.sectionWorkflows') }}</div>
             <a
-              v-for="(r, i) in results"
-              :key="r.kind + r.id"
+              v-for="r in results"
+              :key="'wf-' + r.id"
               :href="r.href"
               :class="[
                 'k-block k-px-3 k-py-2 k-no-underline',
-                i === cursor ? 'k-bg-knot-primary-soft k-text-knot-primary' : 'k-text-knot-text hover:k-bg-knot-surface-soft',
+                isActive(r) ? 'k-bg-knot-primary-soft k-text-knot-primary' : 'k-text-knot-text hover:k-bg-knot-surface-soft',
               ]"
             >
               <div class="k-text-sm k-font-semibold">{{ r.label }}</div>
@@ -251,7 +326,12 @@ const navItems = computed(() => {
               v-for="entry in group.entries"
               :key="entry.id"
               type="button"
-              class="k-w-full k-text-left k-block k-px-3 k-py-2 k-text-sm k-text-knot-text hover:k-bg-knot-surface-soft k-no-underline k-cursor-pointer k-border-0 k-bg-transparent"
+              :class="[
+                'k-w-full k-text-left k-block k-px-3 k-py-2 k-text-sm k-no-underline k-cursor-pointer k-border-0',
+                isActive({ kind: 'extension', id: entry.id, label: entry.label, entry })
+                  ? 'k-bg-knot-primary-soft k-text-knot-primary'
+                  : 'k-text-knot-text hover:k-bg-knot-surface-soft k-bg-transparent',
+              ]"
               @click="runEntry(entry)"
             >
               <div class="k-font-semibold">{{ entry.label }}</div>
@@ -266,9 +346,12 @@ const navItems = computed(() => {
             <div class="k-px-3 k-py-1 k-text-[10px] k-uppercase k-tracking-wider k-text-knot-text-soft k-font-bold">{{ t('commandPalette.sectionNavigate') }}</div>
             <a
               v-for="it in navItems"
-              :key="it.label"
+              :key="it.id"
               :href="it.href"
-              class="k-block k-px-3 k-py-2 k-text-sm k-text-knot-text hover:k-bg-knot-surface-soft k-no-underline"
+              :class="[
+                'k-block k-px-3 k-py-2 k-text-sm k-no-underline',
+                isActive(it) ? 'k-bg-knot-primary-soft k-text-knot-primary' : 'k-text-knot-text hover:k-bg-knot-surface-soft',
+              ]"
             >{{ it.label }}</a>
           </div>
         </div>

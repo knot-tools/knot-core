@@ -6,8 +6,8 @@
  * Renders a vertical Knot-styled nav that replaces Dolibarr's default left
  * menu on every Knot page. Expects the host script to have already loaded
  * Dolibarr (`$langs`, `DOL_URL_ROOT`) and to optionally provide a
- * `$knotActive` string (one of: dashboard | observability | workflows | editor | executions
- * | connectors | credentials | book | inbox | assistant | doctor | setup) used to highlight the current entry.
+ * `$knotActive` string (home | dashboard | observability | workflows | … | migration)
+ * used to highlight the current entry.
  * `$marketplaceUiEnabled` is optional — when omitted and `KnotMarketplacePresentation` is loadable it is inferred from **`KNOT_MARKETPLACE_UI_ENABLED`**.
  */
 
@@ -21,20 +21,14 @@ $setup = $base . '/admin/setup.php?admin=1';
 $active = isset($knotActive) ? (string) $knotActive : '';
 $engineEnabled = function_exists('getDolGlobalString') && getDolGlobalString('KNOT_ENGINE_ENABLED') === '1';
 
-$items = [
+// Core-only entries under the golden "Knot Core" parent.
+// Configuration (setup) and Accueil (home) stay top-level.
+$coreNavDefs = [
     [
         'key' => 'dashboard',
         'icon' => 'fa-tachometer-alt',
         'label' => $langs->trans('KnotDashboard'),
         'url' => $preview . '?mode=dashboard',
-    ],
-    [
-        'key' => 'marketplace',
-        'icon' => 'fa-store',
-        'label' => $langs->trans('KnotMarketplaceTitle'),
-        'url' => $preview . '?mode=marketplace',
-        // Gold sidebar surface like premium extensions; badge remains editorial-driven.
-        '_premiumStyle' => true,
     ],
     [
         'key' => 'observability',
@@ -103,12 +97,6 @@ $items = [
         'url' => $preview . '?mode=audit',
     ],
     [
-        'key' => 'updates',
-        'icon' => 'fa-cloud-download-alt',
-        'label' => $langs->trans('KnotNavUpdates'),
-        'url' => $preview . '?mode=updates',
-    ],
-    [
         'key' => 'doctor',
         'icon' => 'fa-stethoscope',
         'label' => $langs->trans('KnotNavDoctor'),
@@ -125,6 +113,66 @@ $items = [
         'icon' => 'fa-info-circle',
         'label' => $langs->trans('KnotCapabilities'),
         'url' => $preview . '?mode=capabilities',
+    ],
+];
+
+$coreChildKeys = [];
+$coreNavChildren = [];
+foreach ($coreNavDefs as $def) {
+    $childKey = (string) $def['key'];
+    $coreChildKeys[] = $childKey;
+    $coreNavChildren[] = [
+        'key' => 'core-' . $childKey,
+        'navKey' => $childKey,
+        'icon' => $def['icon'],
+        'label' => $def['label'],
+        'url' => $def['url'],
+        // Empty hash: PHP owns is-active via ?mode= (must NOT be synced as "#/").
+        'hash' => '',
+        '_isNavChild' => true,
+        '_nativeCoreChild' => true,
+    ];
+}
+
+$items = [
+    [
+        'key' => 'home',
+        'icon' => 'fa-home',
+        'label' => $langs->trans('KnotNavHome'),
+        'url' => $preview . '?mode=home',
+    ],
+    [
+        'key' => 'knot-core',
+        'icon' => 'fa-project-diagram',
+        'label' => $langs->trans('KnotCoreMenuRoot'),
+        'url' => $preview . '?mode=dashboard',
+        '_premiumStyle' => true,
+        '_navChildren' => $coreNavChildren,
+        '_coreChildKeys' => $coreChildKeys,
+    ],
+    [
+        'key' => 'marketplace',
+        'icon' => 'fa-store',
+        'label' => $langs->trans('KnotMarketplaceTitle'),
+        'url' => $preview . '?mode=marketplace',
+        '_premiumStyle' => true,
+    ],
+];
+
+// Suite-level admin — appended after extension merge so Migration / Pro Pack
+// stay above Santé → Mises à jour → Configuration.
+$suiteTailItems = [
+    [
+        'key' => 'suite-health',
+        'icon' => 'fa-heartbeat',
+        'label' => $langs->trans('KnotNavSuiteHealth'),
+        'url' => $preview . '?mode=suite-health',
+    ],
+    [
+        'key' => 'updates',
+        'icon' => 'fa-cloud-download-alt',
+        'label' => $langs->trans('KnotNavUpdates'),
+        'url' => $preview . '?mode=updates',
     ],
     [
         'key' => 'setup',
@@ -144,10 +192,6 @@ if (!(bool) ($marketplaceUiEnabled ?? true)) {
     ));
 }
 
-// ADR-20: inject sidebar items contributed by Knot extensions
-// (Knot Migration, future add-ons). Discovery is best-effort: any
-// failure (autoload missing, registry exception, no Bootstrap) must
-// never break the native nav rendering.
 if (class_exists(\Knot\Extension\ExtensionRegistry::class) && class_exists(\Knot\Extension\SidebarPresentation::class)) {
     try {
         $knotExtRegistry = null;
@@ -160,10 +204,6 @@ if (class_exists(\Knot\Extension\ExtensionRegistry::class) && class_exists(\Knot
             $knotExtRegistry = \Knot\Licensing\Bootstrap::buildExtensionRegistry($knotExtDb);
         }
         if (!$knotExtRegistry instanceof \Knot\Extension\ExtensionRegistry) {
-            // Fallback when Bootstrap is unavailable (CLI, test, partial
-            // include from a script that did not load the licensing
-            // stack). Extensions with `validation=local`/`dolistore`
-            // will still pass through LicenseValidator's default.
             $knotExtRegistry = new \Knot\Extension\ExtensionRegistry();
         }
 
@@ -198,7 +238,6 @@ if (class_exists(\Knot\Extension\ExtensionRegistry::class) && class_exists(\Knot
                 try {
                     $langs->load($domain);
                 } catch (\Throwable $e) {
-                    // ignore — fall back to raw key
                 }
             }
             try {
@@ -220,6 +259,8 @@ if (class_exists(\Knot\Extension\ExtensionRegistry::class) && class_exists(\Knot
         error_log('[knot leftnav] extension discovery failed: ' . $e->getMessage());
     }
 }
+
+$items = array_merge($items, $suiteTailItems);
 
 $knotMarketplaceSidebarBadge = null;
 if (class_exists(\Knot\Marketplace\SidebarBadge::class) && class_exists(\Knot\Repository\KnotConfigRepository::class)) {
@@ -256,7 +297,6 @@ if (class_exists(\Knot\Marketplace\SidebarBadge::class) && class_exists(\Knot\Re
         </span>
         <div class="knot-nav__brand-text">
             <span class="knot-nav__brand-name"><?php print dol_escape_htmltag($langs->trans('KnotBrandName')); ?></span>
-            <span class="knot-nav__brand-sub"><?php print dol_escape_htmltag($langs->trans('KnotBrandTagline')); ?></span>
         </div>
     </div>
 
@@ -275,16 +315,22 @@ if (class_exists(\Knot\Marketplace\SidebarBadge::class) && class_exists(\Knot\Re
                 $ctaAttr = !empty($item['_isCtaAdmin']) ? ' data-knot-ext-cta="admin-setup"' : '';
                 $tierAttr = !empty($item['_isPremium']) ? ' data-knot-ext-tier="premium"' : '';
 
-                // ADR-20 Phase 6g §D10: extensions compare against
-                // `_mode` (e.g. "migration") because $knotActive is
-                // driven by the `mode` URL parameter while their
-                // own item key is prefixed with `ext-` for DOM
-                // uniqueness. Native items keep the legacy
-                // `key === $active` semantics so existing pages
-                // (dashboard, observability, ...) are unchanged.
-                $isActive = $isExtension
-                    ? ($active !== '' && $active === (string) ($item['_mode'] ?? ''))
-                    : ($active === $item['key']);
+                $itemKey = (string) ($item['key'] ?? '');
+                if ($itemKey === 'knot-core') {
+                    $childKeys = isset($item['_coreChildKeys']) && is_array($item['_coreChildKeys'])
+                        ? $item['_coreChildKeys']
+                        : [];
+                    $isActive = $active !== '' && in_array($active, $childKeys, true);
+                } elseif ($isExtension) {
+                    $isActive = $active !== '' && $active === (string) ($item['_mode'] ?? '');
+                } else {
+                    $isActive = $active === $itemKey;
+                }
+                $navChildren = (!empty($item['_navChildren']) && is_array($item['_navChildren']))
+                    ? $item['_navChildren']
+                    : [];
+                // Children render immediately under their parent (Core or Migration).
+                $showNavChildren = $isActive && $navChildren !== [];
             ?>
             <a
                 class="knot-nav__item<?php print $isActive ? ' is-active' : ''; ?><?php print $extraClass; ?>"
@@ -308,13 +354,51 @@ if (class_exists(\Knot\Marketplace\SidebarBadge::class) && class_exists(\Knot\Re
                     <?php if (!empty($knotMarketplaceSidebarBadge['hasUnread'])): ?>
                         <span class="knot-nav__unread-dot" aria-hidden="true"></span>
                     <?php endif; ?>
-                <?php elseif (!empty($item['_isPremium'])): ?>
-                    <span class="knot-nav__pro-badge" aria-label="<?php print dol_escape_htmltag($langs->trans('KnotExtensionPremiumBadge') !== 'KnotExtensionPremiumBadge' ? $langs->trans('KnotExtensionPremiumBadge') : 'Premium add-on'); ?>">Pro</span>
+                <?php elseif (!empty($item['_isPremium']) || ($itemKey === 'knot-core')): ?>
+                    <span class="knot-nav__pro-badge" aria-label="<?php print dol_escape_htmltag($itemKey === 'knot-core' ? 'Knot Core' : ($langs->trans('KnotExtensionPremiumBadge') !== 'KnotExtensionPremiumBadge' ? $langs->trans('KnotExtensionPremiumBadge') : 'Premium add-on')); ?>"><?php print $itemKey === 'knot-core' ? 'Core' : 'Pro'; ?></span>
                 <?php endif; ?>
                 <?php if ($isActive): ?>
                     <span class="knot-nav__active-dot" aria-hidden="true"></span>
                 <?php endif; ?>
             </a>
+            <?php if ($showNavChildren): ?>
+                <?php
+                    $extNavId = (string) ($item['_extId'] ?? ($itemKey === 'knot-core' ? 'knot-core' : ''));
+                    $journeyTourAttr = ($extNavId === 'knot-migration')
+                        ? ' data-tour="sidebar-journey"'
+                        : '';
+                ?>
+                <div
+                    class="knot-nav__ext-children"
+                    data-knot-ext-nav="<?php print dol_escape_htmltag($extNavId); ?>"<?php print $journeyTourAttr; ?>
+                >
+                    <?php foreach ($navChildren as $child): ?>
+                        <?php
+                            $childNavKey = (string) ($child['navKey'] ?? '');
+                            $childHash = (string) ($child['hash'] ?? '');
+                            $childIsActive = $childNavKey !== '' && $active === $childNavKey;
+                            $helpTourAttr = ($childNavKey === 'help')
+                                ? ' data-tour="sidebar-help"'
+                                : '';
+                            $childExtAttr = isset($child['_extId'])
+                                ? ' data-knot-ext-id="' . dol_escape_htmltag((string) $child['_extId']) . '"'
+                                : '';
+                        ?>
+                        <a
+                            class="knot-nav__item knot-nav__item--ext-child<?php print $childIsActive ? ' is-active' : ''; ?>"
+                            href="<?php print dol_escape_htmltag((string) ($child['url'] ?? '')); ?>"<?php print $childExtAttr; ?>
+                            data-knot-ext-nav-child="<?php print dol_escape_htmltag((string) ($child['key'] ?? '')); ?>"
+                            data-knot-ext-nav-key="<?php print dol_escape_htmltag($childNavKey); ?>"
+                            data-knot-ext-nav-hash="<?php print dol_escape_htmltag($childHash); ?>"<?php print $helpTourAttr; ?>
+                        >
+                            <span class="knot-nav__icon" data-knot-ext-nav-icon>
+                                <i class="fas <?php print dol_escape_htmltag((string) ($child['icon'] ?? 'fa-circle')); ?>"></i>
+                            </span>
+                            <span class="knot-nav__label"><?php print dol_escape_htmltag((string) ($child['label'] ?? '')); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         <?php endforeach; ?>
     </nav>
 
@@ -327,6 +411,7 @@ if (class_exists(\Knot\Marketplace\SidebarBadge::class) && class_exists(\Knot\Re
             <i class="fas fa-bolt"></i>
         </a>
     </div>
+    <p class="knot-nav__suite-tagline"><?php print dol_escape_htmltag($langs->trans('KnotBrandFooter')); ?></p>
     <div class="knot-nav__footer">
         <a
             class="knot-nav__exit"

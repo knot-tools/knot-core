@@ -45,8 +45,8 @@
           "config": {
             "values": {
               "filename": "knot-backup-{{$today}}.json",
-              "count": "{{$json.rows.length}}",
-              "payload": "{{$json.rows}}"
+              "count": "{{$nodes.sql_workflows.json.rows.length}}",
+              "payload": "{{$nodes.sql_workflows.json.rows}}"
             }
           }
         },
@@ -59,8 +59,8 @@
           "config": {
             "credentialId": "REPLACE_WITH_SMTP_CREDENTIAL_ID",
             "to": "REPLACE_WITH_ADMIN_EMAIL",
-            "subject": "[Knot] Backup quotidien — {{$json.count}} workflows",
-            "body": "Backup automatique des workflows Knot.\n\nFichier : {{$json.filename}}\nNombre de workflows : {{$json.count}}\n\nCe message est genere par le workflow 05-backup-quotidien."
+            "subject": "[Knot] Backup quotidien — {{$nodes.set_archive.json.count}} workflows",
+            "body": "Backup automatique des workflows Knot.\n\nFichier : {{$nodes.set_archive.json.filename}}\nNombre de workflows : {{$nodes.set_archive.json.count}}\n\nCe message est genere par le workflow 05-backup-quotidien."
           }
         }
       ],

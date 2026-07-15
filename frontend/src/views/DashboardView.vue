@@ -19,6 +19,8 @@ import {
 import { knotApi, type HealthSnapshot } from '../lib/api';
 import KHero from '../components/ui/KHero.vue';
 import UpdatesBadge from '../components/shell/UpdatesBadge.vue';
+import StarJourneyPanel from '../components/dashboard/StarJourneyPanel.vue';
+import CronHealthBanner from '../components/dashboard/CronHealthBanner.vue';
 import { isMarketplaceUiEnabled } from '../lib/marketplaceUi';
 
 defineProps<{
@@ -185,6 +187,10 @@ const checks = computed(() => {
     </KHero>
 
     <UpdatesBadge />
+
+    <CronHealthBanner :health="health" />
+
+    <StarJourneyPanel />
 
     <div v-if="error" class="k-bg-knot-danger-soft k-text-knot-danger k-px-4 k-py-3 k-rounded-knot-sm k-text-sm">
       {{ error }}

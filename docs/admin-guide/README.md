@@ -6,6 +6,9 @@ Ce guide couvre l'installation, la configuration, la securite, la performance et
 
 ## Runbooks operations
 
+- **Premier succès intégrateur (install → Simulate → Run)** : voir
+  [`integrator-first-success.md`](integrator-first-success.md) (checklist 1 page,
+  cron `status=1`, distinction `notification.alert` audit-only vs Pro Pack fan-out).
 - **Mises à jour in-module (Core / extensions payantes)** : voir
   [`docs/runbooks/updates-apply.md`](../runbooks/updates-apply.md) (flux
   `updates_apply.php`, rollback, prérequis TLS / checksums).

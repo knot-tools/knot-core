@@ -1,0 +1,57 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-07-08T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "07 — New Customer Welcome Email",
+    "description": "Sends a personalized welcome email each time a new third-party (customer) is created in Dolibarr. Uses dolibarr.read_object to fetch details and action.email to send.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "STARTER_WELCOME_EMAIL",
+        "label": "07 — New Customer Welcome Email",
+        "tags": ["starter", "customer", "email"],
+        "settings": { "timeoutSeconds": 30, "errorPolicy": "stop", "logPayloads": true }
+      },
+      "nodes": [
+        {
+          "id": "trigger_new_customer",
+          "type": "trigger.dolibarr_event",
+          "label": "New customer created",
+          "subtitle": "COMPANY_CREATE event",
+          "position": { "x": 80, "y": 160 },
+          "config": {
+            "events": ["COMPANY_CREATE"]
+          }
+        },
+        {
+          "id": "read_customer",
+          "type": "dolibarr.read_object",
+          "label": "Read customer details",
+          "subtitle": "Fetch thirdparty record",
+          "position": { "x": 380, "y": 160 },
+          "config": {
+            "objectType": "thirdparty",
+            "objectId": "{{$json.object_id}}"
+          }
+        },
+        {
+          "id": "send_welcome",
+          "type": "action.email",
+          "label": "Send welcome email",
+          "subtitle": "Personalized greeting",
+          "position": { "x": 700, "y": 160 },
+          "config": {
+            "to": "{{$nodes.read_customer.json.email}}",
+            "subject": "Welcome to our services, {{$nodes.read_customer.json.nom}}!",
+            "body": "<p>Dear {{$nodes.read_customer.json.nom}},</p><p>Thank you for choosing us. Your account has been created.</p><p>Best regards,<br/>{{$workflow.ref}}</p>"
+          }
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_new_customer", "target": "read_customer", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e2", "source": "read_customer", "target": "send_welcome", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

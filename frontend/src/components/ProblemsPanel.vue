@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { AlertTriangle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-vue-next';
+import { AlertTriangle, AlertCircle, ChevronDown, ChevronUp, Clipboard } from 'lucide-vue-next';
 import type { ValidationIssue } from '../lib/validator';
 import { formatValidationIssueMessage } from '../lib/validator';
 
@@ -15,6 +15,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'jump', nodeId: string): void;
+  (e: 'copy-fix'): void;
 }>();
 
 const { t } = useI18n();
@@ -37,21 +38,32 @@ function jump(issue: ValidationIssue) {
     role="region"
     aria-label="Workflow problems"
   >
-    <button
-      @click="collapsed = !collapsed"
-      class="k-w-full k-flex k-items-center k-justify-between k-px-4 k-py-2 hover:k-bg-knot-surface-soft k-transition"
-    >
-      <div class="k-flex k-items-center k-gap-3">
-        <span v-if="errorCount > 0" class="k-flex k-items-center k-gap-1 k-text-knot-danger k-font-semibold">
-          <AlertCircle :size="14" /> {{ errorCount }}
-        </span>
-        <span v-if="warningCount > 0" class="k-flex k-items-center k-gap-1 k-text-knot-warning k-font-semibold">
-          <AlertTriangle :size="14" /> {{ warningCount }}
-        </span>
-        <span class="k-text-knot-text-muted">{{ t('editor.problemsTitle') }}</span>
-      </div>
-      <component :is="collapsed ? ChevronUp : ChevronDown" :size="14" class="k-text-knot-text-muted" />
-    </button>
+    <div class="k-w-full k-flex k-items-center k-gap-2 k-pr-3">
+      <button
+        @click="collapsed = !collapsed"
+        class="k-flex-1 k-flex k-items-center k-justify-between k-px-4 k-py-2 hover:k-bg-knot-surface-soft k-transition"
+      >
+        <div class="k-flex k-items-center k-gap-3">
+          <span v-if="errorCount > 0" class="k-flex k-items-center k-gap-1 k-text-knot-danger k-font-semibold">
+            <AlertCircle :size="14" /> {{ errorCount }}
+          </span>
+          <span v-if="warningCount > 0" class="k-flex k-items-center k-gap-1 k-text-knot-warning k-font-semibold">
+            <AlertTriangle :size="14" /> {{ warningCount }}
+          </span>
+          <span class="k-text-knot-text-muted">{{ t('editor.problemsTitle') }}</span>
+        </div>
+        <component :is="collapsed ? ChevronUp : ChevronDown" :size="14" class="k-text-knot-text-muted" />
+      </button>
+      <button
+        data-knot-test="knot-problems-copy-fix"
+        :title="t('editor.problemsCopyFixTitle')"
+        class="k-inline-flex k-items-center k-gap-1.5 k-flex-shrink-0 k-px-2.5 k-py-1 k-rounded-knot-sm k-bg-knot-surface k-border k-border-knot-border k-text-knot-text k-text-xs k-font-semibold hover:k-border-knot-primary hover:k-text-knot-primary k-transition"
+        @click.stop="emit('copy-fix')"
+      >
+        <Clipboard :size="13" />
+        <span class="k-hidden md:k-inline">{{ t('editor.problemsCopyFix') }}</span>
+      </button>
+    </div>
     <ul v-if="!collapsed" class="k-max-h-40 k-overflow-y-auto k-divide-y k-divide-knot-border">
       <li
         v-for="(issue, idx) in issues"

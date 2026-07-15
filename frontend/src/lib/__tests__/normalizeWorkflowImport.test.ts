@@ -6,6 +6,7 @@ import {
   normalizeDefinition,
   normalizeWorkflowImport,
   parseWorkflowImportText,
+  extractRepairs,
   WorkflowImportFormatError,
   WorkflowImportLegacyStepsError,
 } from '../normalizeWorkflowImport';
@@ -102,5 +103,40 @@ describe('normalizeWorkflowImport', () => {
     expect(types).toContain('action.email');
     const trigger = nodes.find((n) => n.type === 'trigger.dolibarr_event');
     expect(trigger?.config?.events).toContain('BILL_VALIDATE');
+  });
+
+  it('applies full repair pipeline and exposes repairs via extractRepairs', () => {
+    const payload = normalizeWorkflowImport(
+      {
+        nodes: [
+          { id: 'n1', type: 'trigger.manual' },
+          { id: 'n1', type: 'logic.set' },
+        ],
+        edges: [
+          { id: 'e1', source: 'n1', target: 'n1_2', sourceHandle: 'main', targetHandle: 'main' },
+        ],
+      },
+      { label: 'Repair test' },
+    );
+
+    const repairs = extractRepairs(payload.definition);
+    expect(repairs.length).toBeGreaterThan(0);
+    const types = repairs.map((r) => r.type);
+    expect(types).toContain('node_duplicate_id');
+    expect(types).toContain('node_default_label');
+  });
+
+  it('extractRepairs returns empty for clean workflow', () => {
+    const payload = normalizeWorkflowImport(
+      {
+        nodes: [
+          { id: 'n1', type: 'trigger.manual', label: 'Start', position: { x: 0, y: 0 }, config: {}, credentials: null },
+        ],
+        edges: [],
+      },
+      { label: 'Clean' },
+    );
+    const repairs = extractRepairs(payload.definition);
+    expect(repairs).toHaveLength(0);
   });
 });

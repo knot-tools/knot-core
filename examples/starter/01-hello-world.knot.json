@@ -44,7 +44,7 @@
           "config": {
             "level": "info",
             "title": "Hello World",
-            "message": "{{$json.greeting}} a {{$json.ts}}"
+            "message": "{{$nodes.set_message.json.greeting}} a {{$nodes.set_message.json.ts}}"
           }
         }
       ],

@@ -55,13 +55,18 @@ final class WorkflowAssistantPromptBuilder
             . "- Chaque node: id, type, label, subtitle, position {x,y}, config.\n"
             . "- Chaque edge: id, source, target, sourceHandle, targetHandle (pas from/to).\n"
             . "- Utilise UNIQUEMENT ces ids connecteurs: {$idList}\n"
-            . "- Expressions Knot: {{\$json.chemin}} = sortie du **dernier** noeud uniquement ; "
-            . "pour reutiliser un objet lu plus tot: {{\$nodes.<nodeId>.json.<champ>}} ; date: {{\$now}}.\n"
+            . "- Expressions Knot: **preferer toujours** {{\$nodes.<nodeId>.json.<champ>}} "
+            . "(id du noeud producteur). {{\$json.chemin}} = sortie du **dernier** noeud uniquement "
+            . "et declenche un lint `expression_json_chain` des que l'amont n'est pas un trigger — "
+            . "donc a eviter hors payload trigger. Date: {{\$now}}. Item de boucle: {{\$loop.item.*}}.\n"
             . "- Pour tout champ avec une liste de valeurs entre [ ] dans CONNECTEURS DISPONIBLES, "
             . "utiliser **exactement** une de ces valeurs — ne jamais traduire ni inventer "
             . "(ex: objectType=facture, pas invoice ; operator=greater_equal, pas >=).\n"
-            . "- logic.loop: realIteration=true, itemsPath=\"{{\$json.items}}\" ; handles iteration/done.\n"
-            . "- logic.if: config.conditions[] (pas condition string) ; operator dans l'enum "
+            . "- logic.loop: realIteration=true, "
+            . "itemsPath=\"{{\$nodes.<setOrSqlId>.json.items}}\" (ou .rows) — "
+            . "**pas** {{\$json.items}} ; handles iteration/done.\n"
+            . "- logic.if: config.conditions[] (pas condition string) ; "
+            . "left={{\$nodes.<producerId>.json.<champ>}} (pas {{\$json.*}}) ; operator dans l'enum "
             . "(equals|not_equals|contains|not_contains|greater|greater_equal|less|less_equal|"
             . "is_empty|is_not_empty|regex) ; handles true/false.\n"
             . "- dolibarr.sql_query: champ **query** (pas sql).\n"
@@ -116,7 +121,12 @@ final class WorkflowAssistantPromptBuilder
             . "- logic.if avec config.condition (string) — utiliser conditions[] avec left/operator/right.\n"
             . "- dolibarr.sql_query avec config.sql — utiliser config.query.\n"
             . "- Ids Pro Pack non listes dans CONNECTEURS DISPONIBLES.\n"
-            . "- Newlines non echappees dans les strings JSON.";
+            . "- Newlines non echappees dans les strings JSON.\n"
+            . "- {{\$json.X}} apres un noeud non-trigger (logic.set, sql, read_object, if, loop…) "
+            . "— lint `expression_json_chain`. Utiliser {{\$nodes.<id>.json.X}} "
+            . "(ex: left du if, itemsPath du loop, to/body email).\n"
+            . "- logic.loop avec itemsPath base sur \$json.items / \$json.rows — "
+            . "utiliser {{\$nodes.<producerId>.json.items}} ou .rows.";
     }
 
     private function dolibarrEventsBlock(): string
@@ -211,20 +221,25 @@ final class WorkflowAssistantPromptBuilder
     {
         return "==== FLUX DE DONNEES (INVARIANT) ====\n"
             . "- {{\$json}} = sortie JSON du **dernier** noeud execute (pas une accumulation).\n"
-            . "- {{\$nodes.<nodeId>.json.<champ>}} = sortie d'un noeud anterieur (chainage apres plusieurs lectures).\n"
+            . "- {{\$nodes.<nodeId>.json.<champ>}} = sortie d'un noeud anterieur — "
+            . "**defaut recommande** pour tout champ apres le 1er producteur (set/sql/read).\n"
+            . "- Exception OK: juste apres trigger.dolibarr_event, objectId={{\$json.objectId}} "
+            . "(champ payload trigger). Ensuite passer en \$nodes.\n"
             . "- trigger.dolibarr_event payload: objectId (int), objectType (nom classe PHP ex Facture), objectRef.\n"
             . "- dolibarr.read_object / dolibarr.object fetch: objectType = slug canonique litteral ; "
             . "objectId/id = {{\$json.objectId}} depuis le trigger.\n"
-            . "- logic.if sur un champ d'objet lu: left={{\$nodes.<readId>.json.<champ>}}, "
-            . "operator dans l'enum (ex greater_equal), right=litteral.";
+            . "- logic.if: left={{\$nodes.<producerId>.json.<champ>}}, "
+            . "operator dans l'enum (ex greater_equal), right=litteral.\n"
+            . "- logic.loop: itemsPath={{\$nodes.<producerId>.json.items}} "
+            . "(ou .rows) ; dans la branche iteration utiliser {{\$loop.item.*}}.";
     }
 
     private function recipeCronSqlEmail(): string
     {
         return "1. trigger.cron: expression cron (ex: 0 8 * * *)\n"
-            . "2. dolibarr.sql_query: config.query SELECT ... impayes\n"
-            . "3. logic.loop: itemsPath=\"{{\$json.rows}}\" realIteration=true\n"
-            . "4. action.email dans branche iteration\n"
+            . "2. dolibarr.sql_query id=sql_impayes: config.query SELECT ... impayes\n"
+            . "3. logic.loop: itemsPath=\"{{\$nodes.sql_impayes.json.rows}}\" realIteration=true\n"
+            . "4. action.email dans branche iteration ({{\$loop.item.*}})\n"
             . "5. Edge loop: sourceHandle iteration → corps ; sourceHandle done → fin.";
     }
 
@@ -238,12 +253,13 @@ final class WorkflowAssistantPromptBuilder
 
     private function recipeLoop(): string
     {
-        return "logic.loop + edges sourceHandle iteration/done ; item courant = {{\$json}} dans iteration.";
+        return "logic.loop: itemsPath={{\$nodes.<producerId>.json.items|rows}} ; "
+            . "edges iteration/done ; item courant = {{\$loop.item.*}} (pas {{\$json}} pour les champs du panier).";
     }
 
     private function recipeIf(): string
     {
-        return "logic.if: mode all|any, conditions[{left, operator, right}] ; edges true/false.";
+        return "logic.if: mode all|any, conditions[{left={{\$nodes.<id>.json.x}}, operator, right}] ; edges true/false.";
     }
 
     private function recipeEmail(): string

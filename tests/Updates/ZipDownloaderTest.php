@@ -70,16 +70,22 @@ final class ZipDownloaderTest extends TestCase
         }
     }
 
-    public function testFetchToRejectsPlainHttpEvenOnLoopback(): void
+    public function testFetchToRejectsPlainHttpOnNonLoopbackHosts(): void
     {
         $dest = $this->tempDestination();
         try {
             $this->expectException(RuntimeException::class);
             $this->expectExceptionMessage('Only HTTPS artefact URLs are permitted.');
-            ZipDownloader::fetchTo('http://127.0.0.1/demo.zip', $dest);
+            ZipDownloader::fetchTo('http://knot.tools/demo.zip', $dest);
         } finally {
             @unlink($dest);
         }
+    }
+
+    public function testAllowedHostIncludesLoopbackForLabHttp(): void
+    {
+        self::assertTrue(ZipDownloader::allowedHost('127.0.0.1'));
+        self::assertTrue(ZipDownloader::allowedHost('localhost'));
     }
 
     public function testFetchToRejectsBlockedHost(): void

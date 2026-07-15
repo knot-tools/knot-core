@@ -3,7 +3,7 @@
   Copyright (C) 2026 Knot — GPL-3.0-or-later
 -->
 <script setup lang="ts">
-import { computed, inject, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
   Library,
@@ -71,11 +71,28 @@ const marketplaceLoadBlockedCode = computed(() => ctx.marketplaceLoadBlockedCode
 
 type TabKey = 'packs' | 'templates' | 'bundled';
 
+function tabFromRouteKind(kind: string | undefined): TabKey | null {
+  if (kind === 'templates') return 'templates';
+  if (kind === 'packs') return 'packs';
+  return null;
+}
+
 function readInitialTab(): TabKey {
   if (typeof window === 'undefined') return 'packs';
   const params = new URLSearchParams(window.location.search);
   const raw = (params.get('tab') ?? '').toLowerCase();
-  if (raw === 'templates' || raw === 'bundled') return raw;
+  if (raw === 'templates' || raw === 'bundled' || raw === 'packs') {
+    return raw as TabKey;
+  }
+  // Hash route `#/templates` / `#/packs` must select the matching storefront tab
+  // even when `?tab=` is absent (TopBar navigates via hash only).
+  const fromRoute = tabFromRouteKind(ctx.route.value.kind);
+  if (fromRoute) {
+    return fromRoute;
+  }
+  const hashPath = (window.location.hash.split('?')[0] ?? '').replace(/^#/, '');
+  if (hashPath === '/templates' || hashPath.startsWith('/templates/')) return 'templates';
+  if (hashPath === '/packs' || hashPath.startsWith('/packs/')) return 'packs';
   return 'packs';
 }
 
@@ -444,6 +461,22 @@ onMounted(() => {
     void loadBundled();
   }
 });
+
+watch(
+  () => ctx.route.value.kind,
+  (kind) => {
+    const next = tabFromRouteKind(kind);
+    if (!next || next === activeTab.value) {
+      return;
+    }
+    // Prefer explicit ?tab=bundled over route-derived packs/templates.
+    const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    if ((params?.get('tab') ?? '').toLowerCase() === 'bundled') {
+      return;
+    }
+    activeTab.value = next;
+  },
+);
 </script>
 
 <template>

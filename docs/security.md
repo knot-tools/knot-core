@@ -115,6 +115,13 @@ PII configurable :
 
 ## Sandbox CodeNode
 
+> **Status: NOT IMPLEMENTED.** The CodeNode sandbox described below is a
+> design specification retained for future reference. No `logic.code`
+> connector ships in Knot Core or Pro Pack as of V2.13. A PHP sandbox
+> implementation is under consideration for V2.6+ if a strict isolation
+> policy is validated. The specification below documents the intended
+> security boundary.
+
 - Desactivee par defaut tant que la policy n'est pas validee
 - Activation reservee admin
 - Whitelist fonctions PHP autorisees

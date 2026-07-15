@@ -27,8 +27,10 @@ defineProps<{
   body?: string;
   /** Optional CTA label. When omitted, the action button is hidden. */
   actionLabel?: string;
-  /** Optional secondary CTA label, rendered as a link. */
+  /** Optional secondary CTA label, rendered as a link-style button. */
   secondaryLabel?: string;
+  /** Optional tertiary CTA (e.g. starter import), link-style. */
+  tertiaryLabel?: string;
   /** Reduce vertical padding for empty states inside small panels. */
   compact?: boolean;
 }>();
@@ -36,6 +38,7 @@ defineProps<{
 defineEmits<{
   (event: 'action'): void;
   (event: 'secondary'): void;
+  (event: 'tertiary'): void;
 }>();
 </script>
 
@@ -43,6 +46,7 @@ defineEmits<{
   <div
     class="k-flex k-flex-col k-items-center k-justify-center k-text-center"
     :class="compact ? 'k-py-6 k-gap-2' : 'k-py-12 k-gap-4'"
+    data-testid="k-empty-state"
   >
     <div
       class="k-flex k-items-center k-justify-center k-rounded-knot-pill"
@@ -69,23 +73,39 @@ defineEmits<{
       {{ body }}
     </p>
 
-    <div v-if="actionLabel || secondaryLabel" class="k-flex k-gap-3 k-mt-2">
-      <button
-        v-if="actionLabel"
-        type="button"
-        class="k-bg-knot-primary k-text-white k-px-4 k-py-2 k-rounded-knot-sm k-text-sm k-font-medium k-shadow-knot-sm hover:k-bg-knot-primary-strong k-transition-colors k-duration-knot"
-        @click="$emit('action')"
-      >
-        {{ actionLabel }}
-      </button>
-      <button
-        v-if="secondaryLabel"
-        type="button"
-        class="k-text-knot-primary k-text-sm k-font-medium hover:k-underline"
-        @click="$emit('secondary')"
-      >
-        {{ secondaryLabel }}
-      </button>
+    <div
+      v-if="actionLabel || secondaryLabel || tertiaryLabel || $slots.actions"
+      class="k-flex k-flex-wrap k-items-center k-justify-center k-gap-3 k-mt-2"
+    >
+      <slot name="actions">
+        <button
+          v-if="actionLabel"
+          type="button"
+          class="k-bg-knot-primary k-text-white k-px-4 k-py-2 k-rounded-knot-sm k-text-sm k-font-medium k-shadow-knot-sm hover:k-bg-knot-primary-strong k-transition-colors k-duration-knot"
+          data-testid="k-empty-state-action"
+          @click="$emit('action')"
+        >
+          {{ actionLabel }}
+        </button>
+        <button
+          v-if="secondaryLabel"
+          type="button"
+          class="k-text-knot-primary k-text-sm k-font-medium hover:k-underline"
+          data-testid="k-empty-state-secondary"
+          @click="$emit('secondary')"
+        >
+          {{ secondaryLabel }}
+        </button>
+        <button
+          v-if="tertiaryLabel"
+          type="button"
+          class="k-text-knot-text-muted k-text-sm k-font-medium hover:k-text-knot-primary hover:k-underline"
+          data-testid="k-empty-state-tertiary"
+          @click="$emit('tertiary')"
+        >
+          {{ tertiaryLabel }}
+        </button>
+      </slot>
     </div>
   </div>
 </template>

@@ -128,6 +128,21 @@ const setupUrl = computed(() => {
   return fromWindow ?? '/custom/knot/admin/setup.php?admin=1';
 });
 
+const dolibarrModulesUrl = computed(() => {
+  const win = window as unknown as { KNOT_BASE_URL?: string };
+  const root = win.KNOT_BASE_URL?.split('/custom/')[0] ?? '';
+  return `${root}/admin/modules.php`;
+});
+
+/** Public docs pointer — disable in Modules UI; purge only via docs (no purge UI). */
+const uninstallDocsUrl = 'https://github.com/knot-tools/knot-core/blob/main/docs/uninstall.md';
+
+function severityLabel(severity: 'error' | 'warning'): string {
+  return severity === 'error'
+    ? t('doctorPage.severityError')
+    : t('doctorPage.severityWarning');
+}
+
 const checkGroups = computed(() => [
   { key: 'system' as const, title: t('doctorPage.groupSystem') },
   { key: 'install' as const, title: t('doctorPage.groupInstall') },
@@ -270,7 +285,7 @@ const checkGroups = computed(() => [
                   class="k-text-[10px] k-font-bold k-uppercase k-tracking-wider k-px-1.5 k-py-0.5 k-rounded-knot-sm"
                   :class="row.severity === 'error' ? 'k-bg-knot-danger-soft k-text-knot-danger' : 'k-bg-knot-warning-soft k-text-knot-warning'"
                 >
-                  {{ row.severity }}
+                  {{ severityLabel(row.severity) }}
                 </span>
               </div>
               <div class="k-text-xs k-text-knot-text-muted k-mt-0.5">{{ row.detail }}</div>
@@ -290,6 +305,34 @@ const checkGroups = computed(() => [
         <a :href="setupUrl" class="k-underline k-font-semibold">{{ t('doctorPage.setupLinkLabel') }}</a>
         {{ t('doctorPage.missingTablesHintAfter') }}
       </p>
+    </section>
+
+    <section
+      class="k-bg-knot-surface k-border k-border-knot-border k-rounded-knot-md k-p-5 k-space-y-3"
+      data-testid="doctor-uninstall-section"
+    >
+      <h2 class="k-font-bold k-text-knot-text k-m-0">{{ t('doctorPage.uninstallTitle') }}</h2>
+      <p class="k-text-sm k-text-knot-text-muted k-m-0 k-leading-relaxed">
+        {{ t('doctorPage.uninstallBody') }}
+      </p>
+      <div class="k-flex k-flex-wrap k-items-center k-gap-3 k-text-sm">
+        <a
+          :href="dolibarrModulesUrl"
+          class="k-inline-flex k-items-center k-gap-1.5 k-font-semibold k-text-knot-primary k-no-underline hover:k-underline"
+          data-testid="doctor-disable-module-link"
+        >
+          {{ t('doctorPage.disableModuleLink') }}
+        </a>
+        <a
+          :href="uninstallDocsUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="k-inline-flex k-items-center k-gap-1.5 k-font-medium k-text-knot-text-muted k-no-underline hover:k-text-knot-primary hover:k-underline"
+          data-testid="doctor-uninstall-docs-link"
+        >
+          {{ t('doctorPage.uninstallDocsLink') }}
+        </a>
+      </div>
     </section>
   </div>
 </template>

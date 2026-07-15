@@ -12,4 +12,26 @@ describe('mergeLocalAndRemoteLint', () => {
     ];
     expect(mergeLocalAndRemoteLint(remote, local)).toEqual([...remote, ...local]);
   });
+
+  it('dedupes PHP KNOT_DSL_* with matching local short codes', () => {
+    const remote: ValidationIssue[] = [
+      {
+        severity: 'warning',
+        code: 'KNOT_DSL_EXPRESSION_JSON_CHAIN',
+        messageKey: 'expression_json_chain',
+        nodeId: 'js',
+        messageParams: { field: 'raw', upstreamId: 'raw' },
+      },
+    ];
+    const local: ValidationIssue[] = [
+      {
+        severity: 'warning',
+        code: 'expression_json_chain',
+        messageKey: 'expression_json_chain',
+        nodeId: 'js',
+        messageParams: { field: 'raw', upstreamId: 'raw' },
+      },
+    ];
+    expect(mergeLocalAndRemoteLint(remote, local)).toHaveLength(1);
+  });
 });

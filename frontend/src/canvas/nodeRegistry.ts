@@ -280,9 +280,9 @@ export const NODE_REGISTRY: Record<string, NodeMeta> = {
   },
 
   'notification.alert': {
-    id: 'notification.alert', label: 'Send Alert', category: 'notification',
+    id: 'notification.alert', label: 'Audit log entry (does not send)', category: 'notification',
     icon: BellRing, color: '#ea580c',
-    description: 'Write an audit log entry. Use action.email (Core) for SMTP mail; Pro Pack for multi-channel fan-out.',
+    description: 'Audit-only: writes to llx_knot_audit_log. For SMTP use action.email (Core); for Slack/Discord/webhooks use notification.alert_fanout (Pro Pack).',
   },
 
   // SaaS

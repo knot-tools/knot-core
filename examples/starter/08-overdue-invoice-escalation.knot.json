@@ -1,0 +1,78 @@
+{
+  "knotExport": "1.0",
+  "exportedAt": "2026-07-08T00:00:00Z",
+  "exportedBy": "Knot",
+  "workflow": {
+    "label": "08 — Overdue Invoice Escalation",
+    "description": "Runs daily via cron. Reads unpaid invoices, checks if overdue by more than 30 days, and sends escalation email to the accounting team. Demonstrates cron trigger + SQL query + IF logic + email.",
+    "definition": {
+      "schemaVersion": "1.0",
+      "workflow": {
+        "ref": "STARTER_OVERDUE_ESCALATION",
+        "label": "08 — Overdue Invoice Escalation",
+        "tags": ["starter", "accounting", "cron"],
+        "settings": { "timeoutSeconds": 60, "errorPolicy": "continue", "logPayloads": true }
+      },
+      "nodes": [
+        {
+          "id": "trigger_daily",
+          "type": "trigger.cron",
+          "label": "Daily 9 AM",
+          "subtitle": "Every weekday at 9:00",
+          "position": { "x": 80, "y": 200 },
+          "config": {
+            "cronExpression": "0 9 * * 1-5"
+          }
+        },
+        {
+          "id": "query_overdue",
+          "type": "dolibarr.sql_query",
+          "label": "Fetch overdue invoices",
+          "subtitle": ">30 days unpaid",
+          "position": { "x": 380, "y": 200 },
+          "config": {
+            "query": "SELECT f.rowid, f.ref, f.total_ttc, s.nom AS customer_name, s.email FROM llx_facture f JOIN llx_societe s ON f.fk_soc = s.rowid WHERE f.paye = 0 AND f.fk_statut = 1 AND f.date_lim_reglement < DATE_SUB(NOW(), INTERVAL 30 DAY) AND f.entity = {{$env.ENTITY_ID}} LIMIT 50"
+          }
+        },
+        {
+          "id": "check_results",
+          "type": "logic.if",
+          "label": "Any overdue?",
+          "subtitle": "Check row count",
+          "position": { "x": 680, "y": 200 },
+          "config": {
+            "conditions": [
+              { "field": "{{$nodes.query_overdue.json.rowCount}}", "operator": "greater", "value": "0" }
+            ]
+          }
+        },
+        {
+          "id": "send_alert",
+          "type": "action.email",
+          "label": "Notify accounting",
+          "subtitle": "Escalation email",
+          "position": { "x": 980, "y": 140 },
+          "config": {
+            "to": "accounting@example.com",
+            "subject": "{{$nodes.query_overdue.json.rowCount}} overdue invoices (>30 days)",
+            "body": "<p>The following invoices are overdue by more than 30 days and require attention.</p><p>Total: {{$nodes.query_overdue.json.rowCount}} invoices.</p><p>Please check the accounting module.</p>"
+          }
+        },
+        {
+          "id": "noop_end",
+          "type": "logic.noop",
+          "label": "No overdue",
+          "subtitle": "Nothing to do",
+          "position": { "x": 980, "y": 300 },
+          "config": {}
+        }
+      ],
+      "edges": [
+        { "id": "e1", "source": "trigger_daily", "target": "query_overdue", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e2", "source": "query_overdue", "target": "check_results", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
+        { "id": "e3", "source": "check_results", "target": "send_alert", "sourceHandle": "true", "targetHandle": "main", "type": "knot" },
+        { "id": "e4", "source": "check_results", "target": "noop_end", "sourceHandle": "false", "targetHandle": "main", "type": "knot" }
+      ]
+    }
+  }
+}

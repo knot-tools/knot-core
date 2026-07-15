@@ -683,6 +683,17 @@ export const knotApi = {
     }>(`/license_status.php`);
   },
 
+  /** Import bundled examples/starter/*.knot.json as draft workflows. */
+  importStarters(selected?: string[]) {
+    return request<{
+      imported: Array<{ id: number; file: string; label: string }>;
+      skipped: string[];
+    }>(`/onboarding.php?action=import_starters`, {
+      method: 'POST',
+      body: JSON.stringify(selected ? { selected } : {}),
+    });
+  },
+
   licenseActivate(extensionId: string, activationCode: string) {
     return request<LicenseActivationResponse>(`/license_activate.php`, {
       method: 'POST',
@@ -708,7 +719,7 @@ export const knotApi = {
     return request<UpdatesCheckResponse>(`/updates.php${qs}`);
   },
 
-  updatesApply(payload: { slug: string; download_url?: string; zip_sha256?: string }) {
+  updatesApply(payload: { slug: string; download_url?: string; zip_sha256?: string; version?: string; channel?: string }) {
     return request<UpdatesApplyResult>(`/updates_apply.php`, {
       method: 'POST',
       body: JSON.stringify(payload),
@@ -1293,19 +1304,21 @@ export interface LicenseDeactivationResponse {
 }
 
 /** Reply shape for /api/updates.php (Phase 7d notify-only badge). */
+export interface UpdatesCheckEntry {
+  slug: string;
+  installedVersion: string;
+  latestVersion: string | null;
+  channel: string | null;
+  publishedAt: string | null;
+  hasUpdate: boolean;
+  source: 'live' | 'cache' | 'cache_stale' | 'unavailable' | string;
+  error: string | null;
+}
+
 export interface UpdatesCheckResponse {
   checkedAt: number;
   hasAnyUpdate: boolean;
-  entries: Array<{
-    slug: string;
-    installedVersion: string;
-    latestVersion: string | null;
-    channel: string | null;
-    publishedAt: string | null;
-    hasUpdate: boolean;
-    source: 'live' | 'cache' | 'cache_stale' | 'unavailable' | string;
-    error: string | null;
-  }>;
+  entries: UpdatesCheckEntry[];
 }
 
 /** POST /api/updates_apply.php successful payload. */
@@ -1682,7 +1695,14 @@ export interface HealthSnapshot {
       lastRun: string | null;
       nextRun: string | null;
       globalEnabled: boolean | null;
+      healthWorker?: {
+        registered: boolean;
+        enabled: boolean;
+        lastRun: string | null;
+        nextRun: string | null;
+      };
     };
+    cronStaleSeconds?: number | null;
     documentsRoot: string;
     introspection?: {
       cachePath: string;

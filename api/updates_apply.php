@@ -117,6 +117,10 @@ $releaseChannel = function_exists('getDolGlobalString')
 if ($releaseChannel === '') {
     $releaseChannel = 'beta';
 }
+$bodyChannel = strtolower(trim((string) ($body['channel'] ?? '')));
+if ($bodyChannel !== '' && preg_match('/^[a-z0-9-]{2,32}$/', $bodyChannel)) {
+    $releaseChannel = $bodyChannel;
+}
 
 $identity = new InstallationIdentity($configRepo, $db);
 $dolistoreHttp = static function () use (
@@ -478,6 +482,21 @@ try {
 
     if ($dl === '') {
         JsonResponse::error('download_url_missing', 'License backend omitted download_url.', 502);
+        exit;
+    }
+
+    $releaseVersion = trim((string) ($release['version'] ?? ''));
+    if ($targetVersion !== '' && $releaseVersion !== '' && $releaseVersion !== $targetVersion) {
+        JsonResponse::error(
+            'release_version_mismatch',
+            sprintf(
+                'Requested version %s but license backend resolved %s. Retry after the target version is published.',
+                $targetVersion,
+                $releaseVersion,
+            ),
+            409,
+            ['requested' => $targetVersion, 'resolved' => $releaseVersion],
+        );
         exit;
     }
 

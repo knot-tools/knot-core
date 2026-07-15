@@ -186,6 +186,14 @@ L'add-on déclare une section `ui` optionnelle dans `knot-extension.json` (valid
 
 [`core/tpl/knot-leftnav.tpl.php`](../tpl/knot-leftnav.tpl.php) appelle `ExtensionRegistry::active()` après les items natifs et délègue à [`SidebarPresentation::buildExtensionItems()`](../class/Extension/SidebarPresentation.php) qui filtre selon `requiredPermission` et bascule sur la CTA admin si l'opérateur est admin sans setup terminé. Toute exception est attrapée et journalisée — la sidebar native ne casse jamais à cause d'une extension défaillante.
 
+**Unified sidebar (option B) — design accepted 2026-07-08:** see
+[`docs/decisions/adr-extension-navigation.md`](decisions/adr-extension-navigation.md).
+Extensions declare `ui.navigation`; Core forwards it into `window.KNOT_EXTENSIONS`
+and renders child rows in the host leftnav when the extension mode is active
+(`SidebarPresentation` + `preview.php`). Extension-local sidebars (e.g. Migration
+SPA) remain the in-app fallback for rich journey state. Suite health stays a Core
+first-level dashboard entry.
+
 ### preview.php et `window.KNOT_EXTENSIONS`
 
 [`core/workflows/preview.php`](../workflows/preview.php) :
