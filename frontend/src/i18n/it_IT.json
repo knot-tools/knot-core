@@ -205,8 +205,10 @@
     "starterManualSubtitle": "Depuis l'editor",
     "starterSetLabel": "Pripara la charge utile",
     "starterSetSubtitle": "messaggio, destinataire",
+    "starterGreetingValue": "Ciao da Knot",
     "starterEmailLabel": "Envoyer un e-mail",
     "starterEmailSubtitle": "SMTP via Dolibarr",
+    "starterEmailSubject": "Demo Knot",
     "problemsTitle": "Problemi",
     "paletteSections": {
       "trigger": "Trigger",
@@ -839,7 +841,8 @@
       "license": {
         "title": "Licenza non valido o scadee",
         "hint": "Verifica la licence del pack sous Admin → Knot → Estensiones.",
-        "hintActivate": "Attiva o rinnova la licenza Pro Pack per simulare o eseguire questo nodo."
+        "hintActivate": "Attiva o rinnova la licenza Pro Pack per simulare o eseguire questo nodo.",
+        "hintSimulate": "La simulazione è bloccata senza una licenza Pro Pack valida. Attiva la licenza e riprova."
       },
       "auth": {
         "title": "Autenticazione refusee",

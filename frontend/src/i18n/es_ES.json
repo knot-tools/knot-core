@@ -205,8 +205,10 @@
     "starterManualSubtitle": "Disparado desde el editor",
     "starterSetLabel": "Preparar carga útil",
     "starterSetSubtitle": "mensaje, destinatario",
+    "starterGreetingValue": "Hola desde Knot",
     "starterEmailLabel": "Enviar correo electrónico",
     "starterEmailSubtitle": "SMTP vía Dolibarr",
+    "starterEmailSubject": "Demo Knot",
     "problemsTitle": "Problemas",
     "paletteSections": {
       "trigger": "Disparadores",
@@ -839,7 +841,8 @@
       "license": {
         "title": "Licencia no válida o caducada",
         "hint": "Revise la licencia de la extensión en Admin → Knot → Extensiones.",
-        "hintActivate": "Active o renueve la licencia Pro Pack para simular o ejecutar este nodo."
+        "hintActivate": "Active o renueve la licencia Pro Pack para simular o ejecutar este nodo.",
+        "hintSimulate": "La simulación está bloqueada sin una licencia Pro Pack válida. Active la licencia e inténtelo de nuevo."
       },
       "auth": {
         "title": "Autenticación rechazada",

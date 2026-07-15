@@ -205,8 +205,10 @@
     "starterManualSubtitle": "Do Editor",
     "starterSetLabel": "Preparar carga útil",
     "starterSetSubtitle": "message, destinataire",
+    "starterGreetingValue": "Olá do Knot",
     "starterEmailLabel": "Envoyer un e-mail",
     "starterEmailSubtitle": "SMTP via Dolibarr",
+    "starterEmailSubject": "Demo Knot",
     "problemsTitle": "Problemas",
     "paletteSections": {
       "trigger": "Gatilhos",
@@ -839,7 +841,8 @@
       "license": {
         "title": "Licença invalide ou expirée",
         "hint": "Vérifiez la licença du pack sous Admin → Knot → Extensions.",
-        "hintActivate": "Ative ou renove a licença Pro Pack para simular ou executar este nó."
+        "hintActivate": "Ative ou renove a licença Pro Pack para simular ou executar este nó.",
+        "hintSimulate": "A simulação está bloqueada sem uma licença Pro Pack válida. Ative a licença e tente novamente."
       },
       "auth": {
         "title": "Authentification refusée",

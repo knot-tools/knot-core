@@ -205,8 +205,10 @@
     "starterManualSubtitle": "Aus dem Editor ausgelöst",
     "starterSetLabel": "Bereiten Sie die Nutzlast vor",
     "starterSetSubtitle": "Nachricht, Empfänger",
+    "starterGreetingValue": "Hallo von Knot",
     "starterEmailLabel": "E-Mail senden",
     "starterEmailSubtitle": "SMTP via Dolibarr",
+    "starterEmailSubject": "Knot-Demo",
     "problemsTitle": "Probleme",
     "paletteSections": {
       "trigger": "Trigger",
@@ -839,7 +841,8 @@
       "license": {
         "title": "Ungültige oder abgelaufene Lizenz",
         "hint": "Überprüfen Sie die Paketlizenz unter Admin → Knot → Erweiterungen.",
-        "hintActivate": "Aktivieren oder erneuern Sie die Pro-Pack-Lizenz, um diesen Knoten zu simulieren oder auszuführen."
+        "hintActivate": "Aktivieren oder erneuern Sie die Pro-Pack-Lizenz, um diesen Knoten zu simulieren oder auszuführen.",
+        "hintSimulate": "Die Simulation ist ohne gültige Pro-Pack-Lizenz blockiert. Aktivieren Sie die Lizenz und versuchen Sie es erneut."
       },
       "auth": {
         "title": "Authentifizierung abgelehnt",
