@@ -20,14 +20,15 @@ class modKnot extends DolibarrModules
         global $conf;
 
         $this->db = $db;
-        $this->numero = 610000;
+        // Reserved on wiki List_of_modules_id: Knot Tools 262871–262880.
+        $this->numero = 262871;
         $this->rights_class = 'knot';
         $this->family = 'crm';
         $this->module_position = 500;
         $this->name = preg_replace('/^mod/i', '', get_class($this));
         $this->description = 'KnotDesc';
         $this->descriptionlong = 'KnotDescLong';
-        $this->version = '2.13.14';
+        $this->version = '2.13.15';
         $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
         // Dolibarr resolves picto "basename@knot" to custom/knot/img/basename.png (see dev docs).
         $this->picto = 'knot@knot';
@@ -130,31 +131,31 @@ class modKnot extends DolibarrModules
 
         $this->rights = [];
         $r = 0;
-        $this->rights[$r][0] = 610001;
+        $this->rights[$r][0] = 262872;
         $this->rights[$r][1] = 'KnotWorkflowRead';
         $this->rights[$r][3] = 0;
         $this->rights[$r][4] = 'workflow';
         $this->rights[$r][5] = 'read';
         $r++;
-        $this->rights[$r][0] = 610002;
+        $this->rights[$r][0] = 262873;
         $this->rights[$r][1] = 'KnotWorkflowWrite';
         $this->rights[$r][3] = 0;
         $this->rights[$r][4] = 'workflow';
         $this->rights[$r][5] = 'write';
         $r++;
-        $this->rights[$r][0] = 610003;
+        $this->rights[$r][0] = 262874;
         $this->rights[$r][1] = 'KnotWorkflowExecute';
         $this->rights[$r][3] = 0;
         $this->rights[$r][4] = 'workflow';
         $this->rights[$r][5] = 'execute';
         $r++;
-        $this->rights[$r][0] = 610004;
+        $this->rights[$r][0] = 262875;
         $this->rights[$r][1] = 'KnotCredentialManage';
         $this->rights[$r][3] = 0;
         $this->rights[$r][4] = 'credential';
         $this->rights[$r][5] = 'manage';
         $r++;
-        $this->rights[$r][0] = 610005;
+        $this->rights[$r][0] = 262876;
         $this->rights[$r][1] = 'KnotAdminConfigure';
         $this->rights[$r][3] = 0;
         $this->rights[$r][4] = 'admin';
