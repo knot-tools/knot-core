@@ -7,20 +7,15 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
-### Fixed
-
-- **Assistant prompt:** stop teaching `itemsPath="{{$json.items|rows}}"` and
-  `$json` on `logic.if` left — prefer `{{$nodes.<producerId>.json.*}}` /
-  `{{$loop.item.*}}` so first-import stays free of `expression_json_chain`
-  (aligned with editor lint + chatbotFix DSL contract).
-- **Editor edges:** KnotEdge uses solid stroke (SVG gradient `url(#…)` could
-  stay invisible until a node drag); stronger `updateNodeInternals` retries
-  after load / catalog / fitView.
-- **Lint panel:** dedupe PHP `KNOT_DSL_*` with local TS codes (same finding
-  shown once). REAL-KNOT-L03/L04 seed expressions use `$nodes.*`.
+## [2.13.15] - 2026-07-15
 
 ### Changed
 
+- **Dolistore packaging compliance:** ZIP name is now
+  `module_knot-<version>.zip` (wiki / Deploy); CDN keeps alias
+  `knot-<version>.zip` (same bytes). Module ID reserved range
+  **262871–262880** (`numero` 262871, rights 262872–262876). Entry points
+  load Dolibarr via `lib/load_dolibarr.inc.php` (custom + root installs).
 - **UX polish (score-5):** trigger panels fully i18n (webhook save-first hint),
   inspector Test tab honesty banner (local simulation ≠ live run), unified
   `KEmptyState` empty states on Workflows (starter import CTA) and Inbox,
@@ -34,6 +29,18 @@ Source, tags, and GitHub Releases:
   to suite scores~5 (Pro 0.1.10 + Migration 0.21.9 signed on license-vm).
 - **OfficialManifestSignatures:** Migration primary pin after Workspace nav
   removal (transition keeps previous 0.21.9 digest).
+
+### Fixed
+
+- **Assistant prompt:** stop teaching `itemsPath="{{$json.items|rows}}"` and
+  `$json` on `logic.if` left — prefer `{{$nodes.<producerId>.json.*}}` /
+  `{{$loop.item.*}}` so first-import stays free of `expression_json_chain`
+  (aligned with editor lint + chatbotFix DSL contract).
+- **Editor edges:** KnotEdge uses solid stroke (SVG gradient `url(#…)` could
+  stay invisible until a node drag); stronger `updateNodeInternals` retries
+  after load / catalog / fitView.
+- **Lint panel:** dedupe PHP `KNOT_DSL_*` with local TS codes (same finding
+  shown once). REAL-KNOT-L03/L04 seed expressions use `$nodes.*`.
 
 ## [2.13.14] - 2026-07-14
 
