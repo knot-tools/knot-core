@@ -98,20 +98,48 @@ $activationCode = $activationIncoming;
 if ($activationCode === '') {
     try {
         $cached = (new LicenseCache())->read($extensionId);
+        $enc = '';
         if (
             $cached !== null
             && isset($cached['activationCodeEnc'])
             && is_string($cached['activationCodeEnc'])
             && $cached['activationCodeEnc'] !== ''
         ) {
+            $enc = $cached['activationCodeEnc'];
+        }
+        if ($enc === '') {
+            $enc = (string) (Bootstrap::readActivationEnc($db, $extensionId) ?? '');
+        }
+        if ($enc !== '') {
             $activationCode = ActivationCodeProtector::decrypt(
-                $cached['activationCodeEnc'],
+                $enc,
                 Bootstrap::localSalt($db),
                 $extensionId,
             );
+            try {
+                Bootstrap::persistActivationEnc($db, $extensionId, $enc);
+            } catch (\Throwable) {
+                // Config persist is best-effort.
+            }
         }
     } catch (\Throwable) {
         $activationCode = '';
+    }
+}
+
+if ($activationIncoming !== '' && $extensionId !== '') {
+    try {
+        Bootstrap::persistActivationEnc(
+            $db,
+            $extensionId,
+            ActivationCodeProtector::encrypt(
+                $activationIncoming,
+                Bootstrap::localSalt($db),
+                $extensionId,
+            ),
+        );
+    } catch (\Throwable) {
+        // Config persist is best-effort.
     }
 }
 

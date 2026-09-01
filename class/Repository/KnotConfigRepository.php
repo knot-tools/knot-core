@@ -19,6 +19,9 @@ namespace Knot\Repository;
  *     {@see \Knot\Licensing\InstanceBinder} to derive `instanceId`.
  *     Generated once on first {@see \Knot\Licensing\Bootstrap} call,
  *     never logged.
+ *   - `licensing.activation_enc.<extensionId>` — AES-GCM ciphertext of
+ *     the Dolistore activation code (same blob as cache
+ *     `activationCodeEnc`). Never logged in plaintext.
  *
  * Multi-entity aware: each (entity, key) pair is independent so the
  * same Dolibarr installation hosting multiple entities still produces

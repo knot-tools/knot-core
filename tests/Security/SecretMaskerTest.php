@@ -25,6 +25,8 @@ final class SecretMaskerTest extends TestCase
             'api_key' => 'sk-XYZ',
             'apiKey' => 'masked-because-normalized-to-apikey',
             'authorization' => 'Bearer xxx',
+            'activationCodeEnc' => 'knot-act-v1:dGVzdA==',
+            'licensing.activation_enc.knot-pro-pack' => 'knot-act-v1:dGVzdA==',
         ];
         $masked = $this->masker->maskArray($input);
 
@@ -34,6 +36,8 @@ final class SecretMaskerTest extends TestCase
         self::assertSame('********', $masked['api_key']);
         self::assertSame('********', $masked['apiKey']);
         self::assertSame('********', $masked['authorization']);
+        self::assertSame('********', $masked['activationCodeEnc']);
+        self::assertSame('********', $masked['licensing.activation_enc.knot-pro-pack']);
     }
 
     public function testMasksRecursively(): void

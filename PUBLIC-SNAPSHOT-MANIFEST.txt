@@ -1,4 +1,4 @@
-generated_at=2026-09-01T18:43:35Z
+generated_at=2026-09-01T19:29:30Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/ISSUE_TEMPLATE/bug_report.yml

@@ -63,4 +63,28 @@ final class BootstrapTest extends TestCase
         $writer = Bootstrap::buildAuditWriter($db);
         self::assertInstanceOf(\Knot\Licensing\Audit\LicenseAuditWriter::class, $writer);
     }
+
+    public function testActivationEncPersistsPerExtensionAndDeletes(): void
+    {
+        $db = new InMemoryConfigDb();
+        $enc = 'knot-act-v1:dGVzdA==';
+        Bootstrap::persistActivationEnc($db, 'knot-pro-pack', $enc);
+        self::assertSame($enc, Bootstrap::readActivationEnc($db, 'knot-pro-pack'));
+        self::assertNull(Bootstrap::readActivationEnc($db, 'knot-migration'));
+        self::assertSame(
+            'licensing.activation_enc.knot-pro-pack',
+            Bootstrap::activationEncConfigKey('knot-pro-pack'),
+        );
+        Bootstrap::deleteActivationEnc($db, 'knot-pro-pack');
+        self::assertNull(Bootstrap::readActivationEnc($db, 'knot-pro-pack'));
+    }
+
+    public function testActivationEncHelpersIgnoreEmptyInputs(): void
+    {
+        $db = new InMemoryConfigDb();
+        Bootstrap::persistActivationEnc($db, '', 'knot-act-v1:dGVzdA==');
+        Bootstrap::persistActivationEnc($db, 'knot-pro-pack', '');
+        self::assertNull(Bootstrap::readActivationEnc($db, 'knot-pro-pack'));
+        self::assertNull(Bootstrap::readActivationEnc($db, ''));
+    }
 }
