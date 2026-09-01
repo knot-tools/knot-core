@@ -14,7 +14,7 @@ declare(strict_types=1);
 // We still hint Dolibarr to highlight the Knot tab in the top bar.
 if (!isset($_GET['mainmenu'])) { $_GET['mainmenu'] = 'knot'; }
 
-require '../../../main.inc.php';
+require_once __DIR__ . '/../lib/load_dolibarr.inc.php';
 dol_include_once('/knot/class/autoload.php');
 
 use Knot\Marketplace\KnotMarketplacePresentation;

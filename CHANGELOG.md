@@ -7,6 +7,14 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.16] - 2026-09-01
+
+### Fixed
+
+- **Dolistore ZIP:** public snapshot now ships `lib/load_dolibarr.inc.php`
+  (entry bootstrap). Missing it 500'd `workflows/preview.php` on zip-only
+  installs (demo). `publish-to-public.sh` INCLUDE_DIRS now includes `lib`.
+
 ## [2.13.15] - 2026-07-15
 
 ### Changed

@@ -11,7 +11,7 @@ if (!defined('NOTOKENRENEWAL')) {
     define('NOTOKENRENEWAL', '1');
 }
 
-require '../../../main.inc.php';
+require_once __DIR__ . '/../lib/load_dolibarr.inc.php';
 dol_include_once('/knot/class/autoload.php');
 
 use Knot\Api\ApiAuth;
