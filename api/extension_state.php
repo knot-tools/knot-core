@@ -7,7 +7,7 @@ if (!defined('NOTOKENRENEWAL')) { define('NOTOKENRENEWAL', '1'); }
 // CSRF is verified explicitly via ApiAuth::requireCsrf() on writes, so the
 // blanket NOCSRFCHECK shortcut is intentionally NOT set here.
 
-require '../../../main.inc.php';
+require_once __DIR__ . '/../lib/load_dolibarr.inc.php';
 dol_include_once('/knot/class/autoload.php');
 
 use Knot\Api\ApiAuth;

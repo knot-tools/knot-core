@@ -12,7 +12,7 @@ if (!isset($_GET['mainmenu'])) {
     $_GET['mainmenu'] = 'knot';
 }
 
-require '../../../main.inc.php';
+require_once __DIR__ . '/../lib/load_dolibarr.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 dol_include_once('/knot/class/autoload.php');
 
