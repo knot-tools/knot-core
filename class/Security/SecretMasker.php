@@ -68,6 +68,8 @@ final class SecretMasker
         'credential',
         'credentials',
         'deploymentnonce',
+        'activationcode',
+        'activationenc',
     ];
 
     /**

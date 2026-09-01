@@ -6,6 +6,7 @@ namespace Knot\Licensing;
 
 use Knot\Licensing\Audit\LicenseAuditEvent;
 use Knot\Licensing\Audit\LicenseAuditWriter;
+use Knot\Repository\KnotConfigRepository;
 use RuntimeException;
 use Throwable;
 
@@ -44,6 +45,7 @@ final class DolistoreValidator
         private readonly ?string $deploymentNonce = null,
         private readonly ?LicenseAuditWriter $auditWriter = null,
         private readonly ?ManifestSignatureVerifier $manifestSignatureVerifier = null,
+        private readonly ?KnotConfigRepository $configRepo = null,
     ) {
     }
 
@@ -95,14 +97,25 @@ final class DolistoreValidator
 
         $activationCode = $this->resolveActivationCode($extensionId, $cached);
         if ($activationCode === null) {
-            return new LicenseStatus(
-                LicenseStatus::MISSING,
+            // Signed cache without activationCodeEnc cannot refresh (legacy
+            // activations written before the code was persisted). Treat like
+            // an unreachable backend: usable within offline grace, else expire.
+            if ($cached === null) {
+                return new LicenseStatus(
+                    LicenseStatus::MISSING,
+                    $extensionId,
+                    null,
+                    null,
+                    null,
+                    null,
+                    'No activation code in cache — re-activate the extension from Knot admin'
+                );
+            }
+
+            return $this->fallbackFromCache(
                 $extensionId,
-                null,
-                null,
-                null,
-                null,
-                'No activation code in cache — re-activate the extension from Knot admin'
+                $cached,
+                'No activation code in cache — cannot refresh',
             );
         }
 
@@ -208,8 +221,10 @@ final class DolistoreValidator
             'lastAttempt' => $now,
             'lastError' => null,
         ];
-        if ($cached !== null && isset($cached['activationCodeEnc'])) {
-            $cacheEntry['activationCodeEnc'] = (string) $cached['activationCodeEnc'];
+        $enc = $this->resolveActivationEnc($extensionId, $cached);
+        if ($enc !== null && $enc !== '') {
+            $cacheEntry['activationCodeEnc'] = $enc;
+            $this->persistActivationEnc($extensionId, $enc);
         }
         $this->cache->write($cacheEntry);
 
@@ -551,13 +566,31 @@ final class DolistoreValidator
     /**
      * @param array<string, mixed>|null $cached
      */
+    /**
+     * Resolve ciphertext first from the signed cache, then from llx_knot_config.
+     * Returns the encrypted blob only — never the plaintext activation code.
+     *
+     * @param array<string, mixed>|null $cached
+     */
+    private function resolveActivationEnc(string $extensionId, ?array $cached): ?string
+    {
+        if ($cached !== null) {
+            $enc = isset($cached['activationCodeEnc']) ? (string) $cached['activationCodeEnc'] : '';
+            if ($enc !== '') {
+                return $enc;
+            }
+        }
+
+        return $this->readActivationEncFromConfig($extensionId);
+    }
+
+    /**
+     * @param array<string, mixed>|null $cached
+     */
     private function resolveActivationCode(string $extensionId, ?array $cached): ?string
     {
-        if ($cached === null || !isset($cached['activationCodeEnc'])) {
-            return null;
-        }
-        $enc = (string) $cached['activationCodeEnc'];
-        if ($enc === '') {
+        $enc = $this->resolveActivationEnc($extensionId, $cached);
+        if ($enc === null || $enc === '') {
             return null;
         }
         try {
@@ -568,6 +601,31 @@ final class DolistoreValidator
             );
         } catch (\Throwable) {
             return null;
+        }
+    }
+
+    private function readActivationEncFromConfig(string $extensionId): ?string
+    {
+        if ($this->configRepo === null || $extensionId === '') {
+            return null;
+        }
+        $existing = $this->configRepo->get(Bootstrap::activationEncConfigKey($extensionId));
+        if ($existing === null || $existing === '') {
+            return null;
+        }
+
+        return $existing;
+    }
+
+    private function persistActivationEnc(string $extensionId, string $enc): void
+    {
+        if ($this->configRepo === null || $extensionId === '' || $enc === '') {
+            return;
+        }
+        try {
+            $this->configRepo->set(Bootstrap::activationEncConfigKey($extensionId), $enc);
+        } catch (\Throwable) {
+            // Config persist is best-effort; cache remains the request source of truth.
         }
     }
 

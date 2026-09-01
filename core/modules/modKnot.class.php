@@ -28,7 +28,7 @@ class modKnot extends DolibarrModules
         $this->name = preg_replace('/^mod/i', '', get_class($this));
         $this->description = 'KnotDesc';
         $this->descriptionlong = 'KnotDescLong';
-        $this->version = '2.13.16';
+        $this->version = '2.13.17';
         $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
         // Dolibarr resolves picto "basename@knot" to custom/knot/img/basename.png (see dev docs).
         $this->picto = 'knot@knot';

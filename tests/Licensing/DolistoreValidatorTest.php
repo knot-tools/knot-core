@@ -7,6 +7,7 @@ namespace Knot\Tests\Licensing;
 use Knot\Extension\ManifestSchema;
 use Knot\KnownSkus;
 use Knot\Licensing\ActivationCodeProtector;
+use Knot\Licensing\Bootstrap;
 use Knot\Licensing\DolistoreValidator;
 use Knot\Licensing\ForkDetector;
 use Knot\Licensing\InstanceBinder;
@@ -17,8 +18,10 @@ use Knot\Licensing\OfflineGracePolicy;
 use Knot\Licensing\OfficialManifestSignatures;
 use Knot\Licensing\PinnedPublicKeys;
 use Knot\Licensing\SignatureVerifier;
+use Knot\Repository\KnotConfigRepository;
 use Knot\Tests\Licensing\Support\Ed25519TestHarness;
 use Knot\Tests\Licensing\Support\FakeDolistoreClient;
+use Knot\Tests\Repository\InMemoryConfigDb;
 use PHPUnit\Framework\TestCase;
 
 final class DolistoreValidatorTest extends TestCase
@@ -123,6 +126,129 @@ final class DolistoreValidatorTest extends TestCase
 
         self::assertSame(LicenseStatus::MISSING, $status->status);
         self::assertCount(0, $client->calls);
+    }
+
+    public function testStaleSignedCacheWithoutActivationCodeUsesOfflineGrace(): void
+    {
+        $this->seedStaleActivationCache();
+        $cache = new LicenseCache($this->tmpDir);
+        $entry = $cache->read('knot-pro-pack');
+        self::assertNotNull($entry);
+        unset($entry['activationCodeEnc']);
+        $cache->write($entry);
+
+        $client = new FakeDolistoreClient();
+        $client->setResponder(fn (array $params) => $this->signedResponse(
+            (string) ($params['instanceFingerprint'] ?? ''),
+            true,
+            '2027-04-29T00:00:00+00:00',
+        ));
+        $validator = $this->makeValidator($client);
+
+        $status = $validator->inspect($this->manifest());
+
+        self::assertSame(LicenseStatus::VALID, $status->status);
+        self::assertTrue($status->offlineGrace);
+        self::assertCount(0, $client->calls);
+    }
+
+    public function testStaleSignedCacheWithoutActivationCodeExpiresAfterGrace(): void
+    {
+        $extensionId = 'knot-pro-pack';
+        $fingerprint = $this->binder->compute();
+        $payload = [
+            'status' => 'active',
+            'instance_fingerprint' => $fingerprint,
+            'issued_at' => gmdate('c', time() - 100_000),
+        ];
+        (new LicenseCache($this->tmpDir))->write([
+            'extensionId' => $extensionId,
+            'instanceId' => $fingerprint,
+            'signedPayload' => $payload,
+            'signature' => $this->harness->sign($payload),
+            'signedAt' => gmdate('c', time() - 86_400 * 16),
+            'expiresAt' => '2027-04-29T00:00:00+00:00',
+            'lastSuccessfulRefresh' => gmdate('c', time() - 86_400 * 15),
+            'lastAttempt' => gmdate('c', time() - 86_400 * 16),
+            'lastError' => null,
+        ]);
+        $client = new FakeDolistoreClient();
+        $client->setResponder(fn (array $params) => $this->signedResponse(
+            (string) ($params['instanceFingerprint'] ?? ''),
+            true,
+            '2027-04-29T00:00:00+00:00',
+        ));
+        $validator = $this->makeValidator($client);
+
+        $status = $validator->inspect($this->manifest());
+
+        self::assertSame(LicenseStatus::EXPIRED, $status->status);
+        self::assertCount(0, $client->calls);
+        self::assertStringContainsString('cannot refresh', (string) $status->error);
+    }
+
+    public function testConfigStoreRestoresActivationWhenCacheLacksEnc(): void
+    {
+        $this->seedStaleActivationCache();
+        $cache = new LicenseCache($this->tmpDir);
+        $entry = $cache->read('knot-pro-pack');
+        self::assertNotNull($entry);
+        $enc = (string) ($entry['activationCodeEnc'] ?? '');
+        self::assertNotSame('', $enc);
+        unset($entry['activationCodeEnc']);
+        $cache->write($entry);
+
+        $db = new InMemoryConfigDb();
+        $config = new KnotConfigRepository($db);
+        Bootstrap::persistActivationEnc($db, 'knot-pro-pack', $enc);
+
+        $client = new FakeDolistoreClient();
+        $client->setResponder(fn (array $params) => $this->signedResponse(
+            (string) ($params['instanceFingerprint'] ?? ''),
+            true,
+            '2027-04-29T00:00:00+00:00',
+        ));
+        $validator = $this->makeValidator($client, configRepo: $config);
+
+        $status = $validator->inspect($this->manifest());
+
+        self::assertSame(LicenseStatus::VALID, $status->status);
+        self::assertFalse($status->offlineGrace);
+        self::assertCount(1, $client->calls);
+        self::assertArrayHasKey('activationCode', $client->calls[0]['params']);
+        self::assertNotSame('', (string) $client->calls[0]['params']['activationCode']);
+
+        $restored = $cache->read('knot-pro-pack');
+        self::assertNotNull($restored);
+        self::assertSame($enc, (string) ($restored['activationCodeEnc'] ?? ''));
+        self::assertSame($enc, $config->get(Bootstrap::activationEncConfigKey('knot-pro-pack')));
+        $serialized = json_encode($restored);
+        self::assertIsString($serialized);
+        self::assertStringNotContainsString('KNOT-TEST-', $serialized);
+    }
+
+    public function testSuccessfulRefreshPersistsEncToConfig(): void
+    {
+        $this->seedStaleActivationCache();
+        $db = new InMemoryConfigDb();
+        $config = new KnotConfigRepository($db);
+        $client = new FakeDolistoreClient();
+        $client->setResponder(fn (array $params) => $this->signedResponse(
+            (string) ($params['instanceFingerprint'] ?? ''),
+            true,
+            '2027-04-29T00:00:00+00:00',
+        ));
+        $validator = $this->makeValidator($client, configRepo: $config);
+
+        $status = $validator->inspect($this->manifest());
+
+        self::assertSame(LicenseStatus::VALID, $status->status);
+        $stored = $config->get(Bootstrap::activationEncConfigKey('knot-pro-pack'));
+        self::assertNotNull($stored);
+        self::assertNotSame('', $stored);
+        $cacheEntry = (new LicenseCache($this->tmpDir))->read('knot-pro-pack');
+        self::assertNotNull($cacheEntry);
+        self::assertSame($stored, (string) ($cacheEntry['activationCodeEnc'] ?? ''));
     }
 
     public function testMissingLicenseWhenBackendUnreachableWithActivationCode(): void
@@ -630,6 +756,7 @@ final class DolistoreValidatorTest extends TestCase
         ?ForkDetector $forkDetector = null,
         ?string $deploymentToken = null,
         ?string $deploymentNonce = null,
+        ?KnotConfigRepository $configRepo = null,
     ): DolistoreValidator {
         return new DolistoreValidator(
             $client,
@@ -644,6 +771,7 @@ final class DolistoreValidatorTest extends TestCase
             $deploymentNonce,
             null,
             new ManifestSignatureVerifier(new SignatureVerifier([$this->harness->publicKeyHex()])),
+            $configRepo,
         );
     }
 

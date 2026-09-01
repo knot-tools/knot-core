@@ -189,13 +189,18 @@ $signature = is_array($verdict['signature'] ?? null) ? $verdict['signature'] : [
 // loads short-circuit the network round-trip. The verdict signature
 // is rechecked at every read by SignatureVerifier — we never trust
 // the cache content blindly.
+$activationCodeEnc = ActivationCodeProtector::encrypt(
+    $activationCode,
+    Bootstrap::localSalt($db),
+    $extensionId,
+);
+try {
+    Bootstrap::persistActivationEnc($db, $extensionId, $activationCodeEnc);
+} catch (\Throwable) {
+    // Config persist is best-effort; cache write below is the live path.
+}
 try {
     $cache = new LicenseCache();
-    $activationCodeEnc = ActivationCodeProtector::encrypt(
-        $activationCode,
-        Bootstrap::localSalt($db),
-        $extensionId,
-    );
     $cache->write([
         'extensionId' => $extensionId,
         'instanceId' => $fingerprint,

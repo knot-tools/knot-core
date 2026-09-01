@@ -182,6 +182,7 @@ $cacheWarning = null;
 try {
     $cache = new LicenseCache();
     $cache->delete($extensionId);
+    Bootstrap::deleteActivationEnc($db, $extensionId);
 } catch (\Throwable $e) {
     $cacheWarning = $e->getMessage();
 }

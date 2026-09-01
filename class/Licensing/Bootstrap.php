@@ -45,7 +45,10 @@ use Knot\Extension\ExtensionRegistry;
  *
  * The composer is idempotent and creates `licensing.local_salt` on
  * first call (32 random bytes hex, persisted in `llx_knot_config`,
- * never logged). Subsequent calls reuse the stored salt.
+ * never logged). Subsequent calls reuse the stored salt. Encrypted
+ * activation codes are also backed up under
+ * `licensing.activation_enc.<extensionId>` so inspect can refresh after
+ * a cache file without `activationCodeEnc`.
  */
 final class Bootstrap
 {
@@ -53,6 +56,9 @@ final class Bootstrap
 
     /** Docs Docker: pin InstanceBinder to the licence-bound fingerprint (see seed_docs_migration.php). */
     public const CONFIG_KEY_DOCS_PINNED_FINGERPRINT = 'licensing.docs_pinned_fingerprint';
+
+    /** Encrypted activation code backup, one key per extension (`licensing.activation_enc.<id>`). */
+    public const CONFIG_KEY_ACTIVATION_ENC_PREFIX = 'licensing.activation_enc.';
 
     /**
      * Build an {@see ExtensionRegistry} fully wired with the runtime
@@ -101,7 +107,8 @@ final class Bootstrap
         $ttlHours = self::globalInt('KNOT_LICENSE_DOLISTORE_TTL_HOURS', DolistoreValidator::DEFAULT_TTL_HOURS);
         $graceDays = self::globalInt('KNOT_LICENSE_DOLISTORE_OFFLINE_DAYS', OfflineGracePolicy::DEFAULT_GRACE_DAYS);
 
-        $installation = new InstallationIdentity(new KnotConfigRepository($db), $db);
+        $config = new KnotConfigRepository($db);
+        $installation = new InstallationIdentity($config, $db);
 
         $releaseKeys = PinnedPublicKeys::releaseSigningKeysHex();
 
@@ -120,6 +127,7 @@ final class Bootstrap
             $releaseKeys !== []
                 ? new ManifestSignatureVerifier(new SignatureVerifier($releaseKeys))
                 : null,
+            $config,
         );
     }
 
@@ -175,6 +183,47 @@ final class Bootstrap
         $generated = InstanceBinder::generateLocalSalt();
         $config->set(self::CONFIG_KEY_LOCAL_SALT, $generated);
         return $generated;
+    }
+
+    public static function activationEncConfigKey(string $extensionId): string
+    {
+        return self::CONFIG_KEY_ACTIVATION_ENC_PREFIX . $extensionId;
+    }
+
+    /**
+     * Persist the encrypted activation code for an extension in llx_knot_config.
+     * Stores ciphertext only — never log or print the plaintext code.
+     */
+    public static function persistActivationEnc(\DoliDB $db, string $extensionId, string $activationCodeEnc): void
+    {
+        if ($extensionId === '' || $activationCodeEnc === '') {
+            return;
+        }
+        $config = new KnotConfigRepository($db);
+        $config->set(self::activationEncConfigKey($extensionId), $activationCodeEnc);
+    }
+
+    public static function readActivationEnc(\DoliDB $db, string $extensionId): ?string
+    {
+        if ($extensionId === '') {
+            return null;
+        }
+        $config = new KnotConfigRepository($db);
+        $existing = $config->get(self::activationEncConfigKey($extensionId));
+        if ($existing === null || $existing === '') {
+            return null;
+        }
+
+        return $existing;
+    }
+
+    public static function deleteActivationEnc(\DoliDB $db, string $extensionId): void
+    {
+        if ($extensionId === '') {
+            return;
+        }
+        $config = new KnotConfigRepository($db);
+        $config->delete(self::activationEncConfigKey($extensionId));
     }
 
     private static function resolveSocieteName(): string

@@ -7,6 +7,19 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.17] - 2026-09-01
+
+### Fixed
+
+- **Licence persist:** encrypted activation codes are now stored in
+  `llx_knot_config` (`licensing.activation_enc.<extensionId>`) as well
+  as the signed cache. Inspect restores the code from cache, then
+  config, so a Core update that drops `activationCodeEnc` from
+  `*.cache.json` no longer forces testers to re-type keys.
+- **Offline grace:** a signed cache without `activationCodeEnc` uses
+  the 14-day offline grace (`fallbackFromCache`) instead of flipping
+  the UI to INVALID/`missing` after TTL.
+
 ## [2.13.16] - 2026-09-01
 
 ### Fixed
