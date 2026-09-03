@@ -7,6 +7,13 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+### Changed
+
+- **Compatibility claim (public snapshot):** README badge and requirements table
+  now state Dolibarr **V20–V24** (PHP 8.1+; floor still 20). Evidence: Core
+  2.13.19 zip install-proofed UI+DB on Dolibarr 20.0.4–24.0.0 (php8.2). Docs
+  only — no zip or module version bump in this sync.
+
 ## [2.13.19] - 2026-09-03
 
 ### Fixed
