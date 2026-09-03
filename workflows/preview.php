@@ -165,7 +165,7 @@ $rawTab = strtolower((string) GETPOST('tab', 'aZ09'));
 $rawMode = (string) GETPOST('mode', 'alphanohtml');
 if ($rawMode === 'pro-pack-migration') {
     header(
-        'Location: ' . DOL_URL_ROOT . '/custom/knot/workflows/preview.php?mode=pro-pack&tab=connectors',
+        'Location: ' . dol_buildpath('/knot/workflows/preview.php', 1) . '?mode=pro-pack&tab=connectors',
         true,
         302
     );
@@ -175,13 +175,13 @@ if ($rawMode === 'marketplace' && $rawTab === 'migration') {
     $proPackHubAvailable = in_array('pro-pack', $knotExtensionModes, true);
     if ($proPackHubAvailable) {
         header(
-            'Location: ' . DOL_URL_ROOT . '/custom/knot/workflows/preview.php?mode=pro-pack&tab=connectors',
+            'Location: ' . dol_buildpath('/knot/workflows/preview.php', 1) . '?mode=pro-pack&tab=connectors',
             true,
             302
         );
     } else {
         header(
-            'Location: ' . DOL_URL_ROOT . '/custom/knot/workflows/preview.php?mode=marketplace',
+            'Location: ' . dol_buildpath('/knot/workflows/preview.php', 1) . '?mode=marketplace',
             true,
             302
         );
@@ -197,11 +197,11 @@ if ($rawMode !== '' && preg_match('/^[a-z][a-z0-9-]{0,63}$/', $rawMode) === 1) {
     $mode = $rawMode;
 }
 if (!$marketplaceUiEnabled && in_array($mode, $marketplaceDependentModes, true)) {
-    header('Location: ' . DOL_URL_ROOT . '/custom/knot/workflows/preview.php?mode=dashboard', true, 302);
+    header('Location: ' . dol_buildpath('/knot/workflows/preview.php', 1) . '?mode=dashboard', true, 302);
     exit;
 }
 if ($mode !== '' && !in_array($mode, $allowedModes, true)) {
-    header('Location: ' . DOL_URL_ROOT . '/custom/knot/workflows/preview.php?mode=dashboard', true, 302);
+    header('Location: ' . dol_buildpath('/knot/workflows/preview.php', 1) . '?mode=dashboard', true, 302);
     exit;
 }
 if ($mode === '') {
@@ -220,12 +220,12 @@ if ($mode === 'queue') {
 $workflowId = (int) GETPOST('workflow_id', 'int');
 $executionId = (int) GETPOST('execution_id', 'int');
 
-$apiBase = DOL_URL_ROOT . '/custom/knot/api';
+$apiBase = dol_buildpath('/knot/api', 1);
 $csrfToken = function_exists('newToken') ? newToken() : '';
 $engineEnabled = getDolGlobalString('KNOT_ENGINE_ENABLED') === '1';
 $setupCompleted = getDolGlobalString('KNOT_SETUP_COMPLETED') === '1';
 $firstrunCompleted = getDolGlobalString('KNOT_FIRSTRUN_COMPLETED') === '1';
-$setupUrl = DOL_URL_ROOT . '/custom/knot/admin/setup.php?admin=1';
+$setupUrl = dol_buildpath('/knot/admin/setup.php', 1) . '?admin=1';
 // Dolibarr superadmin / admin users have $user->admin > 0; some installs rely on
 // Knot's configure right without a global "admin" flag — allow onboarding for both.
 $knotUserAdmin = ((int) $user->admin) > 0 || $user->hasRight('knot', 'admin', 'configure');
@@ -234,7 +234,7 @@ $knotUserAdmin = ((int) $user->admin) > 0 || $user->hasRight('knot', 'admin', 'c
 // inside the module. We layer four sizes + a maskable SVG so the icon stays
 // crisp on both desktop and mobile shortcuts; Dolibarr's global favicon
 // remains untouched outside of Knot pages.
-$knotIconBase = DOL_URL_ROOT . '/custom/knot/img/brand';
+$knotIconBase = dol_buildpath('/knot/img/brand', 1);
 $knotHead = '<link rel="icon" type="image/svg+xml" href="' . dol_escape_htmltag($knotIconBase . '/favicon.svg') . '">'
     . '<link rel="icon" type="image/png" sizes="32x32" href="' . dol_escape_htmltag($knotIconBase . '/favicon-32.png') . '">'
     . '<link rel="icon" type="image/png" sizes="64x64" href="' . dol_escape_htmltag($knotIconBase . '/favicon-64.png') . '">'
@@ -260,13 +260,13 @@ if ($mode === 'marketplace') {
 
 // Cache buster for CSS: mtime of dist/knot-app.css so a redeploy invalidates
 // any prior CSS even when the semver version did not change.
-$knotCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/dist/knot-app.css';
+$knotCssPath = dol_buildpath('/knot/dist/knot-app.css', 0);
 $knotCssVer = file_exists($knotCssPath) ? rawurlencode((string) filemtime($knotCssPath)) : '0';
-$knotHostCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot-host.css';
+$knotHostCssPath = dol_buildpath('/knot/css/knot-host.css', 0);
 $knotHostCssVer = file_exists($knotHostCssPath) ? rawurlencode((string) filemtime($knotHostCssPath)) : '0';
-$knotTokensCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot-tokens.css';
+$knotTokensCssPath = dol_buildpath('/knot/css/knot-tokens.css', 0);
 $knotTokensCssVer = file_exists($knotTokensCssPath) ? rawurlencode((string) filemtime($knotTokensCssPath)) : '0';
-$knotCssBase = DOL_URL_ROOT . '/custom/knot';
+$knotCssBase = dol_buildpath('/knot', 1);
 // Inject Knot styles in $knotHead: Dolibarr's llxHeader CSS array appends ?lang=…
 // after URLs that already use ?v=…, producing an invalid query string and stale cache keys.
 $knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot-tokens.css?v=' . $knotTokensCssVer) . '">';
@@ -366,7 +366,7 @@ body:has(.knot-nav) .knot-shell {
 window.KNOT_API_BASE = <?php print json_encode($apiBase); ?>;
 window.KNOT_CSRF_TOKEN = <?php print json_encode($csrfToken); ?>;
 window.DOL_URL_ROOT = <?php print json_encode(DOL_URL_ROOT); ?>;
-window.KNOT_BASE_URL = <?php print json_encode(DOL_URL_ROOT . '/custom/knot/workflows/preview.php'); ?>;
+window.KNOT_BASE_URL = <?php print json_encode(dol_buildpath('/knot/workflows/preview.php', 1)); ?>;
 window.KNOT_MARKETPLACE_UI_ENABLED = <?php print $marketplaceUiEnabled ? 'true' : 'false'; ?>;
 window.KNOT_ENGINE_ENABLED = <?php print $engineEnabled ? 'true' : 'false'; ?>;
 window.KNOT_FIRSTRUN_COMPLETED = <?php print $firstrunCompleted ? 'true' : 'false'; ?>;
@@ -443,14 +443,14 @@ $appStyle .= sprintf(' --knot-dolibarr-chrome-top: %dpx;', $chromeTopPx);
 // Use file mtime as cache buster so every redeploy invalidates browser cache,
 // even when the semver module version did not change. Falls back to the module
 // version when the file is missing on disk (defensive — should not happen).
-$knotDistPath = DOL_DOCUMENT_ROOT . '/custom/knot/dist/knot-app.js';
+$knotDistPath = dol_buildpath('/knot/dist/knot-app.js', 0);
 $knotAssetVersion = file_exists($knotDistPath)
     ? (string) filemtime($knotDistPath)
     : (class_exists('Knot\\Version') ? \Knot\Version::current() : '2.0.0');
 $knotAssetVersion = rawurlencode($knotAssetVersion);
 ?>
-<script src="<?php print DOL_URL_ROOT; ?>/custom/knot/js/knot-app.js?v=<?php print $knotAssetVersion; ?>" defer></script>
-<script src="<?php print DOL_URL_ROOT; ?>/custom/knot/dist/knot-app.js?v=<?php print $knotAssetVersion; ?>" defer></script>
+<script src="<?php print dol_escape_htmltag(dol_buildpath('/knot/js/knot-app.js', 1)); ?>?v=<?php print $knotAssetVersion; ?>" defer></script>
+<script src="<?php print dol_escape_htmltag(dol_buildpath('/knot/dist/knot-app.js', 1)); ?>?v=<?php print $knotAssetVersion; ?>" defer></script>
 <?php foreach ($knotExtensionAssets as $knotExtAsset): ?>
 <script src="<?php print dol_escape_htmltag((string) $knotExtAsset['js']); ?>" defer></script>
 <?php endforeach; ?>

@@ -15,7 +15,7 @@ if (!defined('DOL_DOCUMENT_ROOT')) {
     return;
 }
 
-$base = DOL_URL_ROOT . '/custom/knot';
+$base = dol_buildpath('/knot', 1);
 $preview = $base . '/workflows/preview.php';
 $setup = $base . '/admin/setup.php?admin=1';
 $active = isset($knotActive) ? (string) $knotActive : '';
@@ -287,8 +287,8 @@ if (class_exists(\Knot\Marketplace\SidebarBadge::class) && class_exists(\Knot\Re
     <div class="knot-nav__brand">
         <span class="knot-nav__brand-mark" aria-hidden="true">
             <img
-                src="<?php print dol_escape_htmltag(DOL_URL_ROOT . '/custom/knot/img/brand/knot-logo-256.png'); ?>"
-                srcset="<?php print dol_escape_htmltag(DOL_URL_ROOT . '/custom/knot/img/brand/knot-logo-256.png'); ?> 1x, <?php print dol_escape_htmltag(DOL_URL_ROOT . '/custom/knot/img/brand/knot-logo-512.png'); ?> 2x"
+                src="<?php print dol_escape_htmltag(dol_buildpath('/knot/img/brand/knot-logo-256.png', 1)); ?>"
+                srcset="<?php print dol_escape_htmltag(dol_buildpath('/knot/img/brand/knot-logo-256.png', 1)); ?> 1x, <?php print dol_escape_htmltag(dol_buildpath('/knot/img/brand/knot-logo-512.png', 1)); ?> 2x"
                 alt=""
                 width="36"
                 height="36"

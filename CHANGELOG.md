@@ -7,12 +7,31 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.20] - 2026-09-03
+
+### Fixed
+
+- **Dolistore packaging paths (wiki rules 3–4):** packaged PHP no longer
+  concatenates `DOL_DOCUMENT_ROOT` / `DOL_URL_ROOT` with the custom module
+  tree. Includes use `dol_include_once('/knot/...')`; filesystem / HTML URLs
+  use `dol_buildpath('/knot/...', 0|1)` (or `__DIR__` in `Version`). Touches
+  `admin/setup.php`, `class/Version.php`, `api/onboarding.php`,
+  `api/updates_apply.php`, `api/webhooks.php`, `workflows/preview.php`,
+  `tpl/knot-leftnav.tpl.php`. `scripts/audit_dolistore_zip.py` fails the ZIP
+  on any such concatenation.
+
 ### Changed
 
-- **Compatibility claim (public snapshot):** README badge and requirements table
-  now state Dolibarr **V20–V24** (PHP 8.1+; floor still 20). Evidence: Core
-  2.13.19 zip install-proofed UI+DB on Dolibarr 20.0.4–24.0.0 (php8.2). Docs
-  only — no zip or module version bump in this sync.
+- **Public compatibility claim:** Dolibarr **20–24** (V20–V24), PHP 8.1+ —
+  README / Dolistore-facing docs after fresh Docker UI+DB install proof of
+  `module_knot-2.13.19.zip` (SHA256
+  `19f39e3c93dbe2941dc36de34352ed30b6244a8846818c9d5d706ca37d26439c`) on
+  `dolibarr/dolibarr:{20.0.4,21.0.4,22.0.5,23.0.4,24.0.0}-php8.2`. Floor
+  unchanged (`need_dolibarr_version` min 20).
+- **CI Dolibarr matrix:** `dolibarr-matrix` covers **20.0–24.0** (PHP 8.2
+  per cell). Dolibarr **24.0** requires PHP ≥7.2 / ≤8.5 upstream; Knot keeps
+  PHP 8.2 for uniformity with 20–23. Smoke asserts `CronWorker` + `Version::current()`
+  under the Dolibarr `htdocs` tree (still no full UI install in CI).
 
 ## [2.13.19] - 2026-09-03
 
