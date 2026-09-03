@@ -1,4 +1,4 @@
-generated_at=2026-09-01T19:29:30Z
+generated_at=2026-09-03T09:20:00Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/ISSUE_TEMPLATE/bug_report.yml
@@ -686,6 +686,8 @@ img/brand/knot-logo-1024.png
 img/brand/knot-logo-256.png
 img/brand/knot-logo-512.png
 img/brand/knot-logo.svg
+img/brand/knot-mark-light.svg
+img/brand/knot-mark.svg
 img/brand/knot-mono-black.svg
 img/brand/knot-mono-white.svg
 img/brand/knot-symbol-256.png

@@ -56,7 +56,9 @@ final class OfficialManifestSignatures
     {
         return [
             KnownSkus::PRO_PACK => [
-                // 0.1.10 primary — signed 2026-07-14.
+                // 0.1.11 primary — signed 2026-09-01 (module id 262877).
+                'd29cf7d9e6ba6a13a6258c700889c5c0af109c939205c41f01d280a4c53474d47f1d9c845e2c90380ca635963202e25f64d23a50f7fe4119b18e811752a0c703',
+                // Deprecated transition pin — 0.1.10 primary (2026-07-14).
                 '752cc8c0353bf9a7b17e996684ee5d3e56cf3830394adfe6b2a689cee4694b115ab89c402cfbe7b50ab0217d1932f07a606ad2acbb6444811f4ad6a8f1006500',
                 // 0.1.9 — signed 2026-06-08.
                 '38a6cc9d3b41eb84a9572d2b928ad3e0f930b8cf6dad65e46763710e5478f75fcc36cea055a6be828db3914347be78dc61d8fb7590e011d5137e1bf6edd18a09',
@@ -69,7 +71,9 @@ final class OfficialManifestSignatures
                 '1e6f32da1704926175928048d68dfdea768a1005ae3f140ad45aeff0461509d12c66c5b4404e2bd3990adb439ab5e6b98d0185629a4cc4e390e5ed2deafae904',
             ],
             KnownSkus::MIGRATION => [
-                // 0.21.9 primary — re-signed 2026-07-14 (Workspace nav removed).
+                // 0.21.10 primary — signed 2026-09-01 (module id 262878, rights 262879–80).
+                '60142d805800cae49de79bb1ee735df171ba38e43ac7a0c0e465c7297a06846121214083ed409297fa8c11aab2f1f0694f38cd9e5b1d6219be068802ab07d709',
+                // Deprecated transition pin — 0.21.9 primary (2026-07-14).
                 '160abd8c22bbdb6680e6696826200cad0098b45984228b2848b0101f6a04ec06168b8f3d5227b555be0c5addd8e46379ce16a108d71a30945360749c19edb102',
                 // 0.21.9 previous primary (with Workspace tools entry) — transition.
                 'e7582def54c8ef0005a2ce36f2bfec90572878422a194f8132859a62df1ad097ee43fe3fe276e796d5d8a0f44b57444321a047aa25c25e1b7c9210f2d3ec310f',

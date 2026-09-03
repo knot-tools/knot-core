@@ -1,19 +1,19 @@
 {
   "schema_version": "knot-core-releases@v1",
   "latest": {
-    "version": "2.13.17",
+    "version": "2.13.18",
     "channel": "beta",
-    "published_at": "2026-09-01T19:27:33+00:00",
+    "published_at": "2026-09-03T09:11:14+00:00",
     "zip_url": "https://knot.tools/downloads/knot-core/latest",
-    "zip_sha256": "59c641052c949d158fba8215a8b5c27048933c2685d403ae9396eb3cf31c3e93",
-    "signature_hex": "1c42871914ce866a02f3d604e37f3c31b76a5cf16bd388a0a68851263df333a40f22118105e789b7b235afdb4f00f60c89c79a903b06c6655431a6e1274b1900",
+    "zip_sha256": "da6389476c0855c2a8cb51663eba71bc474cde07138630fabfb46dbcfe7cab6e",
+    "signature_hex": "1080c7a2353852664e86200f334151db1aabc6b91df49eb2d20ab2bb538daa77d018bc3d227907086fb87bbb18eb0ef4c2e300d62c1dec006e605b1c0f265b01",
     "signature_payload": {
       "channel": "beta",
-      "version": "2.13.17",
-      "zip_sha256": "59c641052c949d158fba8215a8b5c27048933c2685d403ae9396eb3cf31c3e93",
+      "version": "2.13.18",
+      "zip_sha256": "da6389476c0855c2a8cb51663eba71bc474cde07138630fabfb46dbcfe7cab6e",
       "zip_url": "https://knot.tools/downloads/knot-core/latest"
     },
-    "zip_size_bytes": 2386679,
+    "zip_size_bytes": 2373347,
     "signature_kid": "rel-2026-04"
   },
   "_comment": "Synced from knot-tools/core/releases.json on each Core release.",
