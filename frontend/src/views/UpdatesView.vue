@@ -382,11 +382,21 @@ onMounted(() => {
         <dl class="k-mt-4 k-grid k-grid-cols-2 k-gap-3 k-text-sm">
           <div>
             <dt class="k-text-xs k-text-knot-text-muted">{{ t('updatesPage.colInstalled') }}</dt>
-            <dd class="k-mt-0.5 k-font-mono k-text-knot-text">{{ row.installedVersion }}</dd>
+            <dd
+              class="k-mt-0.5 k-font-mono k-text-knot-text"
+              data-testid="updates-installed-version"
+            >
+              {{ row.installedVersion }}
+            </dd>
           </div>
           <div>
             <dt class="k-text-xs k-text-knot-text-muted">{{ t('updatesPage.colLatest') }}</dt>
-            <dd class="k-mt-0.5 k-font-mono k-text-knot-text">{{ row.latestVersion ?? '—' }}</dd>
+            <dd
+              class="k-mt-0.5 k-font-mono k-text-knot-text"
+              data-testid="updates-latest-version"
+            >
+              {{ row.latestVersion ?? '—' }}
+            </dd>
           </div>
         </dl>
 

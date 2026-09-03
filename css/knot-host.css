@@ -166,8 +166,9 @@ body.knot-nav-collapsed {
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    background: var(--knot-gradient-hero);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+    /* out-v2 dark K PNG already carries its plate; no hero gradient / purple glow */
+    background: transparent;
+    box-shadow: none;
     overflow: hidden;
 }
 .knot-nav__brand-mark img {

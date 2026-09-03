@@ -12,7 +12,7 @@ namespace Knot;
  */
 final class Version
 {
-    public const FALLBACK = '2.13.18';
+    public const FALLBACK = '2.13.19';
 
     public static function current(): string
     {

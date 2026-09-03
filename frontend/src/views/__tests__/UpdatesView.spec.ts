@@ -103,6 +103,9 @@ describe('UpdatesView', () => {
     expect(wrapper.text()).toContain('2.0.0');
     expect(wrapper.text()).toContain('Update available');
     expect(wrapper.get('[data-testid="updates-trust-banner"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="updates-card-knot"]').attributes('data-has-update')).toBe('1');
+    expect(wrapper.get('[data-testid="updates-installed-version"]').text()).toBe('2.0.0');
+    expect(wrapper.get('[data-testid="updates-latest-version"]').text()).toBe('2.1.0');
     wrapper.unmount();
   });
 
