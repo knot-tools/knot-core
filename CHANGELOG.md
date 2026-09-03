@@ -7,6 +7,25 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.19] - 2026-09-03
+
+### Fixed
+
+- **Sidebar brand mark halo:** `.knot-nav__brand-mark` no longer uses
+  `--knot-gradient-hero` or the purple glow shadow behind the out-v2 dark K
+  PNG (`img/brand/knot-logo-*.png`). Background is transparent; collapsed and
+  dense density variants inherit the same rule.
+
+### Tests
+
+- **Updates apply e2e (card UI):** replace stale table-row Playwright specs with
+  `tests/e2e/specs/updates-apply-suite.spec.ts` + helper
+  `tests/e2e/helpers/updates-apply.ts` covering **Core (`knot`)**, Pro Pack, and
+  Migration. Flow asserts product card, confirm dialog, and POST
+  `updates_apply.php` (skip when Apply disabled / already latest / known env
+  gaps). Vitest: `UpdatesView.apply-dialog.spec.ts` opens `KConfirmDialog` then
+  calls `updatesApply` with slug `knot`.
+
 ## [2.13.18] - 2026-09-03
 
 ### Changed

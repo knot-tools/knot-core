@@ -1,4 +1,4 @@
-generated_at=2026-09-03T09:20:00Z
+generated_at=2026-09-03T17:40:26Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/ISSUE_TEMPLATE/bug_report.yml
@@ -597,6 +597,7 @@ frontend/src/views/WorkflowsView.vue
 frontend/src/views/__tests__/CredentialsView.spec.ts
 frontend/src/views/__tests__/EditorView.test.ts
 frontend/src/views/__tests__/MarketplaceView.test.ts
+frontend/src/views/__tests__/UpdatesView.apply-dialog.spec.ts
 frontend/src/views/__tests__/UpdatesView.spec.ts
 frontend/src/views/marketplace/BlockRenderer.vue
 frontend/src/views/marketplace/MarketplaceBlockHost.vue

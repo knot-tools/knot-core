@@ -44,6 +44,7 @@ const confirmClass = computed(() =>
             type="button"
             class="k-btn k-text-sm k-font-semibold"
             :class="confirmClass"
+            data-knot-test="knot-confirm-accept"
             @click="confirmApi.answer(true)"
           >
             {{ opts.confirmLabel ?? t('actions.confirm') }}
