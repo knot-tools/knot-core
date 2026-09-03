@@ -12,7 +12,7 @@ namespace Knot;
  */
 final class Version
 {
-    public const FALLBACK = '2.13.19';
+    public const FALLBACK = '2.13.20';
 
     public static function current(): string
     {
@@ -28,13 +28,12 @@ final class Version
                 // ignore
             }
         }
-        if (defined('DOL_DOCUMENT_ROOT')) {
-            $modulePath = DOL_DOCUMENT_ROOT . '/custom/knot/core/modules/modKnot.class.php';
-            if (is_readable($modulePath)) {
-                $contents = (string) file_get_contents($modulePath);
-                if (preg_match('/\$this->version\s*=\s*\'([^\']+)\'/m', $contents, $matches)) {
-                    return $matches[1];
-                }
+        // Filesystem path via __DIR__ (Dolistore: no DOL_DOCUMENT_ROOT + custom module tree).
+        $modulePath = dirname(__DIR__) . '/core/modules/modKnot.class.php';
+        if (is_readable($modulePath)) {
+            $contents = (string) file_get_contents($modulePath);
+            if (preg_match('/\$this->version\s*=\s*\'([^\']+)\'/m', $contents, $matches)) {
+                return $matches[1];
             }
         }
 

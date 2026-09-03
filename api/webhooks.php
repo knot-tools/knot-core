@@ -43,11 +43,6 @@ $rootUrl = '';
 if (function_exists('dol_buildpath')) {
     $rootUrl = (string) dol_buildpath('/knot/api/webhook.php', 2);
 }
-if ($rootUrl === '') {
-    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
-    $rootUrl = $scheme . '://' . $host . DOL_URL_ROOT . '/custom/knot/api/webhook.php';
-}
 
 $buildPayload = static function (?array $hook) use ($rootUrl): array {
     if ($hook === null) {

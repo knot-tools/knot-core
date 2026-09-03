@@ -48,7 +48,7 @@ if (
     && (string) $action === ''
     && getDolGlobalString('KNOT_FIRSTRUN_COMPLETED') !== '1'
 ) {
-    header('Location: ' . DOL_URL_ROOT . '/custom/knot/workflows/preview.php?mode=dashboard');
+    header('Location: ' . dol_buildpath('/knot/workflows/preview.php', 1) . '?mode=dashboard');
     exit;
 }
 
@@ -59,7 +59,9 @@ if (
  */
 $refreshMenus = static function (\DoliDB $db, int $entity): int {
     require_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
-    require_once DOL_DOCUMENT_ROOT . '/custom/knot/core/modules/modKnot.class.php';
+    // Dolistore wiki rules 3–4: load this module via dol_include_once / dol_buildpath,
+    // never via DOL_*_ROOT concatenated with the custom module tree.
+    dol_include_once('/knot/core/modules/modKnot.class.php');
 
     $db->query("DELETE FROM " . MAIN_DB_PREFIX . "menu WHERE module = 'knot' AND entity = " . $entity);
 
@@ -88,7 +90,7 @@ $installMissingTables = static function (\DoliDB $db, array $tables): int {
             continue;
         }
 
-        $sqlFile = DOL_DOCUMENT_ROOT . '/custom/knot/sql/llx_knot_' . $table . '.sql';
+        $sqlFile = dol_buildpath('/knot/sql/llx_knot_' . $table . '.sql', 0);
         if (!is_readable($sqlFile)) {
             continue;
         }
@@ -179,7 +181,7 @@ if ($action === 'complete') {
 
         setEventMessages($langs->trans('KnotSetupCompletedMsg'), null, 'mesgs');
 
-        $dashboard = DOL_URL_ROOT . '/custom/knot/workflows/preview.php?mode=dashboard';
+        $dashboard = dol_buildpath('/knot/workflows/preview.php', 1) . '?mode=dashboard';
         header('Location: ' . $dashboard);
     } catch (\Throwable $e) {
         setEventMessages($langs->trans('KnotSetupCompleteErrorMsg', $e->getMessage()), null, 'errors');
@@ -574,8 +576,8 @@ $introspectionGenerated = $introspectionPayload === null
     ? null
     : (string) ($introspectionPayload['generatedAt'] ?? '');
 $blocklistRaw = (string) getDolGlobalString('KNOT_INTROSPECTION_BLOCKLIST', '');
-$previewBase = DOL_URL_ROOT . '/custom/knot/workflows/preview.php';
-$knotDolibarrSchemasListUrl = DOL_URL_ROOT . '/custom/knot/api/dolibarr_schemas.php?list=1';
+$previewBase = dol_buildpath('/knot/workflows/preview.php', 1);
+$knotDolibarrSchemasListUrl = dol_buildpath('/knot/api/dolibarr_schemas.php', 1) . '?list=1';
 $knotStarterWorkflowCount = count(glob(dirname(__DIR__) . '/examples/starter/*.knot.json') ?: []);
 
 if ($setupCompleted && getDolGlobalString('KNOT_INTROSPECTION_AUTO_AT') === '' && (string) $action === '') {
@@ -714,18 +716,18 @@ $steps = [
     ],
 ];
 
-$knotIconBase = DOL_URL_ROOT . '/custom/knot/img/brand';
+$knotIconBase = dol_buildpath('/knot/img/brand', 1);
 $knotHead = '<link rel="icon" type="image/svg+xml" href="' . dol_escape_htmltag($knotIconBase . '/favicon.svg') . '">'
     . '<link rel="icon" type="image/png" sizes="32x32" href="' . dol_escape_htmltag($knotIconBase . '/favicon-32.png') . '">'
     . '<link rel="shortcut icon" href="' . dol_escape_htmltag($knotIconBase . '/favicon.ico') . '">';
 
-$knotHostCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot-host.css';
+$knotHostCssPath = dol_buildpath('/knot/css/knot-host.css', 0);
 $knotHostCssVer = file_exists($knotHostCssPath) ? rawurlencode((string) filemtime($knotHostCssPath)) : '0';
-$knotTokensCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot-tokens.css';
+$knotTokensCssPath = dol_buildpath('/knot/css/knot-tokens.css', 0);
 $knotTokensCssVer = file_exists($knotTokensCssPath) ? rawurlencode((string) filemtime($knotTokensCssPath)) : '0';
-$knotModuleCssPath = DOL_DOCUMENT_ROOT . '/custom/knot/css/knot.css';
+$knotModuleCssPath = dol_buildpath('/knot/css/knot.css', 0);
 $knotModuleCssVer = file_exists($knotModuleCssPath) ? rawurlencode((string) filemtime($knotModuleCssPath)) : '0';
-$knotCssBase = DOL_URL_ROOT . '/custom/knot';
+$knotCssBase = dol_buildpath('/knot', 1);
 $knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot-tokens.css?v=' . $knotTokensCssVer) . '">';
 $knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot-host.css?v=' . $knotHostCssVer) . '">';
 $knotHead .= '<link rel="stylesheet" href="' . dol_escape_htmltag($knotCssBase . '/css/knot.css?v=' . $knotModuleCssVer) . '">';
@@ -847,7 +849,7 @@ body:has(.knot-nav) #knot-app {
     <header class="knot-hero">
         <div class="knot-hero__bg" aria-hidden="true"></div>
         <div class="knot-hero__logo" aria-hidden="true">
-            <img src="<?php print dol_escape_htmltag(DOL_URL_ROOT . '/custom/knot/img/brand/knot-symbol-512.png'); ?>" alt="" />
+            <img src="<?php print dol_escape_htmltag(dol_buildpath('/knot/img/brand/knot-symbol-512.png', 1)); ?>" alt="" />
         </div>
         <div class="knot-hero__content">
             <div class="knot-hero__badge">
@@ -870,7 +872,7 @@ body:has(.knot-nav) #knot-app {
             // doc lives, where to file bugs, and what the live health
             // status is. Healthcheck status is computed below from the
             // same checks the wizard already runs.
-            $betaDocsUrl = DOL_URL_ROOT . '/custom/knot/docs/beta-testers/README.md';
+            $betaDocsUrl = dol_buildpath('/knot/docs/beta-testers/README.md', 1);
             $betaIssueUrl = 'mailto:beta@knot.tools?subject=Knot%20beta%20feedback';
             $healthAllOk = $allOk ?? false;
             $healthChipLabelSuffix = dol_escape_htmltag($healthAllOk ? $langs->trans('KnotHealthOk') : $langs->trans('KnotHealthWarning'));

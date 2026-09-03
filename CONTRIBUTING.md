@@ -40,7 +40,7 @@ vendor/bin/phpunit --no-coverage
 cd frontend && npm ci && npm run build && npm test
 ```
 
-CI runs on **PHP 8.1 / 8.2 / 8.3** and **Dolibarr 20 / 21 / 22**. Failures on `phpcs`, `phpunit`, `composer audit`, `npm audit`, or Gitleaks block merge.
+CI runs on **PHP 8.1 / 8.2 / 8.3** and **Dolibarr 20 / 21 / 22 / 23 / 24** (`dolibarr-matrix`, PHP 8.2). Failures on `phpcs`, `phpunit`, `composer audit`, `npm audit`, or Gitleaks block merge.
 
 ## Authorship and licence
 

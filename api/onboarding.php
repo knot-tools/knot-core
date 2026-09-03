@@ -82,7 +82,7 @@ if ($method === 'GET') {
     $smtpPort = getDolGlobalString('MAIN_MAIL_SMTP_PORT');
     $smtpReady = $smtpHost !== '' && $smtpPort !== '';
 
-    $starterPath = DOL_DOCUMENT_ROOT . '/custom/knot/examples/starter';
+    $starterPath = dol_buildpath('/knot/examples/starter', 0);
     $starterAvailable = is_dir($starterPath);
     $starterCount = 0;
     if ($starterAvailable) {
@@ -217,7 +217,7 @@ if ($action === 'enable_knot_cron') {
 }
 
 if ($action === 'import_starters') {
-    $starterPath = DOL_DOCUMENT_ROOT . '/custom/knot/examples/starter';
+    $starterPath = dol_buildpath('/knot/examples/starter', 0);
     if (!is_dir($starterPath)) {
         JsonResponse::error('not_found', 'Starter templates directory missing', 404);
         exit;
