@@ -7,6 +7,19 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.18] - 2026-09-03
+
+### Changed
+
+- **Brand mark (out-v2 freeze):** replace the legacy violet→rose hexagon
+  module icon / About / favicon pack with the isometric K mark masters
+  (plate `#011029`, white or slate stem, cyan + royal arms). Sources are
+  the freeze files from `knot.tools/brand/*` and `docs.knot.tools/favicon.svg`
+  (3841-byte SVG), stored under `logo-freeze-v2/` and installed into
+  `img/knot.png`, `img/object_knot.png`, and `img/brand/*`. No editor
+  chrome redesign. Horizontal wordmark PNGs intentionally left legacy
+  until an official out-v2 wordmark lands.
+
 ## [2.13.17] - 2026-09-01
 
 ### Fixed
