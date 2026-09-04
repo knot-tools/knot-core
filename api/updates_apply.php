@@ -64,7 +64,7 @@ if (!is_dir($knotDataDir) && !@mkdir($knotDataDir, 0755, true) && !is_dir($knotD
 }
 
 /** @phpstan-ignore-next-line constant */
-$liveRoot = rtrim((string) DOL_DOCUMENT_ROOT, DIRECTORY_SEPARATOR . '/') . '/custom/knot';
+$liveRoot = dol_buildpath('/knot', 0);
 
 $rawBody = (string) file_get_contents('php://input');
 $body = $rawBody !== '' ? json_decode($rawBody, true) : null;

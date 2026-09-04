@@ -2,7 +2,7 @@
 
 ## Audit Existant
 
-- **Compatibilité Dolibarr 20+** : job CI **`dolibarr-matrix`** ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)), smoke **[`scripts/ci/docker_mission_smoke.sh`](../scripts/ci/docker_mission_smoke.sh)**, variables **`KNOT_DOLIBARR_DOCKER_IMAGE`** / **`KNOT_DOLIBARR_IMAGE`**, golden optionnel **`KNOT_COMPAT_DOL_ROOT`** ; artefacts Playwright → **[`test-playwright/README.md`](../../../test-playwright/README.md)** ; guide détaillé (local) → **`test-playwright/docs/dolibarr-compatibility-verification.md`**.
+- **Compatibilité Dolibarr 20–24** : job CI **`dolibarr-matrix`** ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)), smoke **[`scripts/ci/docker_mission_smoke.sh`](../scripts/ci/docker_mission_smoke.sh)**, variables **`KNOT_DOLIBARR_DOCKER_IMAGE`** / **`KNOT_DOLIBARR_IMAGE`**, golden optionnel **`KNOT_COMPAT_DOL_ROOT`** ; claim publique + install proof → **[`docs/compatibility.md`](compatibility.md)** ; artefacts Playwright → **[`test-playwright/README.md`](../../../test-playwright/README.md)** ; guide détaillé (local) → **`test-playwright/docs/dolibarr-compatibility-verification.md`**.
 - **Audit couverture pré-bêta (Phase 1, 2026-05)** : inventaire des suites, état `demo.knot.tools`, cartographie personas — [`docs/testing/coverage-audit-pre-beta.md`](testing/coverage-audit-pre-beta.md).
 - **Manques de couverture (Phase 2)** + **synthèse garantie QA** (révision périodique : matrice démo, couches PHPUnit / E2E / playbooks, pourcentages pilotage — **2026-05-02**) — [`docs/testing/coverage-gaps-pre-beta.md`](testing/coverage-gaps-pre-beta.md).
 - **Phase 3 (impl. tests critiques + FAQ)** — [`docs/testing/new-tests-implemented.md`](testing/new-tests-implemented.md), [`docs/testing/beta-testers-faq.md`](testing/beta-testers-faq.md).
@@ -110,8 +110,8 @@ Les specs chargent souvent **`demo/seed.env`** / **`KNOT_E2E_BASE_URL`** / **`DO
 
 ## Environnements Cibles
 
-- PHP 8.1 et 8.2
-- Dolibarr V20 et V21 minimum
+- PHP 8.1 / 8.2 / 8.3 (CI `php-tests`)
+- Dolibarr **V20–V24** (CI `dolibarr-matrix` + install proof — [`docs/compatibility.md`](compatibility.md))
 - MySQL 5.7
 - MariaDB 10.5+
 
