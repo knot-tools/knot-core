@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="img/brand/knot-horizontal-dark.png">
-  <img alt="Knot Tools — Knot Core, visual workflow automation for Dolibarr" src="img/brand/knot-horizontal-light.png" width="520">
+  <source media="(prefers-color-scheme: dark)" srcset="img/brand/knot-core-horizontal-dark.png">
+  <img alt="Knot Tools — Knot Core, visual workflow automation for Dolibarr" src="img/brand/knot-core-horizontal-light.png" width="520">
 </picture>
 
 ### **Visual workflow automation for Dolibarr**
