@@ -7,14 +7,14 @@
       --stem-top: #FEFEFE;
       --stem-front: #F2F2F1;
       --stem-side: #E3E3E3;
-      --upper-top: #27ECFD;
-      --upper-end: #0BC5DD;
-      --upper-side: #06B8D1;
-      --lower-top: #1391FC;
-      --lower-top-arm: #087FF2;
-      --lower-end: #0043A6;
-      --lower-side: #0058C7;
-      --knuckle-left: #015ECB;
+      --upper-top: #A78BFA;
+      --upper-end: #7C5CE0;
+      --upper-side: #6B4AD0;
+      --lower-top: #6366F1;
+      --lower-top-arm: #4F46E5;
+      --lower-end: #3730A3;
+      --lower-side: #4338CA;
+      --knuckle-left: #312E81;
       --bg: #011029;
     }
     .stem-top { fill: var(--stem-top); stroke: var(--stem-top); }
@@ -39,27 +39,27 @@
   <polygon class="stem-side" fill="#E3E3E3" points="312.000,228.000 312.000,894.000 402.000,842.000 402.000,176.000" />
 
   <!-- lower arm (jogged, extended to stem baseline) -->
-  <polygon class="lower-top-arm" fill="#087FF2" points="426.300,546.849 847.138,790.000 937.138,738.000 516.300,494.849" />
-  <polygon class="lower-side" fill="#0058C7" points="426.300,546.849 426.300,650.849 847.138,894.000 847.138,790.000" />
-  <polygon class="lower-end" fill="#0043A6" points="847.138,790.000 847.138,894.000 937.138,842.000 937.138,738.000" />
+  <polygon class="lower-top-arm" fill="#4F46E5" points="426.300,546.849 847.138,790.000 937.138,738.000 516.300,494.849" />
+  <polygon class="lower-side" fill="#4338CA" points="426.300,546.849 426.300,650.849 847.138,894.000 847.138,790.000" />
+  <polygon class="lower-end" fill="#3730A3" points="847.138,790.000 847.138,894.000 937.138,842.000 937.138,738.000" />
 
   <!-- blue overpass under join -->
-  <polygon class="lower-top" fill="#1391FC" points="312.000,576.489 424.500,641.489 514.500,589.489 402.000,524.489" />
-  <polygon class="knuckle-left" fill="#015ECB" points="312.000,576.489 312.000,680.489 424.500,745.489 424.500,641.489" />
-  <polygon class="lower-end" fill="#0043A6" points="424.500,641.489 424.500,745.489 514.500,693.489 514.500,589.489" />
+  <polygon class="lower-top" fill="#6366F1" points="312.000,576.489 424.500,641.489 514.500,589.489 402.000,524.489" />
+  <polygon class="knuckle-left" fill="#312E81" points="312.000,576.489 312.000,680.489 424.500,745.489 424.500,641.489" />
+  <polygon class="lower-end" fill="#3730A3" points="424.500,641.489 424.500,745.489 514.500,693.489 514.500,589.489" />
 
   <!-- blue knuckle cube (armpit, top at cyan bottom) -->
-  <polygon class="lower-top" fill="#1391FC" points="402.000,560.889 492.000,612.889 582.000,560.889 492.000,508.889" />
-  <polygon class="knuckle-left" fill="#015ECB" points="402.000,560.889 402.000,664.889 492.000,716.889 492.000,612.889" />
-  <polygon class="lower-end" fill="#0043A6" points="492.000,612.889 492.000,716.889 582.000,664.889 582.000,560.889" />
+  <polygon class="lower-top" fill="#6366F1" points="402.000,560.889 492.000,612.889 582.000,560.889 492.000,508.889" />
+  <polygon class="knuckle-left" fill="#312E81" points="402.000,560.889 402.000,664.889 492.000,716.889 492.000,612.889" />
+  <polygon class="lower-end" fill="#3730A3" points="492.000,612.889 492.000,716.889 582.000,664.889 582.000,560.889" />
 
   <!-- white join rhombus (top + thin front, no side) -->
   <polygon class="stem-top" fill="#FEFEFE" points="312.000,524.489 412.800,582.729 440.300,566.840 339.500,508.600" />
   <polygon class="stem-front" fill="#F2F2F1" points="312.000,524.489 312.000,576.489 412.800,634.729 412.800,582.729" />
 
   <!-- upper arm -->
-  <polygon class="upper-top" fill="#27ECFD" points="326.000,396.800 416.000,448.800 812.000,220.000 722.000,168.000" />
-  <polygon class="upper-end" fill="#0BC5DD" points="326.000,396.800 326.000,500.800 416.000,552.800 416.000,448.800" />
-  <polygon class="upper-side" fill="#06B8D1" points="416.000,448.800 416.000,552.800 812.000,324.000 812.000,220.000" />
+  <polygon class="upper-top" fill="#A78BFA" points="326.000,396.800 416.000,448.800 812.000,220.000 722.000,168.000" />
+  <polygon class="upper-end" fill="#7C5CE0" points="326.000,396.800 326.000,500.800 416.000,552.800 416.000,448.800" />
+  <polygon class="upper-side" fill="#6B4AD0" points="416.000,448.800 416.000,552.800 812.000,324.000 812.000,220.000" />
   </g>
 </svg>

@@ -716,10 +716,9 @@ $steps = [
     ],
 ];
 
-$knotIconBase = dol_buildpath('/knot/img/brand', 1);
-$knotHead = '<link rel="icon" type="image/svg+xml" href="' . dol_escape_htmltag($knotIconBase . '/favicon.svg') . '">'
-    . '<link rel="icon" type="image/png" sizes="32x32" href="' . dol_escape_htmltag($knotIconBase . '/favicon-32.png') . '">'
-    . '<link rel="shortcut icon" href="' . dol_escape_htmltag($knotIconBase . '/favicon.ico') . '">';
+// Never inject favicon / apple-touch-icon here: Core must respect Dolibarr's
+// global / company favicon (MAIN_FAVICON_URL). Only CSS belongs in $knotHead.
+$knotHead = '';
 
 $knotHostCssPath = dol_buildpath('/knot/css/knot-host.css', 0);
 $knotHostCssVer = file_exists($knotHostCssPath) ? rawurlencode((string) filemtime($knotHostCssPath)) : '0';

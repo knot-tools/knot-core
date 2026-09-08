@@ -14,6 +14,11 @@ use RuntimeException;
  * powers the Knot frontend. The {@see SchemaBuilder} consumes objects we hand
  * back here and never touches the MAP directly so V2.4's introspector can swap
  * the static MAP for a discovered registry without breaking callers.
+ *
+ * @api Public Utility API. Registered extensions (Pro Pack, Desk, third-party)
+ *      may call {@see listSupported()}, {@see describe()}, {@see build()}, and
+ *      {@see listObjectsForApi()}. Do not instantiate {@see ObjectIntrospector}
+ *      and do not copy this class into an extension.
  */
 final class ObjectFactory
 {
@@ -211,6 +216,7 @@ final class ObjectFactory
     /** @var array<string, array<string, mixed>>|null Lazy lookup for discovered slugs */
     private ?array $discoveredCache = null;
 
+    /** @api */
     public function build(string $slug, \DoliDB $db): object
     {
         $slug = $this->normaliseSlug($slug);
@@ -325,6 +331,7 @@ final class ObjectFactory
     }
 
     /**
+     * @api
      * @return array<int, string>
      */
     public function listSupported(): array
@@ -333,6 +340,7 @@ final class ObjectFactory
     }
 
     /**
+     * @api
      * @return array<string, mixed>
      */
     public function describe(string $slug, \DoliDB $db): array
@@ -433,6 +441,7 @@ final class ObjectFactory
      * List every object the factory knows about, in a shape suitable for the
      * `api/dolibarr_schemas.php?list=1` payload.
      *
+     * @api
      * @return array<int, array{
      *     slug:string,
      *     class:string,
