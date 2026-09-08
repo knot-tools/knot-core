@@ -1,15 +1,15 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="img/brand/knot-horizontal-dark.png">
-  <img alt="Knot Tools — Knot Core, visual workflow automation for Dolibarr" src="img/brand/knot-horizontal-light.png" width="520">
+  <source media="(prefers-color-scheme: dark)" srcset="img/brand/knot-core-horizontal-dark.png">
+  <img alt="Knot Tools — Knot Core, visual workflow automation for Dolibarr" src="img/brand/knot-core-horizontal-light.png" width="520">
 </picture>
 
 ### **Visual workflow automation for Dolibarr**
 
 *A modern node-based editor, self-hosted next to Dolibarr, to orchestrate your ERP and integrations.*
 
-**Knot Tools™** is a registered trademark. This repository ships **Knot Core**, the GPL-3.0 Dolibarr module. Product and extension information: **[knot.tools](https://knot.tools)**.
+**Knot Tools™** is a trademark of Sébastien Audel. This repository ships **Knot Core**, the GPL-3.0 Dolibarr module. Product and extension information: **[knot.tools](https://knot.tools)**.
 
 > **Public beta** — product site: **[knot.tools](https://knot.tools)**. Documentation: **[docs.knot.tools](https://docs.knot.tools/)**.
 
@@ -104,7 +104,7 @@ More guides on **[docs.knot.tools](https://docs.knot.tools/core/getting-started/
 
 Dependency licences: [`LICENSES.md`](LICENSES.md).
 
-**Trademark.** **Knot Tools™** is a registered trademark. Third-party use requires permission of the rights holder.
+**Trademark.** **Knot Tools™** is a trademark of Sébastien Audel. Third-party use requires permission of the rights holder.
 
 ---
 
