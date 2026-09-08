@@ -230,16 +230,9 @@ $setupUrl = dol_buildpath('/knot/admin/setup.php', 1) . '?admin=1';
 // Knot's configure right without a global "admin" flag — allow onboarding for both.
 $knotUserAdmin = ((int) $user->admin) > 0 || $user->hasRight('knot', 'admin', 'configure');
 
-// Inject a Knot-specific favicon for the browser tab while the user navigates
-// inside the module. We layer four sizes + a maskable SVG so the icon stays
-// crisp on both desktop and mobile shortcuts; Dolibarr's global favicon
-// remains untouched outside of Knot pages.
-$knotIconBase = dol_buildpath('/knot/img/brand', 1);
-$knotHead = '<link rel="icon" type="image/svg+xml" href="' . dol_escape_htmltag($knotIconBase . '/favicon.svg') . '">'
-    . '<link rel="icon" type="image/png" sizes="32x32" href="' . dol_escape_htmltag($knotIconBase . '/favicon-32.png') . '">'
-    . '<link rel="icon" type="image/png" sizes="64x64" href="' . dol_escape_htmltag($knotIconBase . '/favicon-64.png') . '">'
-    . '<link rel="shortcut icon" href="' . dol_escape_htmltag($knotIconBase . '/favicon.ico') . '">'
-    . '<link rel="apple-touch-icon" href="' . dol_escape_htmltag($knotIconBase . '/knot-logo-256.png') . '">';
+// Never inject favicon / apple-touch-icon here: Core must respect Dolibarr's
+// global / company favicon (MAIN_FAVICON_URL). Only CSS / CSP belong in $knotHead.
+$knotHead = '';
 if ($mode === 'marketplace') {
     $csp = implode(
         '; ',

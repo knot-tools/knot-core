@@ -1,8 +1,8 @@
-> ⚠️ WORKING DRAFT — COUNSEL VALIDATION REQUIRED BEFORE ANY PUBLICATION OR SALE.
-> This exception is not effective until validated by qualified legal counsel.
-> Revised: 2026-05-22 (v2 — Public Utility API explicit list + governing law + extended exclusion).
+# Knot Tools™ Core — GPL Linking Exception
 
-# Knot Tools™ Core — GPL Linking Exception (draft)
+Granted by the sole copyright holder, Sébastien Audel (trading as EXIATIS).
+Effective from Knot Core 2.13.22 (7 September 2026).
+Revised: 2026-09-07 (v3 — ObjectFactory added to the Public Utility API).
 
 Knot Tools™ Core is licensed under the GNU General Public License version 3
 or later (GPL-3.0-or-later), with the following exception, granted by the sole
@@ -45,6 +45,9 @@ Knot Tools™ Core comprises:
 - `Knot\Repository\AuditLogRepository` — audit log writer.
 - `Knot\Extension\LicenseValidator` — extension licence validator.
 - `Knot\Licensing\Bootstrap` — licensing bootstrap helper.
+- `Knot\Dolibarr\ObjectFactory` — list, describe, and instantiate Dolibarr
+  objects (`$fields`). Methods: `listSupported`, `describe`, `build`,
+  `listObjectsForApi`.
 - any class added to the Public Utility API in future versions, identified
   by an `@api` PHPDoc annotation and listed in `docs/license-boundary.md`.
 
@@ -136,5 +139,5 @@ and PolyForm extensions:
 
 ---
 
-*Document version: v2 (2026-05-22 — drop-in replacement of v1 draft).*
-*Status: WORKING DRAFT pending counsel validation.*
+*Document version: v3 (2026-09-07).*
+*Status: Granted by the copyright holder.*

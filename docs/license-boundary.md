@@ -7,7 +7,7 @@ Canonical reference for developers and agents. Founder decision **May 2026**.
 | Artifact | Licence file | What it covers |
 |----------|--------------|----------------|
 | Knot Core module | [`LICENSE`](../LICENSE) (GPL-3.0-or-later) | Engine, UI, Dolibarr connectors shipped with Core, API, tests |
-| Linking exception | [`LINKING-EXCEPTION.md`](../LINKING-EXCEPTION.md) | Draft — GPL Core loading PolyForm extensions (counsel pending) |
+| Linking exception | [`LINKING-EXCEPTION.md`](../LINKING-EXCEPTION.md) | Granted by the copyright holder (2.13.22) — GPL Core loading PolyForm extensions |
 | Knot Pro Pack | `pro-pack/LICENSE.md` (PolyForm Shield) | Premium connectors — **not** in Core repo |
 | Knot Migration | `knot-migration/LICENSE.md` (PolyForm Shield) | Migration product — private repo |
 | Third-party deps | [`LICENSES.md`](../LICENSES.md) | npm/Composer inventory (MIT, Apache, …) |
@@ -44,8 +44,8 @@ Canonical reference for developers and agents. Founder decision **May 2026**.
 
 ## Public Utility API (GPL linking exception)
 
-Listed in [`LINKING-EXCEPTION.md`](../LINKING-EXCEPTION.md) (WORKING DRAFT — counsel
-validation required). Extensions may call these Core classes through the linking
+Listed in [`LINKING-EXCEPTION.md`](../LINKING-EXCEPTION.md). Registered extensions
+(Pro Pack, Desk, third-party) may call these Core classes through the linking
 exception without becoming GPL:
 
 | Class | Role |
@@ -57,6 +57,7 @@ exception without becoming GPL:
 | `Knot\Repository\AuditLogRepository` | Audit log writer |
 | `Knot\Extension\LicenseValidator` | Extension licence validator |
 | `Knot\Licensing\Bootstrap` | Licensing bootstrap helper |
+| `Knot\Dolibarr\ObjectFactory` | List / describe / build Dolibarr objects (`$fields`) for extensions |
 
 Future additions must carry an `@api` PHPDoc annotation and be listed here and in
 `LINKING-EXCEPTION.md`. The copyright holder will not narrow this list retroactively
@@ -92,4 +93,4 @@ The PHP class remains `DolistoreValidator` until a rename is justified.
 - [ ] `grep -ri 'GPL' pro-pack/README` — no product licence GPL
 - [ ] Website Pro Pack pages say **source-available / PolyForm**
 - [ ] Dolistore listing text = Core only
-- [ ] `LINKING-EXCEPTION.md` marked draft until counsel sign-off
+- [ ] `LINKING-EXCEPTION.md` shipped without draft banner (granted by the copyright holder)

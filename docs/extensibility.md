@@ -9,7 +9,23 @@ Knot suit le modele **« core libre + add-ons monétisables »** :
 
 Architecture plugin introduite en **V2.3.5**. La validation licence commerciale (`validation: dolistore` ou `license` — alias technique du client portail, voir **ADR-021**) est décrite dans [`docs/licensing.md`](licensing.md) ; checkout extensions payantes = **`license.knot.tools` uniquement** ([`docs/license-portal.md`](license-portal.md)).
 
-Voir aussi : `docs/connector-authoring-guide.md`, `docs/ecosystem.md`, [`docs/compatibility/README.md`](compatibility/README.md), [`docs/compatibility/architecture-generic-dolibarr-connector.md`](compatibility/architecture-generic-dolibarr-connector.md), [`docs/compatibility/extending-knot.md`](compatibility/extending-knot.md), `docs/roadmap.md`.
+Voir aussi : `docs/connector-authoring-guide.md`, `docs/ecosystem.md`, [`docs/compatibility/README.md`](compatibility/README.md), [`docs/compatibility/architecture-generic-dolibarr-connector.md`](compatibility/architecture-generic-dolibarr-connector.md), [`docs/compatibility/extending-knot.md`](compatibility/extending-knot.md), `docs/roadmap.md`, [`docs/license-boundary.md`](license-boundary.md).
+
+## API PHP publique (extensions)
+
+Les extensions enregistrées (Pro Pack, Desk, tiers) appellent uniquement l’API
+publique (`@api` + liste dans [`license-boundary.md`](license-boundary.md) /
+[`LINKING-EXCEPTION.md`](../LINKING-EXCEPTION.md)). Utilitaires :
+
+- `Knot\Security\HttpClient`, `UrlPolicy`, `OAuth2Helper`
+- `Knot\Dolibarr\ObjectFactory` — lister, décrire et instancier les objets
+  Dolibarr (`$fields`) : `listSupported`, `describe`, `build`, `listObjectsForApi`
+- `Knot\Engine\ExpressionResolver`
+- `Knot\Repository\AuditLogRepository`
+- `Knot\Extension\LicenseValidator`, `Knot\Licensing\Bootstrap`
+
+Ne pas instancier `ObjectIntrospector` depuis une extension. Ne pas copier
+ces classes dans le module d’extension.
 
 ## Connecteurs Pro Pack (même `id` persistant)
 
