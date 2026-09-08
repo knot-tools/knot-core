@@ -9,66 +9,43 @@ Source, tags, and GitHub Releases:
 
 ### Changed
 
-- **Release process:** Core publish gate is mandatory for agents and humans
-  (`.cursor/rules/07-core-release-gate.mdc`, `docs/core-release-gate.md`,
-  `docs/RELEASE.md` §3.1). Ed25519 `signature_hex` required for Core ≥ 2.13.4
-  (aligns with `06-no-unsigned-release.mdc` / `ReleaseVerifier`). Gate now also
-  requires **public CHANGELOG honesty** (`## [X.Y.Z]` on `knot-core` tip) and a
-  **GitHub Release / tag `vX.Y.Z`** matching the shipped CDN/ZIP.
+- **Brand / docs:** restore Steeve PASS v2 Core README lockups
+  (`img/brand/knot-core-horizontal-{dark,light}.png`) in the public publish
+  template; replace house `knot-horizontal-*` with Steeve kit; soft-fix
+  README trademark line (trademark of Sébastien Audel — no « registered » / ®).
+
+- **Release process:** publish gate and release docs tightened (signed Core
+  releases, public CHANGELOG honesty, matching GitHub Release / tag for each
+  shipped version).
 
 ### Fixed
 
-- **Dolistore packaging license files:** `scripts/package_dolistore.py`
-  `REQUIRED` now matches `scripts/audit_dolistore_zip.py` license expectations
-  (`LICENSE`, `LINKING-EXCEPTION.md`, `NOTICE`, `LICENSES.md`) so packaging
-  does not rely solely on `publish-to-public.sh`. Soft-fix `NOTICE`
-  trademark line (no bare ® / no naked « registered » claim).
+- **Dolistore packaging license files:** packaging now requires the same license
+  set as the ZIP audit (`LICENSE`, `LINKING-EXCEPTION.md`, `NOTICE`,
+  `LICENSES.md`). Soft-fix `NOTICE` trademark line (trademark of Sébastien
+  Audel — no bare ® / no naked « registered » claim).
 
 ## [2.13.22] - 2026-09-07
 
 ### Added
 
-- **Host Public Utility API:** `Knot\Dolibarr\ObjectFactory` (`listSupported`,
-  `describe`, `build`, `listObjectsForApi`) so registered extensions can list
-  and describe Dolibarr `$fields` without forking `ObjectIntrospector`. Listed
-  in `LINKING-EXCEPTION.md` and `docs/license-boundary.md` next to `HttpClient`.
-  Official extensions (Pro Pack, Desk) and third-party modules may call it;
-  they must not instantiate `ObjectIntrospector` or copy the factory.
+- **Public Utility API for extensions:** `Knot\Dolibarr\ObjectFactory`
+  (`listSupported`, `describe`, `build`, `listObjectsForApi`) so extensions can
+  list and describe Dolibarr `$fields` through Knot’s public API without forking
+  `ObjectIntrospector`. Documented in `LINKING-EXCEPTION.md` and
+  `docs/license-boundary.md` alongside `HttpClient`. Call the factory; do not
+  instantiate `ObjectIntrospector` or copy it.
 
 ### Changed
 
-- **Linking exception:** granted by the copyright holder as of this release.
-  Draft banners removed from the shipped ZIP (`LINKING-EXCEPTION.md`,
-  `NOTICE`, `docs/license-boundary.md`).
+- **Linking exception:** **Granted** as of this release. Draft / counsel-pending
+  banners removed from the shipped ZIP (`LINKING-EXCEPTION.md`, `NOTICE`,
+  `docs/license-boundary.md`).
 
 ### Fixed
 
-- **Demo hourly purge `User::delete` signature:** `scripts/purge_expired_demo_users.php`
-  now calls `$u->delete($admin)` with the acting admin `User` object (Dolibarr typed
-  `User::delete(User $user)`), not an int id. After each run, writes
-  `ops_meta.last_purge_at` / `last_purge_status` via `scripts/lib/demo_purge_ops_meta.php`
-  so provision `/api/health` reflects purge outcome. Cron wrapper:
-  `scripts/run_purge_expired_demo_users.sh` (`15 * * * *`); see
-  `docs/runbooks/demo-dolibarr/self-service-operations.md`.
-
-- **Demo provision CLI out of customer ZIPs:** self-service scripts
-  (`create_demo_user.php`, `setup_demo_group_rights.php`,
-  `purge_expired_demo_users.php`, `run_purge_expired_demo_users.sh`,
-  `retry_demo_notify_queue.php`, `lib/demo_notify_http.php`,
-  `lib/demo_purge_ops_meta.php`) are **demo-host only** — never staged into
-  `module_knot-*.zip` (Dolistore / CDN / in-app Updates). Inventory:
-  `scripts/knot_demo_runtime_scripts.py` (`DEMO_HOST_ONLY_SCRIPTS`).
-  `audit_dolistore_zip.py` forbids all of `knot/scripts/` again; assert
-  `python3 scripts/test_demo_runtime_scripts_packaging.py`. Live path on
-  `demo.knot.tools` is `/var/www/vhosts/demo.knot.tools/provision-cli/`
-  (`DOLIBARR_CREATE_USER_SCRIPT` retargeted there — **not** under
-  `custom/knot/`); `demo_knot_vm_deploy_knot.sh` rsyncs from the private
-  tree. Updates must not be the vehicle for demo CLI.
-- **Demo provision → license notify (Cloudflare):** optional
-  `LICENSE_NOTIFY_FORCE_IP` on `scripts/demo-provision` maps the notify
-  hostname to the license origin IP via Symfony HttpClient `resolve`,
-  keeping the public `LICENSE_NOTIFY_URL` for TLS Host/SNI. See
-  `docs/runbooks/demo-dolibarr/self-service-operations.md`.
+- **Customer ZIP hygiene:** demo-host-only provision/purge CLIs are no longer
+  packaged into Dolistore / CDN / in-app Updates ZIPs (module stays install-only).
 
 ## [2.13.21] - 2026-09-05
 
