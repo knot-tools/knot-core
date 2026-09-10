@@ -9,6 +9,7 @@ namespace Knot\Tests\Updates;
 use Knot\Repository\AuditLogRepository;
 use Knot\Tests\Licensing\Audit\CapturingDb;
 use Knot\Updates\Installer;
+use Knot\Updates\UpdateStashStore;
 use Knot\Updates\UpdatesApplyPostSwap;
 use PHPUnit\Framework\TestCase;
 
@@ -105,7 +106,8 @@ PHP,
         @mkdir($liveRoot, 0777, true);
         file_put_contents($liveRoot . '/manifest.json', '{"v":1}');
 
-        $installer = new Installer();
+        $stashRoot = dirname($liveRoot) . '/documents/knot/update-stashes';
+        $installer = new Installer(new UpdateStashStore($stashRoot));
         $installer->swap($preparedRoot, $liveRoot);
 
         return $installer;

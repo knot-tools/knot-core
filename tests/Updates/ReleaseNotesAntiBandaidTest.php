@@ -19,7 +19,7 @@ final class ReleaseNotesAntiBandaidTest extends TestCase
         $api = (string) file_get_contents($root . '/api/updates.php');
         $checker = (string) file_get_contents($root . '/class/Updates/UpdateChecker.php');
         $github = (string) file_get_contents($root . '/class/Updates/GithubReleasesClient.php');
-        $inject = (string) file_get_contents($root . '/scripts/release/inject_release_notes.php');
+        $extractor = (string) file_get_contents($root . '/class/Updates/ReleaseNotesExtractor.php');
 
         self::assertStringNotContainsString('ZipArchive', $view);
         self::assertStringNotContainsString('CHANGELOG.md', $view);
@@ -34,8 +34,19 @@ final class ReleaseNotesAntiBandaidTest extends TestCase
         self::assertStringContainsString("latest['notes']", $github);
         self::assertStringNotContainsString('ZipArchive', $github);
 
-        self::assertStringContainsString('CHANGELOG.md', $inject);
-        self::assertStringNotContainsString('ZipArchive', $inject);
-        self::assertStringNotContainsString('zip://', $inject);
+        // Shipped extraction SoT: present on both private core and public knot-core.
+        // Public CI must not assume scripts/release/inject_release_notes.php exists
+        // (stripped by publish-to-public.sh); file_get_contents() === false casts
+        // to '' and assertStringContainsString('CHANGELOG.md', '') fails.
+        self::assertNotSame('', $extractor, 'ReleaseNotesExtractor.php must be readable');
+        self::assertStringContainsString('CHANGELOG.md', $extractor);
+
+        $injectPath = $root . '/scripts/release/inject_release_notes.php';
+        if (is_readable($injectPath)) {
+            $inject = (string) file_get_contents($injectPath);
+            self::assertStringContainsString('CHANGELOG.md', $inject);
+            self::assertStringNotContainsString('ZipArchive', $inject);
+            self::assertStringNotContainsString('zip://', $inject);
+        }
     }
 }

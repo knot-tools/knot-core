@@ -7,11 +7,24 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+### Tooling / CI
+
+- **Public knot-core PHPUnit:** `ReleaseNotesAntiBandaidTest` no longer treats the private-only `inject_release_notes.php` as required (stripped by `publish-to-public.sh`); the shipped `ReleaseNotesExtractor` is the CHANGELOG extraction SoT on both trees.
+
+### Fixed
+
+- **In-app Apply:** the previous module tree is now stashed under Knot documents
+  (`…/knot/update-stashes/{folder}.{timestamp}_{hex}/`) instead of as a sibling
+  under `custom/`. Dolibarr Setup → Modules no longer warns that Knot / Pro Pack
+  / Migration is “found twice” after Apply. A successful Apply keeps the two most
+  recent stashes per module; a failed Apply still rolls back from the new path.
+
 ## [2.13.23] - 2026-09-09
 
 ### Improvements
 
 - **Dolibarr menu icons** : the Knot mark is readable in the sidebar (no more black square).
+- **Leftnav logo** : cyan Knot suite mark (same family as the setup watermark), not the monochrome menu icon.
 - **Setup watermark** : cyan Knot suite watermark on the setup screen — same family as the other tools.
 - **Updates page** : you can read a version’s details **before** you apply the update.
 - **Trademark notice** : NOTICE uses ™ (not ®), matching how the brand is actually used.

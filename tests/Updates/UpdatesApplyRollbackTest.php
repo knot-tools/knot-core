@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Knot\Tests\Updates;
 
 use Knot\Updates\Installer;
+use Knot\Updates\UpdateStashStore;
 use Knot\Updates\UpdatesApplyPostSwap;
 use PHPUnit\Framework\TestCase;
 use ZipArchive;
@@ -57,13 +58,55 @@ final class UpdatesApplyRollbackTest extends TestCase
         $z->close();
         $this->rrmdir($staging);
 
-        $installer = new Installer();
+        $stashRoot = $this->tmpRoot . '/documents/knot/update-stashes';
+        $installer = new Installer(new UpdateStashStore($stashRoot));
         $prepared = $installer->prepare($zip, $this->tmpRoot . '/stage-parent', 'knot');
         $installer->swap($prepared, $this->tmpRoot . '/live');
 
         self::assertTrue($installer->canRollback());
         self::assertTrue($installer->rollback());
         self::assertStringContainsString('"v":1', (string) file_get_contents($this->tmpRoot . '/live/manifest.json'));
+    }
+
+    public function testRollbackRestoresFromDocumentsStashPath(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            self::markTestSkipped('ZipArchive required');
+        }
+
+        $this->tmpRoot = sys_get_temp_dir() . '/rollback-docs-' . bin2hex(random_bytes(4));
+        $custom = $this->tmpRoot . '/htdocs/custom';
+        $live = $custom . '/knot';
+        $stashRoot = $this->tmpRoot . '/documents/knot/update-stashes';
+        @mkdir($live, 0777, true);
+        file_put_contents($live . '/manifest.json', '{"v":1}');
+        file_put_contents($live . '/kept.txt', 'original');
+
+        $zip = $this->tmpRoot . '/pkg.zip';
+        $staging = sys_get_temp_dir() . '/zip-' . bin2hex(random_bytes(3));
+        @mkdir($staging . '/knot', 0777, true);
+        file_put_contents($staging . '/knot/manifest.json', '{"name":"new"}');
+        $z = new ZipArchive();
+        self::assertTrue($z->open($zip, ZipArchive::CREATE | ZipArchive::OVERWRITE));
+        $z->addFile($staging . '/knot/manifest.json', 'knot/manifest.json');
+        $z->close();
+        $this->rrmdir($staging);
+
+        $installer = new Installer(new UpdateStashStore($stashRoot));
+        $prepared = $installer->prepare($zip, $this->tmpRoot . '/stage-parent', 'knot');
+        $installer->swap($prepared, $live);
+
+        $stash = $installer->backupPath();
+        self::assertNotNull($stash);
+        self::assertStringStartsWith($stashRoot . DIRECTORY_SEPARATOR, (string) $stash);
+        self::assertFileExists((string) $stash . '/kept.txt');
+        self::assertSame([], glob($custom . '/knot.*') ?: []);
+
+        self::assertTrue($installer->rollback());
+        self::assertStringContainsString('"v":1', (string) file_get_contents($live . '/manifest.json'));
+        self::assertFileExists($live . '/kept.txt');
+        self::assertDirectoryDoesNotExist((string) $stash);
+        self::assertFalse($installer->canRollback());
     }
 
     public function testMigrationFailureHttpStatusDifferentiatesRollbackOutcome(): void

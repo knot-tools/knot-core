@@ -43,7 +43,7 @@ class modKnot extends DolibarrModules
             ],
         ];
 
-        $this->dirs = ['/knot/temp'];
+        $this->dirs = ['/knot/temp', '/knot/update-stashes'];
         $this->config_page_url = ['setup.php@knot'];
         $this->langfiles = ['knot@knot'];
         $this->phpmin = [8, 1];
