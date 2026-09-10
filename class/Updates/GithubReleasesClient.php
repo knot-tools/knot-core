@@ -86,7 +86,8 @@ final class GithubReleasesClient
      *     zip_sha256: string,
      *     signature_hex: string,
      *     signature_payload: array<string, mixed>|null,
-     *     version: string
+     *     version: string,
+     *     notes: string
      * }
      */
     public static function inferLatestArtifact(array $manifest): array
@@ -104,6 +105,7 @@ final class GithubReleasesClient
             'signature_hex' => trim((string) ($latest['signature_hex'] ?? '')),
             'signature_payload' => $signPayload,
             'version' => (string) ($latest['version'] ?? ''),
+            'notes' => ReleaseNotesExtractor::normalizeNotes($latest['notes'] ?? ''),
         ];
     }
 

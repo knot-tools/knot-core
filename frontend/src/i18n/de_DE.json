@@ -419,7 +419,8 @@
     "allUpToDateBody": "Keine ausstehenden Updates für installierte Knot-Produkte. Nach einer neuen Veröffentlichung erneut prüfen.",
     "channelLabel": "Kanal · {channel}",
     "applyDisabled": "Aktuell",
-    "statusAhead": "Neuer als veröffentlicht"
+    "statusAhead": "Neuer als veröffentlicht",
+    "releaseNotesTitle": "Neuigkeiten in dieser Version"
   },
   "observability": {
     "heroPill": "Aggregate · ohne Payload",

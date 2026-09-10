@@ -419,7 +419,8 @@
     "allUpToDateBody": "No hay actualizaciones pendientes para los productos Knot instalados. Vuelve a comprobar tras una nueva publicación.",
     "channelLabel": "Canal · {channel}",
     "applyDisabled": "Actual",
-    "statusAhead": "Más reciente que la publicada"
+    "statusAhead": "Más reciente que la publicada",
+    "releaseNotesTitle": "Novedades de esta versión"
   },
   "observability": {
     "heroPill": "Agregados · sin cargas útiles",

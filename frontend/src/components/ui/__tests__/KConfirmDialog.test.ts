@@ -41,6 +41,22 @@ describe('KConfirmDialog', () => {
     const dialog = document.body.querySelector('[data-knot-test="knot-confirm-dialog"]');
     expect(dialog?.textContent).toContain('Purge logs');
     expect(dialog?.textContent).toContain('Older than 30 days?');
+    expect(dialog?.querySelector('[data-knot-test="knot-confirm-details"]')).toBeNull();
+    wrapper.unmount();
+  });
+
+  it('renders scrollable markdown details when provided', async () => {
+    const { wrapper, confirmApi } = mountDialog();
+    void confirmApi.confirm({
+      title: 'Apply this update?',
+      message: 'Will update to 2.1.0',
+      details: '## [2.1.0]\n\n- **Bold change**',
+      detailsLabel: "What's new in this version",
+    });
+    await wrapper.vm.$nextTick();
+    const details = document.body.querySelector('[data-knot-test="knot-confirm-details"]');
+    expect(details?.textContent).toContain("What's new in this version");
+    expect(details?.innerHTML).toContain('<strong>Bold change</strong>');
     wrapper.unmount();
   });
 

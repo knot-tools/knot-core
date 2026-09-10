@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" fill="none">
-  <title>Knot mark mono (#FFFFFF)</title>
+  <title>Knot mark mono-dark (no plate, Eldy menu)</title>
   <defs>
     <style>
     :root {
       --stem-top: #FEFEFE;
       --stem-front: #F2F2F1;
       --stem-side: #E3E3E3;
-      --upper-top: #27ECFD;
-      --upper-end: #0BC5DD;
-      --upper-side: #06B8D1;
-      --lower-top: #1391FC;
-      --lower-top-arm: #087FF2;
-      --lower-end: #0043A6;
-      --lower-side: #0058C7;
-      --knuckle-left: #015ECB;
+      --upper-top: #E5E7EB;
+      --upper-end: #D1D5DB;
+      --upper-side: #9CA3AF;
+      --lower-top: #6B7280;
+      --lower-top-arm: #4B5563;
+      --lower-end: #374151;
+      --lower-side: #4B5563;
+      --knuckle-left: #1F2937;
       --bg: #011029;
     }
     .stem-top { fill: var(--stem-top); stroke: var(--stem-top); }
@@ -31,34 +31,34 @@
     polygon { stroke-width: 0.6; stroke-linejoin: miter; }
     </style>
   </defs>
-  <g id="mark">
+<g id="mark">
   <!-- stem -->
-  <polygon class="stem-top" fill="#FFFFFF" points="222.000,176.000 312.000,228.000 402.000,176.000 312.000,124.000" />
-  <polygon class="stem-front" fill="#FFFFFF" points="222.000,176.000 222.000,842.000 312.000,894.000 312.000,228.000" />
-  <polygon class="stem-side" fill="#FFFFFF" points="312.000,228.000 312.000,894.000 402.000,842.000 402.000,176.000" />
+  <polygon class="stem-top" fill="#FEFEFE" points="222.000,176.000 312.000,228.000 402.000,176.000 312.000,124.000" />
+  <polygon class="stem-front" fill="#F2F2F1" points="222.000,176.000 222.000,842.000 312.000,894.000 312.000,228.000" />
+  <polygon class="stem-side" fill="#E3E3E3" points="312.000,228.000 312.000,894.000 402.000,842.000 402.000,176.000" />
 
   <!-- lower arm (jogged, extended to stem baseline) -->
-  <polygon class="lower-top-arm" fill="#FFFFFF" points="426.300,546.849 847.138,790.000 937.138,738.000 516.300,494.849" />
-  <polygon class="lower-side" fill="#FFFFFF" points="426.300,546.849 426.300,650.849 847.138,894.000 847.138,790.000" />
-  <polygon class="lower-end" fill="#FFFFFF" points="847.138,790.000 847.138,894.000 937.138,842.000 937.138,738.000" />
+  <polygon class="lower-top-arm" fill="#4B5563" points="426.300,546.849 847.138,790.000 937.138,738.000 516.300,494.849" />
+  <polygon class="lower-side" fill="#4B5563" points="426.300,546.849 426.300,650.849 847.138,894.000 847.138,790.000" />
+  <polygon class="lower-end" fill="#374151" points="847.138,790.000 847.138,894.000 937.138,842.000 937.138,738.000" />
 
   <!-- blue overpass under join -->
-  <polygon class="lower-top" fill="#FFFFFF" points="312.000,576.489 424.500,641.489 514.500,589.489 402.000,524.489" />
-  <polygon class="knuckle-left" fill="#FFFFFF" points="312.000,576.489 312.000,680.489 424.500,745.489 424.500,641.489" />
-  <polygon class="lower-end" fill="#FFFFFF" points="424.500,641.489 424.500,745.489 514.500,693.489 514.500,589.489" />
+  <polygon class="lower-top" fill="#6B7280" points="312.000,576.489 424.500,641.489 514.500,589.489 402.000,524.489" />
+  <polygon class="knuckle-left" fill="#1F2937" points="312.000,576.489 312.000,680.489 424.500,745.489 424.500,641.489" />
+  <polygon class="lower-end" fill="#374151" points="424.500,641.489 424.500,745.489 514.500,693.489 514.500,589.489" />
 
   <!-- blue knuckle cube (armpit, top at cyan bottom) -->
-  <polygon class="lower-top" fill="#FFFFFF" points="402.000,560.889 492.000,612.889 582.000,560.889 492.000,508.889" />
-  <polygon class="knuckle-left" fill="#FFFFFF" points="402.000,560.889 402.000,664.889 492.000,716.889 492.000,612.889" />
-  <polygon class="lower-end" fill="#FFFFFF" points="492.000,612.889 492.000,716.889 582.000,664.889 582.000,560.889" />
+  <polygon class="lower-top" fill="#6B7280" points="402.000,560.889 492.000,612.889 582.000,560.889 492.000,508.889" />
+  <polygon class="knuckle-left" fill="#1F2937" points="402.000,560.889 402.000,664.889 492.000,716.889 492.000,612.889" />
+  <polygon class="lower-end" fill="#374151" points="492.000,612.889 492.000,716.889 582.000,664.889 582.000,560.889" />
 
   <!-- white join rhombus (top + thin front, no side) -->
-  <polygon class="stem-top" fill="#FFFFFF" points="312.000,524.489 412.800,582.729 440.300,566.840 339.500,508.600" />
-  <polygon class="stem-front" fill="#FFFFFF" points="312.000,524.489 312.000,576.489 412.800,634.729 412.800,582.729" />
+  <polygon class="stem-top" fill="#FEFEFE" points="312.000,524.489 412.800,582.729 440.300,566.840 339.500,508.600" />
+  <polygon class="stem-front" fill="#F2F2F1" points="312.000,524.489 312.000,576.489 412.800,634.729 412.800,582.729" />
 
   <!-- upper arm -->
-  <polygon class="upper-top" fill="#FFFFFF" points="326.000,396.800 416.000,448.800 812.000,220.000 722.000,168.000" />
-  <polygon class="upper-end" fill="#FFFFFF" points="326.000,396.800 326.000,500.800 416.000,552.800 416.000,448.800" />
-  <polygon class="upper-side" fill="#FFFFFF" points="416.000,448.800 416.000,552.800 812.000,324.000 812.000,220.000" />
+  <polygon class="upper-top" fill="#E5E7EB" points="326.000,396.800 416.000,448.800 812.000,220.000 722.000,168.000" />
+  <polygon class="upper-end" fill="#D1D5DB" points="326.000,396.800 326.000,500.800 416.000,552.800 416.000,448.800" />
+  <polygon class="upper-side" fill="#9CA3AF" points="416.000,448.800 416.000,552.800 812.000,324.000 812.000,220.000" />
   </g>
 </svg>

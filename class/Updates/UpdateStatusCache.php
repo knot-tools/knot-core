@@ -23,6 +23,7 @@ use Knot\Repository\KnotConfigRepository;
  *     "version": "2.9.1",
  *     "channel": "beta",
  *     "publishedAt": "2026-05-16T12:34:56+00:00",
+ *     "notes": "## [2.13.23] …",
  *     "fetchedAt": 1715000000
  *   }
  *
@@ -44,6 +45,7 @@ final class UpdateStatusCache
      *     version: string,
      *     channel: string,
      *     publishedAt: string,
+     *     notes: string,
      *     fetchedAt: int
      * }|null
      */
@@ -62,12 +64,13 @@ final class UpdateStatusCache
             'version' => (string) $decoded['version'],
             'channel' => (string) ($decoded['channel'] ?? 'stable'),
             'publishedAt' => (string) ($decoded['publishedAt'] ?? ''),
+            'notes' => ReleaseNotesExtractor::normalizeNotes($decoded['notes'] ?? ''),
             'fetchedAt' => (int) $decoded['fetchedAt'],
         ];
     }
 
     /**
-     * @param array{slug?: string, version: string, channel?: string, publishedAt?: string} $payload
+     * @param array{slug?: string, version: string, channel?: string, publishedAt?: string, notes?: string} $payload
      */
     public function write(string $slug, array $payload, int $now): void
     {
@@ -76,6 +79,7 @@ final class UpdateStatusCache
             'version' => (string) $payload['version'],
             'channel' => (string) ($payload['channel'] ?? 'stable'),
             'publishedAt' => (string) ($payload['publishedAt'] ?? ''),
+            'notes' => ReleaseNotesExtractor::normalizeNotes($payload['notes'] ?? ''),
             'fetchedAt' => $now,
         ];
         $this->config->set(
@@ -90,6 +94,7 @@ final class UpdateStatusCache
      *     version: string,
      *     channel: string,
      *     publishedAt: string,
+     *     notes: string,
      *     fetchedAt: int
      * }|null $cached
      */

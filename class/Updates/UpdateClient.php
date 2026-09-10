@@ -25,6 +25,7 @@ use Knot\Licensing\InstallationIdentity;
  *   'zipSize' => 4_532_111,
  *   'zipSha256' => '…64hex…',
  *   'signatureKid' => 'rel-2026-04',
+ *   'notes' => '',
  * ]
  * ```
  *
@@ -74,7 +75,8 @@ class UpdateClient
      *     publishedAt: string,
      *     zipSize: int,
      *     zipSha256: string,
-     *     signatureKid: string
+     *     signatureKid: string,
+     *     notes: string
      * }|null
      */
     public function fetchLatest(string $slug): ?array
@@ -140,6 +142,7 @@ class UpdateClient
             'zipSize' => (int) ($decoded['zip_size_bytes'] ?? 0),
             'zipSha256' => (string) ($decoded['zip_sha256'] ?? ''),
             'signatureKid' => (string) ($decoded['signature_kid'] ?? ''),
+            'notes' => ReleaseNotesExtractor::normalizeNotes($decoded['notes'] ?? ''),
         ];
     }
 }

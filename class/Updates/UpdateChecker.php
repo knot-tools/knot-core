@@ -45,6 +45,7 @@ final class UpdateChecker
      *         latestVersion: ?string,
      *         channel: ?string,
      *         publishedAt: ?string,
+     *         notes: string,
      *         hasUpdate: bool,
      *         source: string,
      *         error: ?string
@@ -85,6 +86,7 @@ final class UpdateChecker
      *     latestVersion: ?string,
      *     channel: ?string,
      *     publishedAt: ?string,
+     *     notes: string,
      *     hasUpdate: bool,
      *     source: string,
      *     error: ?string
@@ -123,6 +125,7 @@ final class UpdateChecker
             'latestVersion' => null,
             'channel' => null,
             'publishedAt' => null,
+            'notes' => '',
             'hasUpdate' => false,
             'source' => 'unavailable',
             'error' => $error,
@@ -130,13 +133,14 @@ final class UpdateChecker
     }
 
     /**
-     * @param array{version: string, channel: string, publishedAt: string, fetchedAt?: int} $payload
+     * @param array{version: string, channel: string, publishedAt: string, notes?: string, fetchedAt?: int} $payload
      * @return array{
      *     slug: string,
      *     installedVersion: string,
      *     latestVersion: string,
      *     channel: string,
      *     publishedAt: string,
+     *     notes: string,
      *     hasUpdate: bool,
      *     source: string,
      *     error: ?string
@@ -151,6 +155,7 @@ final class UpdateChecker
             'latestVersion' => $latestVersion,
             'channel' => $payload['channel'],
             'publishedAt' => $payload['publishedAt'],
+            'notes' => ReleaseNotesExtractor::normalizeNotes($payload['notes'] ?? ''),
             'hasUpdate' => self::compareVersions($installedVersion, $latestVersion),
             'source' => $source,
             'error' => $error,

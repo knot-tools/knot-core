@@ -48,6 +48,7 @@ final class UpdateLatestResolverTest extends TestCase
                 'published_at' => '2026-05-20T12:00:00+00:00',
                 'zip_url' => 'https://example.com/knot.zip',
                 'zip_sha256' => str_repeat('b', 64),
+                'notes' => "## [2.13.0]\n\n- Core notes",
             ],
         ], JSON_THROW_ON_ERROR);
         $server = $this->startServer($body);
@@ -64,6 +65,7 @@ final class UpdateLatestResolverTest extends TestCase
         self::assertNotNull($resolved['payload']);
         self::assertSame('2.13.0', $resolved['payload']['version']);
         self::assertSame('beta', $resolved['payload']['channel']);
+        self::assertSame("## [2.13.0]\n\n- Core notes", $resolved['payload']['notes']);
         self::assertSame(0, $license->fetchCount, 'license must not be queried when GitHub succeeds');
     }
 
@@ -143,6 +145,7 @@ final class UpdateLatestResolverTest extends TestCase
                 'channel' => 'stable',
                 'published_at' => '2026-01-01T00:00:00+00:00',
                 'zip_sha256' => str_repeat('c', 64),
+                'notes' => "## [2.12.1]\n\n- Notify notes",
             ],
         ]);
 
@@ -150,6 +153,7 @@ final class UpdateLatestResolverTest extends TestCase
         self::assertSame('2.12.1', $payload['version']);
         self::assertSame('stable', $payload['channel']);
         self::assertSame(str_repeat('c', 64), $payload['zipSha256']);
+        self::assertSame("## [2.12.1]\n\n- Notify notes", $payload['notes']);
     }
 
     private function startServer(string $body, int $status = 200): LocalJsonHttpHarness
@@ -169,7 +173,8 @@ final class UpdateLatestResolverTest extends TestCase
      *     publishedAt: string,
      *     zipSize: int,
      *     zipSha256: string,
-     *     signatureKid: string
+     *     signatureKid: string,
+     *     notes: string
      * }
      */
     private function manifest(string $slug, string $version): array
@@ -182,6 +187,7 @@ final class UpdateLatestResolverTest extends TestCase
             'zipSize' => 1024,
             'zipSha256' => str_repeat('a', 64),
             'signatureKid' => 'rel-2026-04',
+            'notes' => '',
         ];
     }
 }

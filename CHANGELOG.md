@@ -7,23 +7,15 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
-### Changed
+## [2.13.23] - 2026-09-09
 
-- **Brand / docs:** restore Steeve PASS v2 Core README lockups
-  (`img/brand/knot-core-horizontal-{dark,light}.png`) in the public publish
-  template; replace house `knot-horizontal-*` with Steeve kit; soft-fix
-  README trademark line (trademark of Sébastien Audel — no « registered » / ®).
+### Improvements
 
-- **Release process:** publish gate and release docs tightened (signed Core
-  releases, public CHANGELOG honesty, matching GitHub Release / tag for each
-  shipped version).
-
-### Fixed
-
-- **Dolistore packaging license files:** packaging now requires the same license
-  set as the ZIP audit (`LICENSE`, `LINKING-EXCEPTION.md`, `NOTICE`,
-  `LICENSES.md`). Soft-fix `NOTICE` trademark line (trademark of Sébastien
-  Audel — no bare ® / no naked « registered » claim).
+- **Dolibarr menu icons** : the Knot mark is readable in the sidebar (no more black square).
+- **Setup watermark** : cyan Knot suite watermark on the setup screen — same family as the other tools.
+- **Updates page** : you can read a version’s details **before** you apply the update.
+- **Trademark notice** : NOTICE uses ™ (not ®), matching how the brand is actually used.
+- **License packaging (Dolistore)** : license files in the zip are complete and aligned with what the store expects.
 
 ## [2.13.22] - 2026-09-07
 

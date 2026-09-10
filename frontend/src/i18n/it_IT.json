@@ -419,7 +419,8 @@
     "allUpToDateBody": "Nessun aggiornamento in sospeso per i prodotti Knot installati. Ricontrolla dopo una nuova pubblicazione.",
     "channelLabel": "Canale · {channel}",
     "applyDisabled": "Corrente",
-    "statusAhead": "Più recente della pubblicata"
+    "statusAhead": "Più recente della pubblicata",
+    "releaseNotesTitle": "Novità di questa versione"
   },
   "observability": {
     "heroPill": "Agregats · sans payload",

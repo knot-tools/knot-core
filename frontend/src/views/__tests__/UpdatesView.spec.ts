@@ -5,14 +5,15 @@ import { provideConfirm } from '../../composables/useConfirm';
 import { provideToast } from '../../composables/useToast';
 import UpdatesView from '../UpdatesView.vue';
 
+const confirmMock = vi.fn(async () => true);
+
 vi.mock('../../composables/useConfirm', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../composables/useConfirm')>();
-  const confirm = vi.fn(async () => true);
 
   return {
     ...actual,
     useConfirm: () => ({
-      confirm,
+      confirm: confirmMock,
       state: ref({ open: false, options: { title: '' }, resolve: null }),
       answer: vi.fn(),
     }),
@@ -64,6 +65,8 @@ describe('UpdatesView', () => {
     (window as unknown as Record<string, unknown>).KNOT_MARKETPLACE_UI_ENABLED = true;
 
     i18n.global.locale.value = 'en_US';
+    confirmMock.mockClear();
+    confirmMock.mockResolvedValue(true);
   });
 
   afterEach(() => {
@@ -106,6 +109,127 @@ describe('UpdatesView', () => {
     expect(wrapper.get('[data-testid="updates-card-knot"]').attributes('data-has-update')).toBe('1');
     expect(wrapper.get('[data-testid="updates-installed-version"]').text()).toBe('2.0.0');
     expect(wrapper.get('[data-testid="updates-latest-version"]').text()).toBe('2.1.0');
+    expect(wrapper.find('[data-testid="updates-release-notes"]').exists()).toBe(false);
+    wrapper.unmount();
+  });
+
+  it('renders release notes on the card when hasUpdate and notes are present', async () => {
+    const snapshot: UpdatesCheckResponse = {
+      checkedAt: 1,
+      hasAnyUpdate: true,
+      entries: [
+        {
+          slug: 'knot',
+          installedVersion: '2.0.0',
+          latestVersion: '2.1.0',
+          channel: 'stable',
+          publishedAt: null,
+          notes: '## [2.1.0]\n\n### Added\n\n- **Fixture notes** before Apply.',
+          hasUpdate: true,
+          source: 'live',
+          error: null,
+        },
+      ],
+    };
+    vi.spyOn(knotApi, 'updates').mockResolvedValue(snapshot);
+    vi.spyOn(knotApi, 'marketplace').mockResolvedValue({
+      packs: [],
+      templates: [],
+    } as unknown as Awaited<ReturnType<(typeof knotApi)['marketplace']>>);
+    const applySpy = vi.spyOn(knotApi, 'updatesApply');
+
+    const wrapper = mount(Host, {
+      global: { plugins: [i18n] },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    const notes = wrapper.get('[data-testid="updates-release-notes"]');
+    expect(notes.text()).toContain("What's new in this version");
+    expect(notes.html()).toContain('<strong>Fixture notes</strong>');
+    expect(notes.text()).toContain('before Apply');
+    expect(applySpy).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+
+  it('hides the notes block when notes are empty or there is no update', async () => {
+    const snapshot: UpdatesCheckResponse = {
+      checkedAt: 1,
+      hasAnyUpdate: false,
+      entries: [
+        {
+          slug: 'knot',
+          installedVersion: '2.1.0',
+          latestVersion: '2.1.0',
+          channel: 'stable',
+          publishedAt: null,
+          notes: '## [2.1.0]\n\n- Should stay hidden when current.',
+          hasUpdate: false,
+          source: 'live',
+          error: null,
+        },
+      ],
+    };
+    vi.spyOn(knotApi, 'updates').mockResolvedValue(snapshot);
+    vi.spyOn(knotApi, 'marketplace').mockResolvedValue({
+      packs: [],
+      templates: [],
+    } as unknown as Awaited<ReturnType<(typeof knotApi)['marketplace']>>);
+
+    const wrapper = mount(Host, {
+      global: { plugins: [i18n] },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="updates-release-notes"]').exists()).toBe(false);
+    wrapper.unmount();
+  });
+
+  it('passes notes into the Apply confirm dialog before calling apply', async () => {
+    const snapshot: UpdatesCheckResponse = {
+      checkedAt: 1,
+      hasAnyUpdate: true,
+      entries: [
+        {
+          slug: 'knot',
+          installedVersion: '2.0.0',
+          latestVersion: '2.1.0',
+          channel: 'stable',
+          publishedAt: null,
+          notes: '## [2.1.0]\n\n- Confirm excerpt.',
+          hasUpdate: true,
+          source: 'live',
+          error: null,
+        },
+      ],
+    };
+    vi.spyOn(knotApi, 'updates').mockResolvedValue(snapshot);
+    vi.spyOn(knotApi, 'marketplace').mockResolvedValue({
+      packs: [],
+      templates: [],
+    } as unknown as Awaited<ReturnType<(typeof knotApi)['marketplace']>>);
+    const applySpy = vi.spyOn(knotApi, 'updatesApply').mockResolvedValue({
+      slug: 'knot',
+      path: '/tmp/knot',
+    });
+
+    const wrapper = mount(Host, {
+      global: { plugins: [i18n] },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    await wrapper.get('[data-testid="updates-apply-knot"]').trigger('click');
+    await flushPromises();
+
+    expect(confirmMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        details: '## [2.1.0]\n\n- Confirm excerpt.',
+        detailsLabel: "What's new in this version",
+      }),
+    );
+    expect(applySpy).toHaveBeenCalled();
     wrapper.unmount();
   });
 

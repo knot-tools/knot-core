@@ -131,7 +131,7 @@
   right: 24px;
   bottom: 16px;
   z-index: 0;
-  opacity: 0.18;
+  opacity: 0.32;
   pointer-events: none;
   transform: rotate(-6deg);
 }
