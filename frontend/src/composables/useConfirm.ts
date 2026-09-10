@@ -8,6 +8,9 @@ import { inject, provide, ref, type InjectionKey, type Ref } from 'vue';
 export interface ConfirmOptions {
   title: string;
   message?: string;
+  /** Optional markdown excerpt (escaped via parseMarkdownLight). */
+  details?: string;
+  detailsLabel?: string;
   confirmLabel?: string;
   cancelLabel?: string;
   danger?: boolean;

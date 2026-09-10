@@ -15,7 +15,11 @@ use Knot\Api\Doc\Operation;
         . " parameter, defaulting from Dolibarr constant `KNOT_RELEASE_CHANNEL`, usually `beta`).\n\n"
         . "Results are cached in `llx_knot_config` (24h TTL, entity-aware) so the"
         . " response stays available when the central server is briefly unreachable."
-        . " The response carries no download URL — triggering an install still"
+        . " Each entry may include `notes` (markdown excerpt of CHANGELOG"
+        . " `## [X.Y.Z]` from signed `releases.json` `latest.notes`, or a"
+        . " license `/latest` `notes` field when present). Empty notes are"
+        . " omitted from the UI. The response carries no download URL —"
+        . " triggering an install still"
         . " goes through the existing licensed flow (`api/license_download_token.php`).\n\n"
         . "Requires `knot.workflow.read`.",
     tags: ['updates'],

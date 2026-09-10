@@ -20,7 +20,8 @@ interface UpdateLatestSource
      *         publishedAt: string,
      *         zipSize: int,
      *         zipSha256: string,
-     *         signatureKid: string
+     *         signatureKid: string,
+     *         notes: string
      *     }|null,
      *     source: string,
      *     error: ?string

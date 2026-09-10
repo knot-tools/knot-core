@@ -51,6 +51,7 @@ final class UpdateClientTest extends TestCase
             'zip_size_bytes' => 1234567,
             'zip_sha256' => str_repeat('a', 64),
             'signature_kid' => 'rel-2026-05',
+            'notes' => "## [2.12.0]\n\n- License latest notes",
         ], JSON_THROW_ON_ERROR);
 
         $server = $this->startServer($body);
@@ -66,6 +67,7 @@ final class UpdateClientTest extends TestCase
         self::assertSame(1234567, $manifest['zipSize']);
         self::assertSame(str_repeat('a', 64), $manifest['zipSha256']);
         self::assertSame('rel-2026-05', $manifest['signatureKid']);
+        self::assertSame("## [2.12.0]\n\n- License latest notes", $manifest['notes']);
         self::assertNull($client->lastError());
     }
 
@@ -114,6 +116,7 @@ final class UpdateClientTest extends TestCase
         self::assertSame(0, $manifest['zipSize']);
         self::assertSame('', $manifest['zipSha256']);
         self::assertSame('', $manifest['signatureKid']);
+        self::assertSame('', $manifest['notes']);
     }
 
     private function startServer(string $body, int $status = 200): LocalJsonHttpHarness

@@ -5,9 +5,20 @@ Isometric **K** mark — **pack-v1 Core** (indigo / lavender). Dark SVG masters 
 - SHA256 `50df46b39e5c86bea0f2bcb0bacf8fb4242d4ee6373618c33f34818705669714`
 - Files: `favicon.svg` = `knot-logo.svg` = `knot-mark.svg` (navy plate `#011029`)
 
-Light masters (`knot-mark-light.svg`, `knot-symbol.svg`, `knot-mono-*`) keep transparent slate-stem geometry — do not restyle them when swapping the dark Core mark.
+Watermark masters (`knot-mark-light.svg`, `knot-symbol.svg`) = **suite cyan / mark-light**: slate stem + cyan/royal arms (`#27ECFD` / `#1391FC` family), no plate. Source: `pack-v1/masters/light/knot-mark-light.svg` (out-v2 light). Menu pictos use **mono-dark**, not Core colour.
 
-**Do not invent geometry.** Rasterize dark PNG/ICO from the dark SVG (or official 256 kit PNG) via Pillow `LANCZOS` only.
+**Do not invent geometry.** Rasterize from the official pack-v1 kit via Pillow `LANCZOS` only.
+
+## Menu / watermark vs app-icon plate
+
+| Surface | Treatment | Source |
+|---------|-----------|--------|
+| `img/knot.png`, `img/object_knot.png`, `img/brand/knot-logo-{256,512,1024}.png` | **Mono-dark** — transparent, no `#011029` plate; grayscale K for Eldy topmenu / Modules / leftnav (reads like other white Eldy icons) | `pack-v1/skins/mono-dark/mark-app.svg` strip plate → Pillow LANCZOS + 8% centered pad. SVG sibling: `knot-mono-white.svg` |
+| `img/brand/knot-symbol-{256,512}.png` + `knot-symbol.svg` (+ `knot-mark-light.svg`) | **Cyan mark-light** watermark — slate stem + cyan/royal arms (suite/out-v2); **not** Core indigo, **not** Core colour bare | `pack-v1/masters/light/knot-mark-light.svg` → LANCZOS + 8% center |
+| `favicon.svg` = `knot-logo.svg` = `knot-mark.svg` (+ ico/32/64) | **Keep plate** `#011029` — SHA256 `50df46b39e5c86bea0f2bcb0bacf8fb4242d4ee6373618c33f34818705669714` (P3 PASS) | dark SVG masters — do **not** strip plate |
+
+**Interdit on menu pictos:** Core colour bare on Eldy. **Watermark** for setup/About = cyan mark-light (intentional suite mark); do not swap to Core indigo.
+
 
 ## Colours
 
@@ -47,7 +58,8 @@ Light masters (`knot-mark-light.svg`, `knot-symbol.svg`, `knot-mono-*`) keep tra
 | `knot-logo-*.png` | Rasterized dark mark |
 | `knot-symbol-*.png` | Rasterized light mark |
 | `knot-mono-*.svg` | Same light geometry, solid black/white fills |
-| `knot-horizontal-*.png` | **Legacy hexagon wordmark** — pending official wordmark; not used by Dolibarr module list / About |
+| `knot-core-horizontal-*.png` | **GitHub README Core lockup** (Steeve PASS v2, 1680×300) — dark/light; public `knot-core` hero + `scripts/release/knot-core-README.md` publish template |
+| `knot-horizontal-*.png` | **House / org lockup** (Steeve PASS v2 replacement, 1680×300). Older Apr 2026 1200×300 purple « WORKFLOW AUTOMATION » hexagon banners are retired — do not reintroduce |
 
 ## Rules
 

@@ -1310,6 +1310,8 @@ export interface UpdatesCheckEntry {
   latestVersion: string | null;
   channel: string | null;
   publishedAt: string | null;
+  /** CHANGELOG excerpt for the available version (from signed releases.json latest.notes). */
+  notes?: string | null;
   hasUpdate: boolean;
   source: 'live' | 'cache' | 'cache_stale' | 'unavailable' | string;
   error: string | null;

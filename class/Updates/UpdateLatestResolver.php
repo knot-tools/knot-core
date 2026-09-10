@@ -62,7 +62,8 @@ final class UpdateLatestResolver implements UpdateLatestSource
      *         publishedAt: string,
      *         zipSize: int,
      *         zipSha256: string,
-     *         signatureKid: string
+     *         signatureKid: string,
+     *         notes: string
      *     }|null,
      *     source: string,
      *     error: ?string
@@ -131,7 +132,8 @@ final class UpdateLatestResolver implements UpdateLatestSource
      *     publishedAt: string,
      *     zipSize: int,
      *     zipSha256: string,
-     *     signatureKid: string
+     *     signatureKid: string,
+     *     notes: string
      * }
      */
     public static function notifyPayloadFromGithubManifest(array $manifest): array
@@ -152,6 +154,7 @@ final class UpdateLatestResolver implements UpdateLatestSource
             'zipSize' => 0,
             'zipSha256' => $artifact['zip_sha256'],
             'signatureKid' => '',
+            'notes' => $artifact['notes'],
         ];
     }
 }

@@ -42,6 +42,7 @@ ApiAuth::installCrashHandler();
  *          latestVersion: "2.9.1",
  *          channel: "beta",
  *          publishedAt: "2026-05-16T12:34:56+00:00",
+ *          notes: "## [2.13.23] …",
  *          hasUpdate: true,
  *          source: "live" | "cache" | "cache_stale" | "unavailable",
  *          error: null

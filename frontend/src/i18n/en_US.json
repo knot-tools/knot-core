@@ -419,7 +419,8 @@
     "allUpToDateBody": "No pending updates for installed Knot products. Check again after a new release is published.",
     "channelLabel": "Channel · {channel}",
     "applyDisabled": "Current",
-    "statusAhead": "Ahead of published"
+    "statusAhead": "Ahead of published",
+    "releaseNotesTitle": "What's new in this version"
   },
   "observability": {
     "heroPill": "Aggregates · no payloads",

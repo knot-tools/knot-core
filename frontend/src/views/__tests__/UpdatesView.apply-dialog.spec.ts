@@ -28,6 +28,7 @@ function coreUpdateSnapshot(): UpdatesCheckResponse {
         latestVersion: '2.13.18',
         channel: 'stable',
         publishedAt: null,
+        notes: '## [2.13.18]\n\n- **Apply-dialog fixture** notes.',
         hasUpdate: true,
         source: 'live',
         error: null,
@@ -73,6 +74,10 @@ describe('UpdatesView apply confirm (real KConfirmDialog)', () => {
     expect(dialog).not.toBeNull();
     expect(dialog?.getAttribute('role')).toBe('dialog');
     expect(applySpy).not.toHaveBeenCalled();
+    const details = dialog?.querySelector('[data-knot-test="knot-confirm-details"]');
+    expect(details).not.toBeNull();
+    expect(details?.textContent).toContain("What's new in this version");
+    expect(details?.innerHTML).toContain('<strong>Apply-dialog fixture</strong>');
 
     const accept = dialog?.querySelector('[data-knot-test="knot-confirm-accept"]') as HTMLButtonElement | null;
     expect(accept).not.toBeNull();

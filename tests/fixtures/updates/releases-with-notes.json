@@ -1,0 +1,19 @@
+{
+  "schema_version": "knot-core-releases@v1",
+  "latest": {
+    "version": "2.13.99",
+    "channel": "beta",
+    "published_at": "2026-09-09T00:00:00+00:00",
+    "zip_url": "https://example.invalid/knot-2.13.99.zip",
+    "zip_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "signature_hex": "",
+    "signature_payload": {
+      "channel": "beta",
+      "version": "2.13.99",
+      "zip_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "zip_url": "https://example.invalid/knot-2.13.99.zip"
+    },
+    "notes": "## [2.13.99] - 2026-09-09\n\n### Added\n\n- Fixture-only excerpt for Updates UI tests. Not a live CDN publish.\n"
+  },
+  "_comment": "Non-live fixture. Do not ship as production releases.json."
+}

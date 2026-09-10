@@ -39,6 +39,7 @@ final class GithubReleasesClientTest extends TestCase
                 'zip_sha256' => strtoupper(str_repeat('a', 64)),
                 'signature_hex' => 'deadbeef',
                 'signature_payload' => ['version' => '2.13.0'],
+                'notes' => "  ## [2.13.0]\n\n- Fix\n  ",
             ],
         ]);
 
@@ -46,6 +47,16 @@ final class GithubReleasesClientTest extends TestCase
         self::assertSame('https://example.com/knot.zip', $artifact['zip_url']);
         self::assertSame(str_repeat('a', 64), $artifact['zip_sha256']);
         self::assertSame(['version' => '2.13.0'], $artifact['signature_payload']);
+        self::assertSame("## [2.13.0]\n\n- Fix", $artifact['notes']);
+    }
+
+    public function testInferLatestArtifactDefaultsNotesToEmptyString(): void
+    {
+        $artifact = GithubReleasesClient::inferLatestArtifact([
+            'latest' => ['version' => '2.13.0'],
+        ]);
+
+        self::assertSame('', $artifact['notes']);
     }
 
     public function testFetchManifestFromLocalHarness(): void

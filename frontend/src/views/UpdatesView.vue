@@ -17,6 +17,7 @@ import { useConfirm } from '../composables/useConfirm';
 import { useToast } from '../composables/useToast';
 import { isMarketplaceUiEnabled } from '../lib/marketplaceUi';
 import { productDisplayName } from '../lib/productDisplayName';
+import { parseMarkdownLight } from '../lib/markdownLight';
 
 defineProps<{
   workflowId: number | null;
@@ -97,6 +98,18 @@ function isAheadOfPublished(row: UpdatesCheckEntry): boolean {
   return false;
 }
 
+function releaseNotes(row: UpdatesCheckEntry | undefined): string {
+  if (!row?.hasUpdate) {
+    return '';
+  }
+  return (row.notes ?? '').trim();
+}
+
+function releaseNotesHtml(row: UpdatesCheckEntry): string {
+  const notes = releaseNotes(row);
+  return notes === '' ? '' : parseMarkdownLight(notes);
+}
+
 function statusLabel(row: UpdatesCheckEntry): string {
   if (row.error) {
     return t('updatesPage.statusCheckFailed');
@@ -147,12 +160,15 @@ async function load(forceRefresh = false) {
 async function handleApply(slug: string) {
   const entry = snapshot.value?.entries.find((e) => e.slug === slug);
   const product = labelForSlug(slug);
+  const notes = releaseNotes(entry);
   const confirmed = await confirm({
     title: t('updatesPage.confirmTitle'),
     message: t('updatesPage.confirmBody', {
       product,
       version: entry?.latestVersion ?? '—',
     }),
+    details: notes || undefined,
+    detailsLabel: notes ? t('updatesPage.releaseNotesTitle') : undefined,
     danger: true,
     confirmLabel: t('updatesPage.apply'),
   });
@@ -399,6 +415,20 @@ onMounted(() => {
             </dd>
           </div>
         </dl>
+
+        <section
+          v-if="releaseNotes(row)"
+          class="k-mt-4 k-max-h-56 k-overflow-y-auto k-rounded-lg k-border k-border-knot-border k-bg-knot-surface-soft k-p-3"
+          data-testid="updates-release-notes"
+        >
+          <h3 class="k-text-xs k-font-semibold k-uppercase k-tracking-wider k-text-knot-text-muted">
+            {{ t('updatesPage.releaseNotesTitle') }}
+          </h3>
+          <div
+            class="k-mt-2 k-text-sm k-text-knot-text k-prose-knot"
+            v-html="releaseNotesHtml(row)"
+          />
+        </section>
 
         <p v-if="row.error" class="k-mt-3 k-text-xs k-text-knot-danger">
           {{ row.error }}

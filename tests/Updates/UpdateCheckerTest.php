@@ -44,6 +44,7 @@ final class UpdateCheckerTest extends TestCase
         self::assertSame('0.7.0', $entry['latestVersion']);
         self::assertTrue($entry['hasUpdate']);
         self::assertSame('live', $entry['source']);
+        self::assertSame("## [0.7.0]\n\n- Migration notes", $entry['notes']);
         self::assertNull($entry['error']);
     }
 
@@ -65,7 +66,12 @@ final class UpdateCheckerTest extends TestCase
     {
         $repo = new InMemoryConfigRepo();
         $cache = new UpdateStatusCache($repo);
-        $cache->write('knot-migration', ['version' => '0.7.0', 'channel' => 'beta', 'publishedAt' => '2026-05-16T12:00:00+00:00'], time());
+        $cache->write('knot-migration', [
+            'version' => '0.7.0',
+            'channel' => 'beta',
+            'publishedAt' => '2026-05-16T12:00:00+00:00',
+            'notes' => "## [0.7.0]\n\n- Cached notes",
+        ], time());
 
         $stub = new StubUpdateLatestSource([], lastError: 'simulated_offline');
         $checker = new UpdateChecker($stub, $cache);
@@ -74,7 +80,25 @@ final class UpdateCheckerTest extends TestCase
 
         self::assertSame('cache', $result['entries'][0]['source']);
         self::assertTrue($result['entries'][0]['hasUpdate']);
+        self::assertSame("## [0.7.0]\n\n- Cached notes", $result['entries'][0]['notes']);
         self::assertSame(0, $stub->fetchCount, 'cache hit must not call the network');
+    }
+
+    public function testLegacyCacheWithoutNotesYieldsEmptyNotes(): void
+    {
+        $repo = new InMemoryConfigRepo();
+        $cache = new UpdateStatusCache($repo);
+        $cache->write('knot', ['version' => '2.13.0', 'channel' => 'beta', 'publishedAt' => '2026-05-16T12:00:00+00:00'], time());
+
+        $checker = new UpdateChecker(
+            new StubUpdateLatestSource([], lastError: 'offline'),
+            $cache,
+        );
+
+        $result = $checker->check([['slug' => 'knot', 'version' => '2.12.0']]);
+
+        self::assertSame('cache', $result['entries'][0]['source']);
+        self::assertSame('', $result['entries'][0]['notes']);
     }
 
     public function testForceRefreshBypassesWarmCache(): void
@@ -136,6 +160,7 @@ final class UpdateCheckerTest extends TestCase
         self::assertNull($entry['latestVersion']);
         self::assertSame('http_500', $entry['error']);
         self::assertFalse($entry['hasUpdate']);
+        self::assertSame('', $entry['notes']);
     }
 
     public function testIgnoresEntriesWithEmptySlugOrVersion(): void
@@ -180,7 +205,7 @@ final class UpdateCheckerTest extends TestCase
     }
 
     /**
-     * @return array{slug: string, version: string, channel: string, publishedAt: string, zipSize: int, zipSha256: string, signatureKid: string}
+     * @return array{slug: string, version: string, channel: string, publishedAt: string, zipSize: int, zipSha256: string, signatureKid: string, notes: string}
      */
     private function manifest(string $slug, string $version, string $publishedAt = '2026-05-16T12:00:00+00:00'): array
     {
@@ -192,6 +217,7 @@ final class UpdateCheckerTest extends TestCase
             'zipSize' => 1024,
             'zipSha256' => str_repeat('a', 64),
             'signatureKid' => 'rel-2026-04',
+            'notes' => $slug === 'knot-migration' ? "## [0.7.0]\n\n- Migration notes" : '',
         ];
     }
 }
