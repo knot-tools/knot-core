@@ -3,18 +3,18 @@
     "latest": {
         "version": "2.13.23",
         "channel": "beta",
-        "published_at": "2026-09-10T00:02:56+00:00",
+        "published_at": "2026-09-10T00:41:13+00:00",
         "zip_url": "https://knot.tools/downloads/knot-core/latest",
-        "zip_sha256": "d5a92e95908ad07659748867c8ff8c0a09fa37fb2fa02c87ab07373531cacd86",
-        "signature_hex": "757e9b8be6497c1dfdc5420b1d45e7d3b4cd8fc84d35c09d7c764a4eefd2fdb7198e22cffea8ffa24066cc96a49333e9d6ce10b88f4b1b4b2ab974bef4f9df04",
+        "zip_sha256": "35fdd965370fba68b49d37248f7dda014d3f5964952d96d216525abe01fe1253",
+        "signature_hex": "f72c533d62938da047652fe7dac9832ec64d7fd5f10080d585335c019d87849863bfd9043b20833863d642c6cb3ff6df36c9d4e20c3111a98c8068124e579d0a",
         "signature_payload": {
             "channel": "beta",
             "version": "2.13.23",
-            "zip_sha256": "d5a92e95908ad07659748867c8ff8c0a09fa37fb2fa02c87ab07373531cacd86",
+            "zip_sha256": "35fdd965370fba68b49d37248f7dda014d3f5964952d96d216525abe01fe1253",
             "zip_url": "https://knot.tools/downloads/knot-core/latest"
         },
-        "notes": "## [2.13.23] - 2026-09-09\n\n### Improvements\n\n- **Dolibarr menu icons** : the Knot mark is readable in the sidebar (no more black square).\n- **Setup watermark** : cyan Knot suite watermark on the setup screen — same family as the other tools.\n- **Updates page** : you can read a version’s details **before** you apply the update.\n- **Trademark notice** : NOTICE uses ™ (not ®), matching how the brand is actually used.\n- **License packaging (Dolistore)** : license files in the zip are complete and aligned with what the store expects.",
-        "zip_size_bytes": 2523381,
+        "notes": "## [2.13.23] - 2026-09-09\n\n### Improvements\n\n- **Dolibarr menu icons** : the Knot mark is readable in the sidebar (no more black square).\n- **Leftnav logo** : cyan Knot suite mark (same family as the setup watermark), not the monochrome menu icon.\n- **Setup watermark** : cyan Knot suite watermark on the setup screen — same family as the other tools.\n- **Updates page** : you can read a version’s details **before** you apply the update.\n- **Trademark notice** : NOTICE uses ™ (not ®), matching how the brand is actually used.\n- **License packaging (Dolistore)** : license files in the zip are complete and aligned with what the store expects.",
+        "zip_size_bytes": 2495920,
         "signature_kid": "rel-2026-04"
     },
     "_comment": "Synced from knot-tools/core/releases.json on each Core release.",
