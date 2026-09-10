@@ -1,5 +1,13 @@
 # Knot — Brand Pack (P3 Core / pack-v1)
 
+
+## Lock 2.13.23 hotfix (leftnav)
+
+- **Menu / object** (`img/knot.png`, `img/object_knot.png`) = **mono-dark** (Eldy chrome).
+- **Leftnav logos** (`img/brand/knot-logo-{256,512,1024}.png`) = **cyan mark-light** (same master as `knot-symbol-*` / `knot-mark-light.svg`) — not mono.
+- **Watermark** (`knot-symbol-*`) = cyan mark-light.
+- **Favicon / plaque** (`favicon.svg`, `knot-mark.svg`) = Core P3 plate — do not touch.
+
 Isometric **K** mark — **pack-v1 Core** (indigo / lavender). Dark SVG masters under `img/brand/` must stay byte-identical:
 
 - SHA256 `50df46b39e5c86bea0f2bcb0bacf8fb4242d4ee6373618c33f34818705669714`
@@ -13,7 +21,8 @@ Watermark masters (`knot-mark-light.svg`, `knot-symbol.svg`) = **suite cyan / ma
 
 | Surface | Treatment | Source |
 |---------|-----------|--------|
-| `img/knot.png`, `img/object_knot.png`, `img/brand/knot-logo-{256,512,1024}.png` | **Mono-dark** — transparent, no `#011029` plate; grayscale K for Eldy topmenu / Modules / leftnav (reads like other white Eldy icons) | `pack-v1/skins/mono-dark/mark-app.svg` strip plate → Pillow LANCZOS + 8% centered pad. SVG sibling: `knot-mono-white.svg` |
+| `img/knot.png`, `img/object_knot.png` | **Mono-dark** — transparent, no `#011029` plate; grayscale K for Eldy topmenu / Modules (reads like other white Eldy icons) | `pack-v1/skins/mono-dark/mark-app.svg` strip plate → Pillow LANCZOS + 8% centered pad. SVG sibling: `knot-mono-white.svg` |
+| `img/brand/knot-logo-{256,512,1024}.png` | **Cyan mark-light** — leftnav / sidebar logo; same family as watermark (not mono) | `pack-v1/masters/light/knot-mark-light.svg` → LANCZOS + 8% center |
 | `img/brand/knot-symbol-{256,512}.png` + `knot-symbol.svg` (+ `knot-mark-light.svg`) | **Cyan mark-light** watermark — slate stem + cyan/royal arms (suite/out-v2); **not** Core indigo, **not** Core colour bare | `pack-v1/masters/light/knot-mark-light.svg` → LANCZOS + 8% center |
 | `favicon.svg` = `knot-logo.svg` = `knot-mark.svg` (+ ico/32/64) | **Keep plate** `#011029` — SHA256 `50df46b39e5c86bea0f2bcb0bacf8fb4242d4ee6373618c33f34818705669714` (P3 PASS) | dark SVG masters — do **not** strip plate |
 
@@ -55,7 +64,7 @@ Watermark masters (`knot-mark-light.svg`, `knot-symbol.svg`) = **suite cyan / ma
 |------|---------|
 | `knot-mark.svg` / `knot-logo.svg` / `favicon.svg` | Dark master (navy plate + white stem, indigo/lavender arms) |
 | `knot-mark-light.svg` / `knot-symbol.svg` | Light master (slate stem, transparent) |
-| `knot-logo-*.png` | Rasterized dark mark |
+| `knot-logo-*.png` | Rasterized cyan mark-light (leftnav) |
 | `knot-symbol-*.png` | Rasterized light mark |
 | `knot-mono-*.svg` | Same light geometry, solid black/white fills |
 | `knot-core-horizontal-*.png` | **GitHub README Core lockup** (Steeve PASS v2, 1680×300) — dark/light; public `knot-core` hero + `scripts/release/knot-core-README.md` publish template |

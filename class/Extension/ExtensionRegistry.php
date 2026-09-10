@@ -238,7 +238,8 @@ class ExtensionRegistry
                 if (!is_dir($full)) {
                     continue;
                 }
-                // Installer swap stashes live trees as `{slug}.backup.{timestamp}_{rand}` — never register them.
+                // Legacy Apply left `{slug}.backup.*` under custom/; current Apply
+                // stashes under documents/knot/update-stashes/. Still skip leftovers.
                 if (str_contains($name, '.backup.')) {
                     continue;
                 }

@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Knot\Tests\Updates;
 
 use Knot\Updates\Installer;
+use Knot\Updates\UpdateStashStore;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -20,10 +21,30 @@ final class InstallerTest extends TestCase
 {
     private string $tmpRoot = '';
 
+    /** @var mixed */
+    private $previousConf;
+
+    protected function setUp(): void
+    {
+        $this->previousConf = $GLOBALS['conf'] ?? null;
+    }
+
     protected function tearDown(): void
     {
+        if ($this->previousConf === null) {
+            unset($GLOBALS['conf']);
+        } else {
+            $GLOBALS['conf'] = $this->previousConf;
+        }
         $this->rrmdir($this->tmpRoot);
         parent::tearDown();
+    }
+
+    private function installer(?string $stashRoot = null): Installer
+    {
+        $root = $stashRoot ?? ($this->tmpRoot . '/documents/knot/update-stashes');
+
+        return new Installer(new UpdateStashStore($root));
     }
 
     private function rrmdir(string $dir): void
@@ -80,7 +101,7 @@ final class InstallerTest extends TestCase
         $this->makeDemoZip($artifact, 'knot');
 
         $extractParent = $this->tmpRoot . DIRECTORY_SEPARATOR . 'stage-parent';
-        $installer = new Installer();
+        $installer = $this->installer();
         $prepared = $installer->prepare($artifact, $extractParent, 'knot');
 
         self::assertSame('knot', basename($prepared));
@@ -107,7 +128,7 @@ final class InstallerTest extends TestCase
         $artifact = $this->tmpRoot . DIRECTORY_SEPARATOR . 'pkg.zip';
         $this->makeDemoZip($artifact, 'knot');
 
-        $installer = new Installer();
+        $installer = $this->installer($this->tmpRoot . DIRECTORY_SEPARATOR . 'documents/knot/update-stashes');
         $prepared = $installer->prepare($artifact, $stageRoot, 'knot');
         $liveRoot = $this->tmpRoot . DIRECTORY_SEPARATOR . 'live-old';
         @mkdir($liveRoot, 0777, true);
@@ -196,11 +217,120 @@ final class InstallerTest extends TestCase
         (new Installer())->prepare($artifact, $this->tmpRoot . DIRECTORY_SEPARATOR . 'ext', 'knot');
     }
 
-    public function testManualFallbackInstructionsMentionsBackupPattern(): void
+    public function testManualFallbackInstructionsPointOutsideCustom(): void
     {
-        $lines = Installer::manualFallbackInstructions('/var/www/custom/knot');
-        self::assertCount(2, $lines);
-        self::assertStringContainsString('knot.backup.', implode("\n", $lines));
+        $lines = Installer::manualFallbackInstructions(
+            '/var/www/html/custom/knot',
+            '/var/www/documents/knot/update-stashes',
+        );
+        $text = implode("\n", $lines);
+        self::assertCount(3, $lines);
+        self::assertStringContainsString('/var/www/documents/knot/update-stashes', $text);
+        self::assertStringContainsString('knot.{timestamp}_{hex}', $text);
+        self::assertStringContainsString('custom/knot.bak.', $text);
+        self::assertStringContainsString('Module found twice', $text);
+        self::assertStringNotContainsString('Look under /var/www/html/custom ', $text);
+        self::assertStringNotContainsString('`knot.backup.*`', $text);
+    }
+
+    public function testSwapStashesPreviousTreeOutsideFakeCustom(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            self::markTestSkipped('ZipArchive extension required');
+        }
+
+        $this->tmpRoot = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'installer-stash-' . bin2hex(random_bytes(6));
+        $custom = $this->tmpRoot . '/htdocs/custom';
+        $live = $custom . '/knot';
+        $stashRoot = $this->tmpRoot . '/documents/knot/update-stashes';
+        @mkdir($live, 0777, true);
+        file_put_contents($live . '/manifest.json', "{\"v\":1}\n");
+        file_put_contents($live . '/old.txt', 'prev');
+
+        $artifact = $this->tmpRoot . '/pkg.zip';
+        $this->makeDemoZip($artifact, 'knot');
+
+        $installer = $this->installer($stashRoot);
+        $prepared = $installer->prepare($artifact, $this->tmpRoot . '/stage-parent', 'knot');
+        $installer->swap($prepared, $live);
+
+        $backup = $installer->backupPath();
+        self::assertNotNull($backup);
+        self::assertStringStartsWith($stashRoot . DIRECTORY_SEPARATOR, (string) $backup);
+        self::assertTrue(UpdateStashStore::isStashDirectoryName(basename((string) $backup), 'knot'));
+        self::assertFileExists((string) $backup . '/old.txt');
+        self::assertFileExists($live . '/manifest.json');
+        self::assertStringContainsString('"name":"demo"', (string) file_get_contents($live . '/manifest.json'));
+
+        $siblings = glob($custom . '/knot.*') ?: [];
+        self::assertSame([], $siblings, 'Apply must not leave module-like siblings under custom/');
+        self::assertDirectoryDoesNotExist($custom . '/knot.backup');
+    }
+
+    public function testCommitSwapRetainsAtMostTwoStashesPerSlug(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            self::markTestSkipped('ZipArchive extension required');
+        }
+
+        $this->tmpRoot = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'installer-keep-' . bin2hex(random_bytes(6));
+        $custom = $this->tmpRoot . '/htdocs/custom';
+        $live = $custom . '/knot';
+        $stashRoot = $this->tmpRoot . '/documents/knot/update-stashes';
+        @mkdir($stashRoot, 0777, true);
+        foreach (['20260101000000_aaaaaa', '20260102000000_bbbbbb', '20260103000000_cccccc'] as $suffix) {
+            @mkdir($stashRoot . '/knot.' . $suffix, 0777, true);
+        }
+
+        @mkdir($live, 0777, true);
+        file_put_contents($live . '/manifest.json', "{\"v\":1}\n");
+
+        $artifact = $this->tmpRoot . '/pkg.zip';
+        $this->makeDemoZip($artifact, 'knot');
+        $installer = $this->installer($stashRoot);
+        $prepared = $installer->prepare($artifact, $this->tmpRoot . '/stage-parent', 'knot');
+        $installer->swap($prepared, $live);
+        $newest = $installer->backupPath();
+        self::assertNotNull($newest);
+
+        $installer->commitSwap();
+
+        $store = new UpdateStashStore($stashRoot);
+        $left = $store->listForSlug('knot');
+        self::assertCount(2, $left);
+        self::assertContains($newest, $left);
+        self::assertDirectoryDoesNotExist($stashRoot . '/knot.20260101000000_aaaaaa');
+        self::assertFalse($installer->canRollback());
+        self::assertDirectoryExists((string) $newest);
+    }
+
+    public function testDefaultInstallerUsesConfDirOutputNotCustomSiblings(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            self::markTestSkipped('ZipArchive extension required');
+        }
+
+        $this->tmpRoot = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'installer-conf-' . bin2hex(random_bytes(6));
+        $custom = $this->tmpRoot . '/htdocs/custom';
+        $live = $custom . '/knot';
+        $dirOutput = $this->tmpRoot . '/documents/knot';
+        @mkdir($live, 0777, true);
+        file_put_contents($live . '/manifest.json', "{\"v\":1}\n");
+
+        $conf = new \stdClass();
+        $conf->knot = new \stdClass();
+        $conf->knot->dir_output = $dirOutput;
+        $GLOBALS['conf'] = $conf;
+
+        $artifact = $this->tmpRoot . '/pkg.zip';
+        $this->makeDemoZip($artifact, 'knot');
+        $installer = new Installer();
+        $prepared = $installer->prepare($artifact, $this->tmpRoot . '/stage-parent', 'knot');
+        $installer->swap($prepared, $live);
+
+        $backup = (string) $installer->backupPath();
+        self::assertStringStartsWith($dirOutput . '/update-stashes/', $backup);
+        self::assertSame([], glob($custom . '/knot.*') ?: []);
     }
 
     public function testPrepareThrowsWhenZipPathUnreadable(): void

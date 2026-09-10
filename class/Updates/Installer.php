@@ -11,12 +11,32 @@ use ZipArchive;
 
 /**
  * Stage + atomic swap module trees bundled with Dolistore-style prefixes.
+ *
+ * The previous live tree is moved to {@see UpdateStashStore} (documents
+ * `update-stashes/`), never as a sibling under `custom/`.
  */
 final class Installer
 {
+    private readonly UpdateStashStore $stashes;
+
     private ?string $livePath = null;
 
     private ?string $backupPath = null;
+
+    private ?string $stashSlug = null;
+
+    public function __construct(?UpdateStashStore $stashes = null)
+    {
+        $this->stashes = $stashes ?? new UpdateStashStore();
+    }
+
+    /**
+     * Absolute path of the stash created by the last {@see swap()}, if any.
+     */
+    public function backupPath(): ?string
+    {
+        return $this->backupPath;
+    }
 
     /**
      * Extract the top-level module folder `$topFolder/` under `$stagingParentDirectory`.
@@ -97,14 +117,16 @@ final class Installer
             throw new RuntimeException('Cannot create Knot directory parent.');
         }
 
-        $backup = dirname($live) . DIRECTORY_SEPARATOR . basename($live)
-            . '.backup.' . gmdate('YmdHis') . '_' . bin2hex(random_bytes(3));
+        $slug = basename($live);
+        $this->stashes->assertSafeForLive($live);
 
         if (is_dir($live) || is_file($live)) {
+            $backup = $this->stashes->allocate($slug);
             if (!self::movePath($live, $backup)) {
                 throw new RuntimeException('Unable to stash live module tree before swap.');
             }
             $this->backupPath = $backup;
+            $this->stashSlug = $slug;
         }
 
         $this->livePath = $live;
@@ -121,12 +143,18 @@ final class Installer
 
     /**
      * Clears in-memory rollback pointers after migrations succeed.
-     * The `.backup.*` directory remains on disk for manual recovery.
+     * The stash remains on disk for manual recovery; older stashes for
+     * the same slug are pruned (keep {@see UpdateStashStore::KEEP_DEFAULT}).
      */
-    public function commitSwap(): void
+    public function commitSwap(int $keep = UpdateStashStore::KEEP_DEFAULT): void
     {
+        $slug = $this->stashSlug;
         $this->livePath = null;
         $this->backupPath = null;
+        $this->stashSlug = null;
+        if ($slug !== null && $slug !== '') {
+            $this->stashes->prune($slug, $keep);
+        }
     }
 
     public function canRollback(): bool
@@ -146,6 +174,7 @@ final class Installer
         $backup = $this->backupPath;
         $this->livePath = null;
         $this->backupPath = null;
+        $this->stashSlug = null;
 
         if ($backup === null || $live === null) {
             return false;
@@ -218,13 +247,31 @@ final class Installer
     }
 
     /**
-     * @return string[]
+     * Operator hints after a failed Apply (English, API `details.instructions`).
+     *
+     * @return list<string>
      */
-    public static function manualFallbackInstructions(string $liveDir): array
+    public static function manualFallbackInstructions(string $liveDir, ?string $stashRoot = null): array
     {
+        $live = rtrim($liveDir, DIRECTORY_SEPARATOR . '/');
+        $slug = basename($live);
+        $root = $stashRoot ?? UpdateStashStore::resolveRoot();
+
         return [
-            sprintf('Look under %s for `%s.backup.*` directories.', dirname($liveDir), basename($liveDir)),
-            sprintf('Rename the freshest backup folder back to `%s` after removing the broken live tree.', basename($liveDir)),
+            sprintf(
+                'Look under %s for `%s.{timestamp}_{hex}` directories (Apply stashes, outside custom/).',
+                $root,
+                $slug,
+            ),
+            sprintf(
+                'Move the freshest stash folder back to `%s` after removing the broken live tree.',
+                $live,
+            ),
+            sprintf(
+                'Never leave module backups as siblings under custom/ (including `custom/%s.backup.*` and `custom/%s.bak.*`) — Dolibarr lists every tree under custom/ and reports « Module found twice ».',
+                $slug,
+                $slug,
+            ),
         ];
     }
 
