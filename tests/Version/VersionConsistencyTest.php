@@ -43,7 +43,11 @@ final class VersionConsistencyTest extends TestCase
     public function testModuleManifestMatchesVersionFallback(): void
     {
         $jsonPath = dirname(__DIR__, 2) . '/manifest.json';
-        self::assertFileExists($jsonPath);
+        // Public knot-core CI: manifest.json is packaging-only (shipped as
+        // knot/manifest.json in the ZIP) and is not copied by publish-to-public.sh.
+        if (!is_readable($jsonPath)) {
+            self::markTestSkipped('manifest.json absent (public mirror); checked on private core + ZIP audit.');
+        }
         /** @var array<string, mixed> $data */
         $data = json_decode((string) file_get_contents($jsonPath), true, 512, JSON_THROW_ON_ERROR);
         self::assertArrayHasKey('version', $data);
