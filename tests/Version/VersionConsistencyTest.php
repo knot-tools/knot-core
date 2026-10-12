@@ -39,4 +39,19 @@ final class VersionConsistencyTest extends TestCase
             'frontend/package.json version must match Knot\\Version::FALLBACK'
         );
     }
+
+    public function testModuleManifestMatchesVersionFallback(): void
+    {
+        $jsonPath = dirname(__DIR__, 2) . '/manifest.json';
+        self::assertFileExists($jsonPath);
+        /** @var array<string, mixed> $data */
+        $data = json_decode((string) file_get_contents($jsonPath), true, 512, JSON_THROW_ON_ERROR);
+        self::assertArrayHasKey('version', $data);
+        self::assertIsString($data['version']);
+        self::assertSame(
+            Version::FALLBACK,
+            $data['version'],
+            'manifest.json (packaged as knot/manifest.json) must match Knot\\Version::FALLBACK'
+        );
+    }
 }

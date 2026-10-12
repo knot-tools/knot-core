@@ -20,7 +20,8 @@ final class MetricsCollectorAggregatesTest extends TestCase
 
         $rows = $collector->executionsTotal(2, strtotime('-1 day'));
         self::assertStringContainsString('entity = 2', $db->lastSql);
-        self::assertStringContainsString('date_creation >=', $db->lastSql);
+        self::assertStringContainsString('started_at >=', $db->lastSql);
+        self::assertStringNotContainsString('date_creation', $db->lastSql);
         self::assertSame([
             ['workflow' => 1, 'status' => 'success', 'count' => 5],
             ['workflow' => 1, 'status' => 'error', 'count' => 1],

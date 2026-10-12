@@ -7,17 +7,38 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
-### Tooling / CI
-
-- **Public knot-core PHPUnit:** `ReleaseNotesAntiBandaidTest` no longer treats the private-only `inject_release_notes.php` as required (stripped by `publish-to-public.sh`); the shipped `ReleaseNotesExtractor` is the CHANGELOG extraction SoT on both trees.
+## [2.13.24] - 2026-10-12
 
 ### Fixed
 
+- **Observability / metrics dashboard empty:** `MetricsCollector` queried
+  `llx_knot_execution.date_creation`, a column that does not exist in the
+  install schema (`started_at` / `ended_at` / `scheduled_at` only). Every
+  refresh logged SQL errors and returned empty aggregates (Prometheus +
+  `api/observability.php` / `api/metrics.php`). Queries now filter and bucket
+  on `started_at` (queued rows with `NULL started_at` stay out of time windows,
+  same as `ExecutionRepository::countSince`; they still count in queue depth).
+- **Install SQL drift (fresh enable):** columns/tables that lived only in
+  `sql/migrations/` are now folded into `sql/llx_knot_*.sql` so
+  `modKnot::_load_tables` matches the post-Migrator schema. Covers
+  `workflow.fk_folder`, webhook `rl_*`, `template` cache columns
+  (`slug`/`tier`/`status`/`cached_at`/`source`), plus install files for
+  `config`, `rate_limit`, and `migration_history`. Existing migrations stay
+  idempotent for upgrades. Setup `tablesExpected` repair list updated.
 - **In-app Apply:** the previous module tree is now stashed under Knot documents
   (`…/knot/update-stashes/{folder}.{timestamp}_{hex}/`) instead of as a sibling
   under `custom/`. Dolibarr Setup → Modules no longer warns that Knot / Pro Pack
   / Migration is “found twice” after Apply. A successful Apply keeps the two most
   recent stashes per module; a failed Apply still rolls back from the new path.
+
+### Tooling / CI
+
+- **MetricsCollector install-schema test:** runs collector queries against SQLite
+  tables built from `sql/llx_knot_execution.sql` (+ `execution_log`) so mocked
+  DoliDB tests cannot lock in a phantom column again.
+- **Install SQL column audit:** asserts migration schema ⊆ install SQL and
+  flags shared-column copy-paste bugs (no allowlist for real drift).
+- **Public knot-core PHPUnit:** `ReleaseNotesAntiBandaidTest` no longer treats the private-only `inject_release_notes.php` as required (stripped by `publish-to-public.sh`); the shipped `ReleaseNotesExtractor` is the CHANGELOG extraction SoT on both trees.
 
 ## [2.13.23] - 2026-09-09
 

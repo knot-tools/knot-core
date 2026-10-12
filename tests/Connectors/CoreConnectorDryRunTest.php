@@ -103,6 +103,16 @@ final class CoreConnectorDryRunTest extends TestCase
         ]);
         self::assertTrue($sim['_dryRun']);
         self::assertTrue($sim['safetyValid']);
+        self::assertIsArray($sim['rows'] ?? null);
+        self::assertCount(1, $sim['rows']);
+        self::assertSame(1, $sim['count']);
+        self::assertSame(1, $sim['rowCount']);
+        self::assertSame('FAC-SIM', $sim['rows'][0]['ref'] ?? null);
+        self::assertSame('unpaid-invoice-sim@example.com', $sim['rows'][0]['soc_email'] ?? null);
+        self::assertStringContainsString('@example.com', (string) ($sim['rows'][0]['soc_email'] ?? ''));
+        self::assertArrayHasKey('soc_name', $sim['rows'][0]);
+        self::assertArrayHasKey('total_ttc', $sim['rows'][0]);
+        self::assertArrayHasKey('date_lim_reglement', $sim['rows'][0]);
     }
 
     public function testSqlQueryExecuteRequiresAdmin(): void

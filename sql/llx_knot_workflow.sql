@@ -4,6 +4,7 @@ CREATE TABLE llx_knot_workflow (
   label varchar(255) NOT NULL,
   description text NULL,
   status varchar(32) NOT NULL DEFAULT 'draft',
+  fk_folder integer NULL,
   json_definition longtext NULL,
   tags text NULL,
   version_schema varchar(16) NOT NULL DEFAULT '1.0',
@@ -16,5 +17,6 @@ CREATE TABLE llx_knot_workflow (
   tms timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uk_knot_workflow_ref_entity (ref, entity),
   KEY idx_knot_workflow_entity_status (entity, status),
+  KEY idx_knot_workflow_folder (fk_folder),
   KEY idx_knot_workflow_tms (tms)
 ) ENGINE=innodb;
