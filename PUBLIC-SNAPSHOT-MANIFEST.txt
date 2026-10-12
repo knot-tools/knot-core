@@ -1,4 +1,4 @@
-generated_at=2026-09-10T14:24:55Z
+generated_at=2026-10-12T14:30:30Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/ISSUE_TEMPLATE/bug_report.yml
@@ -722,11 +722,14 @@ releases.json
 schemas/workflow-definition-v1.schema.json
 sql/llx_knot_approval.sql
 sql/llx_knot_audit_log.sql
+sql/llx_knot_config.sql
 sql/llx_knot_credential.sql
 sql/llx_knot_execution.sql
 sql/llx_knot_execution_log.sql
 sql/llx_knot_extension_state.sql
 sql/llx_knot_idempotency.sql
+sql/llx_knot_migration_history.sql
+sql/llx_knot_rate_limit.sql
 sql/llx_knot_schedule.sql
 sql/llx_knot_template.sql
 sql/llx_knot_variable.sql
@@ -744,7 +747,6 @@ sql/migrations/v2.12.0/01_workflow_activation_warning_dismissed.sql
 sql/migrations/v2.5.0/01_knot_config.sql
 sql/migrations/v2.5.0/02_knot_template_cache.sql
 sql/migrations/v2.6.0/01_execution_queue.sql
-sql/migrations/v2.6.1/01_execution_error_payload.sql
 tests/Api/CsrfGuardTest.php
 tests/Api/Doc/OpenApiGeneratorTest.php
 tests/Api/InternalApiAuthMatrixTest.php
@@ -805,6 +807,7 @@ tests/Engine/RetentionWorkerTest.php
 tests/Engine/ShowcaseStarter02WorkflowEngineTest.php
 tests/Engine/ShowcaseStarter06WorkflowEngineTest.php
 tests/Engine/ShowcaseStarter10WorkflowEngineTest.php
+tests/Engine/StarterExamplesConnectorRegistryTest.php
 tests/Engine/StarterExamplesLintCleanTest.php
 tests/Engine/Support/CronWorkerContextFactory.php
 tests/Engine/Support/CronWorkerScenario.php
@@ -872,6 +875,7 @@ tests/Module/ModKnotCronJobsTest.php
 tests/Module/ModuleExpectationsTest.php
 tests/Observability/RuntimeLoggerTest.php
 tests/Reporting/MetricsCollectorAggregatesTest.php
+tests/Reporting/MetricsCollectorInstallSchemaTest.php
 tests/Reporting/MetricsCollectorNodeObservabilityTest.php
 tests/Reporting/PrometheusFormatterTest.php
 tests/Repository/AuditLogRepositorySearchTest.php
@@ -890,6 +894,7 @@ tests/Repository/ScheduleRepositoryTest.php
 tests/Repository/TemplateRepositoryTest.php
 tests/Repository/WorkflowRepositoryCrudTest.php
 tests/Repository/WorkflowRepositorySearchTest.php
+tests/Schema/InstallSqlColumnReferenceAuditTest.php
 tests/Security/HttpClientTest.php
 tests/Security/OAuth2HelperTest.php
 tests/Security/RateLimiterTest.php
@@ -908,10 +913,12 @@ tests/Support/CapabilitiesProbeDb.php
 tests/Support/InMemoryExecutionDb.php
 tests/Support/InMemoryTemplateDb.php
 tests/Support/InMemoryWorkflowDb.php
+tests/Support/InstallSqlSchema.php
 tests/Support/LocalJsonHttpHarness.php
 tests/Support/LocalZipHttpsHarness.php
 tests/Support/LoopbackUrlPolicy.php
 tests/Support/RedirectJsonHttpHarness.php
+tests/Support/SqliteInstallSchemaDb.php
 tests/Templates/BundledTemplatesManifestTest.php
 tests/Updates/ExtensionPostApplyRunnerTest.php
 tests/Updates/GithubReleasesClientTest.php

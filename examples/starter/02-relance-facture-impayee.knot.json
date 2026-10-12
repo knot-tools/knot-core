@@ -32,8 +32,7 @@
           "subtitle": "SELECT facture",
           "position": { "x": 380, "y": 200 },
           "config": {
-            "query": "SELECT f.rowid AS facture_id, f.ref, f.total_ttc, f.date_lim_reglement, s.email AS soc_email, s.nom AS soc_name FROM llx_facture f JOIN llx_societe s ON s.rowid = f.fk_soc WHERE f.fk_statut = 1 AND f.paye = 0 AND DATEDIFF(NOW(), f.date_lim_reglement) >= 30 AND s.email IS NOT NULL AND s.email <> '' LIMIT 50",
-            "splitItems": true
+            "query": "SELECT f.rowid AS facture_id, f.ref, f.total_ttc, f.date_lim_reglement, s.email AS soc_email, s.nom AS soc_name FROM llx_facture f JOIN llx_societe s ON s.rowid = f.fk_soc WHERE f.fk_statut = 1 AND f.paye = 0 AND DATEDIFF(NOW(), f.date_lim_reglement) >= 30 AND s.email IS NOT NULL AND s.email <> '' LIMIT 50"
           }
         },
         {
@@ -65,7 +64,7 @@
       "edges": [
         { "id": "e1", "source": "trigger_cron", "target": "sql_overdue", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
         { "id": "e2", "source": "sql_overdue", "target": "loop_invoices", "sourceHandle": "main", "targetHandle": "main", "type": "knot" },
-        { "id": "e3", "source": "loop_invoices", "target": "send_email", "sourceHandle": "main", "targetHandle": "main", "type": "knot" }
+        { "id": "e3", "source": "loop_invoices", "target": "send_email", "sourceHandle": "iteration", "targetHandle": "main", "type": "knot" }
       ]
     }
   }

@@ -141,12 +141,32 @@ final class SqlQuery implements ConnectorInterface, DryRunAware
         $resolver = $this->resolver ?? new ExpressionResolver();
         $query = trim((string) $resolver->resolve((string) ($config['query'] ?? ''), $context));
         $analysis = (new SqlSafetyAnalyzer())->analyse($query);
+
+        // Stub shape mirrors execute() so downstream loops/IFs (e.g. starter 02/08)
+        // can dry-run without hitting the database. Never run SQL here.
+        $rows = [
+            [
+                'facture_id' => 1,
+                'ref' => 'FAC-SIM',
+                'total_ttc' => '150.00',
+                'date_lim_reglement' => '2020-01-15',
+                'soc_email' => 'unpaid-invoice-sim@example.com',
+                'soc_name' => 'Simulate Thirdparty',
+                'customer_name' => 'Simulate Thirdparty',
+                'email' => 'unpaid-invoice-sim@example.com',
+                'rowid' => 1,
+            ],
+        ];
+
         return [
             '_dryRun' => true,
             'query' => $query,
             'safetyValid' => $analysis['valid'],
             'safetyReason' => $analysis['valid'] ? null : ($analysis['reason'] ?? 'invalid query'),
             'note' => '[DRY-RUN] Query NOT executed. Safety analysis ran but no row was read or written.',
+            'rows' => $rows,
+            'count' => count($rows),
+            'rowCount' => count($rows),
         ];
     }
 

@@ -36,7 +36,10 @@ final class MetricsCollector
         $sql = 'SELECT fk_workflow, status, COUNT(*) AS c FROM ' . $this->tablePrefix . 'execution';
         $sql .= ' WHERE entity = ' . (int) $entity;
         if ($sinceUnixTs !== null) {
-            $sql .= " AND date_creation >= '" . $this->db->idate($sinceUnixTs) . "'";
+            // Install schema has started_at (nullable), not date_creation.
+            // Queued rows with NULL started_at are excluded from the window
+            // (same convention as ExecutionRepository::countSince).
+            $sql .= " AND started_at >= '" . $this->db->idate($sinceUnixTs) . "'";
         }
         $sql .= ' GROUP BY fk_workflow, status';
         $res = $this->db->query($sql);
@@ -63,7 +66,7 @@ final class MetricsCollector
         $sql .= ' WHERE entity = ' . (int) $entity;
         $sql .= ' AND duration_ms IS NOT NULL';
         if ($sinceUnixTs !== null) {
-            $sql .= " AND date_creation >= '" . $this->db->idate($sinceUnixTs) . "'";
+            $sql .= " AND started_at >= '" . $this->db->idate($sinceUnixTs) . "'";
         }
         $sql .= ' ORDER BY fk_workflow ASC, duration_ms ASC';
         $res = $this->db->query($sql);
@@ -119,12 +122,13 @@ final class MetricsCollector
      */
     public function failureHeatmap(int $entity, int $sinceUnixTs): array
     {
-        $sql = 'SELECT DAYOFWEEK(date_creation) AS dow, HOUR(date_creation) AS hh, COUNT(*) AS c';
+        // Bucket by started_at (indexed). Failures always have a non-null start.
+        $sql = 'SELECT DAYOFWEEK(started_at) AS dow, HOUR(started_at) AS hh, COUNT(*) AS c';
         $sql .= ' FROM ' . $this->tablePrefix . 'execution';
         $sql .= ' WHERE entity = ' . (int) $entity;
         $sql .= " AND status IN ('error', 'timeout')";
-        $sql .= " AND date_creation >= '" . $this->db->idate($sinceUnixTs) . "'";
-        $sql .= ' GROUP BY DAYOFWEEK(date_creation), HOUR(date_creation)';
+        $sql .= " AND started_at >= '" . $this->db->idate($sinceUnixTs) . "'";
+        $sql .= ' GROUP BY DAYOFWEEK(started_at), HOUR(started_at)';
         $res = $this->db->query($sql);
         if (!$res) {
             return [];

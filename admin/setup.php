@@ -79,6 +79,8 @@ $tablesExpected = [
     'workflow', 'credential', 'execution', 'execution_log',
     'webhook', 'schedule', 'template', 'variable', 'audit_log',
     'workflow_version', 'idempotency', 'approval', 'workflow_tag',
+    'workflow_folder', 'extension_state', 'config', 'rate_limit',
+    'migration_history',
 ];
 
 $installMissingTables = static function (\DoliDB $db, array $tables): int {

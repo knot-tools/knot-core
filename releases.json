@@ -1,20 +1,20 @@
 {
     "schema_version": "knot-core-releases@v1",
     "latest": {
-        "version": "2.13.23",
+        "version": "2.13.24",
         "channel": "beta",
-        "published_at": "2026-09-10T00:41:13+00:00",
+        "published_at": "2026-10-12T14:20:38+00:00",
         "zip_url": "https://knot.tools/downloads/knot-core/latest",
-        "zip_sha256": "35fdd965370fba68b49d37248f7dda014d3f5964952d96d216525abe01fe1253",
-        "signature_hex": "f72c533d62938da047652fe7dac9832ec64d7fd5f10080d585335c019d87849863bfd9043b20833863d642c6cb3ff6df36c9d4e20c3111a98c8068124e579d0a",
+        "zip_sha256": "8432e7f55eeceef36e055d9d530622984fead0ad4ea657d112c231c8574a3cfb",
+        "signature_hex": "9b36617e7d08a3396a49a67d94121e89e61462cb60c003c72a59c7aa0bb3072a1be43f83e5f3a9cdb48cd20dd97561108168f1ae33f21af3b86610ee1c967c07",
         "signature_payload": {
             "channel": "beta",
-            "version": "2.13.23",
-            "zip_sha256": "35fdd965370fba68b49d37248f7dda014d3f5964952d96d216525abe01fe1253",
+            "version": "2.13.24",
+            "zip_sha256": "8432e7f55eeceef36e055d9d530622984fead0ad4ea657d112c231c8574a3cfb",
             "zip_url": "https://knot.tools/downloads/knot-core/latest"
         },
-        "notes": "## [2.13.23] - 2026-09-09\n\n### Improvements\n\n- **Dolibarr menu icons** : the Knot mark is readable in the sidebar (no more black square).\n- **Leftnav logo** : cyan Knot suite mark (same family as the setup watermark), not the monochrome menu icon.\n- **Setup watermark** : cyan Knot suite watermark on the setup screen — same family as the other tools.\n- **Updates page** : you can read a version’s details **before** you apply the update.\n- **Trademark notice** : NOTICE uses ™ (not ®), matching how the brand is actually used.\n- **License packaging (Dolistore)** : license files in the zip are complete and aligned with what the store expects.",
-        "zip_size_bytes": 2495920,
+        "notes": "## [2.13.24] - 2026-10-12\n\n### Fixed\n\n- **Observability / metrics dashboard empty:** `MetricsCollector` queried\n  `llx_knot_execution.date_creation`, a column that does not exist in the\n  install schema (`started_at` / `ended_at` / `scheduled_at` only). Every\n  refresh logged SQL errors and returned empty aggregates (Prometheus +\n  `api/observability.php` / `api/metrics.php`). Queries now filter and bucket\n  on `started_at` (queued rows with `NULL started_at` stay out of time windows,\n  same as `ExecutionRepository::countSince`; they still count in queue depth).\n- **Install SQL drift (fresh enable):** columns/tables that lived only in\n  `sql/migrations/` are now folded into `sql/llx_knot_*.sql` so\n  `modKnot::_load_tables` matches the post-Migrator schema. Covers\n  `workflow.fk_folder`, webhook `rl_*`, `template` cache columns\n  (`slug`/`tier`/`status`/`cached_at`/`source`), plus install files for\n  `config`, `rate_limit`, and `migration_history`. Existing migrations stay\n  idempotent for upgrades. Setup `tablesExpected` repair list updated.\n- **In-app Apply:** the previous module tree is now stashed under Knot documents\n  (`…/knot/update-stashes/{folder}.{timestamp}_{hex}/`) instead of as a sibling\n  under `custom/`. Dolibarr Setup → Modules no longer warns that Knot / Pro Pack\n  / Migration is “found twice” after Apply. A successful Apply keeps the two most\n  recent stashes per module; a failed Apply still rolls back from the new path.\n\n### Tooling / CI\n\n- **MetricsCollector install-schema test:** runs collector queries against SQLite\n  tables built from `sql/llx_knot_execution.sql` (+ `execution_log`) so mocked\n  DoliDB tests cannot lock in a phantom column again.\n- **Install SQL column audit:** asserts migration schema ⊆ install SQL and\n  flags shared-column copy-paste bugs (no allowlist for real drift).\n- **Public knot-core PHPUnit:** `ReleaseNotesAntiBandaidTest` no longer treats the private-only `inject_release_notes.php` as required (stripped by `publish-to-public.sh`); the shipped `ReleaseNotesExtractor` is the CHANGELOG extraction SoT on both trees.",
+        "zip_size_bytes": 2504666,
         "signature_kid": "rel-2026-04"
     },
     "_comment": "Synced from knot-tools/core/releases.json on each Core release.",

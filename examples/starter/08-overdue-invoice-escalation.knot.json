@@ -42,7 +42,7 @@
           "position": { "x": 680, "y": 200 },
           "config": {
             "conditions": [
-              { "field": "{{$nodes.query_overdue.json.rowCount}}", "operator": "greater", "value": "0" }
+              { "field": "{{$nodes.query_overdue.json.count}}", "operator": "greater", "value": "0" }
             ]
           }
         },
@@ -54,17 +54,22 @@
           "position": { "x": 980, "y": 140 },
           "config": {
             "to": "accounting@example.com",
-            "subject": "{{$nodes.query_overdue.json.rowCount}} overdue invoices (>30 days)",
-            "body": "<p>The following invoices are overdue by more than 30 days and require attention.</p><p>Total: {{$nodes.query_overdue.json.rowCount}} invoices.</p><p>Please check the accounting module.</p>"
+            "subject": "{{$nodes.query_overdue.json.count}} overdue invoices (>30 days)",
+            "body": "<p>The following invoices are overdue by more than 30 days and require attention.</p><p>Total: {{$nodes.query_overdue.json.count}} invoices.</p><p>Please check the accounting module.</p>"
           }
         },
         {
           "id": "noop_end",
-          "type": "logic.noop",
+          "type": "logic.set",
           "label": "No overdue",
           "subtitle": "Nothing to do",
           "position": { "x": 980, "y": 300 },
-          "config": {}
+          "config": {
+            "values": {
+              "skipped": true,
+              "reason": "no_overdue_invoices"
+            }
+          }
         }
       ],
       "edges": [
