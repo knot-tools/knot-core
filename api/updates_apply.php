@@ -32,6 +32,7 @@ use Knot\Updates\LicenseActivationResolver;
 use Knot\Updates\UpdatesApplyPolicy;
 use Knot\Updates\UpdatesApplyPostSwap;
 use Knot\Updates\ZipDownloader;
+use Knot\Version;
 
 JsonResponse::installFatalHandler();
 ApiAuth::installCrashHandler();
@@ -71,9 +72,6 @@ $body = $rawBody !== '' ? json_decode($rawBody, true) : null;
 if (!is_array($body)) {
     $body = $_POST;
 }
-
-$downloadUrlIn = trim((string) ($body['download_url'] ?? ''));
-$manualShaHex = strtolower(trim((string) ($body['zip_sha256'] ?? '')));
 
 $slugValidation = UpdatesApplyPolicy::validateSlug($body['slug'] ?? '');
 if (!$slugValidation['ok']) {
@@ -297,59 +295,37 @@ try {
 
 try {
     if ($slug === 'knot') {
-        if ($downloadUrlIn !== '') {
-            if ($manualShaHex === '') {
-                JsonResponse::error(
-                    'zip_sha256_required',
-                    'When supplying download_url you must supply zip_sha256 (64 hex chars) for verification.',
-                    422,
-                );
+        $override = function_exists('getDolGlobalString')
+            ? trim((string) getDolGlobalString('MAIN_KNOT_CORE_RELEASES_JSON_URL', ''))
+            : '';
+        $gh = new GithubReleasesClient();
+        $manifest = $gh->fetchManifest($override !== '' ? $override : null);
+        $artifact = GithubReleasesClient::inferLatestArtifact($manifest);
+        if ($artifact['zip_url'] === '') {
+            JsonResponse::error('releases_missing_zip', 'releases.json has no usable zip_url.', 502);
+            exit;
+        }
+        ZipDownloader::fetchTo($artifact['zip_url'], $zipPath);
+        try {
+            GithubReleasesClient::verifyReleaseIntegrity(
+                $zipPath,
+                $artifact['zip_sha256'],
+                $artifact['signature_payload'],
+                $artifact['signature_hex'],
+                $artifact['version'],
+                $releaseChannel,
+                Version::current(),
+            );
+        } catch (\RuntimeException $e) {
+            if (str_contains($e->getMessage(), 'older than the installed version')) {
+                JsonResponse::error('release_downgrade_refused', $e->getMessage(), 409);
                 exit;
             }
-            ZipDownloader::fetchTo($downloadUrlIn, $zipPath);
-            ReleaseVerifier::assertZipSha256($zipPath, $manualShaHex);
-            $sigHexOpt = strtolower(trim((string) ($body['signature_hex'] ?? '')));
-            $sigPayloadOpt = isset($body['signature_payload']) && is_array($body['signature_payload'])
-                ? /** @phpstan-ignore-next-line */ $body['signature_payload']
-                : null;
-            $targetVersion = trim((string) ($body['version'] ?? ($sigPayloadOpt['version'] ?? '')));
-            try {
-                ReleaseVerifier::assertCoreReleaseSignature($targetVersion, $sigPayloadOpt, $sigHexOpt);
-            } catch (\RuntimeException $e) {
-                $rejectInvalidReleaseSignature($e);
-            }
-            $folder = 'knot';
-            $liveTarget = $liveRoot;
-        } else {
-            $override = function_exists('getDolGlobalString')
-                ? trim((string) getDolGlobalString('MAIN_KNOT_CORE_RELEASES_JSON_URL', ''))
-                : '';
-            $gh = new GithubReleasesClient();
-            $manifest = $gh->fetchManifest($override !== '' ? $override : null);
-            $artifact = GithubReleasesClient::inferLatestArtifact($manifest);
-            if ($artifact['zip_url'] === '') {
-                JsonResponse::error('releases_missing_zip', 'releases.json has no usable zip_url.', 502);
-                exit;
-            }
-            ZipDownloader::fetchTo($artifact['zip_url'], $zipPath);
-            try {
-                GithubReleasesClient::verifyReleaseIntegrity(
-                    $zipPath,
-                    $artifact['zip_sha256'],
-                    /** @phpstan-ignore-next-line */
-                    is_array($artifact['signature_payload']) ? $artifact['signature_payload'] : null,
-                    $artifact['signature_hex'],
-                    $artifact['version'],
-                );
-            } catch (\RuntimeException $e) {
-                $rejectInvalidReleaseSignature($e);
-            }
-            $folder = 'knot';
-            $liveTarget = $liveRoot;
+            $rejectInvalidReleaseSignature($e);
         }
 
-        $prepared = $installer->prepare($zipPath, $stagingParent, $folder);
-        $swapAndMigrate($liveTarget, $prepared, true);
+        $prepared = $installer->prepare($zipPath, $stagingParent, 'knot');
+        $swapAndMigrate($liveRoot, $prepared, true);
     }
 
     // Commercial extensions share the Dolistore JWT download-token path.
@@ -389,58 +365,6 @@ try {
             422,
         );
         exit;
-    }
-
-    if ($downloadUrlIn !== '') {
-        if ($manualShaHex === '') {
-            JsonResponse::error(
-                'zip_sha256_required',
-                'When supplying download_url you must supply zip_sha256 (64 hex chars) for verification.',
-                422,
-            );
-            exit;
-        }
-        ZipDownloader::fetchTo($downloadUrlIn, $zipPath);
-        ReleaseVerifier::assertZipSha256($zipPath, $manualShaHex);
-        $sigHexOpt = strtolower(trim((string) ($body['signature_hex'] ?? '')));
-        $sigPayloadOpt = isset($body['signature_payload']) && is_array($body['signature_payload'])
-            ? /** @phpstan-ignore-next-line */ $body['signature_payload']
-            : null;
-        if ($sigHexOpt === '' || $sigPayloadOpt === null) {
-            $clientObj = $dolistoreHttp();
-            try {
-                $sigMeta = $clientObj->fetchProductSignature($slug, $releaseChannel);
-                $sigHexOpt = strtolower(trim((string) ($sigMeta['signature']['value_hex'] ?? '')));
-                $sigPayloadOpt = is_array($sigMeta['signature_payload'] ?? null)
-                    ? $sigMeta['signature_payload']
-                    : null;
-            } catch (\Throwable $e) {
-                JsonResponse::error(
-                    'backend_unreachable',
-                    'Cannot fetch release signature metadata from Knot license backend.',
-                    502,
-                    ['cause' => $e->getMessage(), 'instructions' => $fallbackLines],
-                );
-                exit;
-            }
-        }
-        try {
-            ReleaseVerifier::assertExtensionReleaseSignature($sigPayloadOpt, $sigHexOpt);
-        } catch (\RuntimeException $e) {
-            $rejectInvalidReleaseSignature($e);
-        }
-        $liveTarget = isset($entry['path']) ? rtrim((string) $entry['path'], DIRECTORY_SEPARATOR . '/') : '';
-        $customSafe = rtrim((string) DOL_DOCUMENT_ROOT, DIRECTORY_SEPARATOR . '/') . '/custom';
-        if (
-            $liveTarget === ''
-            || !str_starts_with($liveTarget, rtrim($customSafe, DIRECTORY_SEPARATOR . '/') . DIRECTORY_SEPARATOR)
-        ) {
-            JsonResponse::error('extension_path_invalid', 'Extension install path failed safety checks.', 500);
-            exit;
-        }
-        $topFolder = basename($liveTarget);
-        $prepared = $installer->prepare($zipPath, $stagingParent, $topFolder);
-        $swapAndMigrate($liveTarget, $prepared, false);
     }
 
     $clientObj = $dolistoreHttp();
@@ -500,6 +424,17 @@ try {
         exit;
     }
 
+    $installedVersion = trim((string) ($entry['version'] ?? ''));
+    $resolvedVersion = $releaseVersion !== '' ? $releaseVersion : $targetVersion;
+    if (UpdatesApplyPolicy::isDowngrade($resolvedVersion, $installedVersion)) {
+        JsonResponse::error(
+            'release_downgrade_refused',
+            sprintf('Release %s is older than the installed version %s.', $resolvedVersion, $installedVersion),
+            409,
+        );
+        exit;
+    }
+
     ZipDownloader::fetchTo($dl, $zipPath);
     /** @phpstan-ignore-next-line */
     $releaseSha = strtolower(trim((string) ($release['zip_sha256'] ?? '')));
@@ -509,7 +444,14 @@ try {
     /** @phpstan-ignore-next-line */
     $sigPayload = is_array($release['signature_payload'] ?? null) ? $release['signature_payload'] : null;
     try {
-        ReleaseVerifier::assertExtensionReleaseSignature($sigPayload, $sigHex);
+        ReleaseVerifier::assertExtensionRelease(
+            $zipPath,
+            $sigPayload,
+            $sigHex,
+            $slug,
+            $resolvedVersion,
+            $releaseChannel,
+        );
     } catch (\RuntimeException $e) {
         $rejectInvalidReleaseSignature($e);
     }

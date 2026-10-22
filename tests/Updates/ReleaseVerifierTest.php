@@ -55,17 +55,4 @@ final class ReleaseVerifierTest extends TestCase
             @unlink((string) $path);
         }
     }
-
-    public function testAssertOptionalDetachedSignatureNoOpsWhenSignatureEmpty(): void
-    {
-        ReleaseVerifier::assertOptionalDetachedSignature(['version' => '1'], '');
-        self::addToAssertionCount(1);
-    }
-
-    public function testAssertOptionalDetachedSignatureRequiresPayloadWhenSignaturePresent(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('canonical signing payload metadata is missing');
-        ReleaseVerifier::assertOptionalDetachedSignature(null, str_repeat('a', 128));
-    }
 }

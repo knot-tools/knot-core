@@ -11,10 +11,10 @@ import {
   type MarketplaceResponse,
   type UpdatesApplyResult,
   type UpdatesCheckEntry,
-  type UpdatesCheckResponse,
 } from '../lib/api';
 import { useConfirm } from '../composables/useConfirm';
 import { useToast } from '../composables/useToast';
+import { useUpdatesPoll } from '../composables/useUpdatesPoll';
 import { isMarketplaceUiEnabled } from '../lib/marketplaceUi';
 import { productDisplayName } from '../lib/productDisplayName';
 import { parseMarkdownLight } from '../lib/markdownLight';
@@ -27,14 +27,17 @@ defineProps<{
 const { t } = useI18n();
 const { confirm } = useConfirm();
 const toast = useToast();
+const {
+  loading,
+  snapshot,
+  error,
+  load: loadUpdates,
+} = useUpdatesPoll();
 
-const snapshot = ref<UpdatesCheckResponse | null>(null);
 const packsBySlug = ref<Record<string, string | null>>({});
 const marketplaceLoadFailed = ref(false);
 
-const loading = ref(false);
 const applyingSlug = ref<string | null>(null);
-const error = ref<string | null>(null);
 
 const baseUrl = computed(() => {
   if (typeof window !== 'undefined' && (window as unknown as { KNOT_BASE_URL?: string }).KNOT_BASE_URL) {
@@ -144,17 +147,19 @@ async function loadMarketplacePlaces() {
 }
 
 async function load(forceRefresh = false) {
-  loading.value = true;
-  error.value = null;
-  try {
-    snapshot.value = await knotApi.updates({ force: forceRefresh });
-    await loadMarketplacePlaces();
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : String(err);
-    snapshot.value = null;
-  } finally {
-    loading.value = false;
+  let data = await loadUpdates(forceRefresh);
+  // Warm notify cache may still hold a pending version with empty notes
+  // (written before signed latest.notes was filled). One force re-probe
+  // fills the CHANGELOG excerpt for the card + Apply confirm.
+  if (
+    !forceRefresh
+    && (data?.entries ?? []).some(
+      (e) => e.hasUpdate && !(e.notes ?? '').trim(),
+    )
+  ) {
+    data = await loadUpdates(true);
   }
+  await loadMarketplacePlaces();
 }
 
 async function handleApply(slug: string) {

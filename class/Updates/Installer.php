@@ -145,15 +145,49 @@ final class Installer
      * Clears in-memory rollback pointers after migrations succeed.
      * The stash remains on disk for manual recovery; older stashes for
      * the same slug are pruned (keep {@see UpdateStashStore::KEEP_DEFAULT}).
+     * Legacy `{slug}.backup.*` / `{slug}.bak.*` copies left next to the live
+     * module are moved into the stash root.
      */
     public function commitSwap(int $keep = UpdateStashStore::KEEP_DEFAULT): void
     {
         $slug = $this->stashSlug;
+        $live = $this->livePath;
         $this->livePath = null;
         $this->backupPath = null;
         $this->stashSlug = null;
         if ($slug !== null && $slug !== '') {
             $this->stashes->prune($slug, $keep);
+        }
+        if ($live !== null) {
+            $this->stashLegacyCopies($live);
+        }
+    }
+
+    private function stashLegacyCopies(string $live): void
+    {
+        $slug = basename($live);
+        if (!preg_match('/^[A-Za-z0-9_-]{1,64}$/', $slug)) {
+            return;
+        }
+        $parent = dirname($live);
+        $pattern = '/^' . preg_quote($slug, '/') . '\.(?:backup|bak)\.[A-Za-z0-9._-]+$/';
+        foreach (scandir($parent) ?: [] as $name) {
+            if (!preg_match($pattern, $name)) {
+                continue;
+            }
+            $from = $parent . DIRECTORY_SEPARATOR . $name;
+            if (is_link($from) || !is_dir($from)) {
+                continue;
+            }
+            try {
+                $to = $this->stashes->ensureRoot() . DIRECTORY_SEPARATOR . $name;
+            } catch (RuntimeException) {
+                return;
+            }
+            if (file_exists($to)) {
+                $to .= '_' . bin2hex(random_bytes(3));
+            }
+            self::movePath($from, $to);
         }
     }
 
@@ -236,9 +270,8 @@ final class Installer
         if (!@mkdir($to, 0755, true) && !is_dir($to)) {
             return false;
         }
-        foreach (glob($from . DIRECTORY_SEPARATOR . '*') ?: [] as $child) {
-            $name = basename($child);
-            if (!self::copyPathRecursive($child, $to . DIRECTORY_SEPARATOR . $name)) {
+        foreach (self::children($from) as $name) {
+            if (!self::copyPathRecursive($from . DIRECTORY_SEPARATOR . $name, $to . DIRECTORY_SEPARATOR . $name)) {
                 return false;
             }
         }
@@ -300,9 +333,17 @@ final class Installer
         if (!is_dir($path)) {
             return;
         }
-        foreach (glob($path . DIRECTORY_SEPARATOR . '*') ?: [] as $child) {
-            self::rrmdirQuietStatic($child);
+        foreach (self::children($path) as $name) {
+            self::rrmdirQuietStatic($path . DIRECTORY_SEPARATOR . $name);
         }
         @rmdir($path);
+    }
+
+    /**
+     * @return list<string> entry names, dotfiles included
+     */
+    private static function children(string $dir): array
+    {
+        return array_values(array_diff(scandir($dir) ?: [], ['.', '..']));
     }
 }

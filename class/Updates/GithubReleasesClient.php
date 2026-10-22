@@ -26,15 +26,38 @@ final class GithubReleasesClient
     public function fetchManifest(?string $url = null): array
     {
         $effective = trim((string) ($url ?? self::PUBLIC_MANIFEST_PRIMARY));
-        if (
-            stripos($effective, 'https://') !== 0
-            && stripos($effective, 'http://localhost') !== 0
-            && stripos($effective, 'http://127.0.0.1') !== 0
-        ) {
-            throw new RuntimeException('releases.json URL must start with HTTPS (or localhost in dev).');
+        if (!self::isAllowedManifestUrl($effective)) {
+            throw new RuntimeException('releases.json URL must be an HTTPS Knot release source.');
         }
 
         return $this->fetchJsonSecure($effective);
+    }
+
+    /**
+     * Knot release sources only: knot.tools hosts and the knot-tools GitHub
+     * organisation. Loopback is accepted in the test harness only.
+     */
+    public static function isAllowedManifestUrl(string $url): bool
+    {
+        $parts = parse_url($url);
+        if ($parts === false || !isset($parts['scheme'], $parts['host']) || isset($parts['user'])) {
+            return false;
+        }
+        $scheme = strtolower($parts['scheme']);
+        $host = strtolower($parts['host']);
+        if ($host === 'localhost' || $host === '127.0.0.1') {
+            return getenv('KNOT_TEST') === '1' && ($scheme === 'http' || $scheme === 'https');
+        }
+        if ($scheme !== 'https' || isset($parts['port'])) {
+            return false;
+        }
+        if ($host === 'raw.githubusercontent.com') {
+            $path = (string) ($parts['path'] ?? '');
+
+            return (bool) preg_match('#^/knot-tools/[A-Za-z0-9/_.-]+$#', $path) && !str_contains($path, '..');
+        }
+
+        return $host === 'knot.tools' || str_ends_with($host, '.knot.tools');
     }
 
     /**
@@ -109,21 +132,28 @@ final class GithubReleasesClient
         ];
     }
 
-    /** @param array<string, mixed>|null $signPayload */
+    /**
+     * @param array<string, mixed>|null $signPayload
+     *
+     * @throws RuntimeException
+     */
     public static function verifyReleaseIntegrity(
         string $absoluteZipPath,
         string $expectedShaHex,
         ?array $signPayload,
         string $signatureHex,
-        string $targetVersion = '',
+        string $targetVersion,
+        string $channel,
+        string $installedVersion,
     ): void {
-        ReleaseVerifier::assertZipSha256($absoluteZipPath, strtolower($expectedShaHex));
-        if ($targetVersion !== '') {
-            ReleaseVerifier::assertCoreReleaseSignature($targetVersion, $signPayload, $signatureHex);
-
-            return;
+        if (UpdatesApplyPolicy::isDowngrade($targetVersion, $installedVersion)) {
+            throw new RuntimeException(sprintf(
+                'Release %s is older than the installed version %s.',
+                $targetVersion,
+                $installedVersion,
+            ));
         }
-
-        ReleaseVerifier::assertOptionalDetachedSignature($signPayload, $signatureHex);
+        ReleaseVerifier::assertZipSha256($absoluteZipPath, strtolower($expectedShaHex));
+        ReleaseVerifier::assertCoreRelease($absoluteZipPath, $signPayload, $signatureHex, $targetVersion, $channel);
     }
 }

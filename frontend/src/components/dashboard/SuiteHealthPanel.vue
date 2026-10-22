@@ -18,15 +18,15 @@ import {
   knotApi,
   type ExtensionLicenseStatus,
   type HealthSnapshot,
-  type UpdatesCheckResponse,
 } from '../../lib/api';
+import { useUpdatesPoll } from '../../composables/useUpdatesPoll';
 import { productDisplayName } from '../../lib/productDisplayName';
 
 const { t } = useI18n();
 
 const health = ref<HealthSnapshot | null>(null);
 const extensions = ref<ExtensionLicenseStatus[]>([]);
-const updates = ref<UpdatesCheckResponse | null>(null);
+const { snapshot: updates, load: loadUpdates } = useUpdatesPoll();
 const loading = ref(true);
 const error = ref<string | null>(null);
 
@@ -128,14 +128,13 @@ async function load() {
   loading.value = true;
   error.value = null;
   try {
-    const [h, lic, upd] = await Promise.all([
+    const [h, lic] = await Promise.all([
       knotApi.health(),
       knotApi.licenseStatus(),
-      knotApi.updates().catch(() => null),
+      loadUpdates(false),
     ]);
     health.value = h;
     extensions.value = lic.extensions ?? [];
-    updates.value = upd;
   } catch (e) {
     error.value = e instanceof Error ? e.message : String(e);
   } finally {

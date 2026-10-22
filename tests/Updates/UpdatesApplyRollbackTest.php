@@ -124,6 +124,6 @@ final class UpdatesApplyRollbackTest extends TestCase
         self::assertStringContainsString('UpdatesApplyPostSwap::clearExtensionRegistryCache', $src);
         self::assertStringContainsString('set_time_limit(600)', $src);
         self::assertStringContainsString('updates.apply.started', $src);
-        self::assertSame(3, substr_count($src, '$swapAndMigrate('), 'Core + 2 extension branches must share swapAndMigrate');
+        self::assertSame(2, substr_count($src, '$swapAndMigrate('), 'Core and extension branches must share swapAndMigrate');
     }
 }

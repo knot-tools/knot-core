@@ -1,20 +1,20 @@
 {
     "schema_version": "knot-core-releases@v1",
     "latest": {
-        "version": "2.13.24",
+        "version": "2.13.25",
         "channel": "beta",
-        "published_at": "2026-10-12T14:20:38+00:00",
+        "published_at": "2026-10-22T05:25:24+00:00",
         "zip_url": "https://knot.tools/downloads/knot-core/latest",
-        "zip_sha256": "8432e7f55eeceef36e055d9d530622984fead0ad4ea657d112c231c8574a3cfb",
-        "signature_hex": "9b36617e7d08a3396a49a67d94121e89e61462cb60c003c72a59c7aa0bb3072a1be43f83e5f3a9cdb48cd20dd97561108168f1ae33f21af3b86610ee1c967c07",
+        "zip_sha256": "165d46345b2c1d7d5d8849bad653053f4655f3bcb8280accfb27ce5c1bcf6145",
+        "signature_hex": "0b321eec3e2574c2795af0988b2fd90fdda0f2ee92017a1282bd4ed2bf0036afe94151ae49f51274059afdc373be82500a0355aea25266b6f2e1151b5077f904",
         "signature_payload": {
             "channel": "beta",
-            "version": "2.13.24",
-            "zip_sha256": "8432e7f55eeceef36e055d9d530622984fead0ad4ea657d112c231c8574a3cfb",
+            "version": "2.13.25",
+            "zip_sha256": "165d46345b2c1d7d5d8849bad653053f4655f3bcb8280accfb27ce5c1bcf6145",
             "zip_url": "https://knot.tools/downloads/knot-core/latest"
         },
-        "notes": "## [2.13.24] - 2026-10-12\n\n### Fixed\n\n- **Observability / metrics dashboard empty:** `MetricsCollector` queried\n  `llx_knot_execution.date_creation`, a column that does not exist in the\n  install schema (`started_at` / `ended_at` / `scheduled_at` only). Every\n  refresh logged SQL errors and returned empty aggregates (Prometheus +\n  `api/observability.php` / `api/metrics.php`). Queries now filter and bucket\n  on `started_at` (queued rows with `NULL started_at` stay out of time windows,\n  same as `ExecutionRepository::countSince`; they still count in queue depth).\n- **Install SQL drift (fresh enable):** columns/tables that lived only in\n  `sql/migrations/` are now folded into `sql/llx_knot_*.sql` so\n  `modKnot::_load_tables` matches the post-Migrator schema. Covers\n  `workflow.fk_folder`, webhook `rl_*`, `template` cache columns\n  (`slug`/`tier`/`status`/`cached_at`/`source`), plus install files for\n  `config`, `rate_limit`, and `migration_history`. Existing migrations stay\n  idempotent for upgrades. Setup `tablesExpected` repair list updated.\n- **In-app Apply:** the previous module tree is now stashed under Knot documents\n  (`…/knot/update-stashes/{folder}.{timestamp}_{hex}/`) instead of as a sibling\n  under `custom/`. Dolibarr Setup → Modules no longer warns that Knot / Pro Pack\n  / Migration is “found twice” after Apply. A successful Apply keeps the two most\n  recent stashes per module; a failed Apply still rolls back from the new path.\n\n### Tooling / CI\n\n- **MetricsCollector install-schema test:** runs collector queries against SQLite\n  tables built from `sql/llx_knot_execution.sql` (+ `execution_log`) so mocked\n  DoliDB tests cannot lock in a phantom column again.\n- **Install SQL column audit:** asserts migration schema ⊆ install SQL and\n  flags shared-column copy-paste bugs (no allowlist for real drift).\n- **Public knot-core PHPUnit:** `ReleaseNotesAntiBandaidTest` no longer treats the private-only `inject_release_notes.php` as required (stripped by `publish-to-public.sh`); the shipped `ReleaseNotesExtractor` is the CHANGELOG extraction SoT on both trees.",
-        "zip_size_bytes": 2504666,
+        "notes": "## [2.13.25] - 2026-10-22\n\n### Security\n\n- Corrections de sécurité / Security fixes.\n",
+        "zip_size_bytes": 2509801,
         "signature_kid": "rel-2026-04"
     },
     "_comment": "Synced from knot-tools/core/releases.json on each Core release.",

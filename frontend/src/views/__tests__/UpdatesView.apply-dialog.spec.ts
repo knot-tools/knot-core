@@ -6,6 +6,7 @@ import { provideToast } from '../../composables/useToast';
 import KConfirmDialog from '../../components/ui/KConfirmDialog.vue';
 import UpdatesView from '../UpdatesView.vue';
 import { knotApi, type UpdatesCheckResponse } from '../../lib/api';
+import { resetUpdatesPollForTests } from '../../composables/useUpdatesPoll';
 
 const Host = defineComponent({
   name: 'UpdatesViewApplyDialogHost',
@@ -39,6 +40,7 @@ function coreUpdateSnapshot(): UpdatesCheckResponse {
 
 describe('UpdatesView apply confirm (real KConfirmDialog)', () => {
   beforeEach(() => {
+    resetUpdatesPollForTests();
     (window as unknown as Record<string, unknown>).KNOT_BASE_URL = '/custom/knot/workflows/preview.php';
     (window as unknown as Record<string, unknown>).KNOT_CSRF_TOKEN = 'test-csrf';
     (window as unknown as Record<string, unknown>).KNOT_MARKETPLACE_UI_ENABLED = true;
@@ -48,6 +50,7 @@ describe('UpdatesView apply confirm (real KConfirmDialog)', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
+    resetUpdatesPollForTests();
   });
 
   it('opens confirm then calls updatesApply with slug knot', async () => {

@@ -15,7 +15,10 @@ use Knot\Repository\KnotConfigRepository;
  * in `llx_knot_config` (key `updates.cache.{slug}`) so that the admin
  * UI keeps rendering update hints even when `license.knot.tools` is
  * briefly unreachable. The cache is refreshed on every read older
- * than {@see TTL_SECONDS}.
+ * than {@see TTL_SECONDS}. Entries with empty {@code notes} use the
+ * shorter {@see EMPTY_NOTES_TTL_SECONDS} so a later-signed
+ * {@code latest.notes} (CHANGELOG excerpt) is picked up without waiting
+ * for a full TTL or a manual {@code force=1}.
  *
  * Cache shape per entry:
  *   {
@@ -33,7 +36,13 @@ use Knot\Repository\KnotConfigRepository;
 final class UpdateStatusCache
 {
     public const CONFIG_KEY_PREFIX = 'updates.cache.';
-    public const TTL_SECONDS = 86_400; // 24h
+    /** Nominal freshness for a complete notify payload (version + notes). */
+    public const TTL_SECONDS = 21_600; // 6h
+    /**
+     * When {@code notes} is empty, re-probe live sources sooner so Updates
+     * can render CHANGELOG notes after a signed publish fills {@code latest.notes}.
+     */
+    public const EMPTY_NOTES_TTL_SECONDS = 900; // 15 min
 
     public function __construct(private readonly KnotConfigRepository $config)
     {
@@ -103,6 +112,16 @@ final class UpdateStatusCache
         if ($cached === null) {
             return false;
         }
-        return ($now - (int) $cached['fetchedAt']) < self::TTL_SECONDS;
+        $age = $now - (int) $cached['fetchedAt'];
+        if ($age < 0) {
+            return false;
+        }
+        $ttl = self::TTL_SECONDS;
+        $notes = ReleaseNotesExtractor::normalizeNotes($cached['notes']);
+        if ($notes === '') {
+            $ttl = self::EMPTY_NOTES_TTL_SECONDS;
+        }
+
+        return $age < $ttl;
     }
 }

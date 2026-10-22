@@ -56,14 +56,16 @@ ApiAuth::installCrashHandler();
  * Commercial artefacts use `api/license_download_token.php` for a JWT download URL.
  *
  * Caching: results are persisted in `llx_knot_config` (entity-aware)
- * with a 24h TTL. Each invocation transparently refreshes any entry
- * older than the TTL through {@see UpdateLatestResolver::fetchLatest()}.
+ * with a 6h TTL (15 min when `notes` is empty so signed `latest.notes`
+ * can surface without a manual force). Each invocation transparently
+ * refreshes any entry older than the TTL through
+ * {@see UpdateLatestResolver::fetchLatest()}.
  *
  * Core alert source order: GitHub releases.json, then license.knot.tools
  * `/api/core/releases.json`, then `/api/products/knot/latest`. Core apply
  * remains GitHub-only ({@see api/updates_apply.php}).
  *
- * Query `force=1` bypasses the 24h notify cache and re-fetches live metadata
+ * Query `force=1` bypasses the notify cache and re-fetches live metadata
  * (GitHub and/or license backend). Same permission as the default GET.
  */
 

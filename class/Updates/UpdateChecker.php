@@ -35,7 +35,7 @@ final class UpdateChecker
 
     /**
      * @param array<int, array{slug: string, version: string}> $installed
-     * @param bool $forceRefresh When true, bypass the 24h cache and hit live sources.
+     * @param bool $forceRefresh When true, bypass the notify cache and hit live sources.
      * @return array{
      *     checkedAt: int,
      *     hasAnyUpdate: bool,

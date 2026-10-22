@@ -84,21 +84,90 @@ final class UpdateCheckerTest extends TestCase
         self::assertSame(0, $stub->fetchCount, 'cache hit must not call the network');
     }
 
-    public function testLegacyCacheWithoutNotesYieldsEmptyNotes(): void
+    public function testLegacyCacheWithoutNotesYieldsEmptyNotesWhenUpToDate(): void
     {
         $repo = new InMemoryConfigRepo();
         $cache = new UpdateStatusCache($repo);
         $cache->write('knot', ['version' => '2.13.0', 'channel' => 'beta', 'publishedAt' => '2026-05-16T12:00:00+00:00'], time());
 
-        $checker = new UpdateChecker(
-            new StubUpdateLatestSource([], lastError: 'offline'),
-            $cache,
-        );
+        $stub = new StubUpdateLatestSource([], lastError: 'offline');
+        $checker = new UpdateChecker($stub, $cache);
 
-        $result = $checker->check([['slug' => 'knot', 'version' => '2.12.0']]);
+        // Installed matches latest → no soft-refresh for missing notes.
+        $result = $checker->check([['slug' => 'knot', 'version' => '2.13.0']]);
 
         self::assertSame('cache', $result['entries'][0]['source']);
         self::assertSame('', $result['entries'][0]['notes']);
+        self::assertSame(0, $stub->fetchCount);
+    }
+
+    public function testEmptyNotesCacheExpiresBeforeNominalTtlAndFillsNotes(): void
+    {
+        $repo = new InMemoryConfigRepo();
+        $cache = new UpdateStatusCache($repo);
+        $cache->write('knot', [
+            'version' => '2.13.24',
+            'channel' => 'beta',
+            'publishedAt' => '2026-10-12T12:00:00+00:00',
+            'notes' => '',
+        ], time() - (UpdateStatusCache::EMPTY_NOTES_TTL_SECONDS + 5));
+
+        $stub = new StubUpdateLatestSource([
+            'knot' => [
+                'slug' => 'knot',
+                'version' => '2.13.24',
+                'channel' => 'beta',
+                'publishedAt' => '2026-10-12T12:00:00+00:00',
+                'zipSize' => 1024,
+                'zipSha256' => str_repeat('b', 64),
+                'signatureKid' => 'rel-2026-04',
+                'notes' => "## [2.13.24]\n\n- After empty-notes TTL",
+            ],
+        ]);
+        $checker = new UpdateChecker($stub, $cache);
+
+        $result = $checker->check([['slug' => 'knot', 'version' => '2.13.23']]);
+
+        self::assertSame(1, $stub->fetchCount);
+        self::assertSame('live', $result['entries'][0]['source']);
+        self::assertTrue($result['entries'][0]['hasUpdate']);
+        self::assertSame("## [2.13.24]\n\n- After empty-notes TTL", $result['entries'][0]['notes']);
+    }
+
+    public function testForceRefreshFillsNotesWhileEmptyNotesCacheStillWarm(): void
+    {
+        $repo = new InMemoryConfigRepo();
+        $cache = new UpdateStatusCache($repo);
+        $cache->write('knot', [
+            'version' => '2.13.24',
+            'channel' => 'beta',
+            'publishedAt' => '2026-10-12T12:00:00+00:00',
+            'notes' => '',
+        ], time());
+
+        $stub = new StubUpdateLatestSource([
+            'knot' => [
+                'slug' => 'knot',
+                'version' => '2.13.24',
+                'channel' => 'beta',
+                'publishedAt' => '2026-10-12T12:00:00+00:00',
+                'zipSize' => 1024,
+                'zipSha256' => str_repeat('c', 64),
+                'signatureKid' => 'rel-2026-04',
+                'notes' => "## [2.13.24]\n\n- Forced notes",
+            ],
+        ]);
+        $checker = new UpdateChecker($stub, $cache);
+
+        $warm = $checker->check([['slug' => 'knot', 'version' => '2.13.23']]);
+        self::assertSame('cache', $warm['entries'][0]['source']);
+        self::assertSame('', $warm['entries'][0]['notes']);
+        self::assertSame(0, $stub->fetchCount);
+
+        $forced = $checker->check([['slug' => 'knot', 'version' => '2.13.23']], forceRefresh: true);
+        self::assertSame('live', $forced['entries'][0]['source']);
+        self::assertSame("## [2.13.24]\n\n- Forced notes", $forced['entries'][0]['notes']);
+        self::assertSame(1, $stub->fetchCount);
     }
 
     public function testForceRefreshBypassesWarmCache(): void
