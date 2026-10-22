@@ -13,15 +13,12 @@ use RuntimeException;
 /**
  * Validates update artefacts downloaded as ZIP bytes on disk before install.
  *
- * Mandatory SHA-256 checksum. Detached Ed25519 signature policy:
- * - Commercial extensions: always mandatory.
- * - Knot Core: mandatory from {@see CORE_SIGNATURE_MANDATORY_FROM}; older
- *   releases tolerate an empty signature_hex for retrocompat.
+ * Every release (Knot Core and commercial extensions) must carry a detached
+ * Ed25519 signature whose payload covers the downloaded ZIP (`zip_sha256`)
+ * and the requested channel, version and, for extensions, product slug.
  */
 final class ReleaseVerifier
 {
-    public const CORE_SIGNATURE_MANDATORY_FROM = '2.13.4';
-
     /**
      * @throws RuntimeException when the checksum does not match or the file cannot be hashed.
      */
@@ -47,66 +44,21 @@ final class ReleaseVerifier
     }
 
     /**
-     * Extension releases must always ship a valid detached signature.
-     *
      * @param array<string, mixed>|null $payloadForSigning
      *
      * @throws RuntimeException
      */
-    public static function assertExtensionReleaseSignature(?array $payloadForSigning, ?string $signatureHex): void
-    {
-        self::assertMandatoryDetachedSignature($payloadForSigning, $signatureHex);
-    }
-
-    /**
-     * Core release signature requirement depends on the target version being applied.
-     *
-     * @param array<string, mixed>|null $payloadForSigning
-     *
-     * @throws RuntimeException
-     */
-    public static function assertCoreReleaseSignature(
-        string $targetVersion,
+    public static function assertCoreRelease(
+        string $absoluteZipPath,
         ?array $payloadForSigning,
         ?string $signatureHex,
+        string $version,
+        string $channel,
     ): void {
-        if (self::coreSignatureMandatoryForVersion($targetVersion)) {
-            self::assertMandatoryDetachedSignature($payloadForSigning, $signatureHex);
-
-            return;
-        }
-
-        self::assertOptionalDetachedSignature($payloadForSigning, $signatureHex);
-    }
-
-    public static function coreSignatureMandatoryForVersion(string $targetVersion): bool
-    {
-        $version = trim($targetVersion);
-        if ($version === '') {
-            return false;
-        }
-
-        return version_compare($version, self::CORE_SIGNATURE_MANDATORY_FROM, '>=');
-    }
-
-    /**
-     * Validates a detached signature when {@see $signatureHex} is provided.
-     *
-     * When signature payload is omitted (null) OR signature hex missing, this is a no-op
-     * so GPL GitHub artefacts can defer signing until CI is wired end-to-end.
-     *
-     * @param array<string, mixed>|null $payloadForSigning
-     *
-     * @throws RuntimeException on invalid signature inputs.
-     */
-    public static function assertOptionalDetachedSignature(?array $payloadForSigning, ?string $signatureHex): void
-    {
-        $sig = trim((string) $signatureHex);
-        if ($sig === '') {
-            return;
-        }
-
-        self::verifyDetachedSignature($payloadForSigning, $sig);
+        self::assertSignedRelease($absoluteZipPath, $payloadForSigning, $signatureHex, [
+            'channel' => $channel,
+            'version' => $version,
+        ]);
     }
 
     /**
@@ -114,36 +66,64 @@ final class ReleaseVerifier
      *
      * @throws RuntimeException
      */
-    private static function assertMandatoryDetachedSignature(?array $payloadForSigning, ?string $signatureHex): void
-    {
+    public static function assertExtensionRelease(
+        string $absoluteZipPath,
+        ?array $payloadForSigning,
+        ?string $signatureHex,
+        string $slug,
+        string $version,
+        string $channel,
+    ): void {
+        self::assertSignedRelease($absoluteZipPath, $payloadForSigning, $signatureHex, [
+            'channel' => $channel,
+            'product_slug' => $slug,
+            'version' => $version,
+        ]);
+    }
+
+    /**
+     * @param array<string, mixed>|null $payloadForSigning
+     * @param array<string, string> $expected
+     *
+     * @throws RuntimeException
+     */
+    private static function assertSignedRelease(
+        string $absoluteZipPath,
+        ?array $payloadForSigning,
+        ?string $signatureHex,
+        array $expected,
+    ): void {
         $sig = trim((string) $signatureHex);
         if ($sig === '') {
             throw new RuntimeException('Release signature is required but signature_hex is missing.');
         }
-
-        self::verifyDetachedSignature($payloadForSigning, $sig);
-    }
-
-    /**
-     * @param array<string, mixed>|null $payloadForSigning
-     *
-     * @throws RuntimeException
-     */
-    private static function verifyDetachedSignature(?array $payloadForSigning, string $signatureHex): void
-    {
-        if (!extension_loaded('sodium')) {
-            throw new RuntimeException('PHP sodium extension is required when signature_hex is supplied.');
-        }
-
         if ($payloadForSigning === null || $payloadForSigning === []) {
-            throw new RuntimeException(
-                'signature_hex was provided but canonical signing payload metadata is missing.',
-            );
+            throw new RuntimeException('Release signature payload is missing.');
         }
 
+        $hash = hash_file('sha256', $absoluteZipPath);
+        if ($hash === false) {
+            throw new RuntimeException('Cannot compute SHA-256 hash of ZIP payload.');
+        }
+        $signedHash = $payloadForSigning['zip_sha256'] ?? null;
+        if (!is_string($signedHash) || !hash_equals(strtolower($hash), strtolower(trim($signedHash)))) {
+            throw new RuntimeException('Release signature does not cover the downloaded ZIP.');
+        }
+
+        foreach ($expected as $field => $value) {
+            $want = strtolower(trim($value));
+            $signed = $payloadForSigning[$field] ?? null;
+            if ($want === '' || !is_string($signed) || strtolower(trim($signed)) !== $want) {
+                throw new RuntimeException(sprintf('Release signature does not match the requested %s.', $field));
+            }
+        }
+
+        if (!extension_loaded('sodium')) {
+            throw new RuntimeException('PHP sodium extension is required to verify the release signature.');
+        }
         $canonical = SignatureVerifier::canonicalize($payloadForSigning);
         $verifier = new SignatureVerifier(PinnedPublicKeys::releaseSigningKeysHex());
-        if (!$verifier->verify($canonical, $signatureHex)) {
+        if (!$verifier->verify($canonical, $sig)) {
             throw new RuntimeException('Release detached signature verification failed.');
         }
     }

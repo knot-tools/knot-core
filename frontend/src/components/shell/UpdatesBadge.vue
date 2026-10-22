@@ -10,7 +10,7 @@ import { useUpdatesPoll } from '../../composables/useUpdatesPoll';
 
 const { t } = useI18n();
 
-const { loading, snapshot, load } = useUpdatesPoll();
+const { loading, snapshot, error, load } = useUpdatesPoll();
 
 onMounted(() => {
   void load();
@@ -41,6 +41,12 @@ const pendingEntries = computed(() =>
 );
 
 const label = computed(() => {
+  if (snapshot.value === null) {
+    if (loading.value) {
+      return t('actions.loading');
+    }
+    return t('updatesBadge.loadError');
+  }
   const n = pendingEntries.value.length;
   if (n === 0) {
     return t('updatesBadge.upToDate');
@@ -50,6 +56,13 @@ const label = computed(() => {
     return t('updatesBadge.oneUpdate', { slug });
   }
   return t('updatesBadge.manyUpdates', { count: n });
+});
+
+const statusClass = computed(() => {
+  if (snapshot.value === null) {
+    return error.value ? 'k-text-knot-danger' : 'k-text-knot-text-soft';
+  }
+  return pendingEntries.value.length ? 'k-text-knot-warning' : 'k-text-knot-success';
 });
 </script>
 
@@ -67,7 +80,7 @@ const label = computed(() => {
       <ArrowUpCircle
         v-else
         :size="16"
-        :class="pendingEntries.length ? 'k-text-knot-warning' : 'k-text-knot-success'"
+        :class="statusClass"
       />
       <span class="k-truncate k-text-knot-text-muted">{{ label }}</span>
     </a>

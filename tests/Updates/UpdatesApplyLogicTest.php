@@ -25,6 +25,34 @@ final class UpdatesApplyLogicTest extends TestCase
         self::assertStringContainsString('use Knot\Updates\UpdatesApplyPolicy', $src);
     }
 
+    /**
+     * @return array<string, array{0: string, 1: string, 2: bool}>
+     */
+    public static function downgradeProvider(): array
+    {
+        return [
+            'older patch' => ['2.13.24', '2.13.25', true],
+            'same version' => ['2.13.25', '2.13.25', false],
+            'newer' => ['2.13.26', '2.13.25', false],
+            'unknown target' => ['', '2.13.25', false],
+            'unknown installed' => ['2.13.24', '', false],
+        ];
+    }
+
+    #[DataProvider('downgradeProvider')]
+    public function testIsDowngrade(string $target, string $installed, bool $expected): void
+    {
+        self::assertSame($expected, UpdatesApplyPolicy::isDowngrade($target, $installed));
+    }
+
+    public function testApplyEndpointRefusesDowngrades(): void
+    {
+        $src = (string) file_get_contents(self::API_SOURCE);
+        self::assertSame(1, substr_count($src, 'UpdatesApplyPolicy::isDowngrade('));
+        self::assertStringContainsString("'release_downgrade_refused'", $src);
+        self::assertStringContainsString('Version::current(),', $src);
+    }
+
     public function testApplyEndpointRequiresAdminRightAndCsrf(): void
     {
         $src = (string) file_get_contents(self::API_SOURCE);

@@ -38,13 +38,14 @@ final class ZipDownloaderTest extends TestCase
     {
         return [
             'github apex' => ['github.com', true],
-            'github subdomain' => ['releases.github.com', true],
+            'github subdomain' => ['releases.github.com', false],
+            'repository archives' => ['codeload.github.com', false],
+            'raw content' => ['raw.githubusercontent.com', false],
             'objects host' => ['objects.githubusercontent.com', true],
+            'release assets host' => ['release-assets.githubusercontent.com', true],
             'license portal' => ['license.knot.tools', true],
             'knot.tools downloads' => ['knot.tools', true],
             'www knot.tools' => ['www.knot.tools', true],
-            'localhost' => ['localhost', true],
-            'loopback ip' => ['127.0.0.1', true],
             'extra host override' => ['mirror.example.test', true, ['mirror.example.test']],
             'empty host' => ['', false],
             'blocked apex' => ['evil.example', false],
@@ -82,10 +83,19 @@ final class ZipDownloaderTest extends TestCase
         }
     }
 
-    public function testAllowedHostIncludesLoopbackForLabHttp(): void
+    public function testAllowedHostIncludesLoopbackInTestsOnly(): void
     {
         self::assertTrue(ZipDownloader::allowedHost('127.0.0.1'));
         self::assertTrue(ZipDownloader::allowedHost('localhost'));
+
+        $previous = getenv('KNOT_TEST');
+        putenv('KNOT_TEST');
+        try {
+            self::assertFalse(ZipDownloader::allowedHost('127.0.0.1'));
+            self::assertFalse(ZipDownloader::allowedHost('localhost'));
+        } finally {
+            putenv('KNOT_TEST=' . (string) $previous);
+        }
     }
 
     public function testFetchToRejectsBlockedHost(): void

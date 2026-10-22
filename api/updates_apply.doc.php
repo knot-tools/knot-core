@@ -11,9 +11,9 @@ use Knot\Api\Doc\Operation;
     description: 'Downloads and installs an update artefact for Knot Core (`slug=knot`)'
         . ' or a registered commercial extension. Core apply uses GitHub / knot.tools'
         . ' `releases.json`; extensions use `license.knot.tools` JWT download tokens.'
-        . "\n\nEvery ZIP is verified with SHA-256. Detached Ed25519 signatures are"
-        . ' mandatory for extensions and for Knot Core releases **>= 2.13.4**'
-        . ' (older Core releases tolerate empty `signature_hex` for retrocompat).'
+        . "\n\nEvery ZIP must carry a detached Ed25519 signature whose payload matches"
+        . ' the downloaded ZIP (`zip_sha256`), channel and version (and `product_slug`'
+        . ' for extensions). Client-supplied artefact URLs and hashes are ignored.'
         . ' Failures return `release_signature_invalid` (422).'
         . "\n\nExtension metadata fetches honour `KNOT_RELEASE_CHANNEL` via"
         . ' `?channel=` on `/api/products/{slug}/signature`.'

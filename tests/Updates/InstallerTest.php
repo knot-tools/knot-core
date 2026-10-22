@@ -304,6 +304,46 @@ final class InstallerTest extends TestCase
         self::assertDirectoryExists((string) $newest);
     }
 
+    public function testCommitSwapMovesLegacyCustomCopiesToStashes(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            self::markTestSkipped('ZipArchive extension required');
+        }
+
+        $this->tmpRoot = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'installer-legacy-' . bin2hex(random_bytes(6));
+        $custom = $this->tmpRoot . '/htdocs/custom';
+        $live = $custom . '/knot';
+        $stashRoot = $this->tmpRoot . '/documents/knot/update-stashes';
+        @mkdir($live, 0777, true);
+        file_put_contents($live . '/manifest.json', "{\"v\":1}\n");
+        foreach (['knot.backup.20250101120000', 'knot.bak.1716900000'] as $legacy) {
+            @mkdir($custom . '/' . $legacy, 0777, true);
+            file_put_contents($custom . '/' . $legacy . '/index.php', '<?php // old');
+            file_put_contents($custom . '/' . $legacy . '/.htaccess', 'Deny from all');
+        }
+        @mkdir($custom . '/knot-pro-pack.backup.1', 0777, true);
+        @mkdir($custom . '/knotx.backup.1', 0777, true);
+        file_put_contents($custom . '/knot.backup.notes.txt', 'file, not a module copy');
+
+        $artifact = $this->tmpRoot . '/pkg.zip';
+        $this->makeDemoZip($artifact, 'knot');
+        $installer = $this->installer($stashRoot);
+        $prepared = $installer->prepare($artifact, $this->tmpRoot . '/stage-parent', 'knot');
+        $installer->swap($prepared, $live);
+        $installer->commitSwap();
+
+        foreach (['knot.backup.20250101120000', 'knot.bak.1716900000'] as $legacy) {
+            self::assertDirectoryDoesNotExist($custom . '/' . $legacy);
+            self::assertFileExists($stashRoot . '/' . $legacy . '/index.php');
+            self::assertFileExists($stashRoot . '/' . $legacy . '/.htaccess');
+        }
+        self::assertStringContainsString('"name":"demo"', (string) file_get_contents($live . '/manifest.json'));
+        self::assertDirectoryExists($custom . '/knot-pro-pack.backup.1');
+        self::assertDirectoryExists($custom . '/knotx.backup.1');
+        self::assertFileExists($custom . '/knot.backup.notes.txt');
+        self::assertCount(1, (new UpdateStashStore($stashRoot))->listForSlug('knot'));
+    }
+
     public function testDefaultInstallerUsesConfDirOutputNotCustomSiblings(): void
     {
         if (!class_exists(ZipArchive::class)) {

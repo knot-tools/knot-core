@@ -7,6 +7,28 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.25] - 2026-10-22
+
+### Security
+
+- Security fixes.
+
+### Fixed
+
+- **Updates release notes empty before Apply:** a warm `updates.cache.*` row
+  written before signed `releases.json` `latest.notes` was filled (or from a
+  notify source without notes) stayed empty for the full 24h cache TTL, so the
+  Updates card and Apply confirm hid the CHANGELOG excerpt even though CDN
+  notes were present. Empty-notes cache freshness is now **15 minutes**
+  (nominal notify TTL **6h**). The Updates page also force-reprobes once when
+  a pending entry still has empty notes; Check now / `force=1` bypasses cache.
+- **Dashboard “up to date” while Updates shows a pending Core update:** the
+  suite-health badge / floating banner used a separate in-memory poll from the
+  Updates page, so a force check on Updates did not refresh the dashboard.
+  Badge, banner, Suite Health, and Updates now share `useUpdatesPoll` (and keep
+  the last good snapshot on refresh failure). The badge no longer claims
+  “all products are up to date” when the check has not loaded or failed.
+
 ## [2.13.24] - 2026-10-12
 
 ### Fixed

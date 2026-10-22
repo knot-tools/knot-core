@@ -45,6 +45,7 @@ vi.mock('../../composables/useToast', () => ({
 }));
 
 import { knotApi, type UpdatesCheckResponse } from '../../lib/api';
+import { resetUpdatesPollForTests } from '../../composables/useUpdatesPoll';
 
 const Host = defineComponent({
   name: 'UpdatesViewHost',
@@ -57,6 +58,7 @@ const Host = defineComponent({
 
 describe('UpdatesView', () => {
   beforeEach(() => {
+    resetUpdatesPollForTests();
     toastError.mockClear();
     toastInfo.mockClear();
     toastWarning.mockClear();
@@ -71,6 +73,7 @@ describe('UpdatesView', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    resetUpdatesPollForTests();
   });
 
   it('lists products from knotApi.updates()', async () => {

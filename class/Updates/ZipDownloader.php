@@ -13,6 +13,14 @@ use RuntimeException;
  */
 final class ZipDownloader
 {
+    /** Knot distribution hosts and GitHub release-asset hosts. */
+    private const RELEASE_HOSTS = [
+        'knot.tools',
+        'github.com',
+        'objects.githubusercontent.com',
+        'release-assets.githubusercontent.com',
+    ];
+
     /**
      * @param list<string> $extraHosts
      */
@@ -28,21 +36,11 @@ final class ZipDownloader
                 return true;
             }
         }
-        $whitelist = [
-            'github.com',
-            'objects.githubusercontent.com',
-            'raw.githubusercontent.com',
-            'codeload.github.com',
-            'knot.tools',
-            'license.knot.tools',
-        ];
-        foreach ($whitelist as $ok) {
-            if ($h === $ok || ($h !== $ok && str_ends_with($h, '.' . $ok))) {
-                return true;
-            }
+        if (in_array($h, self::RELEASE_HOSTS, true) || str_ends_with($h, '.knot.tools')) {
+            return true;
         }
 
-        return $h === 'localhost' || $h === '127.0.0.1';
+        return self::isLoopback($h) && self::loopbackAllowed();
     }
 
     /** @throws RuntimeException */
@@ -54,9 +52,7 @@ final class ZipDownloader
         }
         $scheme = strtolower((string) $parsed['scheme']);
         $host = strtolower((string) $parsed['host']);
-        $localDevHost = $host === 'localhost' || $host === '127.0.0.1';
-        // Production artefacts: HTTPS only. Local Apply lab may use HTTP on loopback.
-        if ($scheme !== 'https' && !($scheme === 'http' && $localDevHost)) {
+        if ($scheme !== 'https' && !($scheme === 'http' && self::isLoopback($host) && self::loopbackAllowed())) {
             throw new RuntimeException('Only HTTPS artefact URLs are permitted.');
         }
         if (!self::allowedHost($host)) {
@@ -84,6 +80,7 @@ final class ZipDownloader
             CURLOPT_FAILONERROR => false,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 11,
+            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTPS,
             CURLOPT_TIMEOUT => 600,
             CURLOPT_CONNECTTIMEOUT => 15,
             CURLOPT_BUFFERSIZE => 65536,
@@ -118,5 +115,15 @@ final class ZipDownloader
             @unlink($destinationTmpZip);
             throw new RuntimeException('Downloaded artefact appears corrupt.');
         }
+    }
+
+    private static function isLoopback(string $host): bool
+    {
+        return $host === 'localhost' || $host === '127.0.0.1';
+    }
+
+    private static function loopbackAllowed(): bool
+    {
+        return getenv('KNOT_TEST') === '1';
     }
 }

@@ -11,6 +11,7 @@ import { provideToast } from '../../composables/useToast';
 import KConfirmDialog from '../../components/ui/KConfirmDialog.vue';
 import UpdatesView from '../UpdatesView.vue';
 import { knotApi, type UpdatesCheckResponse } from '../../lib/api';
+import { resetUpdatesPollForTests } from '../../composables/useUpdatesPoll';
 
 const FIXTURE_PHRASE = 'UNIQUE_NOTES_BEFORE_APPLY_FIXTURE';
 
@@ -46,6 +47,7 @@ function snapshotWithNotes(): UpdatesCheckResponse {
 
 describe('UpdatesView release notes before Apply (inspectable proof)', () => {
   beforeEach(() => {
+    resetUpdatesPollForTests();
     (window as unknown as Record<string, unknown>).KNOT_BASE_URL = '/custom/knot/workflows/preview.php';
     (window as unknown as Record<string, unknown>).KNOT_CSRF_TOKEN = 'test-csrf';
     (window as unknown as Record<string, unknown>).KNOT_MARKETPLACE_UI_ENABLED = true;
@@ -55,6 +57,7 @@ describe('UpdatesView release notes before Apply (inspectable proof)', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
+    resetUpdatesPollForTests();
   });
 
   it('shows changelog notes on the update card in the DOM while hasUpdate, before Apply is clicked', async () => {
@@ -84,6 +87,50 @@ describe('UpdatesView release notes before Apply (inspectable proof)', () => {
     expect(wrapper.html()).not.toMatch(/github\.com\/knot-tools\/knot-core\/releases/i);
     expect(applySpy).not.toHaveBeenCalled();
 
+    wrapper.unmount();
+  });
+
+  it('force-reprobes once when a pending update arrives with empty notes from warm cache', async () => {
+    const emptyNotes: UpdatesCheckResponse = {
+      checkedAt: 1,
+      hasAnyUpdate: true,
+      entries: [
+        {
+          slug: 'knot',
+          installedVersion: '2.13.23',
+          latestVersion: '2.13.24',
+          channel: 'beta',
+          publishedAt: '2026-10-12T00:00:00+00:00',
+          notes: '',
+          hasUpdate: true,
+          source: 'cache',
+          error: null,
+        },
+      ],
+    };
+    const withNotes = snapshotWithNotes();
+    withNotes.entries[0]!.installedVersion = '2.13.23';
+    withNotes.entries[0]!.latestVersion = '2.13.24';
+    withNotes.entries[0]!.notes = `## [2.13.24]\n\n- **${FIXTURE_PHRASE}**`;
+
+    const updatesSpy = vi
+      .spyOn(knotApi, 'updates')
+      .mockResolvedValueOnce(emptyNotes)
+      .mockResolvedValueOnce(withNotes);
+    vi.spyOn(knotApi, 'marketplace').mockResolvedValue({
+      packs: [],
+      templates: [],
+    } as unknown as Awaited<ReturnType<(typeof knotApi)['marketplace']>>);
+
+    const wrapper = mount(Host, {
+      global: { plugins: [i18n] },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(updatesSpy).toHaveBeenCalledWith({ force: false });
+    expect(updatesSpy).toHaveBeenCalledWith({ force: true });
+    expect(wrapper.get('[data-testid="updates-release-notes"]').text()).toContain(FIXTURE_PHRASE);
     wrapper.unmount();
   });
 

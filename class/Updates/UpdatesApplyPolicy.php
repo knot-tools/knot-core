@@ -44,4 +44,12 @@ final class UpdatesApplyPolicy
     {
         return in_array($slug, self::ALLOWED_SLUGS, true);
     }
+
+    public static function isDowngrade(string $targetVersion, string $installedVersion): bool
+    {
+        $target = trim($targetVersion);
+        $installed = trim($installedVersion);
+
+        return $target !== '' && $installed !== '' && version_compare($target, $installed, '<');
+    }
 }
