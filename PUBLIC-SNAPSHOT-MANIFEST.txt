@@ -935,6 +935,7 @@ tests/Updates/UpdateCheckerTest.php
 tests/Updates/UpdateClientChannelFilterTest.php
 tests/Updates/UpdateClientTest.php
 tests/Updates/UpdateLatestResolverTest.php
+tests/Updates/UpdatePackageIntegrityTest.php
 tests/Updates/UpdateStashStoreTest.php
 tests/Updates/UpdateStatusCacheFreshnessTest.php
 tests/Updates/UpdateStatusCacheMultiEntityTest.php
@@ -942,7 +943,6 @@ tests/Updates/UpdatesApplyChannelAndVersionGuardTest.php
 tests/Updates/UpdatesApplyLogicTest.php
 tests/Updates/UpdatesApplyPostSwapTest.php
 tests/Updates/UpdatesApplyRollbackTest.php
-tests/Updates/UpdatesApplySignatureBindingTest.php
 tests/Updates/ZipDownloaderTest.php
 tests/Version/VersionConsistencyTest.php
 tests/Version/VersionCurrentTest.php

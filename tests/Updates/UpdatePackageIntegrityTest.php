@@ -17,12 +17,12 @@ use RuntimeException;
  * @covers \Knot\Updates\ReleaseVerifier
  * @covers \Knot\Updates\GithubReleasesClient
  */
-final class UpdatesApplySignatureBindingTest extends TestCase
+final class UpdatePackageIntegrityTest extends TestCase
 {
     private const API_SOURCE = __DIR__ . '/../../api/updates_apply.php';
 
-    /** Genuine Knot Core 2.13.24 release signature, as published in releases.json. */
-    private const SIGNED_2_13_24 = [
+    /** Knot Core 2.13.24 release signature published in releases.json. */
+    private const RELEASE_2_13_24 = [
         'payload' => [
             'channel' => 'beta',
             'version' => '2.13.24',
@@ -33,8 +33,8 @@ final class UpdatesApplySignatureBindingTest extends TestCase
             . '1be43f83e5f3a9cdb48cd20dd97561108168f1ae33f21af3b86610ee1c967c07',
     ];
 
-    /** Genuine Knot Core 2.13.23 release signature (older release). */
-    private const SIGNED_2_13_23 = [
+    /** Knot Core 2.13.23 release signature published in releases.json. */
+    private const RELEASE_2_13_23 = [
         'payload' => [
             'channel' => 'beta',
             'version' => '2.13.23',
@@ -52,7 +52,7 @@ final class UpdatesApplySignatureBindingTest extends TestCase
         if (!extension_loaded('sodium')) {
             self::markTestSkipped('sodium extension required');
         }
-        $path = tempnam(sys_get_temp_dir(), 'knot-sig-bind-');
+        $path = tempnam(sys_get_temp_dir(), 'knot-package-');
         self::assertIsString($path);
         file_put_contents($path, "PK\x03\x04" . random_bytes(4096));
         $this->zip = $path;
@@ -66,10 +66,10 @@ final class UpdatesApplySignatureBindingTest extends TestCase
         parent::tearDown();
     }
 
-    public function testFixturesAreGenuineReleaseSignatures(): void
+    public function testPublishedReleaseSignaturesVerify(): void
     {
         $verifier = new SignatureVerifier(PinnedPublicKeys::releaseSigningKeysHex());
-        foreach ([self::SIGNED_2_13_24, self::SIGNED_2_13_23] as $signed) {
+        foreach ([self::RELEASE_2_13_24, self::RELEASE_2_13_23] as $signed) {
             self::assertTrue($verifier->verify(SignatureVerifier::canonicalize($signed['payload']), $signed['signature_hex']));
         }
     }
@@ -77,38 +77,37 @@ final class UpdatesApplySignatureBindingTest extends TestCase
     /**
      * @return array<string, array{0: bool, 1: string}>
      */
-    public static function foreignZipProvider(): array
+    public static function archiveHashProvider(): array
     {
         return [
-            'client hash of the foreign zip' => [true, '2.13.24'],
-            'empty client hash' => [false, '2.13.24'],
+            'archive hash set' => [true, '2.13.24'],
+            'archive hash empty' => [false, '2.13.24'],
             'empty version' => [true, ''],
         ];
     }
 
     /**
-     * KC-01: a valid signed payload sent with a different ZIP (client-supplied
-     * download_url + zip_sha256, optionally an empty version) must be refused.
+     * The release signature must cover the downloaded archive and the requested version.
      */
-    #[DataProvider('foreignZipProvider')]
-    public function testCoreApplyRejectsValidSignatureWithForeignZip(bool $clientHash, string $version): void
+    #[DataProvider('archiveHashProvider')]
+    public function testCoreUpdateSignatureMustCoverArchive(bool $withArchiveHash, string $version): void
     {
-        $sha = $clientHash ? (string) hash_file('sha256', $this->zip) : '';
+        $sha = $withArchiveHash ? (string) hash_file('sha256', $this->zip) : '';
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Release signature');
         GithubReleasesClient::verifyReleaseIntegrity(
             $this->zip,
             $sha,
-            self::SIGNED_2_13_24['payload'],
-            self::SIGNED_2_13_24['signature_hex'],
+            self::RELEASE_2_13_24['payload'],
+            self::RELEASE_2_13_24['signature_hex'],
             $version,
             'beta',
             '2.13.0',
         );
     }
 
-    public function testCoreApplyIgnoresClientArtefactFields(): void
+    public function testCoreUpdateReadsArtefactFromManifestOnly(): void
     {
         $src = (string) file_get_contents(self::API_SOURCE);
         foreach (['download_url', 'zip_sha256', 'signature_payload', 'signature_hex'] as $field) {
@@ -117,10 +116,9 @@ final class UpdatesApplySignatureBindingTest extends TestCase
     }
 
     /**
-     * KC-02: an older release's signed payload replayed in releases.json with
-     * another zip_url / zip_sha256 must be refused.
+     * A releases.json entry is accepted only when its signature covers the listed archive.
      */
-    public function testReleasesJsonRejectsReplayedSignatureWithForeignZip(): void
+    public function testReleaseManifestEntryMustMatchSignedArchive(): void
     {
         $artifact = GithubReleasesClient::inferLatestArtifact([
             'schema_version' => 'knot-core-releases@v1',
@@ -129,8 +127,8 @@ final class UpdatesApplySignatureBindingTest extends TestCase
                 'channel' => 'beta',
                 'zip_url' => 'https://github.com/knot-tools/knot-core/releases/download/v2.13.23/module_knot-2.13.23.zip',
                 'zip_sha256' => (string) hash_file('sha256', $this->zip),
-                'signature_hex' => self::SIGNED_2_13_23['signature_hex'],
-                'signature_payload' => self::SIGNED_2_13_23['payload'],
+                'signature_hex' => self::RELEASE_2_13_23['signature_hex'],
+                'signature_payload' => self::RELEASE_2_13_23['payload'],
             ],
         ]);
 
@@ -148,20 +146,19 @@ final class UpdatesApplySignatureBindingTest extends TestCase
     }
 
     /**
-     * An installed 2.13.25 must refuse the older 2.13.24 still advertised by
-     * the public signed releases.json (request ignored client artefact fields).
+     * A version earlier than the installed one is refused (2.13.24 listed, 2.13.25 installed).
      */
-    public function testCoreApplyRefusesOlderSignedReleaseThanInstalled(): void
+    public function testCoreUpdateRefusesEarlierVersion(): void
     {
         $artifact = GithubReleasesClient::inferLatestArtifact([
             'schema_version' => 'knot-core-releases@v1',
             'latest' => [
                 'version' => '2.13.24',
                 'channel' => 'beta',
-                'zip_url' => self::SIGNED_2_13_24['payload']['zip_url'],
-                'zip_sha256' => self::SIGNED_2_13_24['payload']['zip_sha256'],
-                'signature_hex' => self::SIGNED_2_13_24['signature_hex'],
-                'signature_payload' => self::SIGNED_2_13_24['payload'],
+                'zip_url' => self::RELEASE_2_13_24['payload']['zip_url'],
+                'zip_sha256' => self::RELEASE_2_13_24['payload']['zip_sha256'],
+                'signature_hex' => self::RELEASE_2_13_24['signature_hex'],
+                'signature_payload' => self::RELEASE_2_13_24['payload'],
             ],
         ]);
 
@@ -191,7 +188,7 @@ final class UpdatesApplySignatureBindingTest extends TestCase
             'other version' => [$base, str_repeat('a', 128), '2.13.26', 'beta', 'requested version'],
             'other channel' => [$base, str_repeat('a', 128), '2.13.25', 'stable', 'requested channel'],
             'empty channel' => [$base, str_repeat('a', 128), '2.13.25', '', 'requested channel'],
-            'forged signature' => [$base, str_repeat('a', 128), '2.13.25', 'beta', 'verification failed'],
+            'invalid signature' => [$base, str_repeat('a', 128), '2.13.25', 'beta', 'verification failed'],
         ];
     }
 
@@ -213,7 +210,7 @@ final class UpdatesApplySignatureBindingTest extends TestCase
         ReleaseVerifier::assertCoreRelease($this->zip, $payload, $signatureHex, $version, $channel);
     }
 
-    public function testExtensionApplyRejectsSignatureForAnotherZip(): void
+    public function testExtensionUpdateSignatureMustCoverArchive(): void
     {
         $harness = new Ed25519TestHarness();
         $payload = [
@@ -229,7 +226,7 @@ final class UpdatesApplySignatureBindingTest extends TestCase
         ReleaseVerifier::assertExtensionRelease($this->zip, $payload, $sig, 'knot-pro-pack', '0.1.4', 'beta');
     }
 
-    public function testExtensionApplyRejectsSignatureForAnotherProduct(): void
+    public function testExtensionUpdateSignatureMustMatchProduct(): void
     {
         $payload = [
             'channel' => 'beta',
@@ -243,7 +240,7 @@ final class UpdatesApplySignatureBindingTest extends TestCase
         ReleaseVerifier::assertExtensionRelease($this->zip, $payload, str_repeat('a', 128), 'knot-pro-pack', '0.1.4', 'beta');
     }
 
-    public function testExtensionApplyRequiresSignature(): void
+    public function testExtensionUpdateRequiresSignature(): void
     {
         $payload = [
             'channel' => 'beta',

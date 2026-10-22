@@ -48,7 +48,7 @@ final class ZipDownloaderTest extends TestCase
             'www knot.tools' => ['www.knot.tools', true],
             'extra host override' => ['mirror.example.test', true, ['mirror.example.test']],
             'empty host' => ['', false],
-            'blocked apex' => ['evil.example', false],
+            'blocked apex' => ['other.example', false],
             'blocked metadata ip style' => ['169.254.169.254', false],
         ];
     }
@@ -103,8 +103,8 @@ final class ZipDownloaderTest extends TestCase
         $dest = $this->tempDestination();
         try {
             $this->expectException(RuntimeException::class);
-            $this->expectExceptionMessage('ZIP host `evil.example` is blocked');
-            ZipDownloader::fetchTo('https://evil.example/artifact.zip', $dest);
+            $this->expectExceptionMessage('ZIP host `other.example` is blocked');
+            ZipDownloader::fetchTo('https://other.example/artifact.zip', $dest);
         } finally {
             @unlink($dest);
         }

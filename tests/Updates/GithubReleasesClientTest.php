@@ -28,7 +28,7 @@ final class GithubReleasesClientTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('HTTPS');
-        (new GithubReleasesClient())->fetchManifest('http://evil.example/releases.json');
+        (new GithubReleasesClient())->fetchManifest('http://other.example/releases.json');
     }
 
     public function testInferLatestArtifactNormalisesFields(): void
@@ -104,8 +104,8 @@ final class GithubReleasesClientTest extends TestCase
             'lookalike host' => ['https://knot.tools.example/releases.json', false],
             'plain http' => ['http://knot.tools/releases.json', false],
             'custom port' => ['https://knot.tools:8443/releases.json', false],
-            'userinfo' => ['https://knot.tools@evil.example/releases.json', false],
-            'other host' => ['https://evil.example/releases.json', false],
+            'userinfo' => ['https://knot.tools@other.example/releases.json', false],
+            'other host' => ['https://other.example/releases.json', false],
         ];
     }
 
