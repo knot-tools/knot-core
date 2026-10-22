@@ -1,4 +1,4 @@
-generated_at=2026-10-22T05:26:40Z
+generated_at=2026-10-22T06:31:53Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/ISSUE_TEMPLATE/bug_report.yml
@@ -916,6 +916,7 @@ tests/Support/InMemoryExecutionDb.php
 tests/Support/InMemoryTemplateDb.php
 tests/Support/InMemoryWorkflowDb.php
 tests/Support/InstallSqlSchema.php
+tests/Support/IsolatedDataRoot.php
 tests/Support/LocalJsonHttpHarness.php
 tests/Support/LocalZipHttpsHarness.php
 tests/Support/LoopbackUrlPolicy.php
@@ -940,6 +941,7 @@ tests/Updates/UpdateStashStoreTest.php
 tests/Updates/UpdateStatusCacheFreshnessTest.php
 tests/Updates/UpdateStatusCacheMultiEntityTest.php
 tests/Updates/UpdatesApplyChannelAndVersionGuardTest.php
+tests/Updates/UpdatesApplyCleanupTest.php
 tests/Updates/UpdatesApplyLogicTest.php
 tests/Updates/UpdatesApplyPostSwapTest.php
 tests/Updates/UpdatesApplyRollbackTest.php

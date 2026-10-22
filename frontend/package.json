@@ -1,7 +1,7 @@
 {
   "name": "knot-frontend",
   "private": true,
-  "version": "2.13.25",
+  "version": "2.13.26",
   "description": "Knot frontend bundle \u2014 visual workflow editor for Dolibarr",
   "license": "GPL-3.0-or-later",
   "type": "module",

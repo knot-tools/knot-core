@@ -7,6 +7,12 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.26] - 2026-10-22
+
+### Fixed
+
+- Cleanup after a refused update.
+
 ## [2.13.25] - 2026-10-22
 
 ### Security
