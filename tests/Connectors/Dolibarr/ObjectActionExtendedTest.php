@@ -6,6 +6,9 @@ namespace Knot\Tests\Connectors\Dolibarr;
 
 use Knot\Connectors\Dolibarr\ObjectAction;
 use Knot\Errors\PreconditionError;
+use Knot\Tests\Support\IsolatedDataRoot;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -14,6 +17,8 @@ use RuntimeException;
  */
 final class ObjectActionExtendedTest extends TestCase
 {
+    use IsolatedDataRoot;
+
     private static bool $aliasesRegistered = false;
 
     public static function setUpBeforeClass(): void
@@ -25,6 +30,12 @@ final class ObjectActionExtendedTest extends TestCase
             class_alias(\FakeFacture::class, 'Facture');
         }
         self::$aliasesRegistered = true;
+    }
+
+    protected function tearDown(): void
+    {
+        $this->removeIsolatedDataRoot();
+        parent::tearDown();
     }
 
     private function bootGlobals(?\FakeUser $user = null): \DoliDB
@@ -123,8 +134,11 @@ final class ObjectActionExtendedTest extends TestCase
         self::assertSame(12, $out['simulatedFields']['fk_soc']);
     }
 
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testSimulateChangeStatusBuildsTransitionPreview(): void
     {
+        $this->useIsolatedDataRoot();
         $this->bootGlobals($this->adminUser());
         $action = new ObjectAction();
 

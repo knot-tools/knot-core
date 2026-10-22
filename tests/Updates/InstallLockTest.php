@@ -6,28 +6,33 @@ declare(strict_types=1);
 
 namespace Knot\Tests\Updates;
 
+use Knot\Tests\Support\IsolatedDataRoot;
 use Knot\Updates\InstallLock;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 /**
  * @covers \Knot\Updates\InstallLock
  */
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 final class InstallLockTest extends TestCase
 {
+    use IsolatedDataRoot;
+
+    private string $lockPath = '';
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->lockPath = $this->useIsolatedDataRoot() . '/knot/update.lock';
+    }
+
     protected function tearDown(): void
     {
-        $path = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR . '/')
-            . DIRECTORY_SEPARATOR . 'knot'
-            . DIRECTORY_SEPARATOR . 'update.lock';
-        if (is_readable($path)) {
-            $h = fopen($path, 'rb');
-            if (is_resource($h)) {
-                @flock($h, LOCK_UN);
-                fclose($h);
-            }
-            @unlink($path);
-        }
+        $this->removeIsolatedDataRoot();
         parent::tearDown();
     }
 
@@ -44,5 +49,20 @@ final class InstallLockTest extends TestCase
         } finally {
             $a->release();
         }
+    }
+
+    public function testReleaseRemovesLockFileAndAllowsNextApply(): void
+    {
+        $path = $this->lockPath;
+        $a = new InstallLock();
+        $a->acquire();
+        self::assertFileExists($path);
+        $a->release();
+        self::assertFileDoesNotExist($path);
+
+        $b = new InstallLock();
+        $b->acquire();
+        self::assertFileExists($path);
+        $b->release();
     }
 }

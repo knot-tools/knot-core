@@ -18,6 +18,8 @@ final class InstallLock
     /** @var resource|null */
     private $handle;
 
+    private string $path = '';
+
     /**
      * @throws RuntimeException when another apply is holding the lock.
      */
@@ -40,10 +42,17 @@ final class InstallLock
             fclose($fh);
             throw new RuntimeException('Another Knot update apply is already in progress.');
         }
+        $onDisk = @stat($path);
+        $held = fstat($fh);
+        if ($onDisk === false || $held === false || $onDisk['ino'] !== $held['ino']) {
+            fclose($fh);
+            throw new RuntimeException('Another Knot update apply is already in progress.');
+        }
 
         fwrite($fh, 'pid:' . getmypid() . '|ts:' . gmdate('c'));
 
         $this->handle = $fh;
+        $this->path = $path;
     }
 
     public function release(): void
@@ -51,6 +60,7 @@ final class InstallLock
         if (!is_resource($this->handle)) {
             return;
         }
+        @unlink($this->path);
         flock($this->handle, LOCK_UN);
         fclose($this->handle);
         $this->handle = null;

@@ -7,7 +7,10 @@ namespace Knot\Tests\Capabilities;
 use Conf;
 use Knot\Capabilities\CapabilitiesBuilder;
 use Knot\Tests\Support\CapabilitiesProbeDb;
+use Knot\Tests\Support\IsolatedDataRoot;
 use Knot\Version;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,12 +18,15 @@ use PHPUnit\Framework\TestCase;
  */
 final class CapabilitiesBuilderTest extends TestCase
 {
+    use IsolatedDataRoot;
+
     private ?CapabilitiesBuilder $cacheBuilder = null;
 
     protected function tearDown(): void
     {
         $this->cacheBuilder?->invalidateCache();
         $this->cacheBuilder = null;
+        $this->removeIsolatedDataRoot();
         parent::tearDown();
     }
 
@@ -41,10 +47,12 @@ final class CapabilitiesBuilderTest extends TestCase
         self::assertSame(['facture' => 2], $manifest['dolibarr']['extrafields_count_by_object']);
     }
 
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testCacheRoundTripHonoursTtl(): void
     {
+        $path = $this->useIsolatedDataRoot() . '/knot/cache/capabilities-4242.json';
         $this->cacheBuilder = new CapabilitiesBuilder(new CapabilitiesProbeDb(), new Conf(), 4242);
-        $path = sys_get_temp_dir() . '/knot/cache/capabilities-4242.json';
 
         $payload = ['hello' => 'world'];
         $this->cacheBuilder->saveCache($payload);
@@ -63,8 +71,11 @@ final class CapabilitiesBuilderTest extends TestCase
         self::assertFileDoesNotExist($path);
     }
 
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function testLoadCacheReturnsFreshPayload(): void
     {
+        $this->useIsolatedDataRoot();
         $this->cacheBuilder = new CapabilitiesBuilder(new CapabilitiesProbeDb(), new Conf(), 7777);
         $payload = ['cached' => true, 'knot' => ['version' => '2.12.1']];
         $this->cacheBuilder->saveCache($payload);

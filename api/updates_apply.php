@@ -292,6 +292,13 @@ try {
     JsonResponse::error('update_locked', $e->getMessage(), 423, ['instructions' => $fallbackLines]);
     exit;
 }
+register_shutdown_function(static function () use ($lock, $zipPath, $stagingParent, $purgeTree): void {
+    @unlink($zipPath);
+    if (is_dir($stagingParent)) {
+        $purgeTree($stagingParent);
+    }
+    $lock->release();
+});
 
 try {
     if ($slug === 'knot') {
@@ -478,10 +485,4 @@ try {
         ['instructions' => $fallbackLines],
     );
     exit;
-} finally {
-    @unlink($zipPath);
-    if (isset($stagingParent) && is_dir($stagingParent)) {
-        $purgeTree($stagingParent);
-    }
-    $lock->release();
 }
