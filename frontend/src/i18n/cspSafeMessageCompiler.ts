@@ -12,24 +12,54 @@ import type { MessageCompiler, MessageContext } from '@intlify/core-base';
 
 const NAMED_PLACEHOLDER = /\{(\w+)\}/g;
 
-function interpolateNamed(message: string, ctx: MessageContext): string {
-  return message.replace(NAMED_PLACEHOLDER, (_, key: string) => {
-    const value = ctx.named(key);
-    return value != null && value !== '' ? String(value) : `{${key}}`;
-  });
+type Part = string | { key: string };
+
+/**
+ * `interpolate` / `normalize` are on every runtime MessageContext (intlify's
+ * own compiled messages call them) but are excluded from the public typings.
+ */
+type RuntimeMessageContext = MessageContext & {
+  interpolate: (value: unknown) => unknown;
+  normalize: (values: unknown[]) => string;
+};
+
+function splitMessage(message: string): Part[] {
+  const parts: Part[] = [];
+  let last = 0;
+  for (const match of message.matchAll(NAMED_PLACEHOLDER)) {
+    if (match.index > last) parts.push(message.slice(last, match.index));
+    parts.push({ key: match[1] });
+    last = match.index + match[0].length;
+  }
+  if (last < message.length) parts.push(message.slice(last));
+  return parts;
 }
 
+/**
+ * Parts go through ctx.interpolate + ctx.normalize, like intlify's own
+ * compiled messages: `t()` gets a joined string, while `<i18n-t>` gets an
+ * array that keeps slot VNodes (e.g. a `{link}` slot) instead of failing
+ * with "Unexpected return type in composer".
+ */
 export const cspSafeMessageCompiler: MessageCompiler = (message) => {
   if (typeof message !== 'string') {
     return () => '';
   }
 
-  if (!NAMED_PLACEHOLDER.test(message)) {
-    NAMED_PLACEHOLDER.lastIndex = 0;
+  const parts = splitMessage(message);
+  if (parts.every((part) => typeof part === 'string')) {
     const constant = message;
     return () => constant;
   }
 
-  NAMED_PLACEHOLDER.lastIndex = 0;
-  return (ctx: MessageContext) => interpolateNamed(message, ctx);
+  return (context: MessageContext) => {
+    const ctx = context as RuntimeMessageContext;
+    return ctx.normalize(
+      parts.map((part) => {
+        if (typeof part === 'string') return part;
+        const value = ctx.named(part.key);
+        return value != null && value !== '' ? ctx.interpolate(value) : `{${part.key}}`;
+      }),
+    );
+  };
 };

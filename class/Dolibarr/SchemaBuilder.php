@@ -596,13 +596,7 @@ final class SchemaBuilder
      */
     private function translate(string $key, ?object $langs): string
     {
-        if ($langs !== null && method_exists($langs, 'trans')) {
-            $value = $langs->trans($key);
-            if (is_string($value) && $value !== '') {
-                return $value;
-            }
-        }
-        return $key;
+        return PlainTranslation::translate($key, $langs);
     }
 
     private function coerceDefault(mixed $raw, string $type): mixed

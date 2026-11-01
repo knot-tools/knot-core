@@ -159,12 +159,21 @@ final class UpdatesApplyCleanupTest extends TestCase
 
         return <<<PHP
 <?php
+namespace Knot {
+    // Installed version under test (declared before the autoloader picks up class/Version.php).
+    final class Version
+    {
+        public const FALLBACK = {$version};
+
+        public static function current(): string
+        {
+            return self::FALLBACK;
+        }
+    }
+}
+namespace {
 define('DOL_DOCUMENT_ROOT', __DIR__);
 define('DOL_DATA_ROOT', (string) getenv('KNOT_TEST_DATA_ROOT'));
-class modKnot
-{
-    public string \$version = {$version};
-}
 require_once {$root} . '/class/autoload.php';
 require_once {$root} . '/tests/stubs/dolibarr.php';
 function dol_buildpath(string \$path, int \$type = 0): string
@@ -181,6 +190,7 @@ function dol_buildpath(string \$path, int \$type = 0): string
 \$_SESSION = ['token' => 'knot-test-token'];
 \$_POST = ['slug' => 'knot', 'token' => 'knot-test-token'];
 return 1;
+}
 PHP;
     }
 }

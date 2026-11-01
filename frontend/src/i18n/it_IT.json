@@ -589,7 +589,13 @@
   "dynamicForm": {
     "expressionModeTitle": "Mode expression",
     "literalModeTitle": "Valeur litterale",
-    "htmlAccepted": "HTML accepte"
+    "htmlAccepted": "HTML accepte",
+    "noSchema": "Nessuno schema definito per questo nodo — usa la scheda Avance (JSON).",
+    "noFields": "Nessun campo configurabile per questo nodo.",
+    "searchDolibarr": "Cerca in Dolibarr",
+    "removeRow": "Rimuovi riga",
+    "addRow": "Aggiungi riga",
+    "credentialRefType": "Tipo di riferimento credenziale:"
   },
   "licenseDeactivateModal": {
     "hint": "Saisissez il code d'activation per liberer la liaison a questa istanza. L'estensione disparaitra della barre laterale jusqu'a una reactivation.",

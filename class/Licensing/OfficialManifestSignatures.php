@@ -56,7 +56,9 @@ final class OfficialManifestSignatures
     {
         return [
             KnownSkus::PRO_PACK => [
-                // 0.1.11 primary — signed 2026-09-01 (module id 262877).
+                // 0.1.13 primary — signed 2026-10-31.
+                '0b16691196067f162a7d32f978cb866753f6bebaad28df81416f74c8a4611adb8640c96cc4fc31948369ded873f1cf35f62a943932f393642ee5e8b53c971808',
+                // Deprecated transition pin — 0.1.11 / 0.1.12 primary (2026-09-01).
                 'd29cf7d9e6ba6a13a6258c700889c5c0af109c939205c41f01d280a4c53474d47f1d9c845e2c90380ca635963202e25f64d23a50f7fe4119b18e811752a0c703',
                 // Deprecated transition pin — 0.1.10 primary (2026-07-14).
                 '752cc8c0353bf9a7b17e996684ee5d3e56cf3830394adfe6b2a689cee4694b115ab89c402cfbe7b50ab0217d1932f07a606ad2acbb6444811f4ad6a8f1006500',

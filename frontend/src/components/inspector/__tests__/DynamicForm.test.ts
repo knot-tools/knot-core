@@ -2,7 +2,7 @@
  * Knot — DynamicForm repeater + schema (Vitest jsdom).
  */
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import DynamicForm from '@/components/inspector/DynamicForm.vue';
 import KnotExpressionInput from '@/components/risk/KnotExpressionInput.vue';
@@ -20,6 +20,10 @@ const mountOptions = {
 };
 
 describe('DynamicForm', () => {
+  beforeEach(() => {
+    i18n.global.locale.value = 'en_US';
+  });
+
   it('renders match mode and repeater for array-of-objects schema', () => {
     const wrapper = mount(DynamicForm, {
       attachTo: document.body,
@@ -107,5 +111,18 @@ describe('DynamicForm', () => {
 
     expect(wrapper.text()).toMatch(/No configurable fields/i);
     wrapper.unmount();
+  });
+});
+
+describe('DynamicForm (fr_FR)', () => {
+  it('shows the no-schema hint in French', () => {
+    i18n.global.locale.value = 'fr_FR';
+    try {
+      const wrapper = mount(DynamicForm, { ...mountOptions, props: { schema: null, modelValue: {} } });
+      expect(wrapper.text()).toContain('Aucun schéma défini pour ce nœud');
+      expect(wrapper.text()).not.toMatch(/No schema defined/i);
+    } finally {
+      i18n.global.locale.value = 'en_US';
+    }
   });
 });

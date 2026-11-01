@@ -589,7 +589,13 @@
   "dynamicForm": {
     "expressionModeTitle": "Mode expression",
     "literalModeTitle": "Valeur littérale",
-    "htmlAccepted": "HTML accepté"
+    "htmlAccepted": "HTML accepté",
+    "noSchema": "Aucun schéma défini pour ce nœud — utilisez l'onglet Avancé (JSON).",
+    "noFields": "Aucun champ configurable pour ce nœud.",
+    "searchDolibarr": "Rechercher dans Dolibarr",
+    "removeRow": "Supprimer la ligne",
+    "addRow": "Ajouter une ligne",
+    "credentialRefType": "Type de référence d'identifiant :"
   },
   "licenseDeactivateModal": {
     "hint": "Saisissez le code d'activation pour libérer la liaison à cette instance. L'extension disparaîtra de la barre latérale jusqu'à une réactivation.",

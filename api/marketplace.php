@@ -73,7 +73,7 @@ ApiAuth::requireRight('knot', 'workflow', 'read');
 
 $langs->load('knot@knot');
 if (!KnotMarketplacePresentation::marketplaceUiEnabled()) {
-    JsonResponse::error('marketplace_ui_disabled', $langs->trans('KnotMarketplaceUiDisabledApi'), 403);
+    JsonResponse::error('marketplace_ui_disabled', \Knot\Dolibarr\PlainTranslation::translate('KnotMarketplaceUiDisabledApi', $langs), 403);
     exit;
 }
 

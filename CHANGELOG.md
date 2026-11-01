@@ -7,6 +7,30 @@ Source, tags, and GitHub Releases:
 
 ## [Unreleased]
 
+## [2.13.27] - 2026-11-01
+
+### Security
+
+- Frontend production audit: **vue 3.5.44** (`@vue/server-renderer` GHSA-g2v6-rqmx-r4w6), **source-map-js 1.2.2** (GHSA-68fv-2mgg-jv7q), **vue-i18n 11.4.16** (GHSA-83rm-6c8r-g728). vue-i18n 9 and 10 have no patched release. Composition mode (`legacy: false`) and the CSP message compiler stay in place. Extensions that externalize `vue-i18n` onto `KnotSharedVueI18n` receive the v11 runtime.
+
+### Fixed
+
+- **Connectors screen:** the help text now shows its link to the Credentials page. The `<i18n-t>` component failed with the CSP-safe message compiler, so the sentence rendered without the link.
+- **Inspector in French and other locales:** the node header uses the translated node name, as in the palette ("Définir" instead of "Set"). Six node form strings, including "No schema defined", are translated in the six frontend locales. Nodes without a translation keep their English name.
+- **Dolibarr labels with HTML entities:** Dolibarr object and field labels sent to the editor were HTML-escaped by Dolibarr's `trans()`, so the Dolibarr Object node list showed a raw HTML entity in "Tag/catégorie". Labels are now decoded to plain UTF-8 where they leave the API. A stray `&apos;` in the Portuguese locale is fixed, and a test now rejects HTML entities in translation files.
+- **Displayed Core version:** `Version::current()` reads the version from its own module descriptor, so the banner no longer shows an older version after an update.
+
+### Changed
+
+- **Brand:** source file headers, NOTICE, LINKING-EXCEPTION, and README now use the registered trademark symbol **Knot Tools®** instead of ™.
+- Official Pro Pack manifest pin: **0.1.13** is primary; **0.1.11 / 0.1.12**
+  (`d29cf7d9…`) stays as a 90-day transition pin.
+
+### Internal
+
+- CI runs on Node 22 in every workflow (vue-i18n 11 requires Node ≥ 22).
+- The manifest signature sync script keeps every existing pin instead of replacing the block.
+
 ## [2.13.26] - 2026-10-22
 
 ### Fixed

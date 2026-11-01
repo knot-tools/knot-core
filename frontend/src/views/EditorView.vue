@@ -419,6 +419,13 @@ const selectedMeta = computed(() => {
   return resolveNodeMeta(typeId);
 });
 
+/** Same translated label as the palette; registry label as fallback. */
+const selectedNodeTitle = computed(() => {
+  const typeId = selectedNode.value?.data?.type;
+  if (typeof typeId !== 'string' || typeId === '') return '';
+  return resolveConnectorLabel(connectorMessageKey(typeId, 'label'), selectedMeta.value?.label ?? typeId);
+});
+
 const showStarterBanner = computed(
   () => !hasInitialWorkflow && currentWorkflowId.value === null && showStarterHint.value,
 );
@@ -2013,7 +2020,7 @@ watch(workflowName, () => {
             <component :is="selectedMeta?.icon ?? Settings2" :size="18" />
           </div>
           <div class="k-min-w-0 k-flex-1">
-            <div class="k-text-sm k-font-bold k-text-knot-text k-truncate">{{ selectedMeta?.label }}</div>
+            <div class="k-text-sm k-font-bold k-text-knot-text k-truncate" data-knot-test="knot-inspector-node-title">{{ selectedNodeTitle }}</div>
             <div class="k-text-xs k-font-mono k-text-knot-text-soft k-truncate">{{ selectedNode.id }}</div>
           </div>
         </div>

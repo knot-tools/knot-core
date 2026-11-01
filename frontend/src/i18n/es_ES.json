@@ -589,7 +589,13 @@
   "dynamicForm": {
     "expressionModeTitle": "Modo expresión",
     "literalModeTitle": "Valor literal",
-    "htmlAccepted": "Se permite HTML"
+    "htmlAccepted": "Se permite HTML",
+    "noSchema": "No hay ningún esquema definido para este nodo: use la pestaña Avanzado (JSON).",
+    "noFields": "No hay campos configurables para este nodo.",
+    "searchDolibarr": "Buscar en Dolibarr",
+    "removeRow": "Eliminar fila",
+    "addRow": "Añadir fila",
+    "credentialRefType": "Tipo de referencia de credencial:"
   },
   "licenseDeactivateModal": {
     "hint": "Introduzca el código de activación para liberar la vinculación de esta instancia. La extensión desaparecerá de la barra lateral hasta volver a activarla.",

@@ -44,8 +44,8 @@ Watermark masters (`knot-mark-light.svg`, `knot-symbol.svg`) = **suite cyan / ma
 
 ## Trademark
 
-- **No ®** until INPI certificate.
-- **™** only on non-FR / legal surfaces already requiring it (see `docs/branding/trademark-usage.md`).
+- **Knot Tools®** everywhere, in every language (registered trademark, INPI France no. 26 5257612). Never ™.
+- **Knot Carpenter** carries no trademark symbol.
 - Wordmark lockups: use short name « Knot » in UI; do not invent a new ® lockup here.
 
 ## Which file where (Dolibarr admin view)
