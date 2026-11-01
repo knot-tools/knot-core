@@ -9,7 +9,7 @@
 
 *A modern node-based editor, self-hosted next to Dolibarr, to orchestrate your ERP and integrations.*
 
-**Knot Tools™** is a trademark of Sébastien Audel. This repository ships **Knot Core**, the GPL-3.0 Dolibarr module. Product and extension information: **[knot.tools](https://knot.tools)**.
+**Knot Tools®** is a trademark of Sébastien Audel. This repository ships **Knot Core**, the GPL-3.0 Dolibarr module. Product and extension information: **[knot.tools](https://knot.tools)**.
 
 > **Public beta** — product site: **[knot.tools](https://knot.tools)**. Documentation: **[docs.knot.tools](https://docs.knot.tools/)**.
 
@@ -104,7 +104,7 @@ More guides on **[docs.knot.tools](https://docs.knot.tools/core/getting-started/
 
 Dependency licences: [`LICENSES.md`](LICENSES.md).
 
-**Trademark.** **Knot Tools™** is a trademark of Sébastien Audel. Third-party use requires permission of the rights holder.
+**Trademark.** **Knot Tools®** is a trademark of Sébastien Audel. Third-party use requires permission of the rights holder.
 
 ---
 
@@ -116,6 +116,6 @@ Do **not** open a public issue for vulnerabilities. See [`SECURITY.md`](SECURITY
 
 <div align="center">
 
-**Knot Tools™ — Visual workflow automation for Dolibarr** (*Knot Core*).
+**Knot Tools® — Visual workflow automation for Dolibarr** (*Knot Core*).
 
 </div>

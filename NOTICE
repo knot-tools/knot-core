@@ -1,4 +1,4 @@
-Knot Tools™ Core
+Knot Tools® Core
 Copyright (C) 2026 Sébastien Audel (EXIATIS)
 
 SPDX-License-Identifier: GPL-3.0-or-later
@@ -15,4 +15,4 @@ Frontend build toolchain: Vue 3, Vite, TypeScript, Tailwind CSS, Vue Flow, Lucid
 
 Dolibarr is a separate product (GPL). Knot integrates with Dolibarr V20+; Dolibarr itself is not bundled in this repository.
 
-Trademark: Knot Tools™ is a trademark of Sébastien Audel. This NOTICE does not grant trademark rights.
+Trademark: Knot Tools® is a trademark of Sébastien Audel. This NOTICE does not grant trademark rights.
