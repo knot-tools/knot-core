@@ -1,20 +1,20 @@
 {
     "schema_version": "knot-core-releases@v1",
     "latest": {
-        "version": "2.13.26",
+        "version": "2.13.27",
         "channel": "beta",
-        "published_at": "2026-10-22T06:30:33+00:00",
+        "published_at": "2026-11-01T17:54:40+00:00",
         "zip_url": "https://knot.tools/downloads/knot-core/latest",
-        "zip_sha256": "52d5b0b3e8300977d48f51cc660310efce2c6aa43398fb1ad2111a34916f13cd",
-        "signature_hex": "cdd81ec6ccb1ef6e7adb0055fdc88b0286d8b4fe08b387c52c3c772a4bc11fcc37e3b98c40271a3b88884b3eb50fb36cb5836aa9841c8e2ecce1e944a451b409",
+        "zip_sha256": "1a2ef9cb976348aa9cdb9ad061cc9f5c5b34778f17accd46609c75ed34d7e3e3",
+        "signature_hex": "d57dee56db341458ac40710ffcc8021de037aa79eeafc1ffc840b5c2c0ff47847280f4a8855675ef312ed6327c89a150826708cdfeb010fb1386a6525c44d109",
         "signature_payload": {
             "channel": "beta",
-            "version": "2.13.26",
-            "zip_sha256": "52d5b0b3e8300977d48f51cc660310efce2c6aa43398fb1ad2111a34916f13cd",
+            "version": "2.13.27",
+            "zip_sha256": "1a2ef9cb976348aa9cdb9ad061cc9f5c5b34778f17accd46609c75ed34d7e3e3",
             "zip_url": "https://knot.tools/downloads/knot-core/latest"
         },
-        "notes": "## [2.13.26] - 2026-10-22\n\n### Fixed\n\n- Cleanup after a refused update.",
-        "zip_size_bytes": 2509930,
+        "notes": "## [2.13.27] - 2026-11-01\n\n### Security\n\n- Frontend production audit: **vue 3.5.44** (`@vue/server-renderer` GHSA-g2v6-rqmx-r4w6), **source-map-js 1.2.2** (GHSA-68fv-2mgg-jv7q), **vue-i18n 11.4.16** (GHSA-83rm-6c8r-g728). vue-i18n 9 and 10 have no patched release. Composition mode (`legacy: false`) and the CSP message compiler stay in place. Extensions that externalize `vue-i18n` onto `KnotSharedVueI18n` receive the v11 runtime.\n\n### Fixed\n\n- **Connectors screen:** the help text now shows its link to the Credentials page. The `<i18n-t>` component failed with the CSP-safe message compiler, so the sentence rendered without the link.\n- **Inspector in French and other locales:** the node header uses the translated node name, as in the palette (\"Définir\" instead of \"Set\"). Six node form strings, including \"No schema defined\", are translated in the six frontend locales. Nodes without a translation keep their English name.\n- **Dolibarr labels with HTML entities:** Dolibarr object and field labels sent to the editor were HTML-escaped by Dolibarr's `trans()`, so the Dolibarr Object node list showed a raw HTML entity in \"Tag/catégorie\". Labels are now decoded to plain UTF-8 where they leave the API. A stray `&apos;` in the Portuguese locale is fixed, and a test now rejects HTML entities in translation files.\n- **Displayed Core version:** `Version::current()` reads the version from its own module descriptor, so the banner no longer shows an older version after an update.\n\n### Changed\n\n- **Brand:** source file headers, NOTICE, LINKING-EXCEPTION, and README now use the registered trademark symbol **Knot Tools®** instead of ™.\n- Official Pro Pack manifest pin: **0.1.13** is primary; **0.1.11 / 0.1.12**\n  (`d29cf7d9…`) stays as a 90-day transition pin.\n\n### Internal\n\n- CI runs on Node 22 in every workflow (vue-i18n 11 requires Node ≥ 22).\n- The manifest signature sync script keeps every existing pin instead of replacing the block.",
+        "zip_size_bytes": 2512706,
         "signature_kid": "rel-2026-04"
     },
     "_comment": "Synced from knot-tools/core/releases.json on each Core release.",
