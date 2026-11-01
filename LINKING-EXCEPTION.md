@@ -1,17 +1,17 @@
-# Knot Tools™ Core — GPL Linking Exception
+# Knot Tools® Core — GPL Linking Exception
 
 Granted by the sole copyright holder, Sébastien Audel (trading as EXIATIS).
 Effective from Knot Core 2.13.22 (7 September 2026).
 Revised: 2026-09-07 (v3 — ObjectFactory added to the Public Utility API).
 
-Knot Tools™ Core is licensed under the GNU General Public License version 3
+Knot Tools® Core is licensed under the GNU General Public License version 3
 or later (GPL-3.0-or-later), with the following exception, granted by the sole
 copyright holder, Sébastien Audel (trading as EXIATIS).
 
 ## Exception
 
 As a special exception, the copyright holder gives permission to load
-Knot Tools™ Core components, and to link or combine Knot Tools™ Core with
+Knot Tools® Core components, and to link or combine Knot Tools® Core with
 independent modules (hereafter "**Extensions**") that communicate with
 Knot Core exclusively through its **public extension API**, regardless of
 the license terms of these Extensions, and to copy and distribute the
@@ -19,7 +19,7 @@ resulting combined work under terms of your choice for the Extension part,
 provided that the conditions in section "**Conditions**" below are met.
 
 For the purposes of this exception, the **public extension API** of
-Knot Tools™ Core comprises:
+Knot Tools® Core comprises:
 
 ### (i) Public extension contracts (interfaces and traits)
 
@@ -52,7 +52,7 @@ Knot Tools™ Core comprises:
   by an `@api` PHPDoc annotation and listed in `docs/license-boundary.md`.
 
 The copyright holder may extend the Public Utility API in future versions
-of Knot Tools™ Core by adding new classes or interfaces and tagging them
+of Knot Tools® Core by adding new classes or interfaces and tagging them
 `@api`. Such additions automatically benefit from this exception. The
 copyright holder will not narrow the Public Utility API in a way that
 would retroactively diminish rights already granted under this exception.
@@ -63,18 +63,18 @@ This exception applies only if **all** the following conditions are met:
 
 **(a) No substantial code embedding.**
 The Extension does not incorporate, copy, or embed substantial portions of
-Knot Tools™ Core's source code beyond what is strictly necessary to call
+Knot Tools® Core's source code beyond what is strictly necessary to call
 the Public Extension API. Trivial inclusions (interface stubs, signature
 copies as required for static analysis, automatically generated proxies)
 are permitted.
 
 **(b) GPL compliance for the Core portion.**
-You comply with GPL-3.0-or-later for the Knot Tools™ Core portion of the
-combined work, including making the Knot Tools™ Core source code available
+You comply with GPL-3.0-or-later for the Knot Tools® Core portion of the
+combined work, including making the Knot Tools® Core source code available
 as required by the GPL.
 
 **(c) Communication exclusively through the public extension API.**
-The Extension communicates with Knot Tools™ Core exclusively through the
+The Extension communicates with Knot Tools® Core exclusively through the
 public extension API defined above. Direct use of internal classes
 (classes located outside the API listed above, or classes marked
 `@internal`) is not covered by this exception.
@@ -84,12 +84,12 @@ public extension API defined above. Direct use of internal classes
 ### Original works of the copyright holder only
 
 This exception applies only to the original works authored by the copyright
-holder within Knot Tools™ Core. It does not extend to:
+holder within Knot Tools® Core. It does not extend to:
 
 - the file `core/modules/modKnot.class.php`, which derives from Dolibarr's
   `DolibarrModules` class and remains governed by GPL-3.0-or-later without
   exception;
-- any other file in Knot Tools™ Core that is itself a derivative work of a
+- any other file in Knot Tools® Core that is itself a derivative work of a
   third-party GPL-licensed work, to the extent of that derivation;
 - third-party libraries and dependencies, which remain governed by their
   respective licences (see `LICENSES.md`).
@@ -97,7 +97,7 @@ holder within Knot Tools™ Core. It does not extend to:
 ### Future versions, non-retroactive
 
 This exception is granted for current and future released versions of
-Knot Tools™ Core. It is not retroactive in a way that diminishes rights
+Knot Tools® Core. It is not retroactive in a way that diminishes rights
 already granted under the plain GPL-3.0-or-later for prior released
 versions.
 
@@ -106,16 +106,16 @@ versions.
 You may copy and distribute the resulting combined work under terms of
 your choice **for the Extension part only**, including but not limited to
 proprietary terms, source-available terms (such as PolyForm Shield 1.0.0,
-which is the licence chosen by the copyright holder for Knot Tools™ Pro
-Pack and Knot Tools™ Migration), or any open source licence compatible
-with GPL-3.0-or-later. The Knot Tools™ Core portion of the combined work
+which is the licence chosen by the copyright holder for Knot Tools® Pro
+Pack and Knot Tools® Migration), or any open source licence compatible
+with GPL-3.0-or-later. The Knot Tools® Core portion of the combined work
 remains governed by GPL-3.0-or-later.
 
 ## Disclaimer
 
 This exception does not waive any other right of the copyright holder
-under copyright law, trademark law (see Knot Tools™ trademark, INPI no.
-5257612), or any other applicable law. The Knot Tools™ name, logo, and
+under copyright law, trademark law (see Knot Tools® trademark, INPI no.
+5257612), or any other applicable law. The Knot Tools® name, logo, and
 related branding remain subject to French and international trademark
 law and are not licensed by this exception.
 
@@ -133,7 +133,7 @@ any other applicable mandatory provisions of law.
 For questions about the scope of this exception, contact:
 `contact@knot.tools`
 
-Public reference document tracking the boundary between Knot Tools™ Core
+Public reference document tracking the boundary between Knot Tools® Core
 and PolyForm extensions:
 [`docs/license-boundary.md`](docs/license-boundary.md).
 
