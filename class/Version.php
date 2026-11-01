@@ -7,36 +7,34 @@ namespace Knot;
 /**
  * Single source of truth for the Knot module version string.
  *
- * Always read from \modKnot::$version when available so admin/setup.php,
- * api/health.php, the Vue app and the trigger handler stay aligned.
+ * Reads `$this->version` from the module descriptor of the tree this class is
+ * loaded from (`<module>/core/modules/modKnot.class.php`), so admin/setup.php,
+ * api/health.php, the Vue app and the trigger handler report the code that is
+ * actually running. FALLBACK is only used when the descriptor is unreadable;
+ * VersionConsistencyTest keeps it equal to the descriptor at every bump.
  */
 final class Version
 {
-    public const FALLBACK = '2.13.26';
+    public const FALLBACK = '2.13.27';
 
     public static function current(): string
     {
-        if (class_exists('modKnot')) {
-            try {
-                $reflection = new \ReflectionClass('modKnot');
-                $instance = $reflection->newInstanceWithoutConstructor();
-                $value = (string) $instance->version;
-                if ($value !== '') {
-                    return $value;
-                }
-            } catch (\Throwable) {
-                // ignore
-            }
+        return self::fromDescriptor(dirname(__DIR__) . '/core/modules/modKnot.class.php') ?? self::FALLBACK;
+    }
+
+    /**
+     * Extract `$this->version = '…'` from a modKnot descriptor file.
+     */
+    public static function fromDescriptor(string $path): ?string
+    {
+        if (!is_readable($path)) {
+            return null;
         }
-        // Filesystem path via __DIR__ (Dolistore: no DOL_DOCUMENT_ROOT + custom module tree).
-        $modulePath = dirname(__DIR__) . '/core/modules/modKnot.class.php';
-        if (is_readable($modulePath)) {
-            $contents = (string) file_get_contents($modulePath);
-            if (preg_match('/\$this->version\s*=\s*\'([^\']+)\'/m', $contents, $matches)) {
-                return $matches[1];
-            }
+        $contents = file_get_contents($path);
+        if ($contents === false || preg_match('/\$this->version\s*=\s*\'([^\']+)\'/', $contents, $matches) !== 1) {
+            return null;
         }
 
-        return self::FALLBACK;
+        return $matches[1];
     }
 }

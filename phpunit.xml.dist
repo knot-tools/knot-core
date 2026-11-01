@@ -23,6 +23,8 @@
             <exclude>tests/Licensing/OfficialExtensionManifestSignatureTest.php</exclude>
             <exclude>tests/Unit/RealisticSeedHelpersTest.php</exclude>
             <exclude>tests/PurgeExpiredDemoUsersTest.php</exclude>
+            <exclude>tests/PurgeExpiredDemoUsersFkTest.php</exclude>
+            <exclude>tests/PurgeExpiredDemoUsersScriptTest.php</exclude>
             <exclude>tests/Dolibarr/ObjectIntrospectorGoldenTest.php</exclude>
         </testsuite>
     </testsuites>

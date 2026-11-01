@@ -589,7 +589,13 @@
   "dynamicForm": {
     "expressionModeTitle": "Expression mode",
     "literalModeTitle": "Literal value",
-    "htmlAccepted": "HTML allowed"
+    "htmlAccepted": "HTML allowed",
+    "noSchema": "No schema defined for this node — use the Advanced tab (JSON).",
+    "noFields": "No configurable fields for this node.",
+    "searchDolibarr": "Search in Dolibarr",
+    "removeRow": "Remove row",
+    "addRow": "Add row",
+    "credentialRefType": "Credential reference type:"
   },
   "licenseDeactivateModal": {
     "hint": "Enter the activation code to release this instance binding. The extension will disappear from the sidebar until re-activated.",

@@ -99,13 +99,6 @@ if (!function_exists('dol_mkdir')) {
     }
 }
 
-if (!class_exists('modKnot', false)) {
-    class modKnot
-    {
-        public string $version = \Knot\Version::FALLBACK;
-    }
-}
-
 if (!class_exists('Conf', false)) {
     class Conf
     {

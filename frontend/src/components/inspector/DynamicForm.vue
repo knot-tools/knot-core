@@ -254,10 +254,10 @@ function enumOptionLabel(def: SchemaProperty, index: number, raw: unknown): stri
 <template>
   <div class="k-space-y-3 k-text-sm">
     <p v-if="!fields.length && !props.schema" class="k-text-knot-text-muted k-text-xs k-italic">
-      No schema defined for this node — use the Advanced JSON tab.
+      {{ t('dynamicForm.noSchema') }}
     </p>
     <p v-else-if="hasSchemaButNoFields" class="k-text-knot-text-muted k-text-xs k-italic">
-      No configurable fields for this node.
+      {{ t('dynamicForm.noFields') }}
     </p>
     <div v-for="field in fields" :key="field.name" class="k-space-y-1">
       <div
@@ -326,7 +326,7 @@ function enumOptionLabel(def: SchemaProperty, index: number, raw: unknown): stri
           <button
             v-if="field.def['x-dolibarr-fk']"
             type="button"
-            title="Rechercher dans Dolibarr"
+            :title="t('dynamicForm.searchDolibarr')"
             class="k-px-2 k-py-1.5 k-rounded-knot-sm k-bg-knot-surface-soft k-border k-border-knot-border hover:k-border-knot-primary k-text-knot-text-muted hover:k-text-knot-primary k-transition"
             @click="openFkPicker(field)"
           >
@@ -416,7 +416,7 @@ function enumOptionLabel(def: SchemaProperty, index: number, raw: unknown): stri
                 class="k-text-[11px] k-font-bold k-text-knot-danger hover:k-underline"
                 @click="removeRepeaterRow(field.name, field.def, ri)"
               >
-                Remove row
+                {{ t('dynamicForm.removeRow') }}
               </button>
             </div>
             <div v-for="sub in repeaterSubfields(field.def)" :key="sub.key" class="k-space-y-1">
@@ -490,7 +490,7 @@ function enumOptionLabel(def: SchemaProperty, index: number, raw: unknown): stri
             class="k-w-full k-py-1.5 k-text-[11px] k-font-bold k-rounded-knot-sm k-border k-border-knot-border k-bg-knot-surface hover:k-border-knot-primary k-text-knot-text-muted"
             @click="addRepeaterRow(field.name, field.def)"
           >
-            Add row
+            {{ t('dynamicForm.addRow') }}
           </button>
         </div>
       </template>
@@ -516,7 +516,7 @@ function enumOptionLabel(def: SchemaProperty, index: number, raw: unknown): stri
           class="k-w-full k-px-2.5 k-py-1.5 k-text-sm k-font-mono k-rounded-knot-sm k-bg-knot-surface-soft k-border k-border-knot-border focus:k-border-knot-primary k-text-knot-text"
         />
         <p class="k-text-[10px] k-text-knot-text-muted">
-          Credential reference (type: <code>{{ field.def.credentialType }}</code>)
+          {{ t('dynamicForm.credentialRefType') }} <code>{{ field.def.credentialType }}</code>
         </p>
       </template>
 

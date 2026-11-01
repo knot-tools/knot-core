@@ -72,7 +72,7 @@
     "cachedNo": "não (construção a quente)",
     "copyJson": "Copier le JSON",
     "copied": "Copiado",
-    "refreshCache": "Actualizar a &apos;Cache&apos;",
+    "refreshCache": "Actualizar a cache",
     "clipboardUnavailable": "Presse-papiers indisponible.",
     "loadFailed": "Falha ao carregar recursos.",
     "knotCard": "Knot Core",
@@ -589,7 +589,13 @@
   "dynamicForm": {
     "expressionModeTitle": "Mode expression",
     "literalModeTitle": "Valor literal",
-    "htmlAccepted": "HTML aceite"
+    "htmlAccepted": "HTML aceite",
+    "noSchema": "Nenhum esquema definido para este nó — utilize o separador Avançado (JSON).",
+    "noFields": "Nenhum campo configurável para este nó.",
+    "searchDolibarr": "Pesquisar no Dolibarr",
+    "removeRow": "Remover linha",
+    "addRow": "Adicionar linha",
+    "credentialRefType": "Tipo de referência de credencial:"
   },
   "licenseDeactivateModal": {
     "hint": "Introduza o código de ativação para libertar a ligação a esta instância. A extensão desaparecerá da barra lateral até ser reativada.",

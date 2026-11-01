@@ -125,13 +125,7 @@ final class ExtrafieldsSchema
 
     private function translate(string $key, ?object $langs): string
     {
-        if ($langs !== null && method_exists($langs, 'trans')) {
-            $v = $langs->trans($key);
-            if (is_string($v) && $v !== '') {
-                return $v;
-            }
-        }
-        return $key;
+        return PlainTranslation::translate($key, $langs);
     }
 
     /**

@@ -40,6 +40,7 @@ Avant d'ajouter toute dependance npm ou composer :
 | --- | --- | --- | --- | --- | --- |
 | Paramiko | Non versionne localement | LGPL | Outil dev optionnel | https://www.paramiko.org/ | Scripts locaux SSH/SFTP Plesk, non inclus comme dependance produit |
 | Vue | Version lockee dans `frontend/package-lock.json` | MIT | Frontend produit | https://vuejs.org/ | Interface Knot |
+| Vue I18n | Version lockee dans `frontend/package-lock.json` | MIT | Frontend produit | https://vue-i18n.intlify.dev/ | Catalogues UI (v11, composition API, compilateur CSP) |
 | Vite | Version lockee dans `frontend/package-lock.json` | MIT | Build frontend | https://vitejs.dev/ | Bundling assets Dolibarr |
 | Tailwind CSS | Version lockee dans `frontend/package-lock.json` | MIT | Frontend produit | https://tailwindcss.com/ | Design system utilitaire prefixe `k-` |
 | Vue Flow | Version lockee dans `frontend/package-lock.json` | MIT | Frontend produit | https://vueflow.dev/ | Editeur visuel de workflows |

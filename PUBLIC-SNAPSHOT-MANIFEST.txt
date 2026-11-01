@@ -1,4 +1,4 @@
-generated_at=2026-10-22T06:31:53Z
+generated_at=2026-11-01T18:16:22Z
 source_repo=core (private)
 target_repo=knot-tools/knot-core
 .github/ISSUE_TEMPLATE/bug_report.yml
@@ -148,6 +148,7 @@ class/Dolibarr/NativeWorkflowScanner.php
 class/Dolibarr/ObjectFactory.php
 class/Dolibarr/ObjectIntrospector.php
 class/Dolibarr/ObjectRegistryMode.php
+class/Dolibarr/PlainTranslation.php
 class/Dolibarr/SchemaBuilder.php
 class/Dolibarr/VerbDiscoverer.php
 class/Engine/CronWorker.php
@@ -511,6 +512,7 @@ frontend/src/composables/useWorkflowLinter.ts
 frontend/src/composables/useWorkflowRiskSummary.ts
 frontend/src/env.d.ts
 frontend/src/i18n/__tests__/cspSafeMessageCompiler.test.ts
+frontend/src/i18n/__tests__/cspSafeMessageCompilerSlot.test.ts
 frontend/src/i18n/cspSafeMessageCompiler.ts
 frontend/src/i18n/de_DE.json
 frontend/src/i18n/en_US.json
@@ -599,6 +601,7 @@ frontend/src/views/UpdatesView.vue
 frontend/src/views/VariablesView.vue
 frontend/src/views/WorkflowsView.vue
 frontend/src/views/__tests__/CredentialsView.spec.ts
+frontend/src/views/__tests__/EditorView.inspector-i18n.test.ts
 frontend/src/views/__tests__/EditorView.test.ts
 frontend/src/views/__tests__/MarketplaceView.test.ts
 frontend/src/views/__tests__/UpdatesView.apply-dialog.spec.ts
@@ -752,6 +755,7 @@ sql/migrations/v2.6.0/01_execution_queue.sql
 tests/Api/CsrfGuardTest.php
 tests/Api/Doc/OpenApiGeneratorTest.php
 tests/Api/InternalApiAuthMatrixTest.php
+tests/Api/JsonResponseHeadersTest.php
 tests/Api/JsonResponseTest.php
 tests/Api/WorkflowCreateGuardTest.php
 tests/Assistant/AssistantConnectorPromptCatalogTest.php
@@ -795,6 +799,7 @@ tests/Dolibarr/ObjectFactoryDescribeTest.php
 tests/Dolibarr/ObjectFactoryExtendedTest.php
 tests/Dolibarr/ObjectFactoryMapInventoryTest.php
 tests/Dolibarr/ObjectIntrospectorTest.php
+tests/Dolibarr/PlainTranslationTest.php
 tests/Dolibarr/SchemaBuilderTest.php
 tests/Dolibarr/VerbDiscovererTest.php
 tests/Engine/CronWorkerExecutionRetrySettingsTest.php
@@ -834,6 +839,7 @@ tests/Extension/LicenseValidatorTest.php
 tests/Extension/ManifestSchemaTest.php
 tests/Extension/SidebarPresentationTest.php
 tests/KnownSkusTest.php
+tests/Lang/LangFilesNoEntityTest.php
 tests/Lang/SetupPhpKnotLangParityTest.php
 tests/Licensing/Audit/CapturingDb.php
 tests/Licensing/Audit/LicenseAuditEventTest.php
@@ -920,6 +926,7 @@ tests/Support/IsolatedDataRoot.php
 tests/Support/LocalJsonHttpHarness.php
 tests/Support/LocalZipHttpsHarness.php
 tests/Support/LoopbackUrlPolicy.php
+tests/Support/MysqliDoliDb.php
 tests/Support/RedirectJsonHttpHarness.php
 tests/Support/SqliteInstallSchemaDb.php
 tests/Templates/BundledTemplatesManifestTest.php
@@ -951,6 +958,7 @@ tests/Version/VersionCurrentTest.php
 tests/bootstrap.php
 tests/e2e/Support/LicenseServerHarness.php
 tests/e2e/fixtures/license-server.php
+tests/fixtures/Version/stale_modKnot.php
 tests/fixtures/assistant/llm-dolibarr-read.knot.json
 tests/fixtures/assistant/llm-email-relance.knot.json
 tests/fixtures/assistant/llm-logic-nested.knot.json

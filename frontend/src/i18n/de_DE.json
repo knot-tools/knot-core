@@ -589,7 +589,13 @@
   "dynamicForm": {
     "expressionModeTitle": "Mode expression",
     "literalModeTitle": "Wörtlicher Wert",
-    "htmlAccepted": "HTML akzeptiert"
+    "htmlAccepted": "HTML akzeptiert",
+    "noSchema": "Für diesen Knoten ist kein Schema definiert — verwenden Sie den Tab „Erweitert“ (JSON).",
+    "noFields": "Keine konfigurierbaren Felder für diesen Knoten.",
+    "searchDolibarr": "In Dolibarr suchen",
+    "removeRow": "Zeile entfernen",
+    "addRow": "Zeile hinzufügen",
+    "credentialRefType": "Typ der Zugangsdaten-Referenz:"
   },
   "licenseDeactivateModal": {
     "hint": "Geben Sie den Aktivierungscode ein, um die Bindung an diese Instanz freizugeben. Die Erweiterung verschwindet aus der Seitenleiste, bis sie erneut aktiviert wird.",
