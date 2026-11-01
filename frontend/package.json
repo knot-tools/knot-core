@@ -41,7 +41,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@testing-library/vue": "^8.1.0",
-    "@types/node": "^22.9.0",
+    "@types/node": "^26.4.1",
     "@vitejs/plugin-vue": "^6.0.6",
     "@vue/test-utils": "^2.4.9",
     "autoprefixer": "^10.4.20",
